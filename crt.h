@@ -34,7 +34,6 @@ namespace metrics
 {
 	const codepages					code = CP1251;
 }
-//
 unsigned							dayb(unsigned d); // Get begin of day (time 00:00)
 unsigned							daye(unsigned d); // Get end of day (time 23:59)
 unsigned							getdate(); // Get current date
@@ -54,7 +53,6 @@ bool								issignature(const char name[4], const char* s); // Is name equal to 
 inline bool							isnum(unsigned u) { return u>='0' && u<='9'; } // is numeric character?
 void*								loadb(const char* url, int* size = 0, int additional_bytes_alloated = 0); // Load binary file.
 char*								loadt(const char* url, int* size = 0); // Load text file and decode it to system codepage.
-extern int							locale; // Current system locale. Use in szt() and alike functions.
 bool								matchuc(const char* name, const char* filter);
 unsigned							mkdate(int year, int month, int day, int hour = 0, int minute = 0); // Get date from parameters
 unsigned							monthb(unsigned d); // Return start of month
@@ -102,7 +100,6 @@ char*								szput(char* output, unsigned u, codepages page = metrics::code); //
 char*								szsep(char* result, const char* sep = ", ", const char* start = 0);
 const char*							szskipcr(const char* p);
 const char*							szskipcrr(const char* p0, const char* p);
-inline const char*					szt(const char* en, const char* ru) { return locale ? ru : en; }
 const char*							sztag(const char* p);
 unsigned							szupper(unsigned u);
 char*								szupper(char* p, int count=1); // to upper reg

@@ -1,7 +1,5 @@
 #include "crt.h"
 
-int	locale; // Current localization
-
 void setsignature(char d[4], const char* s)
 {
 	d[0] = s[0];
