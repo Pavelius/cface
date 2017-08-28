@@ -22,7 +22,7 @@ void draw::hilight(rect rc, bool focused)
 {
 	draw::rectf(rc, colors::edit);
 	if(focused)
-		draw::rectx(rc, colors::black);
+		draw::rectx({rc.x1, rc.y1, rc.x2-1, rc.y2-1}, colors::black);
 }
 
 void widget::clear()
