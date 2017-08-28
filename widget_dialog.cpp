@@ -99,7 +99,7 @@ static int layout_compare(const void* p1, const void* p2)
 	layout* e2 = *((layout**)p2);
 	if(e1->priority != e2->priority)
 		return e2->priority - e1->priority;
-	return strcmp(e2->name[locale], e1->name[locale]);
+	return strcmp(e2->name[0], e1->name[0]);
 }
 
 static void layout_initialize()
@@ -139,10 +139,10 @@ static int show_layout(rect rc)
 		unsigned state = 0;
 		if(strcmp(p->name[0], layout_name) == 0)
 			state |= Checked;
-		const char* name = p->name[locale];
+		const char* name = p->name[0];
 		rc.x1 = rc.x2 - textw(name) - 4 * 2 + 1;
 		if(areb(rc))
-			statusbar(szt("Switch to %1 layout.", "Переключиться на %1."), name);
+			statusbar("Переключиться на %1.", name);
 		if(tool(rc, false, false, true))
 			layout_param = p->name[0];
 		text(rc, name, AlignCenterCenter);
@@ -164,7 +164,7 @@ void layout::background(rect& rc, rect& rt, unsigned& flags)
 	}
 	rc.set(0, 0, getwidth(), getheight());
 	rt = rc;
-	statusbar(szt("Ready (for help press F1 key)", "Готово (для справки нажмите F1)"));
+	statusbar("Готово (для справки нажмите F1)");
 	rc.y1 += sheetline({rc.x1, rc.y1, rc.x2, rc.y1 + tools_height}, 0);
 	rt.y2 = rc.y1; rt.offset(3, 3);
 	rectf(rc, colors::form);
@@ -533,7 +533,7 @@ static const char* gtitle(char* temp, settings& e)
 
 static const char* gtext(char* temp, settings& e)
 {
-	zcpy(temp, e.name[locale]);
+	zcpy(temp, e.name);
 	szupper(temp);
 	return temp;
 }
@@ -544,7 +544,7 @@ static int compare_settings(const void* p1, const void* p2)
 	const settings* e2 = *((settings**)p2);
 	if(e1->priority != e2->priority)
 		return e1->priority - e2->priority;
-	return strcmp(e1->name[locale], e2->name[locale]);
+	return strcmp(e1->name, e2->name);
 }
 
 static void get_tabs_child(settings** result, settings* parent)
@@ -671,7 +671,7 @@ static int selement(int x, int y, int width, int& id, unsigned state, settings& 
 		if(getfocus() == id)
 			state |= Focused;
 		// Кнопка закрытия
-		if(draw::buttonh(x2 - w, y, w, w, state, "...", F3, false, ClipartNone, szt("Choose folder", "Выберите папку")))
+		if(draw::buttonh(x2 - w, y, w, w, state, "...", F3, false, ClipartNone, "Выберите папку"))
 		{
 			setfocus(id);
 			execute(InputChoose);
@@ -795,7 +795,7 @@ static struct layout_settings : layout
 					switch(e.type)
 					{
 					case settings::UrlFolder:
-						result = dialog::folder(szt("Select folder", "Выберите папку"), (char*)e.data);
+						result = dialog::folder("Выберите папку", (char*)e.data);
 						break;
 					default:
 						break;
@@ -948,40 +948,39 @@ static void setting_localization()
 
 static void setting_appearance_general_metrics()
 {
-	settings& e1 = settings::root.gr("Workspace", "Рабочий стол").gr("General", "Общие").gr("Metrics", "Метрика");
-	e1.add("Padding spacing", "Отступы", metrics::padding);
-	e1.add("Scroll width", "Ширина скролла", metrics::scroll);
+	settings& e1 = settings::root.gr("Рабочий стол").gr("Общие").gr("Метрика");
+	e1.add("Отступы", metrics::padding);
+	e1.add("Ширина скролла", metrics::scroll);
 }
 
 static void setting_appearance_forms()
 {
-	settings& e2 = settings::root.gr("Colors", "Цвета").gr("General", "Общие");
-	e2.add("Set lighten theme", "Установить светлую тему", set_light_theme);
-	e2.add("Set darken theme", "Установить темную тему", set_dark_theme);
-	settings& e3 = settings::root.gr("Colors", "Цвета").gr("Forms", "Формы");
-	e3.add("Text color", "Цвет текста", colors::text);
-	e3.add("Window color", "Цвет окна", colors::window);
-	e3.add("Form color", "Цвет формы", colors::form);
-	e3.add("Border color", "Цвет границы", colors::border);
-	e3.add("Active color", "Активный цвет", colors::active);
-	e3.add("Button color", "Цвет кнопки", colors::button);
-	e3.add("Edit color", "Цвет редактирования", colors::edit);
-	//e3.add("Workspace color", "Цвет рабочего стола", colors::workspace);
-	e3.add("Tabs color", "Цвет закладок", colors::tabs::back);
-	e3.add("Tabs text color", "Цвет текста закладок", colors::tabs::text);
-	e3.add("Tooltips color", "Цвет подсказки", colors::tips::back);
-	e3.add("Tooltips text color", "Цвет текста подсказки", colors::tips::text);
+	settings& e2 = settings::root.gr("Цвета").gr("Общие");
+	e2.add("Установить светлую тему", set_light_theme);
+	e2.add("Установить темную тему", set_dark_theme);
+	settings& e3 = settings::root.gr("Цвета").gr("Формы");
+	e3.add("Цвет текста", colors::text);
+	e3.add("Цвет окна", colors::window);
+	e3.add("Цвет формы", colors::form);
+	e3.add("Цвет границы", colors::border);
+	e3.add("Активный цвет", colors::active);
+	e3.add("Цвет кнопки", colors::button);
+	e3.add("Цвет редактирования", colors::edit);
+	e3.add("Цвет закладок", colors::tabs::back);
+	e3.add("Цвет текста закладок", colors::tabs::text);
+	e3.add("Цвет подсказки", colors::tips::back);
+	e3.add("Цвет текста подсказки", colors::tips::text);
 }
 
 static void setting_appearance_general_view()
 {
-	settings& e1 = settings::root.gr("Workspace", "Рабочий стол").gr("General", "Общие").gr("View", "Вид");
-	e1.add("Show status bar panel", "Показывать панель статуса", metrics::show::statusbar);
-	e1.add("Show left controls panel", "Показывать левую панель элементов", metrics::show::left);
-	e1.add("Show right controls panel", "Показывать правую панель элементов", metrics::show::right);
-	e1.add("Show bottom controls panel", "Показывать нижнюю панель элементов", metrics::show::bottom);
-	e1.add("Paddings on main view", "Отступы на главном окне", metrics::show::padding);
-	e1.add("Use optimized mouse move", "Использовать оптимизацию при движении мишки", sys_optimize_mouse_move);
+	settings& e1 = settings::root.gr("Рабочий стол").gr("Общие").gr("Вид");
+	e1.add("Показывать панель статуса", metrics::show::statusbar);
+	e1.add("Показывать левую панель элементов", metrics::show::left);
+	e1.add("Показывать правую панель элементов", metrics::show::right);
+	e1.add("Показывать нижнюю панель элементов", metrics::show::bottom);
+	e1.add("Отступы на главном окне", metrics::show::padding);
+	e1.add("Использовать оптимизацию при движении мишки", sys_optimize_mouse_move);
 }
 
 //#if _DEBUG
@@ -993,9 +992,9 @@ static void setting_appearance_general_view()
 
 static void setting_workspace_general_tabs()
 {
-	settings& e1 = settings::root.gr("Workspace", "Рабочий стол").gr("Tabs", "Закладки").gr("Names", "Имена");
-	e1.add("Show file extensions", "Показывать расширения файлов", show_file_extension);
-	e1.add("First letter to uppercase", "Первая буква в верхнем регистре", first_letter_to_uppercase);
+	settings& e1 = settings::root.gr("Рабочий стол").gr("Закладки").gr("Имена");
+	e1.add("Показывать расширения файлов", show_file_extension);
+	e1.add("Первая буква в верхнем регистре", first_letter_to_uppercase);
 }
 
 //static menu docking_values[] = {

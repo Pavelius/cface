@@ -45,10 +45,10 @@ int wdt_field(int x, int y, int width, draw::element& e)
 		draw::rectf(rc, colors::window);
 	draw::rectb(rc, colors::border);
 	if(e.data.fields->type == number_type)
-		e.addbutton(rc, InputEditPlus, "+", KeyUp, szt("Increase", "Увеличить"), InputEditMinus, "-", KeyDown, szt("Decrease", "Уменьшить"));
+		e.addbutton(rc, InputEditPlus, "+", KeyUp, "Увеличить", InputEditMinus, "-", KeyDown, "Уменьшить");
 	if(e.childs)
-		e.addbutton(rc, InputChoose, ":dropdown", F4, szt("Show list", "Показать список"));
-	e.addbutton(rc, InputChoose, "...", F4, szt("Choose", "Выбрать"));
+		e.addbutton(rc, InputChoose, ":dropdown", F4, "Показать список");
+	e.addbutton(rc, InputChoose, "...", F4, "Выбрать");
 	e.focusing(rc);
 	auto a = draw::area(rc);
 	auto p = e.getstring(number_text, false);

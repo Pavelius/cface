@@ -41,14 +41,17 @@ namespace draw
 		const char*			link; // Hyperlink value
 		unsigned			maximum; // Maximum value
 		operator bool() const { return type != 0; }
-		void				clear() { memset(this, 0, sizeof(widget)); }
-		void				decortext() const { draw::fore = getcolor(colors::text); }
-		inline bool			ischecked() const { return (flags&Checked) != 0; }
-		inline bool			isdisabled() const { return (flags&Disabled) != 0; }
-		inline bool			isfocused() const { return (flags&Focused) != 0; }
-		color				getcolor(color normal) const { if(isdisabled()) return normal.mix(colors::window); return normal; }
+		void				clear();
+		void				decortext() const;
+		bool				ischecked() const;
+		bool				isdisabled() const;
+		bool				isfocused() const;
+		color				getcolor(color normal) const;
+		color				getcolor(rect rc, color normal, color active) const;
 		inline const char*	getdata() const { return link ? link : id; }
-		int					getheight() const { return height ? height : 1; }
+		inline int			getheight() const { return height ? height : 1; }
+		inline widget&		settips(const char* value) { tips = value; return *this; }
+		inline widget&		setvalue(int number) { value = number; return *this; }
 	};
 	struct element : widget
 	{
@@ -76,7 +79,6 @@ namespace draw
 		void				setposition(int& x, int& y, int& width);
 		bool				editstart(const rect& rc, int ev);
 	};
-	xsfield					element_type[];
 	struct control : xscontext
 	{
 		struct plugin
@@ -150,6 +152,7 @@ namespace draw
 	int						view(rect rc, control** pages, int count, int& current, bool show_toolbar, unsigned tab_state, int padding);
 }
 extern draw::element		current_widget_element;
+extern xsfield				widget_type[];
 int wdt_button(int x, int y, int width, draw::element& e);
 int wdt_check(int x, int y, int width, draw::element& e);
 int wdt_clipart(int x, int y, int width, draw::element& e);

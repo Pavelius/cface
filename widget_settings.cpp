@@ -28,7 +28,7 @@ void settings::clear()
 	if(t)
 		delete t;
 	data = 0;
-	memset(name, 0, sizeof(name));
+	name = 0;
 	identifier = 0;
 	seqclear(this);
 }
@@ -45,14 +45,13 @@ settings* settings::find(const char* identifier)
 	return 0;
 }
 
-static settings& add_element(settings* e, const char* name_en, const char* name_ru, settings::types type, void* data)
+static settings& add_element(settings* e, const char* name_ru, settings::types type, void* data)
 {
 	if(e->type != settings::Group)
 		return *e;
 	settings* e1;
-	name_en = szdup(name_en);
 	name_ru = szdup(name_ru);
-	const char* identifier = sztag(name_en);
+	const char* identifier = sztag(name_ru);
 	if(e->data)
 	{
 		e1 = static_cast<settings*>(e->data)->find(identifier);
@@ -70,8 +69,7 @@ static settings& add_element(settings* e, const char* name_en, const char* name_
 		}
 	}
 	e1 = new settings;
-	e1->name[0] = name_en;
-	e1->name[1] = name_ru;
+	e1->name = name_ru;
 	e1->identifier = identifier;
 	e1->type = type;
 	e1->data = data;
@@ -82,68 +80,67 @@ static settings& add_element(settings* e, const char* name_en, const char* name_
 	return *e1;
 }
 
-settings& settings::gr(const char* name_en, const char* name_ru, int priority)
+settings& settings::gr(const char* name_ru, int priority)
 {
 	if(!root.identifier)
 	{
 		root.identifier = szdup("Root");
-		root.name[0] = root.identifier;
-		root.name[1] = "Корень";
+		root.name = root.identifier;
 		root.type = Group;
 	}
 	if(priority == 0)
 	{
-		if(strcmp(name_en, "General") == 0)
+		if(strcmp(name, "Общие") == 0)
 			priority = 1;
 		else
 			priority = 10;
 	}
-	settings& e = add_element(this, name_en, name_ru, Group, 0);
+	settings& e = add_element(this, name_ru, Group, 0);
 	e.priority = priority;
 	return e;
 }
 
-settings& settings::add(const char* name_en, const char* name_ru, bool& value)
+settings& settings::add(const char* name_ru, bool& value)
 {
-	return add_element(this, name_en, name_ru, Bool, &value);
+	return add_element(this, name_ru, Bool, &value);
 }
 
-settings& settings::add(const char* name_en, const char* name_ru, int& value)
+settings& settings::add(const char* name_ru, int& value)
 {
-	settings& e = add_element(this, name_en, name_ru, Int, &value);
+	settings& e = add_element(this, name_ru, Int, &value);
 	e.value = 100;
 	return e;
 }
 
-settings& settings::add(const char* name_en, const char* name_ru, char* value, types type)
+settings& settings::add(const char* name_ru, char* value, types type)
 {
-	settings& e = add_element(this, name_en, name_ru, type, value);
+	settings& e = add_element(this, name_ru, type, value);
 	e.value = 260;
 	return e;
 }
 
-settings& settings::add(const char* name_en, const char* name_ru, char** value, types type)
+settings& settings::add(const char* name_ru, char** value, types type)
 {
-	settings& e = add_element(this, name_en, name_ru, type, value);
+	settings& e = add_element(this, name_ru, type, value);
 	e.value = 260;
 	return e;
 }
 
-settings& settings::add(const char* name_en, const char* name_ru, int& value, int current)
+settings& settings::add(const char* name_ru, int& value, int current)
 {
-	settings& e = add_element(this, name_en, name_ru, Radio, &value);
+	settings& e = add_element(this, name_ru, Radio, &value);
 	e.value = current;
 	return e;
 }
 
-settings& settings::add(const char* name_en, const char* name_ru, color& value)
+settings& settings::add(const char* name_ru, color& value)
 {
-	return add_element(this, name_en, name_ru, Color, &value);
+	return add_element(this, name_ru, Color, &value);
 }
 
-settings& settings::add(const char* name_en, const char* name_ru, void(*fn)())
+settings& settings::add(const char* name_ru, void(*fn)())
 {
-	settings& e = add_element(this, name_en, name_ru, Button, 0);
+	settings& e = add_element(this, name_ru, Button, 0);
 	e.e_execute = fn;
 	return e;
 }

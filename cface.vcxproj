@@ -215,67 +215,30 @@
     <ClCompile Include="vallist.cpp" />
     <ClCompile Include="valtree.cpp" />
     <ClCompile Include="valtree_serialize.cpp" />
-    <ClCompile Include="widget_button.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="widget_control.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="widget.cpp" />
+    <ClCompile Include="widget_button.cpp" />
+    <ClCompile Include="widget_control.cpp" />
     <ClCompile Include="widget_dialog.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="widget_dockbar.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="widget_field.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="widget_form.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="widget_list.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="widget_element.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="widget_plugin.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="widget_scroll.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="widget_scrollable.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="widget_settings.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="widget_splitter.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="widget_statusbar.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="widget_table.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="widget_tabs.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="widget_textedit.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="widget_toolbar.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="widget_tooltips.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="widget_tree.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="widget_dockbar.cpp" />
+    <ClCompile Include="widget_field.cpp" />
+    <ClCompile Include="widget_form.cpp" />
+    <ClCompile Include="widget_list.cpp" />
+    <ClCompile Include="widget_element.cpp" />
+    <ClCompile Include="widget_plugin.cpp" />
+    <ClCompile Include="widget_scroll.cpp" />
+    <ClCompile Include="widget_scrollable.cpp" />
+    <ClCompile Include="widget_settings.cpp" />
+    <ClCompile Include="widget_splitter.cpp" />
+    <ClCompile Include="widget_statusbar.cpp" />
+    <ClCompile Include="widget_table.cpp" />
+    <ClCompile Include="widget_tabs.cpp" />
+    <ClCompile Include="widget_textedit.cpp" />
+    <ClCompile Include="widget_toolbar.cpp" />
+    <ClCompile Include="widget_tooltips.cpp" />
+    <ClCompile Include="widget_tree.cpp" />
     <ClCompile Include="win_date.cpp" />
     <ClCompile Include="win_draw.cpp" />
     <ClCompile Include="win_draw_dlg.cpp" />
@@ -299,24 +262,12 @@
     <ClInclude Include="adat.h" />
     <ClInclude Include="amem.h" />
     <ClInclude Include="collections.h" />
-    <ClInclude Include="widget_list.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="widget_scrollable.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="widget_settings.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="widget_table.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="widget_textedit.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="widget_tree.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="widget_list.h" />
+    <ClInclude Include="widget_scrollable.h" />
+    <ClInclude Include="widget_settings.h" />
+    <ClInclude Include="widget_table.h" />
+    <ClInclude Include="widget_textedit.h" />
+    <ClInclude Include="widget_tree.h" />
     <ClInclude Include="xscontext.h" />
     <ClInclude Include="aref.h" />
     <ClInclude Include="autogrow.h" />

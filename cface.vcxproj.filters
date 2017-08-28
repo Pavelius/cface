@@ -90,6 +90,7 @@
     <ClCompile Include="xsvalue.cpp" />
     <ClCompile Include="draw_textf.cpp" />
     <ClCompile Include="io_plugin.cpp" />
+    <ClCompile Include="widget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base.h" />
