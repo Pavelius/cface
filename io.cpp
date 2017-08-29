@@ -19,7 +19,7 @@ io::stream&	io::stream::operator<<(const char* t)
 		char* s1 = temp;
 		unsigned u = szget(&t);
 		szput(&s1, u, CPUTF8);
-		write(temp, s1-temp);
+		write(temp, s1 - temp);
 	}
 	return *this;
 }
@@ -27,12 +27,20 @@ io::stream&	io::stream::operator<<(const char* t)
 void io::stream::writescan(void* p, int width, int height, int scan_line, int element_size)
 {
 	char* pc = (char*)p;
-	while(height>0)
+	while(height > 0)
 	{
 		write(pc, width*element_size);
 		pc += scan_line;
 		height--;
 	}
+}
+
+void io::stream::write(const char* text)
+{
+	int m = text ? zlen(text) : 0;
+	write(m);
+	if(m)
+		write(text, m);
 }
 
 unsigned char io::stream::get()
@@ -46,7 +54,7 @@ unsigned short io::stream::getLE16()
 {
 	unsigned char u2 = get();
 	unsigned char u1 = get();
-	return (u2<<8) | u1;
+	return (u2 << 8) | u1;
 }
 
 unsigned io::stream::getLE32()
@@ -55,7 +63,7 @@ unsigned io::stream::getLE32()
 	unsigned char u3 = get();
 	unsigned char u2 = get();
 	unsigned char u1 = get();
-	return (u4<<24) | (u3<<16) | (u2<<8) | u1;
+	return (u4 << 24) | (u3 << 16) | (u2 << 8) | u1;
 }
 
 unsigned io::stream::getsize()
@@ -66,27 +74,20 @@ unsigned io::stream::getsize()
 	return r;
 }
 
-void io::stream::puttext(const char* text)
+int io::stream::readtext(char* result, unsigned size)
 {
-	int m = text ? zlen(text) : 0;
-	write(m);
-	if(m)
-		write(text, m);
-}
-
-void io::stream::gettext(char* result, int max_buffer)
-{
-	int m = 0;
+	unsigned m = 0;
 	result[0] = 0;
 	read(&m, sizeof(m));
 	if(!m)
-		return;
-	max_buffer = imin(m, max_buffer-1);
-	read(result, max_buffer);
-	result[max_buffer] = 0;
-	m -= max_buffer;
+		return 0;
+	size = imin(m, size - 1);
+	read(result, size);
+	result[size] = 0;
+	m -= size;
 	if(m)
 		seek(m, SeekCur);
+	return size;
 }
 
 void* loadb(const char* url, int* size, int additional)

@@ -41,7 +41,6 @@
     <ClCompile Include="tagdata.cpp" />
     <ClCompile Include="pma.cpp" />
     <ClCompile Include="valtree.cpp" />
-    <ClCompile Include="valtree_serialize.cpp" />
     <ClCompile Include="bitops.cpp" />
     <ClCompile Include="surface.cpp" />
     <ClCompile Include="surface_serial.cpp" />
@@ -91,6 +90,7 @@
     <ClCompile Include="draw_textf.cpp" />
     <ClCompile Include="io_plugin.cpp" />
     <ClCompile Include="widget.cpp" />
+    <ClCompile Include="valtree_serial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base.h" />

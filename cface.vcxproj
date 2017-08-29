@@ -214,7 +214,7 @@
     <ClCompile Include="tagdata.cpp" />
     <ClCompile Include="vallist.cpp" />
     <ClCompile Include="valtree.cpp" />
-    <ClCompile Include="valtree_serialize.cpp" />
+    <ClCompile Include="valtree_serial.cpp" />
     <ClCompile Include="widget.cpp" />
     <ClCompile Include="widget_button.cpp" />
     <ClCompile Include="widget_control.cpp" />

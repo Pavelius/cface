@@ -14,7 +14,7 @@ template<> void io::stream::write<xsref>(const xsref& e)
 	auto xs = xsbase::find(e.fields);
 	if(!xs)
 		return;
-	puttext(xs->id); // Name of metadata
+	write(xs->id); // Name of metadata
 	write(xs->indexof(e.object)); // Index in metadata or -1
 	xsref_write(*this, e);
 }
@@ -23,7 +23,7 @@ template<> void io::stream::write<xsglobal>(const xsglobal& e)
 {
 	if(!e)
 		return;
-	puttext(e.id);
+	write(e.id);
 	xsref_write(*this, e);
 }
 
@@ -81,7 +81,7 @@ void xsref_write(io::stream& stream, const xsref& e)
 			else if(f->type == text_type)
 			{
 				auto value = (const char*)e.get(f->id, i);
-				stream.puttext(value);
+				stream.write(value);
 			}
 			else if(!f->reference)
 			{
@@ -96,7 +96,7 @@ void xsref_write(io::stream& stream, const xsref& e)
 					stream.write(0);
 				else
 				{
-					stream.puttext(xs->id);
+					stream.write(xs->id);
 					if(xs->id[0])
 						stream.write(xs->indexof(object));
 				}
@@ -121,7 +121,7 @@ bool xsref_read(io::stream& stream, xsref& e, char* temp)
 				stream.read((void*)f->ptr(e.object, i), f->size);
 			else if(f->type == text_type)
 			{
-				stream.gettext(temp, xsfield_max_text - 1);
+				stream.readtext(temp, xsfield_max_text - 1);
 				if(temp[0])
 					e.set(f->id, (int)szdup(temp), i);
 				else
@@ -136,7 +136,7 @@ bool xsref_read(io::stream& stream, xsref& e, char* temp)
 			else
 			{
 				int index = 0;
-				stream.gettext(temp, xsfield_max_text - 1);
+				stream.readtext(temp, xsfield_max_text - 1);
 				if(temp[0])
 					stream.read(index);
 				auto xs = xsbase::find(temp);
@@ -152,7 +152,7 @@ bool xsref_read(io::stream& stream, xsref& e, char* temp)
 
 bool xsref_read_base(io::stream& stream, xsref& e, char* temp)
 {
-	stream.gettext(temp, xsfield_max_text - 1);
+	stream.readtext(temp, xsfield_max_text - 1);
 	auto gs = xsglobal::find(temp);
 	if(gs)
 	{
