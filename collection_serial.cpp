@@ -86,6 +86,8 @@ bool collection::read(const char* url, xsfield* fields)
 			return false;
 		collection_read(file, *this, fields);
 	}
+	else
+		return false;
 	return true;
 }
 
@@ -129,5 +131,7 @@ bool collection::write(const char* url, xsfield* fields)
 			return false;
 		collection_write(file, *this, fields);
 	}
+	else
+		return false;
 	return true;
 }
