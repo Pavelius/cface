@@ -7,7 +7,7 @@ enum stream_flags
 	StreamWrite = 2,
 	StreamText = 4,
 };
-
+enum node_types {NodeNumber, NodeText, NodeStruct, NodeArray};
 namespace io
 {
 	// Network protocols
@@ -17,18 +17,17 @@ namespace io
 	{
 		stream&				operator<<(const char* t); // Post text string into stream data in correct coding.
 		stream&				operator<<(const int n); // Post number as string into stream data in correct coding.
-		unsigned char		get();
-		unsigned short		getLE16();
-		unsigned			getLE32();
 		unsigned			getsize();
 		int					readtext(char* result, unsigned size);
 		virtual int			read(void* result, int count) = 0;
-		template<class T> void read(T& value) { read(&value, sizeof(value)); }
+		virtual void		read(int& value);
+		template<class T> void read(T& value);
 		virtual int			seek(int count, int rel = SeekCur) { return 0; };
 		virtual int			write(const void* result, int count) = 0;
-		void				write(const char* text);
-		template<class T> void write(const T& value) { write(&value, sizeof(value)); }
-		void				writescan(void* p, int width, int heght, int scan_line, int element_size);
+		virtual void		write(const char* value);
+		virtual void		write(int value);
+		virtual void		write(bool value);
+		template<class T> void write(const T& value);
 	};
 	struct sequence : public stream
 	{

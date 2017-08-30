@@ -91,6 +91,7 @@
     <ClCompile Include="io_plugin.cpp" />
     <ClCompile Include="widget.cpp" />
     <ClCompile Include="valtree_serial.cpp" />
+    <ClCompile Include="collection_serial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base.h" />

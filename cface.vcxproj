@@ -171,6 +171,7 @@
     <ClCompile Include="calculator.cpp" />
     <ClCompile Include="calculator_override.cpp" />
     <ClCompile Include="collection.cpp" />
+    <ClCompile Include="collection_serial.cpp" />
     <ClCompile Include="color.cpp" />
     <ClCompile Include="command.cpp" />
     <ClCompile Include="converter.cpp" />

@@ -24,17 +24,6 @@ io::stream&	io::stream::operator<<(const char* t)
 	return *this;
 }
 
-void io::stream::writescan(void* p, int width, int height, int scan_line, int element_size)
-{
-	char* pc = (char*)p;
-	while(height > 0)
-	{
-		write(pc, width*element_size);
-		pc += scan_line;
-		height--;
-	}
-}
-
 void io::stream::write(const char* text)
 {
 	int m = text ? zlen(text) : 0;
@@ -43,27 +32,24 @@ void io::stream::write(const char* text)
 		write(text, m);
 }
 
-unsigned char io::stream::get()
+void io::stream::write(int value)
 {
-	unsigned char r = 0;
-	read(&r, 1);
-	return r;
+	write(&value, sizeof(value));
 }
 
-unsigned short io::stream::getLE16()
+void io::stream::write(bool value)
 {
-	unsigned char u2 = get();
-	unsigned char u1 = get();
-	return (u2 << 8) | u1;
+	write(&value, sizeof(value));
 }
 
-unsigned io::stream::getLE32()
+template<> void io::stream::write<char>(const char& value)
 {
-	unsigned char u4 = get();
-	unsigned char u3 = get();
-	unsigned char u2 = get();
-	unsigned char u1 = get();
-	return (u4 << 24) | (u3 << 16) | (u2 << 8) | u1;
+	stream::write((int)value);
+}
+
+void io::stream::read(int& value)
+{
+	read(&value, sizeof(value));
 }
 
 unsigned io::stream::getsize()

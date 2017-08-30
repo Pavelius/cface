@@ -33,6 +33,17 @@ namespace
 }
 #pragma pack(pop)
 
+//void io::stream::writescan(void* p, int width, int height, int scan_line, int element_size)
+//{
+//	char* pc = (char*)p;
+//	while(height > 0)
+//	{
+//		write(pc, width*element_size);
+//		pc += scan_line;
+//		height--;
+//	}
+//}
+
 void draw::write(const char* url, unsigned char* bits, int width, int height, int bpp, int scanline, color* pallette)
 {
 	bmp::header bmf = {0};
