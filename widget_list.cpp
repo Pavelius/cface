@@ -21,7 +21,7 @@ using namespace draw::controls;
 list::list() : origin(0), maximum(0), current(0),
 maximum_width(0), origin_width(0),
 lines_per_page(0), pixels_per_line(0),
-show_grid_lines(false), choose_mode(false), hilite_rows(false),
+show_grid_lines(false),  hilite_rows(false),
 commands(0)
 {
 	id = "list";
@@ -158,8 +158,6 @@ void list::redraw(rect rc)
 						scroll.set(rc.x2-metrics::scroll, rc.y1, rc.x2, rc.y2);
 					else
 						scroll.clear();
-					if(rk == MouseLeft && choose_mode)
-						draw::execute(MouseLeftDBL);
 				}
 			}
 		}

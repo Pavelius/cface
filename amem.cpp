@@ -19,6 +19,11 @@ amem::amem(unsigned size)
 {
 }
 
+amem::amem(void* data, unsigned size, unsigned count)
+	: data(data), count(count), size(size), count_maximum(count)
+{
+}
+
 amem::~amem()
 {
 	if(data)

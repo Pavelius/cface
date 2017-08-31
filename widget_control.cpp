@@ -90,6 +90,38 @@ int control::open(const char* title, int state, int width, int height)
 	}
 }
 
+bool control::open(rect rc)
+{
+	setfocus(id);
+	while(true)
+	{
+		draw::rectf(rc, colors::form);
+		draw::view(rc, *this);
+		int id = draw::input();
+		switch(id)
+		{
+		case KeyEscape:
+		case InputUpdate:
+		case 0:
+			return false;
+		case MouseLeft:
+			if(hot::pressed)
+			{
+				if(!area(rc))
+					return false;
+				draw::execute(MouseLeftDBL);
+				continue;
+			}
+			break;
+		case KeyEnter:
+		case MouseLeftDBL:
+			return true;
+		}
+		if(focused)
+			keyinput(id);
+	}
+}
+
 bool control::keyinput(int id)
 {
 	xscontext::command* pc;
@@ -97,6 +129,9 @@ bool control::keyinput(int id)
 	{
 	case InputMenu:
 		contextmenu();
+		break;
+	case InputChoose:
+		current_widget_element.choose();
 		break;
 	case InputEdit:
 		current_widget_element.editing();

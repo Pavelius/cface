@@ -14,7 +14,6 @@ namespace draw
 			int				maximum_width, origin_width;
 			int				lines_per_page, pixels_per_line;
 			bool			show_grid_lines;
-			bool			choose_mode;
 			bool			hilite_rows;
 			widget*			commands; // List of commands that can handle control (for toolbar).
 			list();

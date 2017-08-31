@@ -13,6 +13,7 @@ namespace draw
 	// Widget descriptor
 	struct widget
 	{
+		// Widget procedure
 		typedef int(*proc)(int x, int y, int width, element& e);
 		// Plugin for widget descriptor
 		struct plugin
@@ -61,6 +62,7 @@ namespace draw
 		int					row;
 		int					column;
 		bool*				separator;
+		rect				rectangle;
 		//
 		element() { memset(this, 0, sizeof(element)); }
 		element(const widget& e, element* parent);
@@ -69,6 +71,7 @@ namespace draw
 		void				addbutton(rect& rc, int c1, const char* t1, int k1, const char* tt1);
 		void				addbutton(rect& rc, int c1, const char* t1, int k1, const char* tt1, int c2, const char* t2, int k2, const char* tt2);
 		void				addvalue(int value);
+		bool				choose();
 		void				clear();
 		bool				editing();
 		void				focusing(const rect& rc);
@@ -109,6 +112,7 @@ namespace draw
 		virtual bool		keyinput(int id);
 		virtual void		nonclient(rect rc);
 		int					open(const char* title, int state = 0, int width = 600, int height = 400); // Open in new window and make modal loop
+		bool				open(rect rc);
 		virtual void		prerender() {}
 		virtual void		redraw(rect rc) {}
 	};

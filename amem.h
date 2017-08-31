@@ -9,6 +9,7 @@ struct amem : collection
 	unsigned			count_maximum;
 	unsigned			size;
 	amem(unsigned size = 0);
+	amem(void* data, unsigned size, unsigned count);
 	~amem();
 	void*				add(const void* element = 0) override;
 	char*				begin() const;
