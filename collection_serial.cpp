@@ -81,7 +81,7 @@ bool collection::read(const char* url, xsfield* fields)
 	}
 	else if(strcmp(ex, "dat") == 0 || strcmp(ex, "bin") == 0)
 	{
-		io::file file(url, StreamWrite);
+		io::file file(url, StreamRead);
 		if(!file)
 			return false;
 		collection_read(file, *this, fields);
