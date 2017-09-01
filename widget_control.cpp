@@ -2,6 +2,7 @@
 #include "draw.h"
 #include "widget.h"
 
+extern rect			sys_static_area;
 using namespace		draw;
 sprite*				metrics::toolbar = (sprite*)loadb("toolbar.pma");
 sprite*				metrics::tree = (sprite*)loadb("tree.pma");
@@ -92,6 +93,7 @@ int control::open(const char* title, int state, int width, int height)
 
 bool control::open(rect rc)
 {
+	sys_static_area.clear();
 	setfocus(id);
 	while(true)
 	{

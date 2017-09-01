@@ -39,12 +39,14 @@ void tbl_hilight(int x, int y, int width, const draw::element& e, const char* te
 	if(!e.ischecked())
 		return;
 	auto height = e.getheight()*draw::texth() + 8;
+	rect rc = {x, y, x + width, y + height};
+	draw::area(rc);
 	if(temp && e.flags&ColumnSmallHilite)
 		draw::hilight({x, y, x + imin(width, draw::textw(temp) + 12), y + height}, e.isfocused());
 	else
-		draw::hilight({x, y, x + width, y + height}, e.isfocused());
+		draw::hilight(rc, e.isfocused());
 	if(e.isfocused())
-		hot::element.set(x, y, x + width, y + height);
+		hot::element = rc;
 }
 
 void tbl_setposition(int& x, int& y, int& width)
@@ -564,6 +566,7 @@ void table::row(rect rc, int index)
 		e1.row = index;
 		e1.column = i;
 		e1.data = rowref.getvalue(e.getdata());
+		e1.rectangle = r1;
 		if(index == current && i == current_column)
 			e1.flags |= Checked;
 		if(focused)

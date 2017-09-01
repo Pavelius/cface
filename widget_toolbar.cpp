@@ -48,7 +48,7 @@ static int wdt_dropdown(int x, int y, int width, draw::element& e)
 	wdt_clipart(x, y, width, e);
 	if(result)
 	{
-		hot::element = rc;
+		e.rectangle = rc;
 		draw::execute(InputDropDown, 0, e);
 	}
 	return e.height;
