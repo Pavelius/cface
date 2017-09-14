@@ -5,6 +5,10 @@ const int xsfield_max_text = 8192 * 2; // Maximum text for field (for serializat
 // Metadata field descriptor
 struct xsfield
 {
+	template<class T> struct refi { static constexpr int count = 0; };
+	template<class T> struct refi<T*> { static constexpr int count = 1 + refi<T>::count; };
+	template<class T, int N> struct refi<T[N]> { static constexpr int count = refi<T>::count; };
+	template<class T> struct refi<T[]> { static constexpr int count = refi<T>::count; };
 	template<class T> struct info
 	{
 		static constexpr int size = sizeof(T);
@@ -19,22 +23,6 @@ struct xsfield
 	{
 		static constexpr int size = sizeof(T);
 		static constexpr int count = 0;
-	};
-	template<class T> struct refi
-	{
-		static constexpr int count = 0;
-	};
-	template<class T> struct refi<T*>
-	{
-		static constexpr int count = 1 + refi<T>::count;
-	};
-	template<class T, int N> struct refi<T[N]>
-	{
-		static constexpr int count = refi<T>::count;
-	};
-	template<class T> struct refi<T[]>
-	{
-		static constexpr int count = refi<T>::count;
 	};
 	const char*			id; // field identifier
 	unsigned			offset; // offset from begin of class or object
@@ -60,9 +48,6 @@ extern xsfield			text_type[2]; // stantart zero ending string
 extern xsfield			reference_type[2]; // any reference (depends on value)
 extern xsfield			xsfield_type[]; // metadata type
 
-#define PROPERTY(name, type, def)\
-virtual type get##name() const { return def; }\
-virtual void set##name(type value) {}
 #define FO(c,f) (const int)&((c*)0)->f
 #define	BSREQ(cls, field, type) {#field, FO(cls,field), xsfield::info<decltype(cls::field)>::size, sizeof(cls::field), xsfield::info<decltype(cls::field)>::count, xsfield::refi<decltype(cls::field)>::count, type}
 #define	BSVAR(field, type) {#field, (unsigned)&field, xsfield::info<decltype(field)>::size, sizeof(field), xsfield::info<decltype(field)>::count, xsfield::refi<decltype(field)>::count, type}

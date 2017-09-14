@@ -36,11 +36,11 @@ static draw::widget	grid_commands[] = {
 
 void tbl_hilight(int x, int y, int width, const draw::element& e, const char* temp)
 {
+	auto height = e.getheight()*draw::texth() + 8;
+	rect rc = { x, y, x + width, y + height };
+	draw::area(rc);
 	if(!e.ischecked())
 		return;
-	auto height = e.getheight()*draw::texth() + 8;
-	rect rc = {x, y, x + width, y + height};
-	draw::area(rc);
 	if(temp && e.flags&ColumnSmallHilite)
 		draw::hilight({x, y, x + imin(width, draw::textw(temp) + 12), y + height}, e.isfocused());
 	else

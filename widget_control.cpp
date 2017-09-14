@@ -93,7 +93,7 @@ int control::open(const char* title, int state, int width, int height)
 
 bool control::open(rect rc)
 {
-	sys_static_area.clear();
+	sys_static_area.set(0, 0, draw::getwidth(), draw::getheight());
 	setfocus(id);
 	while(true)
 	{

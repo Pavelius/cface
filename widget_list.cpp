@@ -138,7 +138,7 @@ void list::redraw(rect rc)
 	if(maximum_width>rc.width())
 		scrollh.set(rc.x1, rc.y2-metrics::scroll, rc.x2, rc.y2);
 	// mouse input handle
-	if(hilite_rows)
+	if(hilite_rows && hot::key==MouseMove)
 		current = -1;
 	if(draw::areb(rc))
 	{
