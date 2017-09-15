@@ -22,7 +22,7 @@
     <ProjectGuid>{0A1C9AD6-05D3-49AB-85C2-466017CEE49A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>cface</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -71,9 +71,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\p.chistyakov\Documents\Visual Studio 2017\Projects</IncludePath>
-    <OutDir>e:\applications\$(ProjectName)\$(Configuration)\</OutDir>
-    <IntDir>e:\output\$(ProjectName)\$(Configuration)\</IntDir>
+    <IncludePath>
+    </IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>

@@ -97,7 +97,7 @@ bool control::open(rect rc)
 	setfocus(id);
 	while(true)
 	{
-		draw::rectf(rc, colors::form);
+		//draw::rectf(rc, colors::form);
 		draw::view(rc, *this);
 		int id = draw::input();
 		switch(id)
