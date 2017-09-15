@@ -69,7 +69,6 @@
     <ClCompile Include="widget_button.cpp" />
     <ClCompile Include="widget_splitter.cpp" />
     <ClCompile Include="widget_tabs.cpp" />
-    <ClCompile Include="widget_control.cpp" />
     <ClCompile Include="widget_list.cpp" />
     <ClCompile Include="widget_table.cpp" />
     <ClCompile Include="point_type.cpp" />

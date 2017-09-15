@@ -140,9 +140,9 @@ void list::redraw(rect rc)
 	// mouse input handle
 	if(hilite_rows && hot::key==MouseMove)
 		current = -1;
+	int rk = hot::key&CommandMask;
 	if(draw::areb(rc))
 	{
-		int rk = hot::key&CommandMask;
 		// Обработаем выбор мышкой
 		if(hot::pressed && (rk==MouseLeft || rk==MouseRight))
 		{
@@ -163,12 +163,12 @@ void list::redraw(rect rc)
 		}
 		// Если надо подсвечивать
 		if(hilite_rows
-			&& (rk==MouseMove || rk==MouseWheelDown
-				|| rk==MouseWheelUp || rk == MouseLeft || rk==MouseRight || rk == MouseLeftDBL
-				|| rk==InputIdle))
+			&& (rk == MouseMove || rk == MouseWheelDown
+				|| rk == MouseWheelUp || rk == MouseLeft || rk == MouseRight || rk == MouseLeftDBL
+				|| rk == InputIdle))
 		{
 			if(!scroll.width() || hot::mouse.x<scroll.x1)
-				current = origin + (hot::mouse.y - rc.y1 - 2)/pixels_per_line;
+				current = origin + (hot::mouse.y - rc.y1 - 2) / pixels_per_line;
 		}
 	}
 	if(true)

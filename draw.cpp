@@ -33,7 +33,6 @@ static unsigned char	forc;
 bool					draw::mouseinput = true;
 color*					draw::palt;
 rect					draw::clipping;
-rect					draw::lastarea;
 char					draw::link[2048];
 // Hot keys and menus
 int						hot::animate; // Каждый такт таймера это значение увеличивается на единицу.
@@ -847,6 +846,11 @@ static void intersect_rect(rect& r1, const rect& r2)
 	}
 }
 
+//COMMAND(after_render)
+//{
+//	draw::rectf(sys_static_area, colors::blue, 128);
+//}
+
 areas draw::area(rect rc)
 {
 	if(!hot::mouse.in(clipping))
@@ -859,7 +863,6 @@ areas draw::area(rect rc)
 		return AreaNormal;
 	if(hot::mouse.in(rc))
 	{
-		lastarea = rc;
 		return hot::pressed ? AreaHilitedPressed : AreaHilited;
 	}
 	return AreaNormal;

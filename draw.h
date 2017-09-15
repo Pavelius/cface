@@ -222,7 +222,6 @@ namespace draw
 		void				resizing(const rect& rc);
 	};
 	extern rect				clipping; // Clipping area
-	extern rect				lastarea; // Last render area
 	extern color			fore; // Foreground color (curently selected color)
 	extern const sprite*	font; // Currently selected font
 	//
