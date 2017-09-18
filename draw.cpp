@@ -831,34 +831,49 @@ void draw::setclip(rect rcn)
 
 static void intersect_rect(rect& r1, const rect& r2)
 {
-	if(hot::mouse.in(r2))
-		r1 = r2;
-	else if(!r1.intersect(r2))
+	if(!r1.intersect(r2))
 		return;
+	if(hot::mouse.in(r2))
+	{
+		if(r2.y1 > r1.y1)
+			r1.y1 = r2.y1;
+		if(r2.x1 > r1.x1)
+			r1.x1 = r2.x1;
+		if(r2.y2 < r1.y2)
+			r1.y2 = r2.y2;
+		if(r2.x2 < r1.x2)
+			r1.x2 = r2.x2;
+	}
 	else
 	{
-		if(hot::mouse.x > r2.x2 && r2.x2 > r1.x1)
-			r1.x1 = r2.x2;
-		if(hot::mouse.x < r2.x1 && r2.x1 < r1.x2)
-			r1.x2 = r2.x1;
 		if(hot::mouse.y > r2.y2 && r2.y2 > r1.y1)
 			r1.y1 = r2.y2;
-		if(hot::mouse.y < r2.y1 && r2.y1 < r1.y2)
+		else if(hot::mouse.y < r2.y1 && r2.y1 < r1.y2)
 			r1.y2 = r2.y1;
+		else if(hot::mouse.x > r2.x2 && r2.x2 > r1.x1)
+			r1.x1 = r2.x2;
+		else if(hot::mouse.x < r2.x1 && r2.x1 < r1.x2)
+			r1.x2 = r2.x1;
 	}
 }
 
 //COMMAND(after_render)
 //{
+//	char temp[32];
+//	draw::state push;
+//	draw::fore = colors::black;
+//	draw::font = metrics::font;
+//	szprint(temp, "%1i, %2i", hot::mouse.x, hot::mouse.y);
+//	draw::text(0, 460, temp);
 //	draw::rectf(sys_static_area, colors::blue, 128);
 //}
 
 areas draw::area(rect rc)
 {
-	if(!hot::mouse.in(clipping))
-		return AreaNormal;
 	if(sys_optimize_mouse_move)
 		intersect_rect(sys_static_area, rc);
+	if(!hot::mouse.in(clipping))
+		return AreaNormal;
 	if(drag::id)
 		return AreaNormal;
 	if(!mouseinput)
