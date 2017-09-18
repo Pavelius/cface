@@ -15,19 +15,16 @@ namespace draw
 	{
 		// Widget procedure
 		typedef int(*proc)(int x, int y, int width, element& e);
+		typedef int(*proc2)(int x, int y, int width, const char* id, unsigned flags, const char* label, void* source, const char* tips);
 		// Plugin for widget descriptor
 		struct plugin
 		{
-			struct element
-			{
-				const char*		id;
-				widget::proc	render;
-			};
-			element*		controls;
+			const char*		id;
+			proc			render;
 			plugin*			next;
 			static plugin*	first;
-			plugin(element* controls);
-			static element*	find(const char* id);
+			plugin(const char* id, proc render);
+			static plugin*	find(const char* id);
 		};
 		proc				type; // Control proc
 		const char*			id; // Control identification

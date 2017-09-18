@@ -90,9 +90,11 @@ enum iflags
 	AlignWidth = 0xE000,
 	AlignMask = 0xF000,
 };
+// Each widget draw by this procedure
+typedef int(*widgetproc)(int x, int y, int width, const char* id, unsigned flags, const char* label, void* source, unsigned size, int title, const char* tips);
 namespace hot
 {
-	typedef void(*proc)(int id);
+	typedef void			(*proc)(int id); // Hot callback reaction
 	extern int				animate;
 	extern cursors			cursor; // set this mouse cursor
 	extern int				key; // [in] if pressed key or mouse this field has key
