@@ -517,7 +517,7 @@ static int button(int x, int y, int width, int id, unsigned state, color c1)
 	char temp[64];
 	int height = 2 * 4 + texth();
 	rect rc = {x, y, x + width, y + height};
-	focusing(rc, id, state);
+	//focusing(rc, id, state);
 	if(button(x, y, width, height, id, c1.getname(temp), state, 0, false, c1))
 		execute(id);
 	return height;
@@ -525,7 +525,7 @@ static int button(int x, int y, int width, int id, unsigned state, color c1)
 
 static const char* gtitle(char* temp, settings& e)
 {
-	zcpy(temp, e.name[locale]);
+	zcpy(temp, e.name);
 	szupper(temp);
 	zcat(temp, ":");
 	return temp;
@@ -578,11 +578,11 @@ static struct settings_header_list_class : controls::list
 			current = 0;
 	}
 
-	void row(rect rc, int id, unsigned state, int index) override
+	void row(rect rc, int index) override
 	{
 		if(index == current)
-			hilight({rc.x1, rc.y1, rc.x2 - 1, rc.y2}, id, state, index);
-		textc(rc.x1 + 4, rc.y1 + 4, rc.width() - 8, rows[index]->name[locale]);
+			hilight({rc.x1, rc.y1, rc.x2 - 1, rc.y2}, false);
+		textc(rc.x1 + 4, rc.y1 + 4, rc.width() - 8, rows[index]->name);
 	}
 
 	settings* gcurrent()
@@ -937,13 +937,6 @@ static const char* get_lang_name(const char* url)
 {
 	char temp[260];
 	return szdup(szfnamewe(temp, url));
-}
-
-static void setting_localization()
-{
-	settings& e1 = settings::root.gr("Localization", "Ћокализаци€").gr("General", "ќбщие").gr("Language", "язык");
-	e1.add("English", "јнглийский", locale, 0);
-	e1.add("Russian", "–усский", locale, 1);
 }
 
 static void setting_appearance_general_metrics()

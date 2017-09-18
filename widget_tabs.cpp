@@ -89,7 +89,7 @@ int draw::tabs(rect rc, bool show_close, bool right_side, void** data, int start
 			rcx.x2 = rcx.x1 + rcx.height();
 			if(areb(rcx))
 			{
-				if(buttonh(rcx.x1, rcx.y1, rcx.width(), rcx.height(), false, false, false, true, 0))
+				if(buttonh(rcx, false, false, false, true, 0))
 					result = 2;
 				tooltips("Закрыть");
 			}

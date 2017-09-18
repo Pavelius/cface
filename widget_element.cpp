@@ -93,11 +93,11 @@ void element::addbutton(rect& rc, int c1, const char* t1, int k1, const char* tt
 	const int width = 20;
 	rc.x2 -= width;
 	auto height = rc.height() / 2;
-	if(draw::buttonh(rc.x2, rc.y1, width, height,
+	if(draw::buttonh({rc.x2, rc.y1, rc.x2+width, rc.y1+height},
 		false, isfocused(), false, false,
 		t1, k1, true, tt1))
 		draw::execute(c1, 0, *this);
-	if(draw::buttonh(rc.x2, rc.y1 + height, width, height,
+	if(draw::buttonh({rc.x2, rc.y1 + height, rc.x2+width, rc.y1+height*2},
 		false, isfocused(), false, false,
 		t2, k2, true, tt2))
 		draw::execute(c2, 0, *this);
@@ -108,7 +108,7 @@ void element::addbutton(rect& rc, int c1, const char* t1, int k1, const char* tt
 {
 	const int width = 18;
 	rc.x2 -= width;
-	if(draw::buttonh(rc.x2, rc.y1, width, rc.height(),
+	if(draw::buttonh({rc.x2, rc.y1, rc.x2+width, rc.y2},
 		false, false, false, false,
 		t1, k1, true, tt1))
 		draw::execute(c1, 0, *this);

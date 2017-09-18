@@ -138,8 +138,8 @@ namespace draw
 	}
 	xscontext::command		form_commands[];
 	typedef char*			(*proctext)(char* result, void* object);
-	bool					buttonh(int x, int y, int width, int height, bool checked, bool focused, bool disabled, bool border, const char* string, int key = 0, bool press = false, const char* tooltips_text = 0);
-	bool					buttonv(int x, int y, int width, int height, bool checked, bool focused, bool disabled, bool border, const char* string, int key = 0, bool press = false);
+	bool					buttonh(rect rc, bool checked, bool focused, bool disabled, bool border, const char* string, int key = 0, bool press = false, const char* tooltips_text = 0);
+	bool					buttonv(rect rc, bool checked, bool focused, bool disabled, bool border, const char* string, int key = 0, bool press = false);
 	void					dockbar(rect& rc);
 	void					execute(int cid, int param, element& e);
 	unsigned				getdocked(control** output, unsigned count, dock_types type);

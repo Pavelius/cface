@@ -60,10 +60,9 @@ int wdt_clipart(int x, int y, int width, draw::element& e)
 	return 0;
 }
 
-bool draw::buttonv(int x, int y, int width, int height, bool checked, bool focused, bool disabled, bool border, const char* string, int key, bool press)
+bool draw::buttonv(rect rc, bool checked, bool focused, bool disabled, bool border, const char* string, int key, bool press)
 {
 	bool result = false;
-	struct rect rc = {x, y, x + width, y + height};
 	if(disabled)
 	{
 		gradh(rc, colors::button.lighten(), colors::button.darken());
@@ -112,11 +111,10 @@ bool draw::buttonv(int x, int y, int width, int height, bool checked, bool focus
 	return result;
 }
 
-bool draw::buttonh(int x, int y, int width, int height, bool checked, bool focused, bool disabled, bool border, const char* string, int key, bool press, const char* tooltips_text)
+bool draw::buttonh(rect rc, bool checked, bool focused, bool disabled, bool border, const char* string, int key, bool press, const char* tooltips_text)
 {
 	draw::state push;
 	bool result = false;
-	struct rect rc = {x, y, x + width, y + height};
 	struct rect rcb = {rc.x1 + 1, rc.y1 + 1, rc.x2, rc.y2};
 	areas a = draw::area(rc);
 	if(disabled)
@@ -289,7 +287,7 @@ int wdt_button(int x, int y, int width, draw::element& e)
 			e.flags |= Disabled;
 	}
 	e.focusing(rc);
-	if(draw::buttonh(x, y, width, rc.height(),
+	if(draw::buttonh({x, y, x+width, rc.y2},
 		e.ischecked(), e.isfocused(), e.isdisabled(), true,
 		e.label, KeyEnter, false, e.tips))
 		draw::execute(InputExecute, 0, e);
