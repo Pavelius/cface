@@ -97,13 +97,14 @@ namespace hot
 		const char*			name;
 		int					value;
 		rect				element;
+		void				(*proc)(int id);
 	};
 	extern int				animate;
 	extern cursors			cursor; // set this mouse cursor
 	extern int				key; // [in] if pressed key or mouse this field has key
 	extern point			mouse; // current mouse coordinates
 	extern bool				pressed; // flag if any of mouse keys is pressed
-	extern context			param;
+	extern context			param; // Draw command context. Application can extend this structure
 }
 namespace colors
 {

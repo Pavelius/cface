@@ -29,12 +29,11 @@ int draw::input(bool redraw)
 	command_clear_render->execute();
 	// Если была команда, надо ее выполнить
 	if(temp_command)
-	{
 		hot::key = temp_command;
-		return hot::key;
-	}
 	if(hot::key)
 		return hot::key;
+	// Очистим команды
+	execute(0);
 	// Нарисуем функционал расширения после выполнения всех комманд.
 	// Таким образм скриншот, если он делается по команде не будет иметь
 	// Такие вещи как строка сообщения и подсказка.
