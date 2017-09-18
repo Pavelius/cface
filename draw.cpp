@@ -40,7 +40,10 @@ cursors					hot::cursor; // Текущая форма курсора
 int						hot::key; // Событие, которое происходит в данный момент
 point					hot::mouse; // current mouse coordinates
 bool					hot::pressed; // flag if any of mouse keys is pressed
-hot::context			hot::param;
+int						hot::param; // Event numeric parameter (optional)
+const char*				hot::name; // Control name (optional)
+rect					hot::element; // Event rectange (optional)
+hot::proc				hot::callback; // Some methods can include callback procedure
 bool					sys_optimize_mouse_move = true;
 rect					sys_static_area;
 // Locale draw variables

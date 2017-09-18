@@ -155,7 +155,7 @@ bool control::keyinput(int id)
 		draw::setfocus(current_widget_element.id);
 		break;
 	case InputSetValue:
-		current_widget_element.data.set(hot::param.value);
+		current_widget_element.data.set(hot::param);
 		break;
 	default:
 		pc = getcommands()->findbykey(id);
@@ -186,7 +186,7 @@ void draw::view(rect rc, control& co, bool show_toolbar)
 	// Теперь мы имеем область элемента
 	if(areb(rc))
 	{
-		hot::param.element = rc;
+		hot::element = rc;
 		if(!co.disabled)
 		{
 			if(!hot::pressed && hot::key == MouseRight)

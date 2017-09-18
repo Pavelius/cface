@@ -430,9 +430,9 @@ bool draw::controls::textedit::keyinput(int id)
 		break;
 	case InputSymbol:
 	case InputSymbol | Shift:
-		if(hot::param.value < 0x20 || readonly)
+		if(hot::param < 0x20 || readonly)
 			return true;
-		paste(szput(temp, hot::param.value));
+		paste(szput(temp, hot::param));
 		break;
 	case KeyBackspace:
 		if(readonly)
@@ -485,7 +485,7 @@ bool draw::controls::textedit::keyinput(int id)
 		select(zlen(string), true);
 		break;
 	case InputEdit:
-		editing(hot::param.element);
+		editing(hot::element);
 		break;
 	default:
 		return scrollable::keyinput(id);

@@ -46,7 +46,7 @@ void tbl_hilight(int x, int y, int width, const draw::element& e, const char* te
 	else
 		draw::hilight(rc, e.isfocused());
 	if(e.isfocused())
-		hot::param.element = rc;
+		hot::element = rc;
 }
 
 void tbl_setposition(int& x, int& y, int& width)
@@ -777,11 +777,11 @@ bool table::changing(void* object, widget& e)
 	e1.context = this;
 	xsref rowref = {fields, rows.get(e1.row)};
 	e1.data = rowref.getvalue(e.getdata());
-	draw::rectf(hot::param.element, colors::window);
+	draw::rectf(hot::element, colors::window);
 	if(show_grid_lines)
 	{
-		line(hot::param.element.x1, hot::param.element.y1, hot::param.element.x1, hot::param.element.y2, colors::form);
-		line(hot::param.element.x1, hot::param.element.y2, hot::param.element.x2, hot::param.element.y2, colors::form);
+		line(hot::element.x1, hot::element.y1, hot::element.x1, hot::element.y2, colors::form);
+		line(hot::element.x1, hot::element.y2, hot::element.x2, hot::element.y2, colors::form);
 	}
 	auto result = e1.editing();
 	// Some keys must be handled by this control
@@ -835,7 +835,7 @@ bool table::keyinput(int id)
 		break;
 	case InputSymbol:
 	case InputSymbol | Shift:
-		if(!hot::param.value || hot::param.value < 0x20)
+		if(!hot::param || hot::param < 0x20)
 			break;
 		time_clock = clock();
 		if(!search_time || (time_clock-search_time)>2)
@@ -844,7 +844,7 @@ bool table::keyinput(int id)
 		{
 			search_time = time_clock;
 			char* p = zend(search_text);
-			szput(&p, hot::param.value);
+			szput(&p, hot::param);
 			p[0] = 0;
 			int i1 = find(search_text, current, columns.data[current_column]);
 			if(i1!=-1)

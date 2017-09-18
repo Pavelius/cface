@@ -6,17 +6,13 @@ command*	command_clear_render;
 static int	current_command;
 extern rect	sys_static_area;
 
-void draw::execute(int id)
+void draw::execute(int id, int param)
 {
 	current_command = id;
 	hot::key = 0;
-	memset(&hot::param, 0, sizeof(hot::param));
-}
-
-void draw::execute(int id, int value)
-{
-	execute(id);
-	hot::param.value = value;
+	hot::param = param;
+	hot::name = 0;
+	hot::callback = 0;
 }
 
 int draw::input(bool redraw)

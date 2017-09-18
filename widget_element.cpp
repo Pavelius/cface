@@ -139,7 +139,7 @@ bool element::editstart(const rect& rc, int ev)
 	if(result)
 	{
 		draw::execute(ev, 0, *this);
-		hot::param.element = rc;
+		hot::element = rc;
 	}
 	return result;
 }

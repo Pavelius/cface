@@ -18,7 +18,7 @@ enum draw_events {
 	TreeType, TreeFlags,
 	HtmlLink, HtmlControl, TabsControl, TabsCloseControl,
 	Executed,
-	// control keys
+	// Keyboard and mouse input (can be overrided by flags)
 	MouseLeft = 0xEE00, MouseLeftDBL, MouseRight,
 	MouseMove, MouseWheelUp, MouseWheelDown,
 	KeyLeft, KeyRight, KeyUp, KeyDown, KeyPageUp, KeyPageDown, KeyHome, KeyEnd,
@@ -92,19 +92,16 @@ enum iflags
 };
 namespace hot
 {
-	struct context
-	{
-		const char*			name;
-		int					value;
-		rect				element;
-		void				(*proc)(int id);
-	};
+	typedef void(*proc)(int id);
 	extern int				animate;
 	extern cursors			cursor; // set this mouse cursor
 	extern int				key; // [in] if pressed key or mouse this field has key
 	extern point			mouse; // current mouse coordinates
 	extern bool				pressed; // flag if any of mouse keys is pressed
-	extern context			param; // Draw command context. Application can extend this structure
+	extern int				param; // Draw command context. Application can extend this structure
+	extern const char*		name; // Text name of element (optional)
+	extern rect				element; // Element coordinates
+	extern proc				callback; // Callback proc
 }
 namespace colors
 {
@@ -244,8 +241,7 @@ namespace draw
 	void					circle(int x, int y, int radius);
 	void					circle(int x, int y, int radius, const color c1);
 	void					circlef(int x, int y, int radius, const color c1, unsigned char alpha = 0xFF);
-	void					execute(int id);
-	void					execute(int id, int param);
+	void					execute(int id, int value = 0);
 	int						getbpp();
 	color					getcolor(rect rc, color normal, color hilite, bool disabled = false);
 	const char*				getfocus();
