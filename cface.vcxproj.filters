@@ -61,7 +61,6 @@
     <ClCompile Include="stringtree.cpp" />
     <ClCompile Include="win_io_ftp.cpp" />
     <ClCompile Include="converter.cpp" />
-    <ClCompile Include="widget_plugin.cpp" />
     <ClCompile Include="xscontext.cpp" />
     <ClCompile Include="widget_field.cpp" />
     <ClCompile Include="widget_form.cpp" />
@@ -80,7 +79,6 @@
     <ClCompile Include="widget_scrollable.cpp" />
     <ClCompile Include="widget_dockbar.cpp" />
     <ClCompile Include="win_menu.cpp" />
-    <ClCompile Include="widget_element.cpp" />
     <ClCompile Include="widget_tree.cpp" />
     <ClCompile Include="widget_statusbar.cpp" />
     <ClCompile Include="widget_dialog.cpp" />
@@ -91,7 +89,9 @@
     <ClCompile Include="widget.cpp" />
     <ClCompile Include="valtree_serial.cpp" />
     <ClCompile Include="collection_serial.cpp" />
-    <ClCompile Include="variable.cpp" />
+    <ClCompile Include="widget_control.cpp" />
+    <ClCompile Include="draw_controls.cpp" />
+    <ClCompile Include="widget_group.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base.h" />
@@ -156,6 +156,5 @@
     <ClInclude Include="widget_settings.h" />
     <ClInclude Include="xsvalue.h" />
     <ClInclude Include="collections.h" />
-    <ClInclude Include="variable.h" />
   </ItemGroup>
 </Project>

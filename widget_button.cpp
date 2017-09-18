@@ -2,6 +2,8 @@
 #include "draw.h"
 #include "widget.h"
 
+using namespace draw;
+
 static point clipart_dropdown[] =
 {
 	{-2, -1}, {-1, -1}, {0, -1}, {1, -1}, {2, -1},
@@ -9,24 +11,24 @@ static point clipart_dropdown[] =
 	{0, 1}
 };
 
-int wdt_clipart(int x, int y, int width, draw::element& e)
+int wdt_clipart(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, void* source, int title, const widget* childs, const char* tips)
 {
-	if(e.label[0] != ':')
+	if(label[0] != ':')
 		return 0;
-	auto p = e.label + 1;
+	auto p = label + 1;
 	if(strcmp(p, "check") == 0)
 	{
 		rect rc = {x, y, x + 14, y + 14};
 		draw::rectf(rc, colors::window);
-		color b = e.getcolor(colors::border);
+		color b = getcolor(colors::border, flags);
 		draw::line(rc.x1, rc.y1, rc.x2, rc.y1, b);
 		draw::line(rc.x2, rc.y1, rc.x2, rc.y2, b);
 		draw::line(rc.x2, rc.y2, rc.x1, rc.y2, b);
 		draw::line(rc.x1, rc.y2, rc.x1, rc.y1, b);
-		if(e.ischecked())
+		if(flags&Checked)
 		{
 			draw::state push;
-			draw::fore = e.getcolor(rc, colors::text, colors::text.mix(colors::active, 32));
+			draw::fore = getcolor(rc, colors::text, colors::text.mix(colors::active, 32), flags);
 			draw::linw = 1.3f;
 			draw::line(x + 3, y + 6, x + 6, y + 10);
 			draw::line(x + 6, y + 10, x + 11, y + 3);
@@ -37,10 +39,10 @@ int wdt_clipart(int x, int y, int width, draw::element& e)
 	{
 		rect rc = {x, y, x + 16, y + 16};
 		draw::circlef(x + 7, y + 6, 6, colors::window);
-		draw::circle(x + 7, y + 6, 6, e.getcolor(colors::border));
-		if(e.ischecked())
+		draw::circle(x + 7, y + 6, 6, getcolor(colors::border, flags));
+		if(flags&Checked)
 		{
-			color b = e.getcolor(rc, colors::text, colors::text.mix(colors::active, 32));
+			color b = getcolor(rc, colors::text, colors::text.mix(colors::active, 32), flags);
 			draw::circlef(x + 7, y + 6, 2, b);
 			draw::circle(x + 7, y + 6, 2, b);
 		}
@@ -52,7 +54,7 @@ int wdt_clipart(int x, int y, int width, draw::element& e)
 		rect rc = {x, y, x + width, y + 16};
 		x += width / 2;
 		y += 12;
-		draw::fore = e.getcolor(rc, colors::black, colors::blue);
+		draw::fore = getcolor(rc, colors::black, colors::blue, flags);
 		for(auto e : clipart_dropdown)
 			draw::pixel(x + e.x, y + e.y);
 		return rc.height();
@@ -97,13 +99,12 @@ bool draw::buttonv(rect rc, bool checked, bool focused, bool disabled, bool bord
 	{
 		if(string[0] == ':')
 		{
-			draw::element e;
-			e.label = string;
+			unsigned flags = 0;
 			if(disabled)
-				e.flags |= Disabled;
+				flags |= Disabled;
 			if(focused)
-				e.flags |= Focused;
-			wdt_clipart(rc.x1, rc.y1, rc.width(), e);
+				flags |= Focused;
+			wdt_clipart(rc.x1, rc.y1, rc.width(), "clipart", 0, string);
 		}
 		else
 			text(rc, string, AlignCenter);
@@ -111,7 +112,7 @@ bool draw::buttonv(rect rc, bool checked, bool focused, bool disabled, bool bord
 	return result;
 }
 
-bool draw::buttonh(rect rc, bool checked, bool focused, bool disabled, bool border, const char* string, int key, bool press, const char* tooltips_text)
+bool draw::buttonh(rect rc, bool checked, bool focused, bool disabled, bool border, const char* string, int key, bool press, const char* tips)
 {
 	draw::state push;
 	bool result = false;
@@ -156,140 +157,144 @@ bool draw::buttonh(rect rc, bool checked, bool focused, bool disabled, bool bord
 	{
 		if(string[0] == ':')
 		{
-			draw::element e;
-			e.label = string;
+			unsigned flags = 0;
 			if(disabled)
-				e.flags |= Disabled;
+				flags |= Disabled;
 			if(focused)
-				e.flags |= Focused;
-			wdt_clipart(rc.x1, rc.y1, rc.width(), e);
+				flags |= Focused;
+			wdt_clipart(rc.x1, rc.y1, rc.width(), "clipart", flags, string);
 		}
 		else
 			draw::text(rc, string, AlignCenterCenter);
 	}
-	if(tooltips_text && a == AreaHilited)
+	if(tips && a == AreaHilited)
 	{
 		char temp[32];
 		if(key)
-			tooltips("%1 (%2)", tooltips_text, key2str(temp, key));
+			tooltips("%1 (%2)", tips, key2str(temp, key));
 		else
-			tooltips(tooltips_text);
+			tooltips(tips);
 	}
 	return result;
 }
 
-int wdt_radio_element(int x, int y, int width, draw::element& e)
+int wdt_radio_element(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, void* source, int title, const widget* childs, const char* tips)
 {
-	assert(e.label);
-	assert(e.parent);
+	if(!label || !label[0])
+		return 0;
 	draw::state push;
-	e.setposition(x, y, width);
+	setposition(x, y, width);
 	rect rc = {x, y, x + width, y};
 	rect rc1 = {rc.x1 + 22, rc.y1, rc.x2, rc.y2};
-	draw::textw(rc1, e.label);
+	draw::textw(rc1, label);
 	rc1.offset(-2);
 	rc.y1 = rc1.y1;
 	rc.y2 = rc1.y2;
 	rc.x2 = rc1.x2;
-	e.focusing(rc);
-	e.decortext();
-	draw::element e1 = e;
-	e1.label = ":radio";
-	wdt_clipart(x + 2, y + imax((rc1.height() - 14) / 2, 0), 0, e1);
+	decortext(flags);
+	wdt_clipart(x + 2, y + imax((rc1.height() - 14) / 2, 0), 0, id, flags, ":radio");
 	bool need_select = false;
 	auto a = draw::area(rc);
-	if((a == AreaHilited || a == AreaHilitedPressed) && !e.isdisabled() && hot::key == MouseLeft)
+	if((a == AreaHilited || a == AreaHilitedPressed) && !isdisabled(flags) && hot::key == MouseLeft)
 	{
 		if(!hot::pressed)
 			need_select = true;
-		else
-			draw::execute(InputSetFocus, 0, e);
 	}
-	if(e.isfocused())
+	if(isfocused(flags))
 	{
 		draw::rectx({rc1.x1, rc1.y1, rc1.x2, rc1.y2}, draw::fore);
-		if(!e.isdisabled() && hot::key == KeySpace)
+		if(!isdisabled(flags) && hot::key == KeySpace)
 			need_select = true;
 	}
 	if(need_select)
 	{
-		auto pm = e.getparent(wdt_radio);
-		if(pm)
-			draw::execute(InputSetValue, e.value, *pm);
+		draw::execute(InputSetValue, value);
+		hot::name = id;
 	}
-	draw::text({rc1.x1 + 2, rc1.y1 + 2, rc1.x2 - 2, rc1.y2 - 2}, e.label);
-	if(e.tips && a == AreaHilited)
-		tooltips(e.tips);
+	draw::text({rc1.x1 + 2, rc1.y1 + 2, rc1.x2 - 2, rc1.y2 - 2}, label);
+	if(tips && a == AreaHilited)
+		tooltips(tips);
 	return rc1.height() + metrics::padding * 2;
 }
 
-int wdt_radio(int x, int y, int width, draw::element& e)
+int wdt_radio(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, void* source, int title, const widget* childs, const char* tips)
 {
-	assert(e.childs);
 	int y0 = y;
-	auto value = e.data.get();
-	for(auto p = e.childs; *p; p++)
+	auto current_value = getdata(source, value);
+	for(auto p = childs; *p; p++)
 	{
-		draw::element e1(*p, &e);
-		if(p->value == value)
-			e1.flags |= Checked;
-		y += wdt_radio_element(x, y, width, e1);
+		unsigned flags = 0;
+		if(p->value == current_value)
+			flags |= Checked;
+		if(getfocus() == id)
+			flags |= Focused;
+		y += wdt_radio_element(x, y, width, id, flags, p->label, p->value);
 	}
 	return y - y0;
 }
 
-int wdt_check(int x, int y, int width, draw::element& e)
+int wdt_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, void* source, int title, const widget* childs, const char* tips)
 {
-	assert(e.label);
-	e.setposition(x, y, width);
+	if(!label || !label[0])
+		return 0;
+	setposition(x, y, width);
 	rect rc = {x, y, x + width, y};
 	rect rc1 = {rc.x1 + 22, rc.y1, rc.x2, rc.y2};
-	if(e.data.get())
-		e.flags |= Checked;
-	draw::textw(rc1, e.label);
+	if(getdata(source, value))
+		flags |= Checked;
+	draw::textw(rc1, label);
 	rc.y1 = rc1.y1;
 	rc.y2 = rc1.y2;
 	rc.x2 = rc1.x2;
-	e.focusing(rc);
-	draw::element e1 = e;
-	e1.label = ":check";
-	wdt_clipart(x + 2, y + imax((rc1.height() - 14) / 2, 0), 0, e1);
-	e.decortext();
+	focusing(id, rc, flags);
+	wdt_clipart(x + 2, y + imax((rc1.height() - 14) / 2, 0), 0, "clipart", flags, ":check");
+	decortext(flags);
 	auto a = draw::area(rc);
-	if((a == AreaHilited || a == AreaHilitedPressed) && !e.isdisabled() && hot::key == MouseLeft)
+	auto need_value = false;
+	if((a == AreaHilited || a == AreaHilitedPressed) && !isdisabled(flags) && hot::key == MouseLeft)
 	{
 		if(!hot::pressed)
-			draw::execute(InputSetValue, e.ischecked() ? 0 : 1, e);
+			need_value = true;
 		else
-			draw::execute(InputSetFocus, 0, e);
+		{
+			draw::execute(InputSetFocus);
+			hot::name = id;
+		}
 	}
-	if(e.isfocused())
+	if(isfocused(flags))
 	{
 		draw::rectx({rc1.x1 - 2, rc1.y1 - 1, rc1.x2 + 2, rc1.y2 + 1}, draw::fore);
-		if(!e.isdisabled() && hot::key == KeySpace)
-			draw::execute(InputSetValue, e.ischecked() ? 0 : 1, e);
+		if(!isdisabled(flags) && hot::key == KeySpace)
+			need_value;
 	}
-	draw::text(rc1, e.label);
-	if(e.tips && a == AreaHilited)
-		tooltips(e.tips);
+	if(need_value)
+	{
+		draw::execute(InputSetValue, ischecked(flags) ? 0 : 1);
+		hot::name = id;
+	}
+	draw::text(rc1, label);
+	if(tips && a == AreaHilited)
+		tooltips(tips);
 	return rc1.height() + metrics::padding * 2;
 }
 
-int wdt_button(int x, int y, int width, draw::element& e)
+int wdt_button(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, void* source = 0, int title = 0, const widget* childs = 0, const char* tips = 0)
 {
-	assert(e.label);
-	e.setposition(x, y, width);
-	struct rect rc = {x, y, x + width, y + 4 * 2 + draw::texth()*e.getheight()};
-	if(!e.isdisabled() && e.context)
+	if(!label || !label[0])
+		return 0;
+	setposition(x, y, width);
+	struct rect rc = {x, y, x + width, y + 4 * 2 + draw::texth()};
+	focusing(id, rc, flags);
+	if(buttonh({x, y, x + width, rc.y2},
+		ischecked(flags), isfocused(flags), isdisabled(flags), true,
+		label, KeyEnter, false, tips))
 	{
-		auto result = e.context->execute(e.id, false);
-		if(result == Disabled || !result)
-			e.flags |= Disabled;
+		draw::execute(InputExecute);
+		hot::name = id;
 	}
-	e.focusing(rc);
-	if(draw::buttonh({x, y, x+width, rc.y2},
-		e.ischecked(), e.isfocused(), e.isdisabled(), true,
-		e.label, KeyEnter, false, e.tips))
-		draw::execute(InputExecute, 0, e);
 	return rc.height() + metrics::padding * 2;
 }
+
+WIDGET(button);
+WIDGET(check);
+WIDGET(radio);

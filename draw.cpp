@@ -294,28 +294,6 @@ unsigned char* draw::ptr(int x, int y)
 	return canvas ? (canvas->bits + y*canvas->scanline + x*canvas->bpp / 8) : 0;
 }
 
-color draw::getcolor(rect rc, color normal, color hilite, bool disabled)
-{
-	if(disabled)
-		return normal.mix(colors::window);
-	if(draw::areb(rc))
-	{
-		if(hot::pressed)
-			return hilite.darken();
-		return hilite;
-	}
-	return normal;
-}
-
-//void draw::hilight(rect rc, bool focused)
-//{
-//	const color c1 = focused ? colors::edit : colors::edit.mix(colors::window, 180);
-//	rectf({rc.x1, rc.y1, rc.x2 - 1, rc.y2 - 1}, c1);
-//	rectb({rc.x1, rc.y1, rc.x2 - 1, rc.y2 - 1}, c1);
-//	if(focused)
-//		rectx({rc.x1, rc.y1, rc.x2 - 1, rc.y2 - 1}, colors::text.mix(colors::form, 200));
-//}
-
 void draw::pixel(int x, int y)
 {
 	if(x >= clipping.x1 && x < clipping.x2 && y >= clipping.y1 && y < clipping.y2)

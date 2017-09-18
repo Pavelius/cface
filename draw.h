@@ -90,11 +90,10 @@ enum iflags
 	AlignWidth = 0xE000,
 	AlignMask = 0xF000,
 };
-// Each widget draw by this procedure
-typedef int(*widgetproc)(int x, int y, int width, const char* id, unsigned flags, const char* label, void* source, unsigned size, int title, const char* tips);
+typedef char* (*proctext)(char* result, void* object);
 namespace hot
 {
-	typedef void			(*proc)(int id); // Hot callback reaction
+	typedef void			(*proc)(); // Hot callback reaction
 	extern int				animate;
 	extern cursors			cursor; // set this mouse cursor
 	extern int				key; // [in] if pressed key or mouse this field has key
@@ -239,13 +238,19 @@ namespace draw
 	void					bezierseg(int x0, int y0, int x1, int y1, int x2, int y2);
 	void					blit(surface& dest, int x, int y, int width, int height, unsigned flags, surface& dc, int xs, int ys);
 	void					blit(surface& dest, int x, int y, int width, int height, unsigned flags, surface& source, int x_source, int y_source, int width_source, int height_source);
+	bool					buttonh(rect rc, bool checked, bool focused, bool disabled, bool border, const char* string, int key = 0, bool press = false, const char* tips = 0);
+	bool					buttonv(rect rc, bool checked, bool focused, bool disabled, bool border, const char* string, int key = 0, bool press = false);
 	extern surface*			canvas;
 	void					circle(int x, int y, int radius);
 	void					circle(int x, int y, int radius, const color c1);
 	void					circlef(int x, int y, int radius, const color c1, unsigned char alpha = 0xFF);
+	void					decortext(unsigned flags);
 	void					execute(int id, int value = 0);
+	void					focusing(const char* id, const rect& rc, unsigned& flags);
 	int						getbpp();
-	color					getcolor(rect rc, color normal, color hilite, bool disabled = false);
+	color					getcolor(color normal, unsigned flags);
+	color					getcolor(rect rc, color normal, color hilite, unsigned flags);
+	int						getdata(void* source, int size);
 	const char*				getfocus();
 	int						getheight();
 	const char*				getnext(const char* id, int key);
@@ -257,6 +262,9 @@ namespace draw
 	int						hittest(int x, int test_x, const char* string, int lenght);
 	int						hittest(rect rc, const char* string, unsigned state, point mouse);
 	bool					hittest(int x, int y, const sprite* e, int id, int flags, point mouse);
+	inline bool				ischecked(unsigned flags) { return (flags&Checked) != 0; }
+	inline bool				isdisabled(unsigned flags) { return (flags&Disabled) != 0; }
+	inline bool				isfocused(unsigned flags) { return (flags&Focused) != 0; }
 	void					image(int x, int y, const sprite* e, int id, int flags, unsigned char alpha = 0xFF);
 	void					image(int x, int y, const sprite* e, int id, int flags, unsigned char alpha, color* pal);
 	void					initialize();
@@ -283,20 +291,23 @@ namespace draw
 	void					rectf(rect rc, color c1, unsigned char alpha);
 	void					rectf(rect rc, unsigned char c1, unsigned char alpha);
 	void					rectx(rect rc, color c1);
-	void					scrollh(int id, const struct rect& scroll, int& origin, int count, int maximum, unsigned state);
-	void					scrollv(int id, const struct rect& scroll, int& origin, int count, int maximum, unsigned state);
+	void					scrollh(const char* id, const struct rect& scroll, int& origin, int count, int maximum, bool focused);
+	void					scrollv(const char* id, const struct rect& scroll, int& origin, int count, int maximum, bool focused);
 	void					setcaption(const char* string);
 	void					setclip(rect rc);
 	inline void				setclip() { clipping.set(0, 0, getwidth(), getheight()); }
 	void					setcolor(unsigned char index);
 	void					setfocus(const char* id);
+	void					setposition(int& x, int& y, int& width);
 	void					settimer(unsigned milleseconds);
+	int						sheetline(rect rc, bool background = true);
 	const char*				skiptr(const char* string);
 	void					spline(point* points, int n);
 	void					stroke(int x, int y, const sprite* e, int id, int flags, unsigned char thin = 1, unsigned char* koeff = 0);
 	void					syscursor(bool enable);
 	void					sysmouse(bool enable);
 	void					sysredraw();
+	int						tabs(rect rc, bool show_close, bool right_side, void** data, int start, int count, int current, int* hilite, proctext gtext, proctext gstate = 0, rect position = {0,0,0,0});
 	void					text(int x, int y, const char* string, int count = -1, unsigned flags = 0);
 	int						text(rect rc, const char* string, unsigned state = 0, int* max_width = 0);
 	int						textc(int x, int y, int width, const char* string, int count = -1, unsigned flags = 0);
