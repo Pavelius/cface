@@ -92,13 +92,18 @@ enum iflags
 };
 namespace hot
 {
+	struct context
+	{
+		const char*			name;
+		int					value;
+		rect				element;
+	};
 	extern int				animate;
 	extern cursors			cursor; // set this mouse cursor
 	extern int				key; // [in] if pressed key or mouse this field has key
 	extern point			mouse; // current mouse coordinates
 	extern bool				pressed; // flag if any of mouse keys is pressed
-	extern rect				element; // Рамка для выделенного элемента управления
-	extern int				param; // command or input event parameter
+	extern context			param;
 }
 namespace colors
 {
@@ -238,7 +243,8 @@ namespace draw
 	void					circle(int x, int y, int radius);
 	void					circle(int x, int y, int radius, const color c1);
 	void					circlef(int x, int y, int radius, const color c1, unsigned char alpha = 0xFF);
-	void					execute(int id, int param = 0);
+	void					execute(int id);
+	void					execute(int id, int param);
 	int						getbpp();
 	color					getcolor(rect rc, color normal, color hilite, bool disabled = false);
 	const char*				getfocus();

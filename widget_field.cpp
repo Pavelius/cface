@@ -17,7 +17,7 @@ bool element::editing()
 	draw::controls::textedit te(temp, sizeof(temp));
 	te.align = this->flags;
 	te.p1 = 0; te.p2 = zlen(temp);
-	auto result = te.editing(hot::element);
+	auto result = te.editing(hot::param.element);
 	if(result)
 	{
 		if(data.fields->type == text_type)

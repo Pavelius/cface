@@ -91,6 +91,7 @@
     <ClCompile Include="widget.cpp" />
     <ClCompile Include="valtree_serial.cpp" />
     <ClCompile Include="collection_serial.cpp" />
+    <ClCompile Include="variable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base.h" />
@@ -155,5 +156,6 @@
     <ClInclude Include="widget_settings.h" />
     <ClInclude Include="xsvalue.h" />
     <ClInclude Include="collections.h" />
+    <ClInclude Include="variable.h" />
   </ItemGroup>
 </Project>

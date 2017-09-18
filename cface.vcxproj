@@ -215,6 +215,7 @@
     <ClCompile Include="vallist.cpp" />
     <ClCompile Include="valtree.cpp" />
     <ClCompile Include="valtree_serial.cpp" />
+    <ClCompile Include="variable.cpp" />
     <ClCompile Include="widget.cpp" />
     <ClCompile Include="widget_button.cpp" />
     <ClCompile Include="widget_dialog.cpp">
@@ -261,6 +262,7 @@
     <ClInclude Include="adat.h" />
     <ClInclude Include="amem.h" />
     <ClInclude Include="collections.h" />
+    <ClInclude Include="variable.h" />
     <ClInclude Include="widget_list.h" />
     <ClInclude Include="widget_scrollable.h" />
     <ClInclude Include="widget_settings.h" />

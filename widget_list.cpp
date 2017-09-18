@@ -245,7 +245,7 @@ bool list::keyinput(int id)
 		execute("change", true);
 		break;
 	case MouseLeftDBL:
-		if(!hot::mouse.in(hot::element))
+		if(!hot::mouse.in(hot::param.element))
 			break;
 		execute("change", true);
 		break;

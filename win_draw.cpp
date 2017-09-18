@@ -171,7 +171,7 @@ static int handle(HWND hwnd, MSG& msg)
 	case WM_KEYUP:
 		return InputKeyUp;
 	case WM_CHAR:
-		hot::param = msg.wParam;
+		hot::param.value = msg.wParam;
 		return InputSymbol;
 	case WM_MY_SIZE:
 	case WM_SIZE:
