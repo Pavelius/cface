@@ -1,7 +1,6 @@
 #include "amem.h"
 #include "crt.h"
 #include "draw.h"
-#include "widget.h"
 
 using namespace draw;
 
@@ -51,12 +50,12 @@ using namespace draw;
 //	return true;
 //}
 
-int wdt_field(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, void* source, int title, const widget* childs, const char* tips)
+int wdt_field(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, void* source, int title, const draw::widget* childs, const char* tips)
 {
 	draw::state push;
 	//char number_text[32];
 	setposition(x, y, width);
-	wdt_title(x, y, title, flags, label, title);
+	wdt_title(x, y, width, flags, label, title);
 	rect rc = {x, y, x + width, y + draw::texth() + 8};
 	if(getfocus() == id)
 		flags |= Focused;

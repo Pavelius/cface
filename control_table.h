@@ -1,6 +1,7 @@
 #include "aref.h"
 #include "collection.h"
-#include "widget_list.h"
+#include "ui_list.h"
+#include "widget.h"
 
 #pragma once
 
@@ -16,9 +17,9 @@ enum column_flags {
 	ColumnReadOnly = 0x00200000, // Column not used for modify data
 	ColumnHideTitleText = 0x00400000,
 };
-xsfield point_type[];
-xsfield color_type[];
-xsfield date_type[];
+//xsfield point_type[];
+//xsfield color_type[];
+//xsfield date_type[];
 
 namespace draw
 {

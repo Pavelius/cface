@@ -18,18 +18,23 @@ void draw::execute(int id, int param)
 int draw::input(bool redraw)
 {
 	auto temp_hotkey = hot::key;
+	auto temp_callback = hot::callback;
 	auto temp_command = current_command;
 	// Очистим данные
 	current_command = 0;
 	hot::key = 0;
+	hot::callback = 0;
 	command_clear_render->execute();
 	// Если была команда, надо ее выполнить
-	if(temp_command)
+	if(temp_callback)
+	{
+		hot::key = temp_command;
+		temp_callback();
+	}
+	else if(temp_command)
 		hot::key = temp_command;
 	if(hot::key)
 		return hot::key;
-	// Очистим команды
-	execute(0);
 	// Нарисуем функционал расширения после выполнения всех комманд.
 	// Таким образм скриншот, если он делается по команде не будет иметь
 	// Такие вещи как строка сообщения и подсказка.

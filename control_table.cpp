@@ -4,7 +4,7 @@
 #include "draw.h"
 #include "io.h"
 #include "menu.h"
-#include "widget_table.h"
+#include "ui_table.h"
 #include "xsref.h"
 
 using namespace draw;
@@ -15,7 +15,7 @@ static char			search_text[32];
 static unsigned		search_time;
 const char*			table_sort_column_id;
 bool				table_sort_by_mouse;
-static draw::widget	standart_commands[] = {
+static widget	standart_commands[] = {
 	{wdt_tool, "add", 0, 0, 0, 0, 0, 8},
 	{wdt_tool, "addcopy", 0, 0, 0, 0, 0, 9},
 	{wdt_tool, "delete", 0, 0, 0, 0, 0, 19},
@@ -25,7 +25,7 @@ static draw::widget	standart_commands[] = {
 	{wdt_tool, "paste", 0, 0, 0, 0, 0, 5},
 	{0}
 };
-static draw::widget	grid_commands[] = {
+static widget	grid_commands[] = {
 	{wdt_tool, "moveup"},
 	{wdt_tool, "movedown"},
 	{wdt_separator},

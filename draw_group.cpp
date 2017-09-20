@@ -1,6 +1,5 @@
 #include "crt.h"
 #include "draw.h"
-#include "widget.h"
 
 using namespace draw;
 
@@ -13,38 +12,6 @@ using namespace draw;
 //		fid = getfocus();
 //	}
 //	return fid && id && strcmp(fid, id) == 0;
-//}
-//
-//void element::focusing(const rect& rc)
-//{
-//	if(isfocus())
-//		flags |= Focused;
-//	if(id && !isdisabled())
-//	{
-//		addelement(id, rc);
-//		if(!isfocused() && hot::key == MouseLeft && hot::pressed && areb(rc))
-//			draw::execute(InputSetFocus, 0, *this);
-//	}
-//}
-//
-//element* element::getparent(widget::proc type)
-//{
-//	for(auto p = parent; p; p = p->parent)
-//	{
-//		if(p->type == type)
-//			return p;
-//	}
-//	return 0;
-//}
-//
-//int	element::gettitle()
-//{
-//	for(auto p = this; p; p = p->parent)
-//	{
-//		if(p->title)
-//			return p->title;
-//	}
-//	return 100;
 //}
 //
 //void element::addbutton(rect& rc, int c1, const char* t1, int k1, const char* tt1, int c2, const char* t2, int k2, const char* tt2)
@@ -222,7 +189,7 @@ int wdt_group(int x, int y, int width, const char* id, unsigned flags, const cha
 	draw::state push;
 	draw::font = metrics::font;
 	if(label)
-		y += draw::texth() + metrics::padding * 2;
+		y += texth() + metrics::padding * 2;
 	if(childs[0].width)
 		y += wdt_horizontal(x, y, width, id, flags, label, value, source, title, childs, tips);
 	else
@@ -231,12 +198,12 @@ int wdt_group(int x, int y, int width, const char* id, unsigned flags, const cha
 	{
 		color c1 = colors::border.mix(colors::window, 128);
 		color c2 = c1.darken();
-		draw::gradv({x1, y1, x1 + w1, y1 + draw::texth() + metrics::padding * 2}, c1, c2);
-		draw::fore = colors::text.mix(c1, 96);
-		draw::text(x1 + (w1 - draw::textw(label)) / 2, y1 + metrics::padding, label);
+		gradv({x1, y1, x1 + w1, y1 + texth() + metrics::padding * 2}, c1, c2);
+		fore = colors::text.mix(c1, 96);
+		text(x1 + (w1 - textw(label)) / 2, y1 + metrics::padding, label);
 	}
 	y += metrics::padding;
-	draw::rectb({x1, y1, x1 + w1, y}, colors::border);
+	rectb({x1, y1, x1 + w1, y}, colors::border);
 	return y - y0;
 }
 
@@ -247,3 +214,8 @@ int wdt_label(int x, int y, int width, const char* id, unsigned flags, const cha
 	decortext(flags);
 	return draw::textf(x, y, width, label) + metrics::padding * 2;
 }
+
+WIDGET(label);
+WIDGET(group);
+WIDGET(horizontal);
+WIDGET(vertical);

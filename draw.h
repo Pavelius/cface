@@ -3,6 +3,7 @@
 #include "sprite.h"
 
 #pragma once
+#define WIDGET(n) static widget::plugin plugin_##n(#n, wdt_##n)
 
 extern "C" void* memset(void* destination, int value, unsigned size);
 
@@ -59,7 +60,7 @@ enum areas {
 	AreaHilited, // Area have mouse
 	AreaHilitedPressed, // Area have mouse and mouse button is pressed
 };
-enum dock_types {
+enum dock_s {
 	DockLeft, DockLeftBottom,
 	DockRight, DockRightBottom,
 	DockBottom, DockWorkspace,
@@ -94,7 +95,7 @@ typedef char* (*proctext)(char* result, void* object);
 namespace hot
 {
 	typedef void			(*proc)(); // Hot callback reaction
-	extern int				animate;
+	extern int				animate; // Frame tick count
 	extern cursors			cursor; // set this mouse cursor
 	extern int				key; // [in] if pressed key or mouse this field has key
 	extern point			mouse; // current mouse coordinates
@@ -182,29 +183,65 @@ namespace draw
 		rect				clip;
 		bool				mouseinput;
 	};
-	// Text render widget
-	struct textwidget
+	struct widget
 	{
-		typedef int(*proc)(int x, int y, int width, textwidget& e);
+		// Each widget draw by this procedure
+		typedef int(*proc)(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, void* source, int title, const widget* childs, const char* tips);
+		// Plugin for widget descriptor
 		struct plugin
 		{
-			struct element
-			{
-				const char*	id;
-				proc		render;
-			};
-			element*		controls;
+			const char*		id;
+			proc			render;
 			plugin*			next;
 			static plugin*	first;
-			plugin(element* controls);
-			static element*	find(const char* id);
+			plugin(const char* id, proc render);
+			static plugin*	find(const char* id);
 		};
-		const char*			id; // ID of this element
-		const char*			label; // Text used to display
-		const char*			tips; // Tooltips used to display
-		const char*			link; // Link to another data
-		int					value; // Integer value associated to data
-		unsigned			maximum; // Possible maximum value
+		proc				type; // Control proc
+		const char*			id; // Control identification
+		const char*			label; // Title text or text appeared in control
+		const widget*		childs; // Chilren elements
+		unsigned			flags; // Text formation and other flags
+		int					width; // width for horizontal parts
+		int					height; // height in lines
+		int					value; // Integer parameter value
+		int					title; // Title width (if 0 then title taken from parent)
+		const char*			tips; // Tooltips value
+		const char*			link; // Hyperlink value
+		operator bool() const { return type != 0; }
+	};
+	struct control
+	{
+		struct plugin
+		{
+			control&		element;
+			plugin(control& value);
+			plugin*			next;
+			static plugin*	first;
+		};
+		const char*			id;
+		dock_s				dock;
+		bool				disabled;
+		bool				focused;
+		bool				show_background;
+		bool				show_border;
+		bool				show_toolbar;
+		//
+		control();
+		//
+		virtual void		background(rect& rc);
+		virtual void		contextmenu() {}
+		color				getcolor(color normal) const;
+		virtual char*		getdescription(char* result) const;
+		virtual char*		getname(char* result) const;
+		virtual const widget* gettoolbar() const { return 0; }
+		virtual bool		keyinput(int id);
+		virtual void		nonclient(rect rc);
+		bool				open(rect rc);
+		bool				open(const char* title, unsigned state, int width, int height);
+		virtual void		redraw(rect rc) {}
+		virtual void		prerender() {}
+		void				view(rect rc, bool show_toolbar = false);
 	};
 	// Output system window
 	struct window : surface, state
@@ -245,12 +282,14 @@ namespace draw
 	void					circle(int x, int y, int radius, const color c1);
 	void					circlef(int x, int y, int radius, const color c1, unsigned char alpha = 0xFF);
 	void					decortext(unsigned flags);
+	void					dockbar(rect& rc);
 	void					execute(int id, int value = 0);
 	void					focusing(const char* id, const rect& rc, unsigned& flags);
 	int						getbpp();
 	color					getcolor(color normal, unsigned flags);
 	color					getcolor(rect rc, color normal, color hilite, unsigned flags);
-	int						getdata(void* source, int size);
+	int						getdata(void* source, const char* id, const char* link);
+	unsigned				getdocked(control** output, unsigned count, dock_s type);
 	const char*				getfocus();
 	int						getheight();
 	const char*				getnext(const char* id, int key);
@@ -291,18 +330,21 @@ namespace draw
 	void					rectf(rect rc, color c1, unsigned char alpha);
 	void					rectf(rect rc, unsigned char c1, unsigned char alpha);
 	void					rectx(rect rc, color c1);
-	void					scrollh(const char* id, const struct rect& scroll, int& origin, int count, int maximum, bool focused);
-	void					scrollv(const char* id, const struct rect& scroll, int& origin, int count, int maximum, bool focused);
+	void					scrollh(const char* id, const struct rect& scroll, int& origin, int count, int maximum, bool focused = false);
+	void					scrollv(const char* id, const struct rect& scroll, int& origin, int count, int maximum, bool focused = false);
 	void					setcaption(const char* string);
 	void					setclip(rect rc);
 	inline void				setclip() { clipping.set(0, 0, getwidth(), getheight()); }
 	void					setcolor(unsigned char index);
+	void					setdata(void* source, const char* id, const char* link, int value);
 	void					setfocus(const char* id);
 	void					setposition(int& x, int& y, int& width);
 	void					settimer(unsigned milleseconds);
 	int						sheetline(rect rc, bool background = true);
 	const char*				skiptr(const char* string);
 	void					spline(point* points, int n);
+	void					splith(int x, int y, int width, int& value, const char* id, int size, int minimum, int maximum, bool down_align = false);
+	void					splitv(int x, int y, int& value, int height, const char* id, int size, int minimum, int maximum, bool right_align = false);
 	void					stroke(int x, int y, const sprite* e, int id, int flags, unsigned char thin = 1, unsigned char* koeff = 0);
 	void					syscursor(bool enable);
 	void					sysmouse(bool enable);
@@ -322,6 +364,8 @@ namespace draw
 	int						textw(const char* string, int count = -1);
 	int						textw(rect& rc, const char* string);
 	int						textw(sprite* font);
+	bool					tool(rect rc, bool disabled, bool checked, bool press);
+	int						view(rect rc, control** pages, int count, int& current, bool show_toolbar, unsigned tab_state, int padding);
 }
 int							isqrt(int num);
 char*						key2str(char* result, int key);
@@ -331,3 +375,18 @@ void						set_dark_theme();
 void						tooltips(const char* format, ...);
 void						tooltips(int x, int y, const char* format, ...);
 void						tooltips(rect rc, const char* format, ...);
+
+int wdt_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, void* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
+int wdt_clipart(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, void* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
+int wdt_field(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, void* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
+int wdt_group(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, void* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
+int wdt_label(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, void* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
+int wdt_radio(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, void* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
+int wdt_radio_element(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, void* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
+int wdt_separator(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, void* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
+int wdt_tabs(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, void* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
+int wdt_title(int& x, int y, int& width, unsigned flags, const char* label, int title);
+int wdt_tool(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, void* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
+int wdt_toolbar(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, void* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
+int wdt_vertical(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, void* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
+int wdt_horizontal(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, void* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);

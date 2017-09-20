@@ -1,5 +1,7 @@
 #include "crt.h"
-#include "widget.h"
+#include "draw.h"
+
+using namespace draw;
 
 widget::plugin* widget::plugin::first;
 

@@ -1,5 +1,4 @@
 #include "crt.h"
-#include "xsref.h"
 #include "xscontext.h"
 
 xscontext::command* xscontext::command::find(const char* id)

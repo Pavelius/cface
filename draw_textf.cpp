@@ -6,26 +6,6 @@ using namespace draw;
 
 stringid*	textf_icons_id;
 
-textwidget::plugin* textwidget::plugin::first;
-
-textwidget::plugin::plugin(textwidget::plugin::element* controls) : controls(controls)
-{
-	seqlink(this);
-}
-
-textwidget::plugin::element* textwidget::plugin::find(const char* id)
-{
-	for(auto pm = first; pm; pm = pm->next)
-	{
-		for(auto p = pm->controls; p->id; p++)
-		{
-			if(strcmp(p->id, id) == 0)
-				return p;
-		}
-	}
-	return 0;
-}
-
 static const char* glink(char* temp, const char** source)
 {
 	temp[0] = 0;
@@ -262,7 +242,7 @@ static int textfln(int x0, int y0, int width, const char** string, color c1, int
 
 static int render_control(const char** result, int x, int y, int width)
 {
-	textwidget e = {0};
+	widget e = {0};
 	char type[64];
 	char name[64];
 	char buffer[4096];
@@ -308,16 +288,14 @@ static int render_control(const char** result, int x, int y, int width)
 			e.link = value_text;
 		else if(strcmp(name, "value") == 0)
 			e.value = value_number;
-		else if(strcmp(name, "maximum") == 0)
-			e.maximum = value_number;
 	}
 	if(*p == ')')
 		p++;
 	p = szskipcr(p);
 	*result = p;
-	auto pm = textwidget::plugin::find(type);
+	auto pm = widget::plugin::find(type);
 	if(pm)
-		return pm->render(x, y, width, e);
+		return pm->render(x, y, width, e.id, e.flags, e.label, e.value, 0, e.title, e.childs, e.tips);
 	return 0;
 }
 

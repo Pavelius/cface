@@ -1,5 +1,4 @@
 #include "draw.h"
-#include "widget.h"
 
 void draw::splitv(int x, int y, int& value, int height, const char* id, int size, int minimum, int maximum, bool right_align)
 {

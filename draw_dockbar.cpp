@@ -1,14 +1,13 @@
 #include "crt.h"
 #include "draw.h"
-#include "widget.h"
 
 using namespace draw;
 
 static struct dock_info
 {
-	int				current;
-	int				size;
-	bool			visible;
+	int		current;
+	int		size;
+	bool	visible;
 } dock_data[DockWorkspace + 1];
 static const char* dock_ids[] = {
 	"dock_left", "dock_left_bottom",
@@ -19,13 +18,10 @@ static const char* dock_ids[] = {
 static char* get_control_name(char* result, void* p)
 {
 	result[0] = 0;
-	auto n = (const char*)((control*)p)->getr().get("label");
-	if(n)
-		zcpy(result, n, 259);
-	return result;
+	return ((control*)p)->getname(result);
 }
 
-unsigned draw::getdocked(control** output, unsigned count, dock_types type)
+unsigned draw::getdocked(control** output, unsigned count, dock_s type)
 {
 	auto ps = output;
 	auto pe = output + count;
@@ -33,7 +29,7 @@ unsigned draw::getdocked(control** output, unsigned count, dock_types type)
 	{
 		if(p->element.disabled)
 			continue;
-		if(p->type == type)
+		if(p->element.dock == type)
 		{
 			if(ps < pe)
 				*ps++ = &p->element;
@@ -68,11 +64,11 @@ int	draw::view(rect rc, control** pages, int count, int& current, bool show_tool
 		}
 		rc.y1 += dy;
 	}
-	view(rc, ec);
+	ec.view(rc, show_toolbar);
 	return rc.y1 - y1;
 }
 
-static bool dock_paint(dock_types id, rect& client, draw::control** p1, int c1, draw::control** p2, int c2)
+static bool dock_paint(dock_s id, rect& client, draw::control** p1, int c1, draw::control** p2, int c2)
 {
 	bool show_toolbar = true;
 	rect rc = client;

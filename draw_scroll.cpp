@@ -1,5 +1,4 @@
 #include "draw.h"
-#include "widget.h"
 
 void draw::scrollv(const char* id, const rect& scroll, int& origin, int count, int maximum, bool focused)
 {

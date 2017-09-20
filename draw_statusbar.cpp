@@ -1,9 +1,9 @@
 #include "crt.h"
 #include "command.h"
 #include "draw.h"
-#include "widget.h"
 
 using namespace draw;
+
 static rect				statusbar_rect;
 static char				statusbar_text[512];
 extern draw::control*	active_workspace_tab;
@@ -35,8 +35,8 @@ COMMAND(after_render)
 	// если нет больше никаких других команд
 	if(!statusbar_rect || !metrics::show::statusbar)
 		return;
-	//if(active_workspace_tab)
-	//{
+	if(active_workspace_tab)
+	{
 	//	for(auto psi = active_workspace_tab->getstatusinfo(); psi && psi->id; psi++)
 	//	{
 	//		rect rc = statusbar_rect;
@@ -51,7 +51,7 @@ COMMAND(after_render)
 	//		draw::line(rc.x1 - 2, rc.y1, rc.x1 - 2, rc.y2, colors::border);
 	//		statusbar_rect.x2 -= rc.width() + 4;
 	//	}
-	//}
+	}
 	if(statusbar_text[0])
 		draw::text(statusbar_rect, statusbar_text);
 	statusbar_rect.clear();

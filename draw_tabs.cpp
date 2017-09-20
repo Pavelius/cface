@@ -1,6 +1,5 @@
 #include "crt.h"
 #include "draw.h"
-#include "widget.h"
 
 using namespace draw;
 
@@ -127,7 +126,7 @@ int wdt_tabs(int x, int y, int width, const char* id, unsigned flags, const char
 			*ps++ = p;
 	}
 	auto count = ps - data;
-	int current = getdata(source, value);
+	int current = getdata(source, id, link);
 	rect rc = {x, y, x + width, y + tab_height};
 	int tabs_hilite;
 	if(draw::tabs(rc, false, false, (void**)data, 0, count, current, &tabs_hilite, get_text))

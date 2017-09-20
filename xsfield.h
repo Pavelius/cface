@@ -44,8 +44,8 @@ struct xsfield
 };
 
 extern xsfield			number_type[2]; // standart integer value
-extern xsfield			text_type[2]; // stantart zero ending string
 extern xsfield			reference_type[2]; // any reference (depends on value)
+extern xsfield			text_type[2]; // stantart zero ending string
 extern xsfield			xsfield_type[]; // metadata type
 
 #define FO(c,f) (const int)&((c*)0)->f

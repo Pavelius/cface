@@ -1,21 +1,7 @@
-/* Copyright 2013 by Pavel Chistyakov
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License. */
-
 #include "crt.h"
-#include "draw.h"
+#include "control_textedit.h"
+#include "control_list.h"
 #include "screenshoot.h"
-#include "widget_textedit.h"
-#include "widget_list.h"
 
 using namespace draw::controls;
 
@@ -251,7 +237,7 @@ bool textedit::editing(rect rco)
 	if(records)
 	{
 		records->filter = 0;
-		records->execute("update", true);
+		records->keyinput(InputUser);
 		int line_count = records->maximum;
 		int line_height = records->pixels_per_line;
 		records_height = line_height*imin(10, line_count);
@@ -270,7 +256,7 @@ bool textedit::editing(rect rco)
 			{
 				update_records = false;
 				records->filter = string;
-				records->execute("update", true);
+				records->keyinput(InputUser);
 				int line_count = records->maximum;
 				int line_height = records->pixels_per_line;
 				records_height = line_height*imin(10, line_count);
@@ -281,7 +267,7 @@ bool textedit::editing(rect rco)
 				if(records->maximum)
 				{
 					rcv.set(rco.x1, rco.y2 + 2, imin(rco.x1 + 300, rco.x2), rco.y2 + 4 + records_height);
-					view(rcv, *records);
+					records->view(rcv);
 				}
 				else
 				{
