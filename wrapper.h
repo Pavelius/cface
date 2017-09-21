@@ -19,4 +19,5 @@ struct wrapper
 	virtual const command*	getcommands() const { return 0; }
 	virtual const struct xsfield* getmeta() const { return 0; }
 	virtual void*			getobject() { return this; }
+	virtual bool			isdisabled(const char* id) const { return false; }
 };

@@ -16,7 +16,7 @@ enum draw_events {
 	InputKeyUp, InputIdle, InputUpdate, InputNoUpdate,
 	// widgets events
 	InputChoose, InputDropDown, InputSetFocus,
-	InputExecute, InputMenu, InputSetValue, InputEdit, InputEditPlus, InputEditMinus,
+	InputExecute, InputMenu, InputSetValue, InputEdit,
 	ScrollV, ScrollH, SplitterV, SplitterH,
 	TreeType, TreeFlags,
 	HtmlLink, HtmlControl, TabsControl, TabsCloseControl,
@@ -106,6 +106,7 @@ namespace hot
 	extern const char*		name; // Text name of element (optional)
 	extern rect				element; // Element coordinates
 	extern proc				callback; // Callback proc
+	extern wrapper*			source; // Data source wrapper
 	extern bool				stop; // Set true if we need stop modal loop
 }
 namespace colors
@@ -151,6 +152,7 @@ namespace metrics
 }
 namespace draw
 {
+	enum field_type_s {FieldText, FieldNumber, FieldReference};
 	namespace drag
 	{
 		extern const char*	id;
@@ -295,7 +297,7 @@ namespace draw
 	color					getcolor(color normal, unsigned flags);
 	color					getcolor(rect rc, color normal, color hilite, unsigned flags);
 	int						getdata(wrapper* source, const char* id);
-	char*					getdata(char* temp, wrapper* source, const char* id, const draw::widget* childs, bool to_buffer);
+	char*					getdata(char* temp, wrapper* source, const char* id, const draw::widget* childs, bool to_buffer, field_type_s& type);
 	inline const char*		getdatasource(const char* id, const char* link) { return link ? link : id; }
 	unsigned				getdocked(control** output, unsigned count, dock_s type);
 	const char*				getfocus();

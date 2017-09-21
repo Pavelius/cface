@@ -10,6 +10,14 @@ using namespace draw;
 //}
 //
 
+static unsigned getflags(const wrapper* source, const widget* p, unsigned flags)
+{
+	unsigned result = p->flags;
+	if(isdisabled(flags) || (p->id && source->isdisabled(p->id)))
+		result |= Disabled;
+	return result;
+}
+
 int wdt_vertical(widget::proc pw, int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips,
 	int* elements, int count, int start)
 {
@@ -51,7 +59,7 @@ int wdt_vertical(int x, int y, int width, const char* id, unsigned flags, const 
 		return 0;
 	int y0 = y;
 	for(auto p = childs; *p; p++)
-		y += p->type(x, y, width, p->id, p->flags, p->label, p->value, p->link, source, p->title ? p->title : title, p->childs, p->tips);
+		y += p->type(x, y, width, p->id, getflags(source, p, flags), p->label, p->value, p->link, source, p->title ? p->title : title, p->childs, p->tips);
 	return y - y0;
 }
 
@@ -66,7 +74,7 @@ int wdt_horizontal(int x, int y, int width, const char* id, unsigned flags, cons
 	{
 		auto w = width*p->width / 12;
 		auto x1 = x + width*n / 12;
-		auto h = p->type(x1, y, w, p->id, p->flags, p->label, p->value, p->link, source, p->title ? p->title : title, p->childs, p->tips);
+		auto h = p->type(x1, y, w, p->id, getflags(source, p, flags), p->label, p->value, p->link, source, p->title ? p->title : title, p->childs, p->tips);
 		if(h > mh)
 			mh = h;
 		n += p->width;

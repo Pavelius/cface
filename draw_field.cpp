@@ -90,9 +90,10 @@ static void callback_choose_list()
 
 int wdt_field(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
 {
+	field_type_s field_type;
 	draw::state push;
 	char number_text[32];
-	auto p = getdata(number_text, source, getdatasource(id, link), childs, false);
+	auto p = getdata(number_text, source, getdatasource(id, link), childs, false, field_type);
 	if(!p)
 		return 0;
 	setposition(x, y, width);
@@ -113,11 +114,29 @@ int wdt_field(int x, int y, int width, const char* id, unsigned flags, const cha
 			hot::callback = callback_dropdown_list;
 		}
 	}
-	else if(addbutton(rc, "...", F4, "Выбрать"))
+	if(field_type == FieldNumber)
 	{
-		draw::execute(InputChoose);
-		hot::name = id;
-		hot::callback = callback_choose_list;
+		auto result = addbutton(rc, "+", KeyUp, "Увеличить", "-", KeyDown, "Уменьшить");
+		if(result)
+		{
+			auto inc = 0;
+			switch(result)
+			{
+			case 1: inc = 1; break;
+			case 2: inc = -1; break;
+			}
+			auto value = getdata(source, getdatasource(id, link));
+			setdata(source, id, value + inc);
+		}
+	}
+	else if(field_type == FieldReference)
+	{
+		if(addbutton(rc, "...", F4, "Выбрать"))
+		{
+			draw::execute(InputChoose);
+			hot::name = id;
+			hot::callback = callback_choose_list;
+		}
 	}
 	focusing(id, rc, flags);
 	auto a = area(rc);

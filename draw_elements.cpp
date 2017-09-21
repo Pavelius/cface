@@ -10,7 +10,7 @@ static void callback_setfocus()
 	draw::setfocus(hot::name);
 }
 
-void execute_setfocus(const char* id)
+static void execute_setfocus(const char* id)
 {
 	execute(InputSetFocus);
 	hot::name = id;
@@ -162,6 +162,7 @@ int wdt_button(int x, int y, int width, const char* id, unsigned flags, const ch
 	{
 		draw::execute(InputExecute);
 		hot::name = id;
+		hot::source = source;
 	}
 	return rc.height() + metrics::padding * 2;
 }

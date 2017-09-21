@@ -30,21 +30,29 @@ void draw::setdata(wrapper* source, const char* id, int value)
 	hot::callback = callback_setvalue;
 }
 
-char* draw::getdata(char* temp, wrapper* source, const char* id, const draw::widget* childs, bool to_buffer)
+char* draw::getdata(char* temp, wrapper* source, const char* id, const draw::widget* childs, bool to_buffer, field_type_s& type)
 {
+	type = FieldNumber;
 	auto field = source->getmeta()->find(id);
 	if(!field)
 		return 0;
 	auto value = getdata(source, id);
 	if(field->type == text_type)
 	{
+		type = FieldText;
 		if(to_buffer)
+		{
 			zcpy(temp, (char*)value);
+			return temp;
+		}
+		if(!value)
+			return "";
 		return (char*)value;
 	}
 	temp[0] = 0;
 	if(field->type == number_type)
 	{
+		type = FieldNumber;
 		if(childs)
 		{
 			for(auto p = childs; *p; p++)
@@ -57,6 +65,17 @@ char* draw::getdata(char* temp, wrapper* source, const char* id, const draw::wid
 			}
 		}
 		szprint(temp, "%1i", value);
+	}
+	else
+	{
+		type = FieldReference;
+		xsref xr = {field->type, (void*)value};
+		auto pv = xr.get("name");
+		if(!pv)
+			return "";
+		if(!to_buffer)
+			return (char*)pv;
+		zcpy(temp, (char*)pv);
 	}
 	return temp;
 }
