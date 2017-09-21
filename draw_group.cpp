@@ -103,7 +103,7 @@ using namespace draw;
 //	return temp;
 //}
 
-int wdt_vertical(widget::proc pw, int x, int y, int width, const char* id, unsigned flags, const char* label, int value, void* source, int title, const widget* childs, const char* tips,
+int wdt_vertical(widget::proc pw, int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const widget* childs, const char* tips,
 	int* elements, int count, int start)
 {
 	int columns_count = imax(width / 220, 1);
@@ -130,7 +130,7 @@ int wdt_vertical(widget::proc pw, int x, int y, int width, const char* id, unsig
 		auto v = index + start;
 		if(elements)
 			v = elements[index];
-		y += pw(x + metrics::padding, y, width_per_column - metrics::padding, id, flags, label, v, source, title, childs, tips);
+		y += pw(x + metrics::padding, y, width_per_column - metrics::padding, id, flags, label, v, link, source, title, childs, tips);
 		index++;
 	}
 	if(y2 < y)
@@ -138,17 +138,17 @@ int wdt_vertical(widget::proc pw, int x, int y, int width, const char* id, unsig
 	return y2 - y1;
 }
 
-int wdt_vertical(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, void* source, int title, const widget* childs, const char* tips)
+int wdt_vertical(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const widget* childs, const char* tips)
 {
 	if(!childs)
 		return 0;
 	int y0 = y;
 	for(auto p = childs; *p; p++)
-		y += p->type(x, y, width, p->id, p->flags, p->label, p->value, 0, p->title ? p->title : title, p->childs, p->tips);
+		y += p->type(x, y, width, p->id, p->flags, p->label, p->value, p->link, source, p->title ? p->title : title, p->childs, p->tips);
 	return y - y0;
 }
 
-int wdt_horizontal(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, void* source, int title, const widget* childs, const char* tips)
+int wdt_horizontal(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const widget* childs, const char* tips)
 {
 	if(!childs || !childs[0].width)
 		return 0;
@@ -159,7 +159,7 @@ int wdt_horizontal(int x, int y, int width, const char* id, unsigned flags, cons
 	{
 		auto w = width*p->width / 12;
 		auto x1 = x + width*n / 12;
-		auto h = p->type(x1, y, w, p->id, p->flags, p->label, p->value, 0, p->title ? p->title : title, p->childs, p->tips);
+		auto h = p->type(x1, y, w, p->id, p->flags, p->label, p->value, p->link, source, p->title ? p->title : title, p->childs, p->tips);
 		if(h > mh)
 			mh = h;
 		n += p->width;
@@ -180,7 +180,7 @@ int wdt_title(int& x, int y, int& width, unsigned flags, const char* label, int 
 	return draw::texth();
 }
 
-int wdt_group(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, void* source, int title, const widget* childs, const char* tips)
+int wdt_group(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const widget* childs, const char* tips)
 {
 	int y0 = y;
 	setposition(x, y, width); // Первая рамка (может надо двойную ?)
@@ -191,9 +191,9 @@ int wdt_group(int x, int y, int width, const char* id, unsigned flags, const cha
 	if(label)
 		y += texth() + metrics::padding * 2;
 	if(childs[0].width)
-		y += wdt_horizontal(x, y, width, id, flags, label, value, source, title, childs, tips);
+		y += wdt_horizontal(x, y, width, id, flags, label, value, link, source, title, childs, tips);
 	else
-		y += wdt_vertical(x, y, width, id, flags, label, value, source, title, childs, tips);
+		y += wdt_vertical(x, y, width, id, flags, label, value, link, source, title, childs, tips);
 	if(label)
 	{
 		color c1 = colors::border.mix(colors::window, 128);
@@ -207,7 +207,7 @@ int wdt_group(int x, int y, int width, const char* id, unsigned flags, const cha
 	return y - y0;
 }
 
-int wdt_label(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, void* source, int title, const widget* childs, const char* tips)
+int wdt_label(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const widget* childs, const char* tips)
 {
 	draw::state push;
 	setposition(x, y, width);

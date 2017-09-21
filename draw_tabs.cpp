@@ -109,7 +109,7 @@ static char* get_text(char* result, void* object)
 	return result;
 }
 
-int wdt_tabs(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, void* source, int title, const widget* childs, const char* tips)
+int wdt_tabs(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const widget* childs, const char* tips)
 {
 	if(!childs)
 		return 0;
@@ -126,7 +126,7 @@ int wdt_tabs(int x, int y, int width, const char* id, unsigned flags, const char
 			*ps++ = p;
 	}
 	auto count = ps - data;
-	int current = getdata(source, id, link);
+	int current = getdata(source, getdatasource(id, link));
 	rect rc = {x, y, x + width, y + tab_height};
 	int tabs_hilite;
 	if(draw::tabs(rc, false, false, (void**)data, 0, count, current, &tabs_hilite, get_text))
@@ -139,5 +139,5 @@ int wdt_tabs(int x, int y, int width, const char* id, unsigned flags, const char
 	}
 	y += tab_height + metrics::padding;
 	auto& pw = childs[current];
-	return pw.type(x, y, width, pw.id, pw.flags, pw.label, pw.value, 0, pw.title, pw.childs, pw.tips) + (y - y0);
+	return pw.type(x, y, width, pw.id, pw.flags, pw.label, pw.value, pw.link, source, pw.title, pw.childs, pw.tips) + (y - y0);
 }

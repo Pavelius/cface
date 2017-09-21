@@ -3,20 +3,18 @@
 
 using namespace draw;
 
-int	draw::getdata(void* source, const char* id, const char* link)
-{
-	if(!source)
-		return 0;
-	return 0;
-}
-
-void draw::setdata(void* source, const char* id, const char* link, int value)
-{
-}
+static draw::context* hot_source;
 
 static void callback_setfocus()
 {
 	draw::setfocus(hot::name);
+}
+
+void execute_setfocus(const char* id)
+{
+	execute(InputSetFocus);
+	hot::name = id;
+	hot::callback = callback_setfocus;
 }
 
 void draw::focusing(const char* id, const rect& rc, unsigned& flags)
@@ -26,15 +24,11 @@ void draw::focusing(const char* id, const rect& rc, unsigned& flags)
 	if(getfocus() == id)
 		flags |= Focused;
 	else if(area(rc) == AreaHilitedPressed && hot::key == MouseLeft && hot::pressed)
-	{
-		execute(InputSetFocus);
-		hot::name = id;
-		hot::callback = callback_setfocus;
-	}
+		execute_setfocus(id);
 	addelement(id, rc);
 }
 
-int wdt_radio_element(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, void* source, int title, const widget* childs, const char* tips)
+int wdt_radio_element(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const widget* childs, const char* tips)
 {
 	if(!label || !label[0])
 		return 0;
@@ -48,6 +42,7 @@ int wdt_radio_element(int x, int y, int width, const char* id, unsigned flags, c
 	rc.y2 = rc1.y2;
 	rc.x2 = rc1.x2;
 	decortext(flags);
+	focusing(id, rc, flags);
 	wdt_clipart(x + 2, y + imax((rc1.height() - 14) / 2, 0), 0, id, flags, ":radio");
 	bool need_select = false;
 	auto a = draw::area(rc);
@@ -63,20 +58,17 @@ int wdt_radio_element(int x, int y, int width, const char* id, unsigned flags, c
 			need_select = true;
 	}
 	if(need_select)
-	{
-		draw::execute(InputSetValue, value);
-		hot::name = id;
-	}
+		draw::setdata(source, link, value);
 	draw::text({rc1.x1 + 2, rc1.y1 + 2, rc1.x2 - 2, rc1.y2 - 2}, label);
 	if(tips && a == AreaHilited)
 		tooltips(tips);
 	return rc1.height() + metrics::padding * 2;
 }
 
-int wdt_radio(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, void* source, int title, const widget* childs, const char* tips)
+int wdt_radio(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const widget* childs, const char* tips)
 {
 	int y0 = y;
-	auto current_value = getdata(source, id, link);
+	auto current_value = getdata(source, getdatasource(id, link));
 	for(auto p = childs; *p; p++)
 	{
 		unsigned flags = 0;
@@ -84,19 +76,19 @@ int wdt_radio(int x, int y, int width, const char* id, unsigned flags, const cha
 			flags |= Checked;
 		if(getfocus() == id)
 			flags |= Focused;
-		y += wdt_radio_element(x, y, width, id, flags, p->label, p->value);
+		y += wdt_radio_element(x, y, width, p->id, flags, p->label, p->value, getdatasource(id, link), source, title, 0, p->tips);
 	}
 	return y - y0;
 }
 
-int wdt_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, void* source, int title, const draw::widget* childs, const char* tips)
+int wdt_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const draw::widget* childs, const char* tips)
 {
 	if(!label || !label[0])
 		return 0;
 	setposition(x, y, width);
 	rect rc = {x, y, x + width, y};
 	rect rc1 = {rc.x1 + 22, rc.y1, rc.x2, rc.y2};
-	if(getdata(source, id, link))
+	if(getdata(source, getdatasource(id, link)))
 		flags |= Checked;
 	draw::textw(rc1, label);
 	rc.y1 = rc1.y1;
@@ -112,10 +104,7 @@ int wdt_check(int x, int y, int width, const char* id, unsigned flags, const cha
 		if(!hot::pressed)
 			need_value = true;
 		else
-		{
-			draw::execute(InputSetFocus);
-			hot::name = id;
-		}
+			execute_setfocus(id);
 	}
 	if(isfocused(flags))
 	{
@@ -124,17 +113,14 @@ int wdt_check(int x, int y, int width, const char* id, unsigned flags, const cha
 			need_value;
 	}
 	if(need_value)
-	{
-		draw::execute(InputSetValue, ischecked(flags) ? 0 : 1);
-		hot::name = id;
-	}
+		draw::setdata(source, getdatasource(id, link), ischecked(flags) ? 0 : 1);
 	draw::text(rc1, label);
 	if(tips && a == AreaHilited)
 		tooltips(tips);
 	return rc1.height() + metrics::padding * 2;
 }
 
-int wdt_button(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, void* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0)
+int wdt_button(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const draw::widget* childs, const char* tips)
 {
 	if(!label || !label[0])
 		return 0;

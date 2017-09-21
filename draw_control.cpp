@@ -136,7 +136,7 @@ void control::view(rect rc, bool show_toolbar)
 	// Поэтому только начиная отсюда она имеет корректное значение.
 	nonclient(rc);
 	if(rt.height())
-		wdt_toolbar(rt.x1, rt.y1, rt.width(), "toolbar", 0, 0, 0, 0, 0, commands, 0);
+		wdt_toolbar(rt.x1, rt.y1, rt.width(), "toolbar", 0, 0, 0, 0, 0, 0, commands, 0);
 }
 
 bool control::keyinput(int id)

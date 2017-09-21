@@ -182,6 +182,7 @@
     <ClCompile Include="dice.cpp" />
     <ClCompile Include="draw.cpp" />
     <ClCompile Include="drawable.cpp" />
+    <ClCompile Include="draw_data.cpp" />
     <ClCompile Include="draw_elements.cpp" />
     <ClCompile Include="draw_focusing.cpp" />
     <ClCompile Include="draw_input.cpp" />
@@ -263,7 +264,7 @@
     <ClCompile Include="win_thread.cpp" />
     <ClCompile Include="win_util.cpp" />
     <ClCompile Include="xsbase.cpp" />
-    <ClCompile Include="xscontext.cpp" />
+    <ClCompile Include="draw_context.cpp" />
     <ClCompile Include="xsdoc.cpp" />
     <ClCompile Include="xsfield.cpp" />
     <ClCompile Include="xsparse.cpp" />
@@ -292,7 +293,6 @@
     <ClInclude Include="control_tree.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="xscontext.h" />
     <ClInclude Include="aref.h" />
     <ClInclude Include="autogrow.h" />
     <ClInclude Include="base.h" />

@@ -61,7 +61,6 @@
     <ClCompile Include="stringtree.cpp" />
     <ClCompile Include="win_io_ftp.cpp" />
     <ClCompile Include="converter.cpp" />
-    <ClCompile Include="xscontext.cpp" />
     <ClCompile Include="widget_form.cpp" />
     <ClCompile Include="point_type.cpp" />
     <ClCompile Include="draw_focusing.cpp" />
@@ -92,6 +91,8 @@
     <ClCompile Include="control_tree.cpp" />
     <ClCompile Include="draw_toolbar.cpp" />
     <ClCompile Include="draw_dockbar.cpp" />
+    <ClCompile Include="draw_context.cpp" />
+    <ClCompile Include="draw_data.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base.h" />
@@ -146,7 +147,6 @@
     <ClInclude Include="stringid.h" />
     <ClInclude Include="converter.h" />
     <ClInclude Include="acol.h" />
-    <ClInclude Include="xscontext.h" />
     <ClInclude Include="widget_settings.h" />
     <ClInclude Include="xsvalue.h" />
     <ClInclude Include="collections.h" />

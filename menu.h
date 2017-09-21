@@ -1,4 +1,4 @@
-#include "xscontext.h"
+#include "draw.h"
 
 #pragma once
 
@@ -11,7 +11,7 @@ struct menu
 	menu();
 	~menu();
 	void				add(const char* label, unsigned data, bool disabled = false, bool checked = false);
-	void				add(const char* id, xscontext* context);
+	void				add(const char* id, draw::context* object);
 	void				addseparator();
 	unsigned			choose(int x, int y);
 };

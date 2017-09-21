@@ -3,6 +3,8 @@
 #include "menu.h"
 #include "win.h"
 
+using namespace draw;
+
 menu::menu() : count(0), separator(false)
 {
 	handle = CreatePopupMenu();
@@ -61,9 +63,9 @@ void menu::addseparator()
 		separator = true;
 }
 
-void menu::add(const char* id, xscontext* context)
+void menu::add(const char* id, context* object)
 {
-	auto pe = context->getcommands()->find(id);
+	auto pe = object->getcommands()->find(id);
 	if(pe)
 	{
 		char temp[512];
@@ -79,7 +81,7 @@ void menu::add(const char* id, xscontext* context)
 				zcat(ps, ", ");
 			key2str(zend(ps), key);
 		}
-		add(temp, (unsigned)pe, pe->type(context, false) == Disabled, false);
+		add(temp, (unsigned)pe, pe->type(object, false) == Disabled, false);
 	}
 }
 

@@ -295,7 +295,7 @@ static int render_control(const char** result, int x, int y, int width)
 	*result = p;
 	auto pm = widget::plugin::find(type);
 	if(pm)
-		return pm->render(x, y, width, e.id, e.flags, e.label, e.value, 0, e.title, e.childs, e.tips);
+		return pm->render(x, y, width, e.id, e.flags, e.label, e.value, 0, 0, e.title, e.childs, e.tips);
 	return 0;
 }
 

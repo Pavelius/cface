@@ -8,7 +8,7 @@ static point clipart_dropdown[] =
 	{0, 1}
 };
 
-int wdt_clipart(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, void* source, int title, const draw::widget* childs, const char* tips)
+int wdt_clipart(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const draw::widget* childs, const char* tips)
 {
 	if(label[0] != ':')
 		return 0;
@@ -101,7 +101,7 @@ bool draw::buttonv(rect rc, bool checked, bool focused, bool disabled, bool bord
 				flags |= Disabled;
 			if(focused)
 				flags |= Focused;
-			wdt_clipart(rc.x1, rc.y1, rc.width(), "clipart", 0, string, 0, 0, 0, 0, 0);
+			wdt_clipart(rc.x1, rc.y1, rc.width(), "clipart", 0, string, 0, 0, 0, 0, 0, 0);
 		}
 		else
 			text(rc, string, AlignCenter);
@@ -159,7 +159,7 @@ bool draw::buttonh(rect rc, bool checked, bool focused, bool disabled, bool bord
 				flags |= Disabled;
 			if(focused)
 				flags |= Focused;
-			wdt_clipart(rc.x1, rc.y1, rc.width(), "clipart", flags, string, 0, 0, 0, 0, 0);
+			wdt_clipart(rc.x1, rc.y1, rc.width(), "clipart", flags, string, 0, 0, 0, 0, 0, 0);
 		}
 		else
 			draw::text(rc, string, AlignCenterCenter);

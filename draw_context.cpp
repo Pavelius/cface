@@ -1,7 +1,9 @@
 #include "crt.h"
-#include "xscontext.h"
+#include "draw.h"
 
-xscontext::command* xscontext::command::find(const char* id)
+using namespace draw;
+
+const context::command* context::command::find(const char* id) const
 {
 	auto p = this;
 	if(!p)
@@ -21,7 +23,7 @@ xscontext::command* xscontext::command::find(const char* id)
 	return 0;
 }
 
-xscontext::command* xscontext::command::findbykey(int id)
+const context::command* context::command::find(int id) const
 {
 	auto p = this;
 	if(!p)
@@ -30,7 +32,7 @@ xscontext::command* xscontext::command::findbykey(int id)
 	{
 		if(!p->type)
 		{
-			auto v = p->child->findbykey(id);
+			auto v = p->child->find(id);
 			if(v)
 				return v;
 		}
@@ -41,7 +43,7 @@ xscontext::command* xscontext::command::findbykey(int id)
 	return 0;
 }
 
-unsigned xscontext::execute(const char* id, bool run)
+unsigned context::execute(const char* id, bool run)
 {
 	auto p = getcommands()->find(id);
 	if(p)

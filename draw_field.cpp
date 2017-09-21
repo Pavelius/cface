@@ -50,7 +50,7 @@ using namespace draw;
 //	return true;
 //}
 
-int wdt_field(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, void* source, int title, const draw::widget* childs, const char* tips)
+int wdt_field(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const draw::widget* childs, const char* tips)
 {
 	draw::state push;
 	//char number_text[32];
