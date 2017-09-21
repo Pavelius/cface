@@ -91,7 +91,7 @@
     <ClCompile Include="control_tree.cpp" />
     <ClCompile Include="draw_toolbar.cpp" />
     <ClCompile Include="draw_dockbar.cpp" />
-    <ClCompile Include="draw_context.cpp" />
+    <ClCompile Include="wrapper.cpp" />
     <ClCompile Include="draw_data.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -155,5 +155,6 @@
     <ClInclude Include="control_textedit.h" />
     <ClInclude Include="control_table.h" />
     <ClInclude Include="control_tree.h" />
+    <ClInclude Include="wrapper.h" />
   </ItemGroup>
 </Project>

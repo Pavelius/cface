@@ -109,7 +109,7 @@ static char* get_text(char* result, void* object)
 	return result;
 }
 
-int wdt_tabs(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const widget* childs, const char* tips)
+int wdt_tabs(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
 {
 	if(!childs)
 		return 0;
@@ -132,10 +132,7 @@ int wdt_tabs(int x, int y, int width, const char* id, unsigned flags, const char
 	if(draw::tabs(rc, false, false, (void**)data, 0, count, current, &tabs_hilite, get_text))
 	{
 		if(tabs_hilite != -1)
-		{
-			execute(InputSetValue, tabs_hilite);
-			hot::name = id;
-		}
+			setdata(source, getdatasource(id, link), tabs_hilite);
 	}
 	y += tab_height + metrics::padding;
 	auto& pw = childs[current];

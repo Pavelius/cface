@@ -1,16 +1,14 @@
 #include "crt.h"
-#include "draw.h"
+#include "wrapper.h"
 
-using namespace draw;
-
-const context::command* context::command::find(const char* id) const
+const wrapper::command* wrapper::command::find(const char* id) const
 {
 	auto p = this;
 	if(!p)
 		return 0;
 	while(*p)
 	{
-		if(!p->type)
+		if(p->child)
 		{
 			auto v = p->child->find(id);
 			if(v)
@@ -23,14 +21,14 @@ const context::command* context::command::find(const char* id) const
 	return 0;
 }
 
-const context::command* context::command::find(int id) const
+const wrapper::command* wrapper::command::find(int id) const
 {
 	auto p = this;
 	if(!p)
 		return 0;
 	while(*p)
 	{
-		if(!p->type)
+		if(p->child)
 		{
 			auto v = p->child->find(id);
 			if(v)
@@ -43,7 +41,7 @@ const context::command* context::command::find(int id) const
 	return 0;
 }
 
-unsigned context::execute(const char* id, bool run)
+unsigned wrapper::execute(const char* id, bool run)
 {
 	auto p = getcommands()->find(id);
 	if(p)

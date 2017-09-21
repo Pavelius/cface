@@ -11,7 +11,7 @@ struct menu
 	menu();
 	~menu();
 	void				add(const char* label, unsigned data, bool disabled = false, bool checked = false);
-	void				add(const char* id, draw::context* object);
+	void				add(const char* id, wrapper* object);
 	void				addseparator();
 	unsigned			choose(int x, int y);
 };

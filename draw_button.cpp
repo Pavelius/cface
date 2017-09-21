@@ -8,7 +8,7 @@ static point clipart_dropdown[] =
 	{0, 1}
 };
 
-int wdt_clipart(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const draw::widget* childs, const char* tips)
+int wdt_clipart(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
 {
 	if(label[0] != ':')
 		return 0;

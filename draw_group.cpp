@@ -3,107 +3,14 @@
 
 using namespace draw;
 
-//bool element::isfocus() const
-//{
-//	auto fid = getfocus();
-//	if(!fid && id)
-//	{
-//		setfocus(id);
-//		fid = getfocus();
-//	}
-//	return fid && id && strcmp(fid, id) == 0;
-//}
-//
-//void element::addbutton(rect& rc, int c1, const char* t1, int k1, const char* tt1, int c2, const char* t2, int k2, const char* tt2)
-//{
-//	const int width = 20;
-//	rc.x2 -= width;
-//	auto height = rc.height() / 2;
-//	if(draw::buttonh({rc.x2, rc.y1, rc.x2+width, rc.y1+height},
-//		false, isfocused(), false, false,
-//		t1, k1, true, tt1))
-//		draw::execute(c1, 0, *this);
-//	if(draw::buttonh({rc.x2, rc.y1 + height, rc.x2+width, rc.y1+height*2},
-//		false, isfocused(), false, false,
-//		t2, k2, true, tt2))
-//		draw::execute(c2, 0, *this);
-//	draw::line(rc.x2, rc.y1, rc.x2, rc.y2, colors::border);
-//}
-//
-//void element::addbutton(rect& rc, int c1, const char* t1, int k1, const char* tt1)
-//{
-//	const int width = 18;
-//	rc.x2 -= width;
-//	if(draw::buttonh({rc.x2, rc.y1, rc.x2+width, rc.y2},
-//		false, false, false, false,
-//		t1, k1, true, tt1))
-//		draw::execute(c1, 0, *this);
-//	draw::line(rc.x2, rc.y1, rc.x2, rc.y2, colors::border);
-//}
-//
-//bool element::editstart(const rect& rc, int ev)
-//{
-//	auto msk = hot::key & 0xFFFF;
-//	auto result = false;
-//	switch(hot::key&CommandMask)
-//	{
-//	case 0: // Означает что есть другая комманда оформленная в виде execute()
-//	case MouseMove:
-//	case InputIdle:
-//	case InputEdit:
-//		// Команды не влияющие на вход в режим редактирования
-//		break;
-//	case MouseLeft:
-//	case MouseLeftDBL:
-//	case MouseRight:
-//		result = draw::areb(rc);
-//		break;
-//	default:
-//		result = (msk == InputSymbol || msk >= KeyLeft);
-//		break;
-//	}
-//	if(result)
-//	{
-//		draw::execute(ev, 0, *this);
-//		hot::element = rc;
-//	}
-//	return result;
-//}
 //
 //void element::addvalue(int value)
 //{
 //	data.set(data.get() + value);
 //}
 //
-//char* element::getstring(char* temp, bool to_buffer)
-//{
-//	auto value = data.get();
-//	if(data.fields->type == text_type)
-//	{
-//		if(to_buffer)
-//			zcpy(temp, (char*)value);
-//		return (char*)value;
-//	}
-//	temp[0] = 0;
-//	if(data.fields->type == number_type)
-//	{
-//		if(childs)
-//		{
-//			for(auto p = childs; *p; p++)
-//			{
-//				if(p->value == value && p->label)
-//				{
-//					zcpy(temp, p->label);
-//					return temp;
-//				}
-//			}
-//		}
-//		szprint(temp, "%1i", value);
-//	}
-//	return temp;
-//}
 
-int wdt_vertical(widget::proc pw, int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const widget* childs, const char* tips,
+int wdt_vertical(widget::proc pw, int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips,
 	int* elements, int count, int start)
 {
 	int columns_count = imax(width / 220, 1);
@@ -138,7 +45,7 @@ int wdt_vertical(widget::proc pw, int x, int y, int width, const char* id, unsig
 	return y2 - y1;
 }
 
-int wdt_vertical(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const widget* childs, const char* tips)
+int wdt_vertical(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
 {
 	if(!childs)
 		return 0;
@@ -148,7 +55,7 @@ int wdt_vertical(int x, int y, int width, const char* id, unsigned flags, const 
 	return y - y0;
 }
 
-int wdt_horizontal(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const widget* childs, const char* tips)
+int wdt_horizontal(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
 {
 	if(!childs || !childs[0].width)
 		return 0;
@@ -180,7 +87,7 @@ int wdt_title(int& x, int y, int& width, unsigned flags, const char* label, int 
 	return draw::texth();
 }
 
-int wdt_group(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const widget* childs, const char* tips)
+int wdt_group(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
 {
 	int y0 = y;
 	setposition(x, y, width); // Первая рамка (может надо двойную ?)
@@ -207,7 +114,7 @@ int wdt_group(int x, int y, int width, const char* id, unsigned flags, const cha
 	return y - y0;
 }
 
-int wdt_label(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const widget* childs, const char* tips)
+int wdt_label(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
 {
 	draw::state push;
 	setposition(x, y, width);

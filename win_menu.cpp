@@ -1,5 +1,5 @@
 #include "crt.h"
-#include "draw.h"
+#include "wrapper.h"
 #include "menu.h"
 #include "win.h"
 
@@ -63,7 +63,7 @@ void menu::addseparator()
 		separator = true;
 }
 
-void menu::add(const char* id, context* object)
+void menu::add(const char* id, wrapper* object)
 {
 	auto pe = object->getcommands()->find(id);
 	if(pe)

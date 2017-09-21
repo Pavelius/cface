@@ -264,7 +264,7 @@
     <ClCompile Include="win_thread.cpp" />
     <ClCompile Include="win_util.cpp" />
     <ClCompile Include="xsbase.cpp" />
-    <ClCompile Include="draw_context.cpp" />
+    <ClCompile Include="wrapper.cpp" />
     <ClCompile Include="xsdoc.cpp" />
     <ClCompile Include="xsfield.cpp" />
     <ClCompile Include="xsparse.cpp" />
@@ -337,6 +337,7 @@
     <ClInclude Include="valtree.h" />
     <ClInclude Include="acol.h" />
     <ClInclude Include="win.h" />
+    <ClInclude Include="wrapper.h" />
     <ClInclude Include="xsbase.h" />
     <ClInclude Include="xsdoc.h" />
     <ClInclude Include="xsfield.h" />

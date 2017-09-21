@@ -3,7 +3,7 @@
 
 using namespace draw;
 
-static draw::context* hot_source;
+static wrapper* hot_source;
 
 static void callback_setfocus()
 {
@@ -28,7 +28,36 @@ void draw::focusing(const char* id, const rect& rc, unsigned& flags)
 	addelement(id, rc);
 }
 
-int wdt_radio_element(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const widget* childs, const char* tips)
+bool draw::addbutton(rect& rc, const char* t1, int k1, const char* tt1)
+{
+	const int width = 18;
+	rc.x2 -= width;
+	auto result = draw::buttonh({rc.x2, rc.y1, rc.x2 + width, rc.y2},
+		false, false, false, false,
+		t1, k1, true, tt1);
+	draw::line(rc.x2, rc.y1, rc.x2, rc.y2, colors::border);
+	return result;
+}
+
+int draw::addbutton(rect& rc, const char* t1, int k1, const char* tt1, const char* t2, int k2, const char* tt2)
+{
+	const int width = 20;
+	rc.x2 -= width;
+	auto height = rc.height() / 2;
+	auto result = 0;
+	if(draw::buttonh({rc.x2, rc.y1, rc.x2 + width, rc.y1 + height},
+		false, false, false, false,
+		t1, k1, true, tt1))
+		result = 1;
+	if(draw::buttonh({rc.x2, rc.y1 + height, rc.x2+width, rc.y1+height*2},
+		false, false, false, false,
+		t2, k2, true, tt2))
+		result = 2;
+	draw::line(rc.x2, rc.y1, rc.x2, rc.y2, colors::border);
+	return result;
+}
+
+int wdt_radio_element(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
 {
 	if(!label || !label[0])
 		return 0;
@@ -65,7 +94,7 @@ int wdt_radio_element(int x, int y, int width, const char* id, unsigned flags, c
 	return rc1.height() + metrics::padding * 2;
 }
 
-int wdt_radio(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const widget* childs, const char* tips)
+int wdt_radio(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
 {
 	int y0 = y;
 	auto current_value = getdata(source, getdatasource(id, link));
@@ -81,7 +110,7 @@ int wdt_radio(int x, int y, int width, const char* id, unsigned flags, const cha
 	return y - y0;
 }
 
-int wdt_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const draw::widget* childs, const char* tips)
+int wdt_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
 {
 	if(!label || !label[0])
 		return 0;
@@ -120,7 +149,7 @@ int wdt_check(int x, int y, int width, const char* id, unsigned flags, const cha
 	return rc1.height() + metrics::padding * 2;
 }
 
-int wdt_button(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const draw::widget* childs, const char* tips)
+int wdt_button(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
 {
 	if(!label || !label[0])
 		return 0;

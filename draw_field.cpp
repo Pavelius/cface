@@ -50,10 +50,51 @@ using namespace draw;
 //	return true;
 //}
 
-int wdt_field(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::context* source, int title, const draw::widget* childs, const char* tips)
+static bool editstart(const rect& rc, int ev, const char* id)
+{
+	auto msk = hot::key & 0xFFFF;
+	auto result = false;
+	switch(hot::key&CommandMask)
+	{
+	case 0: // Означает что есть другая комманда оформленная в виде execute()
+	case MouseMove:
+	case InputIdle:
+	case InputEdit:
+		// Команды не влияющие на вход в режим редактирования
+		break;
+	case MouseLeft:
+	case MouseLeftDBL:
+	case MouseRight:
+		result = draw::areb(rc);
+		break;
+	default:
+		result = (msk == InputSymbol || msk >= KeyLeft);
+		break;
+	}
+	if(result)
+	{
+		execute(ev, hot::param);
+		hot::name = id;
+		hot::element = rc;
+	}
+	return result;
+}
+
+static void callback_dropdown_list()
+{
+}
+
+static void callback_choose_list()
+{
+}
+
+int wdt_field(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
 {
 	draw::state push;
-	//char number_text[32];
+	char number_text[32];
+	auto p = getdata(number_text, source, getdatasource(id, link), childs, false);
+	if(!p)
+		return 0;
 	setposition(x, y, width);
 	wdt_title(x, y, width, flags, label, title);
 	rect rc = {x, y, x + width, y + draw::texth() + 8};
@@ -63,15 +104,26 @@ int wdt_field(int x, int y, int width, const char* id, unsigned flags, const cha
 	if(!isdisabled(flags))
 		draw::rectf(rc, colors::window);
 	draw::rectb(rc, colors::border);
-	//if(childs)
-	//	addbutton(rc, InputChoose, ":dropdown", F4, "Показать список");
-	//e.addbutton(rc, InputChoose, "...", F4, "Выбрать");
+	if(childs)
+	{
+		if(addbutton(rc, ":dropdown", F4, "Показать список"))
+		{
+			draw::execute(InputDropDown);
+			hot::name = id;
+			hot::callback = callback_dropdown_list;
+		}
+	}
+	else if(addbutton(rc, "...", F4, "Выбрать"))
+	{
+		draw::execute(InputChoose);
+		hot::name = id;
+		hot::callback = callback_choose_list;
+	}
 	focusing(id, rc, flags);
 	auto a = area(rc);
-	auto p = "";// e.getstring(number_text, false);
 	bool enter_edit = false;
-	//if(isfocused(flags) && e.id)
-	//	enter_edit = e.editstart(rc, InputEdit);
+	if(isfocused(flags) && id)
+		enter_edit = editstart(rc, InputEdit, id);
 	if(!enter_edit)
 	{
 		if(isfocused(flags))
