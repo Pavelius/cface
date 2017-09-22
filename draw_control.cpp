@@ -182,3 +182,19 @@ bool control::keyinput(int id)
 	}
 	return true;
 }
+
+int wdt_control(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+{
+	if(!source)
+		return 0;
+	auto pc = source->getwrapper(draw::getdatasource(id, link));
+	if(!pc)
+		return 0;
+	if(!value)
+		value = draw::getheight() - y;
+	setposition(x, y, width);
+	value -= metrics::padding*2;
+	auto pcz = (control*)pc;
+	pcz->view({x, y, x + width, y + value}, true);
+	return value;
+}

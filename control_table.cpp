@@ -56,12 +56,11 @@ void tbl_hilight(int x, int y, int width, unsigned flags, const char* label)
 	draw::area(rc);
 	if(!ischecked(flags))
 		return;
-	auto focused = isfocused(flags);
 	if(label && flags&ColumnSmallHilite)
-		draw::hilight({x, y, x + imin(width, draw::textw(label) + 12), y + height}, focused);
+		draw::hilight({x, y, x + imin(width, draw::textw(label) + 12), y + height}, flags);
 	else
-		draw::hilight(rc, focused);
-	if(focused)
+		draw::hilight(rc, flags);
+	if(isfocused(flags))
 		hot::element = rc;
 }
 

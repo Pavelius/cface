@@ -390,6 +390,7 @@ void						tooltips(rect rc, const char* format, ...);
 
 int wdt_button(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
 int wdt_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
+int wdt_control(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
 int wdt_clipart(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
 int wdt_field(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
 int wdt_group(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
