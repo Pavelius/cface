@@ -7,7 +7,6 @@
 #define WIDGET(n) static widget::plugin plugin_##n(#n, wdt_##n)
 
 extern "C" void* memset(void* destination, int value, unsigned size);
-struct xsfield;
 
 enum draw_event_s {
 	// input events
@@ -214,6 +213,8 @@ namespace draw
 		const char*			tips; // Tooltips value
 		const char*			link; // Hyperlink value
 		operator bool() const { return type != 0; }
+		widget&				settips(const char* v) { tips = v; return *this; }
+		widget&				setvalue(int v) { value = v; return *this; }
 	};
 	struct control : wrapper
 	{

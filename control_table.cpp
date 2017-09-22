@@ -34,6 +34,21 @@ static widget	grid_commands[] = {
 	{0}
 };
 
+struct row_wrapper : wrapper
+{
+	table*		parent;
+
+	row_wrapper(table* parent) : parent(parent)
+	{
+	}
+
+	const xsfield* getmeta() const override
+	{
+		return parent->fields;
+	}
+
+};
+
 void tbl_hilight(int x, int y, int width, unsigned flags, const char* label)
 {
 	auto height = draw::texth() + 8;
@@ -564,7 +579,8 @@ void table::row(rect rc, int index)
 			flags |= Checked;
 		if(focused)
 			flags |= Focused;
-		e.type(r1.x1, r1.y1, r1.width(), id, flags, e.label, index, e.link, this, e.title, e.childs, e.tips);
+		row_wrapper rwr(this);
+		e.type(r1.x1, r1.y1, r1.width(), id, flags, e.label, index, e.link, &rwr, e.title, e.childs, e.tips);
 		if(show_grid_lines)
 			line(r1.x2, r1.y1, r1.x2, r1.y2 - 1, colors::form);
 		r1.x1 = r1.x2;

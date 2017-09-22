@@ -1,5 +1,7 @@
 #pragma once
 
+struct xsfield;
+
 struct wrapper
 {
 	struct command
@@ -17,7 +19,8 @@ struct wrapper
 	};
 	virtual unsigned		execute(const char* id, bool run);
 	virtual const command*	getcommands() const { return 0; }
-	virtual const struct xsfield* getmeta() const { return 0; }
+	virtual const xsfield*	getmeta() const { return 0; }
 	virtual void*			getobject() { return this; }
+	virtual wrapper*		getwrapper(const char* id) { return 0; }
 	virtual bool			isdisabled(const char* id) const { return false; }
 };
