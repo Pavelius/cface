@@ -49,6 +49,11 @@ struct row_wrapper : wrapper
 
 };
 
+table* gettable(wrapper* source)
+{
+	return ((row_wrapper*)source)->parent;
+}
+
 void tbl_hilight(int x, int y, int width, unsigned flags, const char* label)
 {
 	auto height = draw::texth() + 8;
@@ -142,13 +147,13 @@ int tbl_check(int x, int y, int width, const char* id, unsigned flags, const cha
 int tbl_image(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
 {
 	auto data_value = getdata(source, getdatasource(id, link));
-	//auto pc = (table*)e.context;
-	//if(!pc->rowsimages)
-	//	return 0;
+	auto pc = gettable(source);
+	if(!pc->rowsimages)
+		return 0;
 	if(data_value == -1)
 		return 0;
 	tbl_setposition(x, y, width);
-	//draw::image(x + width/2, y + width/2, pc->rowsimages, value, 0);
+	draw::image(x + width/2, y + width/2, pc->rowsimages, data_value, 0);
 	return 0;
 }
 

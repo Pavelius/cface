@@ -8,10 +8,6 @@ sprite*				metrics::toolbar = (sprite*)loadb("toolbar.pma");
 sprite*				metrics::tree = (sprite*)loadb("tree.pma");
 control::plugin*	control::plugin::first;
 
-control::control() : id(0), show_border(true), show_background(true), disabled(false), focused(false)
-{
-}
-
 control::plugin::plugin(control& element) : element(element)
 {
 	seqlink(this);
@@ -198,3 +194,5 @@ int wdt_control(int x, int y, int width, const char* id, unsigned flags, const c
 	pcz->view({x, y, x + width, y + value}, true);
 	return value;
 }
+
+WIDGET(control);

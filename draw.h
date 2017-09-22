@@ -233,7 +233,9 @@ namespace draw
 		bool				show_border;
 		bool				show_toolbar;
 		//
-		control();
+		control::control() : id(0), dock(DockWorkspace),
+			show_border(true), show_background(true), show_toolbar(true),
+			disabled(false), focused(false) {}
 		//
 		virtual void		background(rect& rc);
 		virtual void		contextmenu() {}
