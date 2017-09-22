@@ -4,7 +4,7 @@
 #include "draw.h"
 #include "io.h"
 #include "menu.h"
-#include "ui_table.h"
+#include "control_table.h"
 #include "xsref.h"
 
 using namespace draw;
@@ -34,18 +34,19 @@ static widget	grid_commands[] = {
 	{0}
 };
 
-void tbl_hilight(int x, int y, int width, const draw::element& e, const char* temp)
+void tbl_hilight(int x, int y, int width, unsigned flags, const char* label)
 {
-	auto height = e.getheight()*draw::texth() + 8;
+	auto height = draw::texth() + 8;
 	rect rc = { x, y, x + width, y + height };
 	draw::area(rc);
-	if(!e.ischecked())
+	if(!ischecked(flags))
 		return;
-	if(temp && e.flags&ColumnSmallHilite)
-		draw::hilight({x, y, x + imin(width, draw::textw(temp) + 12), y + height}, e.isfocused());
+	auto focused = isfocused(flags);
+	if(label && flags&ColumnSmallHilite)
+		draw::hilight({x, y, x + imin(width, draw::textw(label) + 12), y + height}, focused);
 	else
-		draw::hilight(rc, e.isfocused());
-	if(e.isfocused())
+		draw::hilight(rc, focused);
+	if(focused)
 		hot::element = rc;
 }
 
@@ -77,97 +78,94 @@ void tbl_text(rect rc, const char* value, unsigned flags)
 	}
 }
 
-int tbl_text(int x, int y, int width, draw::element& e)
+int tbl_text(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
 {
-	auto value = (const char*)e.data.get();
-	auto height = e.getheight()*draw::texth();
-	tbl_hilight(x, y, width, e, value);
+	auto data_value = (const char*)getdata(source, getdatasource(id, link));
+	auto height = draw::texth();
+	tbl_hilight(x, y, width, flags, data_value);
 	tbl_setposition(x, y, width);
-	if(value)
-		tbl_text({x, y, x + width, y + height}, value, e.flags);
+	if(data_value)
+		tbl_text({x, y, x + width, y + height}, (const char*)data_value, flags);
 	return height + table_padding * 2;
 }
 
-int tbl_number(int x, int y, int width, draw::element& e)
+int tbl_number(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
 {
-	auto value = e.data.get();
-	auto height = e.getheight()*draw::texth();
-	char temp[64]; sznum(temp, value);
-	tbl_hilight(x, y, width, e, temp);
+	char temp[32]; sznum(temp, value);
+	auto data_value = getdata(source, getdatasource(id, link));
+	auto height = draw::texth();
+	tbl_hilight(x, y, width, flags, label);
 	tbl_setposition(x, y, width);
-	draw::text({x, y, x + width, y + height}, temp, e.flags);
+	draw::text({x, y, x + width, y + height}, temp, flags);
 	return height + table_padding * 2;
 }
 
-int tbl_reference(int x, int y, int width, draw::element& e)
+int tbl_reference(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
 {
 	return 0;
 }
 
-int tbl_check(int x, int y, int width, draw::element& e)
+int tbl_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
 {
-	auto value = e.data.get()&(~e.maximum);
-	tbl_hilight(x, y, width, e, 0);
+	auto pid = getdatasource(id, link);
+	auto data_value = getdata(source, pid);
+	tbl_hilight(x, y, width, flags, 0);
 	tbl_setposition(x, y, width);
-	element e1 = e;
-	e1.label = ":check";
-	e1.flags = (value == e.value) ? Checked : 0;
-	auto height = wdt_clipart(x, y, width, e1);
+	auto height = wdt_clipart(x, y, width, id, (value == data_value) ? Checked : 0, ":checkbox", value, link, source, title, childs, tips);
 	auto executed = false;
 	if(areb({x, y, x + width, y + height}))
 	{
 		if(hot::key == MouseLeft && !hot::pressed)
 			executed = true;
 	}
-	if(e.isfocused() && e.ischecked() && hot::key==KeySpace)
+	if(isfocused(flags) && ischecked(flags) && hot::key==KeySpace)
 		executed = true;
 	if(executed)
-		execute(InputSetValue, value ? 0 : e.value, e1);
+		draw::setdata(source, pid, value);
 	return height;
 }
 
-int tbl_image(int x, int y, int width, draw::element& e)
+int tbl_image(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
 {
-	auto pc = (table*)e.context;
-	if(!pc->rowsimages)
-		return 0;
-	auto value = e.data.get();
-	if(value == -1)
+	auto data_value = getdata(source, getdatasource(id, link));
+	//auto pc = (table*)e.context;
+	//if(!pc->rowsimages)
+	//	return 0;
+	if(data_value == -1)
 		return 0;
 	tbl_setposition(x, y, width);
-	draw::image(x + width/2, y + width/2, pc->rowsimages, value, 0);
+	//draw::image(x + width/2, y + width/2, pc->rowsimages, value, 0);
 	return 0;
 }
 
-int tbl_date(int x, int y, int width, draw::element& e)
+int tbl_date(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
 {
 	//	getstrfdat(text, get(object, e), true);
 	return 0;
 }
 
-int tbl_point(int x, int y, int width, draw::element& e)
+int tbl_point(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
 {
 	//	szprint(text, "%1i, %2i", ((point*)&i)->x, ((point*)&i)->y);
 	return 0;
 }
 
-int tbl_color(int x, int y, int width, draw::element& e)
+int tbl_color(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
 {
 	//	szprint(text, "%1i, %2i, %3i", ((color*)&i)->r, ((color*)&i)->g, ((color*)&i)->b);
 	return 0;
 }
 
-int tbl_linenumber(int x, int y, int width, draw::element& e)
+int tbl_linenumber(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
 {
-	char temp[32];
-	sznum(temp, e.row + 1);
-	tbl_hilight(x, y, width, e, temp);
+	char temp[32]; sznum(temp, value + 1);
+	tbl_hilight(x, y, width, flags, label);
 	tbl_setposition(x, y, width);
 	draw::text(x, y, temp);
 	return 0;
 }
 
-unsigned execute_table_add(xscontext* context, bool run)
+unsigned execute_table_add(wrapper* context, bool run)
 {
 	auto pc = (table*)context;
 	if(pc->no_change_count)
@@ -179,7 +177,7 @@ unsigned execute_table_add(xscontext* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_addcopy(xscontext* context, bool run)
+unsigned execute_table_addcopy(wrapper* context, bool run)
 {
 	auto pc = (table*)context;
 	if(pc->no_change_count)
@@ -191,7 +189,7 @@ unsigned execute_table_addcopy(xscontext* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_copy(xscontext* context, bool run)
+unsigned execute_table_copy(wrapper* context, bool run)
 {
 	auto pc = (table*)context;
 	if(run)
@@ -203,7 +201,7 @@ unsigned execute_table_copy(xscontext* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_delete(xscontext* context, bool run)
+unsigned execute_table_delete(wrapper* context, bool run)
 {
 	auto pc = (table*)context;
 	if(pc->no_change_order)
@@ -222,7 +220,7 @@ unsigned execute_table_delete(xscontext* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_change(xscontext* context, bool run)
+unsigned execute_table_change(wrapper* context, bool run)
 {
 	auto pc = (table*)context;
 	if(pc->no_change_content)
@@ -236,7 +234,7 @@ unsigned execute_table_change(xscontext* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_movedown(xscontext* context, bool run)
+unsigned execute_table_movedown(wrapper* context, bool run)
 {
 	auto pc = (table*)context;
 	if(pc->no_change_order)
@@ -254,7 +252,7 @@ unsigned execute_table_movedown(xscontext* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_moveup(xscontext* context, bool run)
+unsigned execute_table_moveup(wrapper* context, bool run)
 {
 	auto pc = (table*)context;
 	if(pc->no_change_order)
@@ -272,7 +270,7 @@ unsigned execute_table_moveup(xscontext* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_sortas(xscontext* context, bool run)
+unsigned execute_table_sortas(wrapper* context, bool run)
 {
 	auto pc = (table*)context;
 	if(pc->no_change_order)
@@ -290,7 +288,7 @@ unsigned execute_table_sortas(xscontext* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_sortds(xscontext* context, bool run)
+unsigned execute_table_sortds(wrapper* context, bool run)
 {
 	auto pc = (table*)context;
 	if(pc->no_change_order)
@@ -308,7 +306,7 @@ unsigned execute_table_sortds(xscontext* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_export(xscontext* context, bool run)
+unsigned execute_table_export(wrapper* context, bool run)
 {
 	auto pc = (table*)context;
 	char temp[260] = {0};
@@ -323,7 +321,7 @@ unsigned execute_table_export(xscontext* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_import(xscontext* context, bool run)
+unsigned execute_table_import(wrapper* context, bool run)
 {
 	auto pc = (table*)context;
 	if(pc->no_change_order || pc->no_change_content || pc->no_change_count)
@@ -340,7 +338,7 @@ unsigned execute_table_import(xscontext* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_setting(xscontext* context, bool run)
+unsigned execute_table_setting(wrapper* context, bool run)
 {
 	auto pc = (table*)context;
 	if(!pc->use_setting)
@@ -350,7 +348,7 @@ unsigned execute_table_setting(xscontext* context, bool run)
 	return Executed;
 }
 
-xscontext::command table_commands[] = {
+wrapper::command table_commands[] = {
 	{"add", "Добавить", execute_table_add, 0, {F8}},
 	{"addcopy", "Скопировать", execute_table_addcopy, 0, {F9}},
 	{"change", "Изменить", execute_table_change, 0, {F2, KeyEnter}},
@@ -379,7 +377,7 @@ show_header(true), show_event_rows(false)
 	commands = standart_commands;
 }
 
-xscontext::command*	table::getcommands() const
+wrapper::command* table::getcommands() const
 {
 	return table_commands;
 }
@@ -491,15 +489,15 @@ void table::header(rect client)
 				last_direction = (last_direction == -1) ? 1 : -1;
 				if(last_direction == -1)
 				{
-					element ec(*this);
-					ec.id = "sortas";
-					draw::execute(InputExecute, 0, ec);
+					draw::execute(InputExecute);
+					hot::name = "sortas";
+					hot::source = this;
 				}
 				else
 				{
-					element ec(*this);
-					ec.id = "sortds";
-					draw::execute(InputExecute, 0, ec);
+					draw::execute(InputExecute);
+					hot::name = "sortds";
+					hot::source = this;
 				}
 			}
 		}
@@ -561,17 +559,12 @@ void table::row(rect rc, int index)
 		}
 		if(r1.x1 >= rc.x2)
 			break;
-		draw::element e1(e, 0);
-		e1.context = this;
-		e1.row = index;
-		e1.column = i;
-		e1.data = rowref.getvalue(e.getdata());
-		e1.rectangle = r1;
+		unsigned flags = e.flags;
 		if(index == current && i == current_column)
-			e1.flags |= Checked;
+			flags |= Checked;
 		if(focused)
-			e1.flags |= Focused;
-		e1.type(r1.x1, r1.y1, r1.width(), e1);
+			flags |= Focused;
+		e.type(r1.x1, r1.y1, r1.width(), id, flags, e.label, index, e.link, this, e.title, e.childs, e.tips);
 		if(show_grid_lines)
 			line(r1.x2, r1.y1, r1.x2, r1.y2 - 1, colors::form);
 		r1.x1 = r1.x2;
@@ -749,12 +742,12 @@ void table::treemark(rect rc, int index, int level) const
 		line(x, y - 4, x, y + 4, c1);
 }
 
-int table::find(const char* value, int index, widget& e)
+int table::find(const char* id, const char* value, int index)
 {
 	int i1 = index;
 	int i2 = maximum;
 	int sz = zlen(value);
-	auto fd = fields->find(e.getdata());
+	auto fd = fields->find(id);
 	if(fd && fd->type == text_type)
 	{
 		for(; i1 < i2; i1++)
@@ -772,27 +765,28 @@ int table::find(const char* value, int index, widget& e)
 
 bool table::changing(void* object, widget& e)
 {
-	element e1(e, 0);
-	e1.row = current;
-	e1.context = this;
-	xsref rowref = {fields, rows.get(e1.row)};
-	e1.data = rowref.getvalue(e.getdata());
-	draw::rectf(hot::element, colors::window);
-	if(show_grid_lines)
-	{
-		line(hot::element.x1, hot::element.y1, hot::element.x1, hot::element.y2, colors::form);
-		line(hot::element.x1, hot::element.y2, hot::element.x2, hot::element.y2, colors::form);
-	}
-	auto result = e1.editing();
-	// Some keys must be handled by this control
-	switch(hot::key)
-	{
-	case KeyDown:
-	case KeyUp:
-		draw::execute(hot::key, 0);
-		break;
-	}
-	return result;
+	//element e1(e, 0);
+	//e1.row = current;
+	//e1.context = this;
+	//xsref rowref = {fields, rows.get(e1.row)};
+	//e1.data = rowref.getvalue(e.getdata());
+	//draw::rectf(hot::element, colors::window);
+	//if(show_grid_lines)
+	//{
+	//	line(hot::element.x1, hot::element.y1, hot::element.x1, hot::element.y2, colors::form);
+	//	line(hot::element.x1, hot::element.y2, hot::element.x2, hot::element.y2, colors::form);
+	//}
+	//auto result = e1.editing();
+	//// Some keys must be handled by this control
+	//switch(hot::key)
+	//{
+	//case KeyDown:
+	//case KeyUp:
+	//	draw::execute(hot::key, 0);
+	//	break;
+	//}
+	//return result;
+	return true;
 }
 
 void table::clear()
@@ -846,7 +840,7 @@ bool table::keyinput(int id)
 			char* p = zend(search_text);
 			szput(&p, hot::param);
 			p[0] = 0;
-			int i1 = find(search_text, current, columns.data[current_column]);
+			int i1 = find(draw::getdatasource(columns.data[current_column].id, columns.data[current_column].link), search_text, current);
 			if(i1!=-1)
 			{
 				current = i1;
@@ -864,7 +858,7 @@ bool table::keyinput(int id)
 widget& table::addcol(widget::proc type, const char* id, const char* label, unsigned flags, const char* link, int width)
 {
 	auto p = columns.addu(id);
-	p->clear();
+	memset(p, 0, sizeof(p[0]));
 	p->type = type;
 	p->id = id;
 	p->label = label;
@@ -971,7 +965,7 @@ bool table::setting()
 	int current_control = 0;
 	table_columns.addcol(tbl_text, "label", "Название", ColumnSizeAuto|ColumnReadOnly);
 	table_columns.addcol(tbl_number, "width", "Ширина");
-	table_columns.fields = widget_type;
+	//table_columns.fields = widget_type;
 	table_columns.use_setting = false;
 	data_columns.clear();
 	for(auto& e : columns)
@@ -986,13 +980,13 @@ bool table::setting()
 		rect rc = {0, 0, getwidth(), getheight()-dy};
 		rectf({0, 0, getwidth(), getheight()}, colors::form);
 		rc.offset(metrics::padding*2);
-		view(rc, controls, zlen(controls), current_control, false, 0, metrics::padding);
+		draw::view(rc, controls, zlen(controls), current_control, false, 0, metrics::padding);
 		rc.y1 = getheight() - dy - metrics::padding;
 		rc.x2 = getwidth() - metrics::padding;
 		rc.x1 = rc.x2 - 100;
-		view(wdt_button, rc.x1, rc.y1, 100, "cancel", "Отменить");
+		wdt_button(rc.x1, rc.y1, 100, "cancel", 0, "Отменить");
 		rc.x1 = rc.x1 - 100;
-		view(wdt_button, rc.x1, rc.y1, 100, "apply", "OK");
+		wdt_button(rc.x1, rc.y1, 100, "apply", 0, "OK");
 		int id = input();
 		switch(id)
 		{
@@ -1044,7 +1038,7 @@ void table::contextmenu()
 	e.addseparator();
 	if(use_setting)
 		e.add("setting", this);
-	auto result = (xscontext::command*)e.choose(hot::mouse.x, hot::mouse.y);
+	auto result = (wrapper::command*)e.choose(hot::mouse.x, hot::mouse.y);
 	if(result)
 		result->type(this, true);
 }

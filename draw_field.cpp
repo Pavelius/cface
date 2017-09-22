@@ -1,56 +1,50 @@
 #include "amem.h"
 #include "crt.h"
 #include "draw.h"
+#include "control_textedit.h"
+#include "control_table.h"
+#include "xsfield.h"
 
 using namespace draw;
 
-//bool element::editing()
-//{
-//	char temp[8192]; temp[0] = 0;
-//	auto old_fore = draw::fore;
-//	draw::fore = colors::text;
-//	getstring(temp, true);
-//	draw::controls::textedit te(temp, sizeof(temp));
-//	te.align = this->flags;
-//	te.p1 = 0; te.p2 = zlen(temp);
-//	auto result = te.editing(hot::element);
-//	if(result)
-//	{
-//		if(data.fields->type == text_type)
-//			data.set((int)szdup(temp));
-//		else if(data.fields->type == number_type)
-//			data.set(sz2num(temp));
-//	}
-//	draw::fore = old_fore;
-//	return result;
-//}
-//
-//bool element::choose()
-//{
-//	if(!childs)
-//		return false;
-//	amem source((void*)childs, sizeof(childs[0]), zlen(childs));
-//	draw::controls::table source_table(source);
-//	source_table.fields = widget_type;
-//	source_table.pixels_per_line = texth() + 8;
-//	source_table.addcol(tbl_text, "label", "Заголовок", ColumnSizeAuto);
-//	source_table.show_header = false;
-//	source_table.no_change_content = true;
-//	source_table.no_change_max_count = true;
-//	source_table.no_change_order = true;
-//	source_table.no_change_count = true;
-//	source_table.hilite_rows = true;
-//	source_table.focused = true;
-//	if(!source_table.open({rectangle.x1, rectangle.y2 + 1,
-//		rectangle.x2,
-//		rectangle.y2 + (int)source.getcount()*source_table.pixels_per_line + 2}))
-//		return false;
-//	auto& result = childs[source_table.current];
-//	data.set(result.value);
-//	return true;
-//}
+static unsigned edit_flags;
+static const widget* edit_childs;
 
-static bool editstart(const rect& rc, int ev, const char* id)
+void callback_edit()
+{
+	field_type_s type;
+	auto id = hot::name;
+	auto source = hot::source;
+	auto childs = edit_childs;
+	char temp[8192]; temp[0] = 0;
+	if(!getdata(temp, source, id, edit_childs, true, type))
+		return;
+	auto old_fore = draw::fore;
+	draw::fore = colors::text;
+	draw::controls::textedit te(temp, sizeof(temp));
+	te.align = edit_flags;
+	te.p1 = 0;
+	te.p2 = zlen(temp);
+	if(te.editing(hot::element))
+	{
+		switch(type)
+		{
+		case FieldText: setdata(source, id, (int)szdup(temp), true); break;
+		case FieldNumber:
+			if(childs)
+			{
+
+			}
+			else
+				setdata(source, id, sz2num(temp), true);
+			break;
+		default: break;
+		}
+	}
+	draw::fore = old_fore;
+}
+
+static bool editstart(const rect& rc, wrapper* source, const char* id, unsigned flags, const widget* childs)
 {
 	auto msk = hot::key & 0xFFFF;
 	auto result = false;
@@ -73,15 +67,44 @@ static bool editstart(const rect& rc, int ev, const char* id)
 	}
 	if(result)
 	{
-		execute(ev, hot::param);
+		execute(InputEdit);
 		hot::name = id;
 		hot::element = rc;
+		hot::source = source;
+		hot::callback = callback_edit;
+		edit_flags = flags;
+		edit_childs = childs;
 	}
 	return result;
 }
 
 static void callback_dropdown_list()
 {
+	static xsfield widget_type[] = {
+		BSREQ(widget, label, text_type),
+		{0}
+	};
+	auto childs = edit_childs;
+	if(!childs)
+		return;
+	amem source((void*)childs, sizeof(childs[0]), zlen(childs));
+	draw::controls::table source_table(source);
+	source_table.fields = widget_type;
+	source_table.pixels_per_line = texth() + 8;
+	source_table.addcol(tbl_text, "label", "Заголовок", ColumnSizeAuto);
+	source_table.show_header = false;
+	source_table.no_change_content = true;
+	source_table.no_change_max_count = true;
+	source_table.no_change_order = true;
+	source_table.no_change_count = true;
+	source_table.hilite_rows = true;
+	source_table.focused = true;
+	if(!source_table.open({hot::element.x1, hot::element.y2 + 1,
+		hot::element.x2,
+		hot::element.y2 + (int)source.getcount()*source_table.pixels_per_line + 2}))
+		return;
+	auto& result = childs[source_table.current];
+	//data.set(result.value);
 }
 
 static void callback_choose_list()
@@ -112,6 +135,7 @@ int wdt_field(int x, int y, int width, const char* id, unsigned flags, const cha
 			draw::execute(InputDropDown);
 			hot::name = id;
 			hot::callback = callback_dropdown_list;
+			edit_childs = childs;
 		}
 	}
 	if(field_type == FieldNumber)
@@ -142,7 +166,7 @@ int wdt_field(int x, int y, int width, const char* id, unsigned flags, const cha
 	auto a = area(rc);
 	bool enter_edit = false;
 	if(isfocused(flags) && id)
-		enter_edit = editstart(rc, InputEdit, id);
+		enter_edit = editstart(rc, source, id, flags, childs);
 	if(!enter_edit)
 	{
 		if(isfocused(flags))

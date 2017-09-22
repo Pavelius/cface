@@ -1,7 +1,6 @@
 #include "aref.h"
 #include "collection.h"
-#include "ui_list.h"
-#include "widget.h"
+#include "control_list.h"
 
 #pragma once
 
@@ -57,9 +56,9 @@ namespace draw
 			virtual bool		changing(void* object, widget& e);
 			void				clear();
 			virtual void		contextmenu() override;
-			int					find(const char* text, int start, widget& e);
+			int					find(const char* id, const char* text, int start);
 			widget*				findcol(const char* id);
-			xscontext::command*	getcommands() const override;
+			wrapper::command*	getcommands() const override;
 			const widget*		gettoolbar() const override;
 			void				header(rect rc);
 			bool				keyinput(int id) override;
@@ -77,10 +76,10 @@ namespace draw
 		};
 	}
 }
-int tbl_check(int x, int y, int width, draw::element& e);
-int tbl_date(int x, int y, int width, draw::element& e);
-int tbl_image(int x, int y, int width, draw::element& e);
-int tbl_linenumber(int x, int y, int width, draw::element& e);
-int tbl_number(int x, int y, int width, draw::element& e);
-int tbl_reference(int x, int y, int width, draw::element& e);
-int tbl_text(int x, int y, int width, draw::element& e);
+int tbl_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
+int tbl_date(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
+int tbl_image(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
+int tbl_linenumber(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
+int tbl_number(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
+int tbl_reference(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
+int tbl_text(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);

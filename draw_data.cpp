@@ -4,14 +4,17 @@
 
 using namespace draw;
 
-static wrapper*		hot_source;
+static void callback_setvalue(wrapper* source, const char* id, int value)
+{
+	if(!source)
+		return;
+	xsref e = {source->getmeta(), source};
+	e.set(id, value);
+}
 
 static void callback_setvalue()
 {
-	if(!hot_source)
-		return;
-	xsref e = {hot_source->getmeta(), hot_source};
-	e.set(hot::name, hot::param);
+	callback_setvalue(hot::source, hot::name, hot::param);
 }
 
 int	draw::getdata(wrapper* source, const char* id)
@@ -22,12 +25,17 @@ int	draw::getdata(wrapper* source, const char* id)
 	return e.get(id);
 }
 
-void draw::setdata(wrapper* source, const char* id, int value)
+void draw::setdata(wrapper* source, const char* id, int value, bool instant)
 {
-	execute(InputSetValue, value);
-	hot::name = id;
-	hot_source = source;
-	hot::callback = callback_setvalue;
+	if(instant)
+		callback_setvalue(source, id, value);
+	else
+	{
+		execute(InputSetValue, value);
+		hot::name = id;
+		hot::source = source;
+		hot::callback = callback_setvalue;
+	}
 }
 
 char* draw::getdata(char* temp, wrapper* source, const char* id, const draw::widget* childs, bool to_buffer, field_type_s& type)
@@ -37,19 +45,20 @@ char* draw::getdata(char* temp, wrapper* source, const char* id, const draw::wid
 	if(!field)
 		return 0;
 	auto value = getdata(source, id);
+	temp[0] = 0;
 	if(field->type == text_type)
 	{
 		type = FieldText;
 		if(to_buffer)
 		{
-			zcpy(temp, (char*)value);
+			if(value)
+				zcpy(temp, (char*)value);
 			return temp;
 		}
 		if(!value)
 			return "";
 		return (char*)value;
 	}
-	temp[0] = 0;
 	if(field->type == number_type)
 	{
 		type = FieldNumber;

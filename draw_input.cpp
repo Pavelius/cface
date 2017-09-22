@@ -17,7 +17,6 @@ void draw::execute(int id, int param)
 
 int draw::input(bool redraw)
 {
-	auto temp_hotkey = hot::key;
 	auto temp_callback = hot::callback;
 	auto temp_command = current_command;
 	// Очистим данные
@@ -31,7 +30,7 @@ int draw::input(bool redraw)
 		hot::key = temp_command;
 		temp_callback();
 	}
-	else if(temp_command)
+	if(temp_command)
 		hot::key = temp_command;
 	if(hot::key)
 		return hot::key;

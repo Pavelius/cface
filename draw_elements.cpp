@@ -21,6 +21,8 @@ void draw::focusing(const char* id, const rect& rc, unsigned& flags)
 {
 	if(flags&Disabled)
 		return;
+	if(!getfocus())
+		setfocus(id);
 	if(getfocus() == id)
 		flags |= Focused;
 	else if(area(rc) == AreaHilitedPressed && hot::key == MouseLeft && hot::pressed)

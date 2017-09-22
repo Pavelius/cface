@@ -13,7 +13,7 @@ limitations under the License. */
 
 #include "crt.h"
 #include "draw.h"
-#include "widget_list.h"
+#include "control_list.h"
 #include "xsref.h"
 
 using namespace draw::controls;

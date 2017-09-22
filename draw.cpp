@@ -324,14 +324,15 @@ void draw::setposition(int& x, int& y, int& width)
 	width -= metrics::padding * 2;
 }
 
-//void draw::hilight(rect rc, bool focused)
-//{
-//	const color c1 = focused ? colors::edit : colors::edit.mix(colors::window, 180);
-//	rectf({rc.x1, rc.y1, rc.x2 - 1, rc.y2 - 1}, c1);
-//	rectb({rc.x1, rc.y1, rc.x2 - 1, rc.y2 - 1}, c1);
-//	if(focused)
-//		rectx({rc.x1, rc.y1, rc.x2 - 1, rc.y2 - 1}, colors::text.mix(colors::form, 200));
-//}
+void draw::hilight(rect rc, unsigned flags)
+{
+	auto focused = isfocused(flags);
+	const color c1 = focused ? colors::edit : colors::edit.mix(colors::window, 180);
+	rectf({rc.x1, rc.y1, rc.x2 - 1, rc.y2 - 1}, c1);
+	rectb({rc.x1, rc.y1, rc.x2 - 1, rc.y2 - 1}, c1);
+	if(focused)
+		rectx({rc.x1, rc.y1, rc.x2 - 1, rc.y2 - 1}, colors::text.mix(colors::form, 200));
+}
 
 void draw::pixel(int x, int y)
 {

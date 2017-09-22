@@ -2,6 +2,8 @@
 
 #pragma once
 
+struct xsfield;
+
 namespace draw
 {
 	namespace controls
@@ -44,9 +46,9 @@ namespace draw
 		struct listdata : list
 		{
 			const void**	source; // References to objects
-		//	const xsfield*	fields; // Metadata of objects
+			const xsfield*	fields; // Metadata of objects
 			const char*		name; // Which field used to presentation
-			//listdata(const void** source, unsigned count, const xsfield* fields, const char* name);
+			listdata(const void** source, unsigned count, const xsfield* fields, const char* name);
 			void			row(rect rc, int id) override;
 		};
 	}

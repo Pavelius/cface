@@ -9,7 +9,7 @@
 extern "C" void* memset(void* destination, int value, unsigned size);
 struct xsfield;
 
-enum draw_events {
+enum draw_event_s {
 	// input events
 	InputUser = 0xE000,
 	InputSymbol = 0xED00, InputTimer,
@@ -308,6 +308,7 @@ namespace draw
 	void					glyph(int x, int y, int sym, unsigned flags);
 	void					gradv(rect rc, const color c1, const color c2, int skip = 0);
 	void					gradh(rect rc, const color c1, const color c2, int skip = 0);
+	void					hilight(rect rc, unsigned flags);
 	int						hittest(int x, int test_x, const char* string, int lenght);
 	int						hittest(rect rc, const char* string, unsigned state, point mouse);
 	bool					hittest(int x, int y, const sprite* e, int id, int flags, point mouse);
@@ -346,7 +347,7 @@ namespace draw
 	void					setclip(rect rc);
 	inline void				setclip() { clipping.set(0, 0, getwidth(), getheight()); }
 	void					setcolor(unsigned char index);
-	void					setdata(wrapper* source, const char* id, int value);
+	void					setdata(wrapper* source, const char* id, int value, bool instant = false);
 	void					setfocus(const char* id);
 	void					setposition(int& x, int& y, int& width);
 	void					settimer(unsigned milleseconds);

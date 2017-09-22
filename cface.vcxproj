@@ -229,24 +229,16 @@
     <ClCompile Include="widget_form.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="control_list.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="control_list.cpp" />
     <ClCompile Include="draw_group.cpp" />
     <ClCompile Include="draw_scroll.cpp" />
-    <ClCompile Include="control_scrollable.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="control_scrollable.cpp" />
     <ClCompile Include="widget_settings.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="draw_splitter.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="draw_splitter.cpp" />
     <ClCompile Include="draw_statusbar.cpp" />
-    <ClCompile Include="control_table.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="control_table.cpp" />
     <ClCompile Include="draw_tabs.cpp" />
     <ClCompile Include="control_textedit.cpp" />
     <ClCompile Include="draw_toolbar.cpp" />
@@ -277,18 +269,12 @@
     <ClInclude Include="adat.h" />
     <ClInclude Include="amem.h" />
     <ClInclude Include="collections.h" />
-    <ClInclude Include="control_list.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="control_scrollable.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="control_list.h" />
+    <ClInclude Include="control_scrollable.h" />
     <ClInclude Include="widget_settings.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="control_table.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="control_table.h" />
     <ClInclude Include="control_textedit.h" />
     <ClInclude Include="control_tree.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>

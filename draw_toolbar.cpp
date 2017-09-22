@@ -29,7 +29,7 @@ bool draw::tool(rect rc, bool disabled, bool checked, bool press)
 	return result;
 }
 
-int wdt_separator(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, void* source, int title, const draw::widget* childs, const char* tips)
+int wdt_separator(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
 {
 	auto height = metrics::toolbar->height;
 	//if(e.separator && *e.separator)
@@ -40,7 +40,7 @@ int wdt_separator(int x, int y, int width, const char* id, unsigned flags, const
 	return height;
 }
 
-static int wdt_dropdown(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, void* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0)
+static int wdt_dropdown(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
 {
 	auto height = metrics::toolbar->height;
 	rect rc = {x, y, x + width, y + height};
@@ -53,7 +53,7 @@ static int wdt_dropdown(int x, int y, int width, const char* id, unsigned flags,
 	return height;
 }
 
-int wdt_tool(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, void* source, int title, const draw::widget* childs, const char* tips)
+int wdt_tool(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
 {
 	auto height = metrics::toolbar->height;
 	rect rc = {x, y, x + height, y + height};
@@ -78,7 +78,7 @@ int wdt_tool(int x, int y, int width, const char* id, unsigned flags, const char
 	return height;
 }
 
-int wdt_toolbar(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, wrapper* source, int title, const draw::widget* childs, const char* tips)
+int wdt_toolbar(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
 {
 	if(!childs)
 		return 0;
@@ -91,7 +91,7 @@ int wdt_toolbar(int x, int y, int width, const char* id, unsigned flags, const c
 		auto width = height;
 		if(x + width > x2)
 		{
-			wdt_dropdown(x, y, 6, "toolbar_dropdown", 0, 0, 0, 0, source, 0, p);
+			wdt_dropdown(x, y, 6, "toolbar_dropdown", 0, 0, 0, 0, source, 0, p, 0);
 			break;
 		}
 		p->type(x, y, width, p->id, p->flags, p->label, p->value, p->link, source, p->title, p->childs, p->tips);
