@@ -38,11 +38,11 @@ namespace draw
 		color				getcolor(color normal) const;
 		virtual char*		getdescription(char* result) const;
 		virtual char*		getname(char* result) const;
-		//virtual const struct widget* gettoolbar() const { return 0; }
 		virtual bool		keyinput(int id);
 		virtual void		nonclient(rect rc);
 		bool				open(rect rc);
 		bool				open(const char* title, unsigned state, int width, int height);
+		int					render(int x, int y, int width, const wrapper::command* commands) const;
 		virtual void		redraw(rect rc) {}
 		virtual void		prerender() {}
 		void				view(rect rc, bool show_toolbar = false);
@@ -51,4 +51,3 @@ namespace draw
 	unsigned				getdocked(control** output, unsigned count, dock_s type);
 	int						view(rect rc, control** pages, int count, int& current, bool show_toolbar, unsigned tab_state, int padding);
 }
-

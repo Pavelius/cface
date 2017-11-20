@@ -350,12 +350,12 @@ unsigned execute_table_setting(wrapper* context, bool run)
 }
 
 wrapper::command table_commands[] = {
-	{"add", "Добавить", execute_table_add, 0, {F8}},
-	{"addcopy", "Скопировать", execute_table_addcopy, 0, {F9}},
-	{"change", "Изменить", execute_table_change, 0, {F2, KeyEnter}},
-	{"copy", "Копировать", execute_table_copy, 0, {Ctrl + Alpha + 'C'}},
-	{"delete", "Удалить", execute_table_delete, 0, {KeyDelete}},
-	{"export", "Экспортировать данные", execute_table_export},
+	{"add", "Добавить", execute_table_add, 0, {F8}, -1},
+	{"addcopy", "Скопировать", execute_table_addcopy, 0, {F9}, 1},
+	{"change", "Изменить", execute_table_change, 0, {F2, KeyEnter}, 2},
+	{"copy", "Копировать", execute_table_copy, 0, {Ctrl + Alpha + 'C'}, 3},
+	{"delete", "Удалить", execute_table_delete, 0, {KeyDelete}, 4},
+	{"export", "Экспортировать данные", execute_table_export, 0, {0}, 5},
 	{"import", "Импортировать данные", execute_table_import},
 	{"moveup", "Переместить вверх", execute_table_moveup},
 	{"movedown", "Переместить вниз", execute_table_movedown},

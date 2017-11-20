@@ -12,6 +12,7 @@ struct wrapper
 		proc					type;
 		command*				child;
 		unsigned				key[2];
+		int						icon;
 		//
 		operator bool() const { return id != 0; }
 		const command*			find(const char* id) const;
@@ -19,8 +20,8 @@ struct wrapper
 	};
 	virtual unsigned			execute(const char* id, bool run);
 	virtual const command*		getcommands() const { return 0; }
+	virtual int					geticon(const command& e) const { return e.icon; }
 	virtual const xsfield*		getmeta() const { return 0; }
 	virtual void*				getobject() { return this; }
 	virtual wrapper*			getwrapper(const char* id) { return 0; }
-	virtual bool				isdisabled(const char* id) const { return false; }
 };

@@ -133,8 +133,8 @@ void control::view(rect rc, bool show_toolbar)
 	// Процедура 'background' может изменить рамку элемента.
 	// Поэтому только начиная отсюда она имеет корректное значение.
 	nonclient(rc);
-	//if(rt.height())
-	//	wdt_toolbar(rt.x1, rt.y1, rt.width(), "toolbar", 0, 0, 0, 0, 0, 0, commands, 0);
+	if(rt.height())
+		render(rt.x1, rt.y1, rt.width(), commands);
 }
 
 bool control::keyinput(int id)
@@ -179,6 +179,28 @@ bool control::keyinput(int id)
 		return false;
 	}
 	return true;
+}
+
+int	control::render(int x, int y, int width, const wrapper::command* commands) const
+{
+	if(!commands)
+		return 0;
+	if(!metrics::toolbar)
+		return 0;
+	int x2 = x + width - 6;
+	auto height = metrics::toolbar->get(0).getrect(0,0,0).height() + 4;
+	for(auto p = commands; *p; p++)
+	{
+		auto width = height;
+		if(x + width > x2)
+		{
+			// wdt_dropdown(x, y, 6, "toolbar_dropdown", 0, 0, 0, 0, source, 0, p, 0);
+			break;
+		}
+		wdt_tool(x, y, width, p->id, 0, p->label, geticon(*p), 0, (wrapper*)this, 0, 0, 0);
+		x += width;
+	}
+	return height + metrics::padding * 2;
 }
 
 int wdt_control(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)

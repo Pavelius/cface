@@ -7,7 +7,7 @@ using namespace draw;
 static unsigned getflags(const wrapper* source, const widget* p, unsigned flags)
 {
 	unsigned result = p->flags;
-	if(isdisabled(flags) || (p->id && source->isdisabled(p->id)))
+	if(isdisabled(flags) || (p->id && ((wrapper*)source)->execute(p->id,false)==Disabled))
 		result |= Disabled;
 	return result;
 }
