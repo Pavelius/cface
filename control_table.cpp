@@ -351,17 +351,17 @@ unsigned execute_table_setting(wrapper* context, bool run)
 
 wrapper::command table_commands[] = {
 	{"add", "Добавить", execute_table_add, 0, {F8}, -1},
-	{"addcopy", "Скопировать", execute_table_addcopy, 0, {F9}, 1},
-	{"change", "Изменить", execute_table_change, 0, {F2, KeyEnter}, 2},
-	{"copy", "Копировать", execute_table_copy, 0, {Ctrl + Alpha + 'C'}, 3},
-	{"delete", "Удалить", execute_table_delete, 0, {KeyDelete}, 4},
-	{"export", "Экспортировать данные", execute_table_export, 0, {0}, 5},
-	{"import", "Импортировать данные", execute_table_import},
-	{"moveup", "Переместить вверх", execute_table_moveup},
-	{"movedown", "Переместить вниз", execute_table_movedown},
-	{"setting", "Настройки", execute_table_setting},
-	{"sortas", "Сортировать по возрастанию", execute_table_sortas},
-	{"sortds", "Сортировать по убыванию", execute_table_sortds},
+	{"addcopy", "Скопировать", execute_table_addcopy, 0, {F9}, 9},
+	{"change", "Изменить", execute_table_change, 0, {F2, KeyEnter}, 10},
+	{"copy", "Копировать", execute_table_copy, 0, {Ctrl + Alpha + 'C'}, 4},
+	{"delete", "Удалить", execute_table_delete, 0, {KeyDelete}, 19},
+	{"export", "Экспортировать данные", execute_table_export, 0, {0}, 2},
+	{"import", "Импортировать данные", execute_table_import, 0, {0}, 1},
+	{"moveup", "Переместить вверх", execute_table_moveup, 0, {0}, 21},
+	{"movedown", "Переместить вниз", execute_table_movedown, 0, {0}, 22},
+	{"setting", "Настройки", execute_table_setting, 0, {0}, 16},
+	{"sortas", "Сортировать по возрастанию", execute_table_sortas, 0, {0}, 11},
+	{"sortds", "Сортировать по убыванию", execute_table_sortds, 0, {0}, 12},
 	{0}
 };
 
