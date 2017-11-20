@@ -4,7 +4,6 @@
 #include "wrapper.h"
 
 #pragma once
-#define WIDGET(n) static widget::plugin plugin_##n(#n, wdt_##n)
 
 extern "C" void* memset(void* destination, int value, unsigned size);
 
@@ -60,11 +59,6 @@ enum areas {
 	AreaNormal, // Area not have mouse
 	AreaHilited, // Area have mouse
 	AreaHilitedPressed, // Area have mouse and mouse button is pressed
-};
-enum dock_s {
-	DockLeft, DockLeftBottom,
-	DockRight, DockRightBottom,
-	DockBottom, DockWorkspace,
 };
 enum iflags
 {
@@ -187,70 +181,6 @@ namespace draw
 		rect				clip;
 		bool				mouseinput;
 	};
-	struct widget
-	{
-		// Each widget draw by this procedure
-		typedef int(*proc)(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips);
-		// Plugin for widget descriptor
-		struct plugin
-		{
-			const char*		id;
-			proc			render;
-			plugin*			next;
-			static plugin*	first;
-			plugin(const char* id, proc render);
-			static plugin*	find(const char* id);
-		};
-		proc				type; // Control proc
-		const char*			id; // Control identification
-		const char*			label; // Title text or text appeared in control
-		const widget*		childs; // Chilren elements
-		unsigned			flags; // Text formation and other flags
-		int					width; // width for horizontal parts
-		int					height; // height in lines
-		int					value; // Integer parameter value
-		int					title; // Title width (if 0 then title taken from parent)
-		const char*			tips; // Tooltips value
-		const char*			link; // Hyperlink value
-		operator bool() const { return type != 0; }
-		widget&				settips(const char* v) { tips = v; return *this; }
-		widget&				setvalue(int v) { value = v; return *this; }
-	};
-	struct control : wrapper
-	{
-		struct plugin
-		{
-			control&		element;
-			plugin(control& value);
-			plugin*			next;
-			static plugin*	first;
-		};
-		const char*			id;
-		dock_s				dock;
-		bool				disabled;
-		bool				focused;
-		bool				show_background;
-		bool				show_border;
-		bool				show_toolbar;
-		//
-		control::control() : id(0), dock(DockWorkspace),
-			show_border(true), show_background(true), show_toolbar(true),
-			disabled(false), focused(false) {}
-		//
-		virtual void		background(rect& rc);
-		virtual void		contextmenu() {}
-		color				getcolor(color normal) const;
-		virtual char*		getdescription(char* result) const;
-		virtual char*		getname(char* result) const;
-		virtual const widget* gettoolbar() const { return 0; }
-		virtual bool		keyinput(int id);
-		virtual void		nonclient(rect rc);
-		bool				open(rect rc);
-		bool				open(const char* title, unsigned state, int width, int height);
-		virtual void		redraw(rect rc) {}
-		virtual void		prerender() {}
-		void				view(rect rc, bool show_toolbar = false);
-	};
 	// Output system window
 	struct window : surface, state
 	{
@@ -269,6 +199,16 @@ namespace draw
 		void				closing();
 		void				opening();
 		void				resizing(const rect& rc);
+	};
+	struct textplugin
+	{
+		typedef int(*proc)(int x, int y, int width, const char* name, int value, const char* label, const char* tips);
+		const char*			name;
+		proc				render;
+		textplugin*			next;
+		static textplugin*	first;
+		textplugin(const char* name, proc e);
+		static textplugin*	find(const char* name);
 	};
 	extern rect				clipping; // Clipping area
 	extern color			fore; // Foreground color (curently selected color)
@@ -292,17 +232,12 @@ namespace draw
 	void					circle(int x, int y, int radius, const color c1);
 	void					circlef(int x, int y, int radius, const color c1, unsigned char alpha = 0xFF);
 	void					decortext(unsigned flags);
-	void					dockbar(rect& rc);
 	bool					domodal();
 	void					execute(int id, int value = 0);
 	void					focusing(const char* id, const rect& rc, unsigned& flags);
 	int						getbpp();
 	color					getcolor(color normal, unsigned flags);
 	color					getcolor(rect rc, color normal, color hilite, unsigned flags);
-	int						getdata(wrapper* source, const char* id);
-	char*					getdata(char* temp, wrapper* source, const char* id, const draw::widget* childs, bool to_buffer, field_type_s& type);
-	inline const char*		getdatasource(const char* id, const char* link) { return link ? link : id; }
-	unsigned				getdocked(control** output, unsigned count, dock_s type);
 	const char*				getfocus();
 	int						getheight();
 	const char*				getnext(const char* id, int key);
@@ -379,7 +314,6 @@ namespace draw
 	int						textw(rect& rc, const char* string);
 	int						textw(sprite* font);
 	bool					tool(rect rc, bool disabled, bool checked, bool press);
-	int						view(rect rc, control** pages, int count, int& current, bool show_toolbar, unsigned tab_state, int padding);
 }
 int							isqrt(int num);
 char*						key2str(char* result, int key);
@@ -389,20 +323,3 @@ void						set_dark_theme();
 void						tooltips(const char* format, ...);
 void						tooltips(int x, int y, const char* format, ...);
 void						tooltips(rect rc, const char* format, ...);
-
-int wdt_button(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
-int wdt_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
-int wdt_control(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
-int wdt_clipart(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
-int wdt_field(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
-int wdt_group(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
-int wdt_label(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
-int wdt_radio(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
-int wdt_radio_element(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
-int wdt_separator(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
-int wdt_tabs(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
-int wdt_title(int& x, int y, int& width, unsigned flags, const char* label, int title);
-int wdt_tool(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
-int wdt_toolbar(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
-int wdt_vertical(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
-int wdt_horizontal(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);

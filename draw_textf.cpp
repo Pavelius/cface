@@ -4,7 +4,96 @@
 
 using namespace draw;
 
-stringid*	textf_icons_id;
+stringid*		textf_icons_id;
+textplugin*		draw::textplugin::first;
+
+textplugin::textplugin(const char* name, proc e) : name(name), render(e)
+{
+	seqlink(this);
+}
+
+textplugin* textplugin::textplugin::find(const char* name)
+{
+	for(auto p = first; p; p = p->next)
+	{
+		if(strcmp(p->name, name) == 0)
+			return p;
+	}
+	return 0;
+}
+
+static bool match(const char** string, const char* name)
+{
+	int n = zlen(name);
+	if(memcmp(*string, name, n) != 0)
+		return false;
+	(*string) += n;
+	return true;
+}
+
+static int render_control(const char** result, int x, int y, int width)
+{
+	struct element
+	{
+		const char*		name;
+		const char*		label;
+		const char*		tips;
+		int				value;
+	};
+	element e = {0};
+	char type[64];
+	char name[64];
+	char buffer[4096];
+	auto p = *result;
+	auto pb = buffer;
+	auto pe = buffer + sizeof(buffer) - 1;
+	p = psidn(p, type, type + sizeof(type) - 1);
+	p = zskipsp(p);
+	while(*p && *p != ')')
+	{
+		p = psidn(p, name, name + sizeof(name) - 1);
+		p = zskipsp(p);
+		int value_number = 1;
+		const char* value_text = 0;
+		if(*p == '=')
+		{
+			p = zskipsp(p + 1);
+			if(isnum(*p) || *p == '-')
+				value_number = sz2num(p, &p);
+			else if(*p == '\"' || *p == '\'')
+			{
+				value_text = pb;
+				p = psstr(p + 1, pb, p[0]);
+				pb = zend(pb);
+				if(pb < pe)
+					pb = pb + 1;
+			}
+			else
+			{
+				// Error
+				while(*p != ')' && *p)
+					p++;
+			}
+			p = zskipsp(p);
+		}
+		if(strcmp("name", name) == 0)
+			e.name = value_text;
+		else if(strcmp("tips", name) == 0)
+			e.tips = value_text;
+		else if(strcmp("label", name) == 0)
+			e.label = value_text;
+		else if(strcmp("value", name) == 0)
+			e.value = value_number;
+	}
+	if(*p == ')')
+		p++;
+	p = szskipcr(p);
+	*result = p;
+	auto pm = draw::textplugin::find(type);
+	if(pm)
+		return pm->render(x, y, width, e.name, e.value, e.label, e.tips);
+	return 0;
+}
 
 static const char* glink(char* temp, const char** source)
 {
@@ -30,22 +119,6 @@ static const char* glink(char* temp, const char** source)
 	return temp;
 }
 
-static const char* word(const char* text)
-{
-	while(((unsigned char)*text) > 0x20 && *text != '*' && *text != '[' && *text != ']')
-		text++;
-	return text;
-}
-
-static bool match(const char** string, const char* name)
-{
-	int n = zlen(name);
-	if(memcmp(*string, name, n) != 0)
-		return false;
-	(*string) += n;
-	return true;
-}
-
 static const char* textspc(const char* p, int x0, int& x, int tab_width)
 {
 	int tb;
@@ -69,6 +142,13 @@ static const char* textspc(const char* p, int x0, int& x, int tab_width)
 		break;
 	}
 	return p;
+}
+
+static const char* word(const char* text)
+{
+	while(((unsigned char)*text) > 0x20 && *text != '*' && *text != '[' && *text != ']')
+		text++;
+	return text;
 }
 
 static int textfln(int x0, int y0, int width, const char** string, color c1, int* max_width, int tab_width)
@@ -238,65 +318,6 @@ static int textfln(int x0, int y0, int width, const char** string, color c1, int
 		*max_width = imax(*max_width, x - x0);
 	*string = p;
 	return y - y0;
-}
-
-static int render_control(const char** result, int x, int y, int width)
-{
-	widget e = {0};
-	char type[64];
-	char name[64];
-	char buffer[4096];
-	auto p = *result;
-	auto pb = buffer;
-	auto pe = buffer + sizeof(buffer) - 1;
-	p = psidn(p, type, type + sizeof(type) - 1);
-	p = zskipsp(p);
-	while(*p && *p != ')')
-	{
-		p = psidn(p, name, name + sizeof(name) - 1);
-		p = zskipsp(p);
-		int value_number = 1;
-		const char* value_text = 0;
-		if(*p == '=')
-		{
-			p = zskipsp(p + 1);
-			if(isnum(*p) || *p == '-')
-				value_number = sz2num(p, &p);
-			else if(*p == '\"' || *p == '\'')
-			{
-				value_text = pb;
-				p = psstr(p + 1, pb, p[0]);
-				pb = zend(pb);
-				if(pb < pe)
-					pb = pb + 1;
-			}
-			else
-			{
-				// Error
-				while(*p != ')' && *p)
-					p++;
-			}
-			p = zskipsp(p);
-		}
-		if(strcmp(name, "id") == 0)
-			e.id = value_text;
-		else if(strcmp(name, "label") == 0)
-			e.label = value_text;
-		else if(strcmp(name, "tips") == 0)
-			e.tips = value_text;
-		else if(strcmp(name, "link") == 0)
-			e.link = value_text;
-		else if(strcmp(name, "value") == 0)
-			e.value = value_number;
-	}
-	if(*p == ')')
-		p++;
-	p = szskipcr(p);
-	*result = p;
-	auto pm = widget::plugin::find(type);
-	if(pm)
-		return pm->render(x, y, width, e.id, e.flags, e.label, e.value, 0, 0, e.title, e.childs, e.tips);
-	return 0;
 }
 
 int draw::textf(int x, int y, int width, const char* string, int* max_width,

@@ -1,5 +1,7 @@
 #include "crt.h"
 #include "draw.h"
+#include "draw_control.h"
+#include "widget.h"
 
 using namespace		draw;
 
@@ -102,7 +104,7 @@ void control::view(rect rc, bool show_toolbar)
 {
 	draw::state push;
 	struct rect rt = {rc.x1, rc.y1, rc.x2, rc.y1};
-	auto commands = gettoolbar();
+	auto commands = getcommands();
 	if(show_toolbar && metrics::toolbar && commands && this->show_toolbar)
 	{
 		rt.y2 += metrics::toolbar->get(0).sy + 4;
@@ -131,8 +133,8 @@ void control::view(rect rc, bool show_toolbar)
 	// Процедура 'background' может изменить рамку элемента.
 	// Поэтому только начиная отсюда она имеет корректное значение.
 	nonclient(rc);
-	if(rt.height())
-		wdt_toolbar(rt.x1, rt.y1, rt.width(), "toolbar", 0, 0, 0, 0, 0, 0, commands, 0);
+	//if(rt.height())
+	//	wdt_toolbar(rt.x1, rt.y1, rt.width(), "toolbar", 0, 0, 0, 0, 0, 0, commands, 0);
 }
 
 bool control::keyinput(int id)

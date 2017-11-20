@@ -15,24 +15,6 @@ static char			search_text[32];
 static unsigned		search_time;
 const char*			table_sort_column_id;
 bool				table_sort_by_mouse;
-static widget	standart_commands[] = {
-	{wdt_tool, "add", 0, 0, 0, 0, 0, 8},
-	{wdt_tool, "addcopy", 0, 0, 0, 0, 0, 9},
-	{wdt_tool, "delete", 0, 0, 0, 0, 0, 19},
-	{wdt_separator},
-	{wdt_tool, "cut", 0, 0, 0, 0, 0, 3},
-	{wdt_tool, "copy", 0, 0, 0, 0, 0, 4},
-	{wdt_tool, "paste", 0, 0, 0, 0, 0, 5},
-	{0}
-};
-static widget	grid_commands[] = {
-	{wdt_tool, "moveup"},
-	{wdt_tool, "movedown"},
-	{wdt_separator},
-	{wdt_tool, "sortas"},
-	{wdt_tool, "sortds"},
-	{0}
-};
 
 struct row_wrapper : wrapper
 {
@@ -97,7 +79,7 @@ void tbl_text(rect rc, const char* value, unsigned flags)
 	}
 }
 
-int tbl_text(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
+int tbl_text(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
 {
 	auto data_value = (const char*)getdata(source, getdatasource(id, link));
 	auto height = draw::texth();
@@ -108,7 +90,7 @@ int tbl_text(int x, int y, int width, const char* id, unsigned flags, const char
 	return height + table_padding * 2;
 }
 
-int tbl_number(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
+int tbl_number(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
 {
 	char temp[32]; sznum(temp, value);
 	auto data_value = getdata(source, getdatasource(id, link));
@@ -119,12 +101,12 @@ int tbl_number(int x, int y, int width, const char* id, unsigned flags, const ch
 	return height + table_padding * 2;
 }
 
-int tbl_reference(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
+int tbl_reference(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
 {
 	return 0;
 }
 
-int tbl_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
+int tbl_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
 {
 	auto pid = getdatasource(id, link);
 	auto data_value = getdata(source, pid);
@@ -144,7 +126,7 @@ int tbl_check(int x, int y, int width, const char* id, unsigned flags, const cha
 	return height;
 }
 
-int tbl_image(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
+int tbl_image(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
 {
 	auto data_value = getdata(source, getdatasource(id, link));
 	auto pc = gettable(source);
@@ -157,25 +139,25 @@ int tbl_image(int x, int y, int width, const char* id, unsigned flags, const cha
 	return 0;
 }
 
-int tbl_date(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
+int tbl_date(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
 {
 	//	getstrfdat(text, get(object, e), true);
 	return 0;
 }
 
-int tbl_point(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
+int tbl_point(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
 {
 	//	szprint(text, "%1i, %2i", ((point*)&i)->x, ((point*)&i)->y);
 	return 0;
 }
 
-int tbl_color(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
+int tbl_color(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
 {
 	//	szprint(text, "%1i, %2i, %3i", ((color*)&i)->r, ((color*)&i)->g, ((color*)&i)->b);
 	return 0;
 }
 
-int tbl_linenumber(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
+int tbl_linenumber(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
 {
 	char temp[32]; sznum(temp, value + 1);
 	tbl_hilight(x, y, width, flags, label);
@@ -393,17 +375,12 @@ show_header(true), show_event_rows(false)
 	id = "table";
 	columns.data = 0;
 	columns.count = 0;
-	commands = standart_commands;
+	commands = table_commands;
 }
 
 wrapper::command* table::getcommands() const
 {
 	return table_commands;
-}
-
-const widget* table::gettoolbar() const
-{
-	return standart_commands;
 }
 
 static int column_total_width;
@@ -662,7 +639,7 @@ void table::sort(const char* id, int direction, int i1, int i2)
 	sort(si, i1, i2);
 }
 
-bool table::canedit(int index, const draw::widget& e) const
+bool table::canedit(int index, const widget& e) const
 {
 	if(e.type == tbl_linenumber || e.type == tbl_image)
 		return false;

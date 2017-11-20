@@ -1,14 +1,8 @@
 #include "crt.h"
 #include "draw.h"
+#include "widget.h"
 
 using namespace draw;
-
-//
-//void element::addvalue(int value)
-//{
-//	data.set(data.get() + value);
-//}
-//
 
 static unsigned getflags(const wrapper* source, const widget* p, unsigned flags)
 {

@@ -1,6 +1,7 @@
 #include "crt.h"
 #include "control_textedit.h"
 #include "control_list.h"
+#include "draw.h"
 #include "screenshoot.h"
 
 using namespace draw::controls;

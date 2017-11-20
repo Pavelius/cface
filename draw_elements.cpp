@@ -1,5 +1,6 @@
 #include "crt.h"
 #include "draw.h"
+#include "widget.h"
 
 using namespace draw;
 
@@ -112,7 +113,7 @@ int wdt_radio(int x, int y, int width, const char* id, unsigned flags, const cha
 	return y - y0;
 }
 
-int wdt_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
+int wdt_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
 {
 	if(!label || !label[0])
 		return 0;
@@ -151,7 +152,7 @@ int wdt_check(int x, int y, int width, const char* id, unsigned flags, const cha
 	return rc1.height() + metrics::padding * 2;
 }
 
-int wdt_button(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
+int wdt_button(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
 {
 	if(!label || !label[0])
 		return 0;

@@ -271,6 +271,8 @@
     <ClInclude Include="collections.h" />
     <ClInclude Include="control_list.h" />
     <ClInclude Include="control_scrollable.h" />
+    <ClInclude Include="draw_control.h" />
+    <ClInclude Include="widget.h" />
     <ClInclude Include="widget_settings.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>

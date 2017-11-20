@@ -156,5 +156,7 @@
     <ClInclude Include="control_table.h" />
     <ClInclude Include="control_tree.h" />
     <ClInclude Include="wrapper.h" />
+    <ClInclude Include="widget.h" />
+    <ClInclude Include="draw_control.h" />
   </ItemGroup>
 </Project>

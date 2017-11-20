@@ -111,7 +111,7 @@ static void callback_choose_list()
 {
 }
 
-int wdt_field(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
+int wdt_field(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
 {
 	field_type_s field_type;
 	draw::state push;

@@ -1,14 +1,8 @@
 #include "crt.h"
 #include "draw.h"
+#include "widget.h"
 
-static point clipart_dropdown[] =
-{
-	{-2, -1}, {-1, -1}, {0, -1}, {1, -1}, {2, -1},
-	{-1, 0}, {0, 0}, {1, 0},
-	{0, 1}
-};
-
-int wdt_clipart(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const draw::widget* childs, const char* tips)
+int wdt_clipart(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
 {
 	if(label[0] != ':')
 		return 0;
@@ -47,6 +41,12 @@ int wdt_clipart(int x, int y, int width, const char* id, unsigned flags, const c
 	}
 	else if(strcmp(p, "dropdown") == 0)
 	{
+		static point clipart_dropdown[] =
+		{
+			{-2, -1}, {-1, -1}, {0, -1}, {1, -1}, {2, -1},
+			{-1, 0}, {0, 0}, {1, 0},
+			{0, 1}
+		};
 		draw::state push;
 		rect rc = {x, y, x + width, y + 16};
 		x += width / 2;

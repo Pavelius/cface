@@ -1,5 +1,6 @@
-#include "draw.h"
+#include "draw_control.h"
 #include "pointl.h"
+#include "point.h"
 
 #pragma once
 
