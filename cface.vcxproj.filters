@@ -259,9 +259,6 @@
     <ClCompile Include="pathfind.cpp">
       <Filter>Поддержка</Filter>
     </ClCompile>
-    <ClCompile Include="selector.cpp">
-      <Filter>Поддержка</Filter>
-    </ClCompile>
     <ClCompile Include="string.cpp">
       <Filter>Поддержка</Filter>
     </ClCompile>
@@ -276,6 +273,9 @@
     </ClCompile>
     <ClCompile Include="szdup.cpp">
       <Filter>Поддержка</Filter>
+    </ClCompile>
+    <ClCompile Include="selector.cpp">
+      <Filter>Обработка данных</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -447,9 +447,6 @@
     <ClInclude Include="pathfind.h">
       <Filter>Поддержка</Filter>
     </ClInclude>
-    <ClInclude Include="selector.h">
-      <Filter>Поддержка</Filter>
-    </ClInclude>
     <ClInclude Include="string.h">
       <Filter>Поддержка</Filter>
     </ClInclude>
@@ -464,6 +461,9 @@
     </ClInclude>
     <ClInclude Include="stringtree.h">
       <Filter>Поддержка</Filter>
+    </ClInclude>
+    <ClInclude Include="selector.h">
+      <Filter>Обработка данных</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

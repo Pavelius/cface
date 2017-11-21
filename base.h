@@ -23,8 +23,6 @@ enum base_tags
 	Point, Color,
 	FirstBaseType = Text, LastBaseType = Color,
 	// Conditions
-	Conditions,
-	Equal, NotEqual, Lesser, LesserEqual, Greater, GreaterEqual, Between, InList, NotInList, InHierarhy, Like,
 	// Common parent
 	Commands, Selectors,
 	// Table commands

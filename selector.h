@@ -1,17 +1,14 @@
 #pragma once
 
-enum selector_flags {
-	SelectorNotUsable = 1,
-	SelectorHide = 2,
+enum condition_s : unsigned char {
+	Equal, NotEqual, Lesser, LesserEqual, Greater, GreaterEqual, Between, InList, NotInList, InHierarhy, Like
 };
-
 struct selector
 {
-	int				id;
-	int				operation;
+	const char*		id;
+	condition_s		operation;
 	int				value;
 	int				value_to;
-	unsigned		flags;
 	operator bool() const { return id != 0; }
 	bool			match(int value) const;
 	bool			match(const char* value) const;

@@ -1,4 +1,3 @@
-#include "base.h"
 #include "crt.h"
 #include "selector.h"
 
@@ -45,6 +44,9 @@ bool selector::match(const char* v1) const
 		return szcmpi(v1, (const char*)value)>0;
 	case GreaterEqual:
 		return szcmpi(v1, (const char*)value) >= 0;
+	case Between:
+		return szcmpi(v1, (const char*)value) >= 0
+			&& szcmpi(v1, (const char*)value_to) <= 0;
 	case InList:
 		return false;
 	case NotInList:
