@@ -181,6 +181,44 @@ bool control::keyinput(int id)
 	return true;
 }
 
+//int wdt_separator(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+//{
+//	auto height = metrics::toolbar->height;
+//	//if(e.separator && *e.separator)
+//	//	return 0;
+//	rectf({x + 2, y + 2, x + 3, y + height - 2}, colors::border);
+//	//if(e.separator)
+//	//	*e.separator = true;
+//	return height;
+//}
+
+int control::render(int x, int y, int width, unsigned flags, const wrapper::command& e) const
+{
+	rect rc = {x, y, x + width, y + width};
+	if(tool(rc, isdisabled(flags), false, true))
+	{
+		draw::execute(InputExecute);
+		hot::name = id;
+	}
+	auto value = e.icon;
+	if(value)
+	{
+		if(value == -1)
+			value = 0;
+		image(rc.x1 + rc.width() / 2, rc.y1 + rc.height() / 2,
+			metrics::toolbar, value, 0,
+			(isdisabled(flags)) ? 0x80 : 0xFF);
+	}
+	if(areb(rc))
+	{
+		auto name = e.label;
+		if(name)
+			tooltips(name);
+		statusbar("Выполнить команду '%1'", name);
+	}
+	return width;
+}
+
 int	control::render(int x, int y, int width, const wrapper::command* commands) const
 {
 	if(!commands)
@@ -197,7 +235,7 @@ int	control::render(int x, int y, int width, const wrapper::command* commands) c
 			// wdt_dropdown(x, y, 6, "toolbar_dropdown", 0, 0, 0, 0, source, 0, p, 0);
 			break;
 		}
-		wdt_tool(x, y, width, p->id, 0, p->label, geticon(*p), 0, (wrapper*)this, 0, 0, 0);
+		render(x, y, width, p->type((wrapper*)this, false), *p);
 		x += width;
 	}
 	return height + metrics::padding * 2;

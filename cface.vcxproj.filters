@@ -93,7 +93,6 @@
     <ClCompile Include="draw_dockbar.cpp" />
     <ClCompile Include="wrapper.cpp" />
     <ClCompile Include="draw_data.cpp" />
-    <ClCompile Include="widget_toolbar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base.h" />

@@ -42,6 +42,7 @@ namespace draw
 		virtual void		nonclient(rect rc);
 		bool				open(rect rc);
 		bool				open(const char* title, unsigned state, int width, int height);
+		int					render(int x, int y, int width, unsigned flags, const wrapper::command& e) const;
 		int					render(int x, int y, int width, const wrapper::command* commands) const;
 		virtual void		redraw(rect rc) {}
 		virtual void		prerender() {}
