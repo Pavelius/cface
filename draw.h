@@ -200,7 +200,7 @@ namespace draw
 	};
 	struct textplugin
 	{
-		typedef int(*proc)(int x, int y, int width, const char* name, int value, const char* label, const char* tips);
+		typedef int(*proc)(int x, int y, int width, const char* id, int value, const char* label, const char* tips);
 		const char*			name;
 		proc				render;
 		textplugin*			next;
