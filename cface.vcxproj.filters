@@ -1,162 +1,501 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="base.cpp" />
-    <ClCompile Include="bstream.cpp" />
-    <ClCompile Include="color.cpp" />
-    <ClCompile Include="crt.cpp" />
-    <ClCompile Include="ctype.cpp" />
-    <ClCompile Include="dice.cpp" />
-    <ClCompile Include="draw.cpp" />
-    <ClCompile Include="drawable.cpp" />
-    <ClCompile Include="grammar.cpp" />
-    <ClCompile Include="io.cpp" />
-    <ClCompile Include="io_socket.cpp" />
-    <ClCompile Include="pathfind.cpp" />
-    <ClCompile Include="point.cpp" />
-    <ClCompile Include="sprite.cpp" />
-    <ClCompile Include="string.cpp" />
-    <ClCompile Include="szdup.cpp" />
-    <ClCompile Include="date.cpp" />
-    <ClCompile Include="win_date.cpp" />
-    <ClCompile Include="win_draw.cpp" />
-    <ClCompile Include="win_draw_dlg.cpp" />
-    <ClCompile Include="win_thread.cpp" />
-    <ClCompile Include="win_util.cpp" />
-    <ClCompile Include="selector.cpp" />
-    <ClCompile Include="draw_window.cpp" />
-    <ClCompile Include="draw_text.cpp" />
-    <ClCompile Include="win_draw_shell.cpp" />
-    <ClCompile Include="vallist.cpp" />
-    <ClCompile Include="io_sequence.cpp" />
-    <ClCompile Include="sprite_store.cpp" />
-    <ClCompile Include="crt_memory.cpp" />
-    <ClCompile Include="command.cpp" />
-    <ClCompile Include="resources.cpp" />
-    <ClCompile Include="io_memory.cpp" />
-    <ClCompile Include="win_io_file.cpp" />
-    <ClCompile Include="calculator.cpp" />
-    <ClCompile Include="crt_parse.cpp" />
-    <ClCompile Include="calculator_override.cpp" />
-    <ClCompile Include="tagdata.cpp" />
-    <ClCompile Include="pma.cpp" />
-    <ClCompile Include="valtree.cpp" />
-    <ClCompile Include="bitops.cpp" />
-    <ClCompile Include="surface.cpp" />
-    <ClCompile Include="surface_serial.cpp" />
-    <ClCompile Include="screenshoot.cpp" />
-    <ClCompile Include="hotkey.cpp" />
-    <ClCompile Include="xsfield.cpp" />
-    <ClCompile Include="xsref.cpp" />
-    <ClCompile Include="collection.cpp" />
-    <ClCompile Include="getsid.cpp" />
-    <ClCompile Include="amem.cpp" />
-    <ClCompile Include="xsbase.cpp" />
-    <ClCompile Include="xsparse.cpp" />
-    <ClCompile Include="xsdoc.cpp" />
-    <ClCompile Include="xsbase_serial.cpp" />
-    <ClCompile Include="xsglobal.cpp" />
-    <ClCompile Include="stringlib.cpp" />
-    <ClCompile Include="stringcreator.cpp" />
-    <ClCompile Include="stringtree.cpp" />
-    <ClCompile Include="win_io_ftp.cpp" />
-    <ClCompile Include="converter.cpp" />
-    <ClCompile Include="widget_form.cpp" />
-    <ClCompile Include="point_type.cpp" />
-    <ClCompile Include="draw_focusing.cpp" />
-    <ClCompile Include="draw_input.cpp" />
-    <ClCompile Include="win_menu.cpp" />
-    <ClCompile Include="widget_dialog.cpp" />
-    <ClCompile Include="widget_settings.cpp" />
-    <ClCompile Include="xsvalue.cpp" />
-    <ClCompile Include="draw_textf.cpp" />
-    <ClCompile Include="io_plugin.cpp" />
-    <ClCompile Include="valtree_serial.cpp" />
-    <ClCompile Include="collection_serial.cpp" />
-    <ClCompile Include="draw_splitter.cpp" />
-    <ClCompile Include="draw_scroll.cpp" />
-    <ClCompile Include="draw_button.cpp" />
-    <ClCompile Include="draw_widget.cpp" />
-    <ClCompile Include="draw_tooltips.cpp" />
-    <ClCompile Include="draw_field.cpp" />
-    <ClCompile Include="draw_group.cpp" />
-    <ClCompile Include="draw_elements.cpp" />
-    <ClCompile Include="draw_control.cpp" />
-    <ClCompile Include="draw_statusbar.cpp" />
-    <ClCompile Include="control_scrollable.cpp" />
-    <ClCompile Include="control_list.cpp" />
-    <ClCompile Include="control_textedit.cpp" />
-    <ClCompile Include="control_table.cpp" />
-    <ClCompile Include="draw_tabs.cpp" />
-    <ClCompile Include="control_tree.cpp" />
-    <ClCompile Include="draw_toolbar.cpp" />
-    <ClCompile Include="draw_dockbar.cpp" />
-    <ClCompile Include="wrapper.cpp" />
-    <ClCompile Include="draw_data.cpp" />
+    <ClCompile Include="amem.cpp">
+      <Filter>Коллекции</Filter>
+    </ClCompile>
+    <ClCompile Include="bstream.cpp">
+      <Filter>Коллекции</Filter>
+    </ClCompile>
+    <ClCompile Include="collection.cpp">
+      <Filter>Коллекции</Filter>
+    </ClCompile>
+    <ClCompile Include="collection_serial.cpp">
+      <Filter>Коллекции</Filter>
+    </ClCompile>
+    <ClCompile Include="win_date.cpp">
+      <Filter>Платформа\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="win_draw.cpp">
+      <Filter>Платформа\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="win_draw_dlg.cpp">
+      <Filter>Платформа\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="win_draw_shell.cpp">
+      <Filter>Платформа\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="win_io_file.cpp">
+      <Filter>Платформа\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="win_io_ftp.cpp">
+      <Filter>Платформа\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="win_menu.cpp">
+      <Filter>Платформа\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="win_thread.cpp">
+      <Filter>Платформа\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="win_util.cpp">
+      <Filter>Платформа\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="control_list.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="control_scrollable.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="control_table.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="control_textedit.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="control_tree.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="draw.cpp">
+      <Filter>Графика\Логика</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_focusing.cpp">
+      <Filter>Графика\Логика</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_input.cpp">
+      <Filter>Графика\Логика</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_text.cpp">
+      <Filter>Графика\Логика</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_textf.cpp">
+      <Filter>Графика\Логика</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_window.cpp">
+      <Filter>Графика\Логика</Filter>
+    </ClCompile>
+    <ClCompile Include="drawable.cpp">
+      <Filter>Графика\Логика</Filter>
+    </ClCompile>
+    <ClCompile Include="widget_dialog.cpp">
+      <Filter>Графика\Логика</Filter>
+    </ClCompile>
+    <ClCompile Include="widget_form.cpp">
+      <Filter>Графика\Логика</Filter>
+    </ClCompile>
+    <ClCompile Include="widget_settings.cpp">
+      <Filter>Графика\Логика</Filter>
+    </ClCompile>
+    <ClCompile Include="bitops.cpp">
+      <Filter>Графика\Логика</Filter>
+    </ClCompile>
+    <ClCompile Include="color.cpp">
+      <Filter>Графика\Логика</Filter>
+    </ClCompile>
+    <ClCompile Include="io.cpp">
+      <Filter>Системные</Filter>
+    </ClCompile>
+    <ClCompile Include="io_memory.cpp">
+      <Filter>Системные</Filter>
+    </ClCompile>
+    <ClCompile Include="io_plugin.cpp">
+      <Filter>Системные</Filter>
+    </ClCompile>
+    <ClCompile Include="io_sequence.cpp">
+      <Filter>Системные</Filter>
+    </ClCompile>
+    <ClCompile Include="io_socket.cpp">
+      <Filter>Системные</Filter>
+    </ClCompile>
+    <ClCompile Include="crt.cpp">
+      <Filter>Системные</Filter>
+    </ClCompile>
+    <ClCompile Include="crt_memory.cpp">
+      <Filter>Системные</Filter>
+    </ClCompile>
+    <ClCompile Include="crt_parse.cpp">
+      <Filter>Системные</Filter>
+    </ClCompile>
+    <ClCompile Include="vallist.cpp">
+      <Filter>Коллекции</Filter>
+    </ClCompile>
+    <ClCompile Include="sprite.cpp">
+      <Filter>Графика\Логика</Filter>
+    </ClCompile>
+    <ClCompile Include="sprite_store.cpp">
+      <Filter>Графика\Логика</Filter>
+    </ClCompile>
+    <ClCompile Include="xsbase.cpp">
+      <Filter>Обработка данных</Filter>
+    </ClCompile>
+    <ClCompile Include="xsbase_serial.cpp">
+      <Filter>Обработка данных</Filter>
+    </ClCompile>
+    <ClCompile Include="xsdoc.cpp">
+      <Filter>Обработка данных</Filter>
+    </ClCompile>
+    <ClCompile Include="xsfield.cpp">
+      <Filter>Обработка данных</Filter>
+    </ClCompile>
+    <ClCompile Include="xsglobal.cpp">
+      <Filter>Обработка данных</Filter>
+    </ClCompile>
+    <ClCompile Include="xsparse.cpp">
+      <Filter>Обработка данных</Filter>
+    </ClCompile>
+    <ClCompile Include="xsref.cpp">
+      <Filter>Обработка данных</Filter>
+    </ClCompile>
+    <ClCompile Include="xsvalue.cpp">
+      <Filter>Обработка данных</Filter>
+    </ClCompile>
+    <ClCompile Include="wrapper.cpp">
+      <Filter>Графика\Логика</Filter>
+    </ClCompile>
+    <ClCompile Include="resources.cpp">
+      <Filter>Графика\Логика</Filter>
+    </ClCompile>
+    <ClCompile Include="point.cpp">
+      <Filter>Графика\Геометрия</Filter>
+    </ClCompile>
+    <ClCompile Include="point_type.cpp">
+      <Filter>Графика\Геометрия</Filter>
+    </ClCompile>
+    <ClCompile Include="pma.cpp">
+      <Filter>Графика\Логика</Filter>
+    </ClCompile>
+    <ClCompile Include="screenshoot.cpp">
+      <Filter>Графика\Логика</Filter>
+    </ClCompile>
+    <ClCompile Include="valtree.cpp">
+      <Filter>Коллекции</Filter>
+    </ClCompile>
+    <ClCompile Include="valtree_serial.cpp">
+      <Filter>Коллекции</Filter>
+    </ClCompile>
+    <ClCompile Include="surface.cpp">
+      <Filter>Графика\Логика</Filter>
+    </ClCompile>
+    <ClCompile Include="surface_serial.cpp">
+      <Filter>Графика\Логика</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_data.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_dockbar.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_elements.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_field.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_group.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_scroll.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_splitter.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_statusbar.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_tabs.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_toolbar.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_tooltips.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_widget.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_button.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_control.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="tagdata.cpp">
+      <Filter>Коллекции</Filter>
+    </ClCompile>
+    <ClCompile Include="base.cpp">
+      <Filter>Обработка данных</Filter>
+    </ClCompile>
+    <ClCompile Include="calculator.cpp">
+      <Filter>Поддержка</Filter>
+    </ClCompile>
+    <ClCompile Include="calculator_override.cpp">
+      <Filter>Поддержка</Filter>
+    </ClCompile>
+    <ClCompile Include="command.cpp">
+      <Filter>Поддержка</Filter>
+    </ClCompile>
+    <ClCompile Include="converter.cpp">
+      <Filter>Поддержка</Filter>
+    </ClCompile>
+    <ClCompile Include="ctype.cpp">
+      <Filter>Поддержка</Filter>
+    </ClCompile>
+    <ClCompile Include="date.cpp">
+      <Filter>Поддержка</Filter>
+    </ClCompile>
+    <ClCompile Include="dice.cpp">
+      <Filter>Поддержка</Filter>
+    </ClCompile>
+    <ClCompile Include="getsid.cpp">
+      <Filter>Поддержка</Filter>
+    </ClCompile>
+    <ClCompile Include="grammar.cpp">
+      <Filter>Поддержка</Filter>
+    </ClCompile>
+    <ClCompile Include="hotkey.cpp">
+      <Filter>Поддержка</Filter>
+    </ClCompile>
+    <ClCompile Include="pathfind.cpp">
+      <Filter>Поддержка</Filter>
+    </ClCompile>
+    <ClCompile Include="selector.cpp">
+      <Filter>Поддержка</Filter>
+    </ClCompile>
+    <ClCompile Include="string.cpp">
+      <Filter>Поддержка</Filter>
+    </ClCompile>
+    <ClCompile Include="stringcreator.cpp">
+      <Filter>Поддержка</Filter>
+    </ClCompile>
+    <ClCompile Include="stringlib.cpp">
+      <Filter>Поддержка</Filter>
+    </ClCompile>
+    <ClCompile Include="stringtree.cpp">
+      <Filter>Поддержка</Filter>
+    </ClCompile>
+    <ClCompile Include="szdup.cpp">
+      <Filter>Поддержка</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="base.h" />
-    <ClInclude Include="bstream.h" />
-    <ClInclude Include="color.h" />
-    <ClInclude Include="crt.h" />
-    <ClInclude Include="ctype.h" />
-    <ClInclude Include="dice.h" />
-    <ClInclude Include="draw.h" />
-    <ClInclude Include="drawable.h" />
-    <ClInclude Include="font.h" />
-    <ClInclude Include="grammar.h" />
-    <ClInclude Include="io.h" />
-    <ClInclude Include="menu.h" />
-    <ClInclude Include="pathfind.h" />
-    <ClInclude Include="point.h" />
-    <ClInclude Include="pointl.h" />
-    <ClInclude Include="rect.h" />
-    <ClInclude Include="rects.h" />
-    <ClInclude Include="sprite.h" />
-    <ClInclude Include="string.h" />
-    <ClInclude Include="terminal.h" />
-    <ClInclude Include="thread.h" />
-    <ClInclude Include="win.h" />
-    <ClInclude Include="selector.h" />
-    <ClInclude Include="command.h" />
-    <ClInclude Include="resources.h" />
-    <ClInclude Include="vallist.h" />
-    <ClInclude Include="calculator.h" />
-    <ClInclude Include="tagdata.h" />
-    <ClInclude Include="pma.h" />
-    <ClInclude Include="valtree.h" />
-    <ClInclude Include="bitops.h" />
-    <ClInclude Include="surface.h" />
-    <ClInclude Include="screenshoot.h" />
-    <ClInclude Include="hotkey.h" />
-    <ClInclude Include="adat.h" />
-    <ClInclude Include="aref.h" />
-    <ClInclude Include="autogrow.h" />
-    <ClInclude Include="xsfield.h" />
-    <ClInclude Include="xsref.h" />
-    <ClInclude Include="collection.h" />
-    <ClInclude Include="amem.h" />
-    <ClInclude Include="xsbase.h" />
-    <ClInclude Include="xsparse.h" />
-    <ClInclude Include="xsdoc.h" />
-    <ClInclude Include="xsglobal.h" />
-    <ClInclude Include="stringlib.h" />
-    <ClInclude Include="stringcreator.h" />
-    <ClInclude Include="stringtree.h" />
-    <ClInclude Include="io_ftp.h" />
-    <ClInclude Include="stringid.h" />
-    <ClInclude Include="converter.h" />
-    <ClInclude Include="acol.h" />
-    <ClInclude Include="widget_settings.h" />
-    <ClInclude Include="xsvalue.h" />
-    <ClInclude Include="collections.h" />
-    <ClInclude Include="control_scrollable.h" />
-    <ClInclude Include="control_list.h" />
-    <ClInclude Include="control_textedit.h" />
-    <ClInclude Include="control_table.h" />
-    <ClInclude Include="control_tree.h" />
-    <ClInclude Include="wrapper.h" />
-    <ClInclude Include="widget.h" />
-    <ClInclude Include="draw_control.h" />
+    <ClInclude Include="acol.h">
+      <Filter>Коллекции</Filter>
+    </ClInclude>
+    <ClInclude Include="adat.h">
+      <Filter>Коллекции</Filter>
+    </ClInclude>
+    <ClInclude Include="amem.h">
+      <Filter>Коллекции</Filter>
+    </ClInclude>
+    <ClInclude Include="aref.h">
+      <Filter>Коллекции</Filter>
+    </ClInclude>
+    <ClInclude Include="autogrow.h">
+      <Filter>Коллекции</Filter>
+    </ClInclude>
+    <ClInclude Include="bstream.h">
+      <Filter>Коллекции</Filter>
+    </ClInclude>
+    <ClInclude Include="collection.h">
+      <Filter>Коллекции</Filter>
+    </ClInclude>
+    <ClInclude Include="collections.h">
+      <Filter>Коллекции</Filter>
+    </ClInclude>
+    <ClInclude Include="win.h">
+      <Filter>Платформа\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="control_list.h">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClInclude>
+    <ClInclude Include="control_scrollable.h">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClInclude>
+    <ClInclude Include="control_table.h">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClInclude>
+    <ClInclude Include="control_textedit.h">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClInclude>
+    <ClInclude Include="control_tree.h">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClInclude>
+    <ClInclude Include="draw.h">
+      <Filter>Графика\Логика</Filter>
+    </ClInclude>
+    <ClInclude Include="drawable.h">
+      <Filter>Графика\Логика</Filter>
+    </ClInclude>
+    <ClInclude Include="font.h">
+      <Filter>Графика\Логика</Filter>
+    </ClInclude>
+    <ClInclude Include="widget.h">
+      <Filter>Графика\Логика</Filter>
+    </ClInclude>
+    <ClInclude Include="widget_settings.h">
+      <Filter>Графика\Логика</Filter>
+    </ClInclude>
+    <ClInclude Include="menu.h">
+      <Filter>Графика\Логика</Filter>
+    </ClInclude>
+    <ClInclude Include="bitops.h">
+      <Filter>Графика\Логика</Filter>
+    </ClInclude>
+    <ClInclude Include="color.h">
+      <Filter>Графика\Логика</Filter>
+    </ClInclude>
+    <ClInclude Include="io.h">
+      <Filter>Системные</Filter>
+    </ClInclude>
+    <ClInclude Include="io_ftp.h">
+      <Filter>Системные</Filter>
+    </ClInclude>
+    <ClInclude Include="crt.h">
+      <Filter>Системные</Filter>
+    </ClInclude>
+    <ClInclude Include="vallist.h">
+      <Filter>Коллекции</Filter>
+    </ClInclude>
+    <ClInclude Include="sprite.h">
+      <Filter>Графика\Логика</Filter>
+    </ClInclude>
+    <ClInclude Include="xsbase.h">
+      <Filter>Обработка данных</Filter>
+    </ClInclude>
+    <ClInclude Include="xsdoc.h">
+      <Filter>Обработка данных</Filter>
+    </ClInclude>
+    <ClInclude Include="xsfield.h">
+      <Filter>Обработка данных</Filter>
+    </ClInclude>
+    <ClInclude Include="xsglobal.h">
+      <Filter>Обработка данных</Filter>
+    </ClInclude>
+    <ClInclude Include="xsparse.h">
+      <Filter>Обработка данных</Filter>
+    </ClInclude>
+    <ClInclude Include="xsref.h">
+      <Filter>Обработка данных</Filter>
+    </ClInclude>
+    <ClInclude Include="xsvalue.h">
+      <Filter>Обработка данных</Filter>
+    </ClInclude>
+    <ClInclude Include="wrapper.h">
+      <Filter>Графика\Логика</Filter>
+    </ClInclude>
+    <ClInclude Include="resources.h">
+      <Filter>Графика\Логика</Filter>
+    </ClInclude>
+    <ClInclude Include="point.h">
+      <Filter>Графика\Геометрия</Filter>
+    </ClInclude>
+    <ClInclude Include="pointl.h">
+      <Filter>Графика\Геометрия</Filter>
+    </ClInclude>
+    <ClInclude Include="rect.h">
+      <Filter>Графика\Геометрия</Filter>
+    </ClInclude>
+    <ClInclude Include="rects.h">
+      <Filter>Графика\Геометрия</Filter>
+    </ClInclude>
+    <ClInclude Include="pma.h">
+      <Filter>Графика\Логика</Filter>
+    </ClInclude>
+    <ClInclude Include="screenshoot.h">
+      <Filter>Графика\Логика</Filter>
+    </ClInclude>
+    <ClInclude Include="thread.h">
+      <Filter>Системные</Filter>
+    </ClInclude>
+    <ClInclude Include="valtree.h">
+      <Filter>Коллекции</Filter>
+    </ClInclude>
+    <ClInclude Include="surface.h">
+      <Filter>Графика\Логика</Filter>
+    </ClInclude>
+    <ClInclude Include="draw_control.h">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClInclude>
+    <ClInclude Include="tagdata.h">
+      <Filter>Коллекции</Filter>
+    </ClInclude>
+    <ClInclude Include="base.h">
+      <Filter>Обработка данных</Filter>
+    </ClInclude>
+    <ClInclude Include="calculator.h">
+      <Filter>Поддержка</Filter>
+    </ClInclude>
+    <ClInclude Include="command.h">
+      <Filter>Поддержка</Filter>
+    </ClInclude>
+    <ClInclude Include="converter.h">
+      <Filter>Поддержка</Filter>
+    </ClInclude>
+    <ClInclude Include="ctype.h">
+      <Filter>Поддержка</Filter>
+    </ClInclude>
+    <ClInclude Include="dice.h">
+      <Filter>Поддержка</Filter>
+    </ClInclude>
+    <ClInclude Include="grammar.h">
+      <Filter>Поддержка</Filter>
+    </ClInclude>
+    <ClInclude Include="hotkey.h">
+      <Filter>Поддержка</Filter>
+    </ClInclude>
+    <ClInclude Include="pathfind.h">
+      <Filter>Поддержка</Filter>
+    </ClInclude>
+    <ClInclude Include="selector.h">
+      <Filter>Поддержка</Filter>
+    </ClInclude>
+    <ClInclude Include="string.h">
+      <Filter>Поддержка</Filter>
+    </ClInclude>
+    <ClInclude Include="stringcreator.h">
+      <Filter>Поддержка</Filter>
+    </ClInclude>
+    <ClInclude Include="stringid.h">
+      <Filter>Поддержка</Filter>
+    </ClInclude>
+    <ClInclude Include="stringlib.h">
+      <Filter>Поддержка</Filter>
+    </ClInclude>
+    <ClInclude Include="stringtree.h">
+      <Filter>Поддержка</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Коллекции">
+      <UniqueIdentifier>{6a0b09d5-520c-47e1-8ee2-71cd857e3d52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Платформа">
+      <UniqueIdentifier>{9e0de246-0179-4b11-b396-8d3df50dfb6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Платформа\Windows">
+      <UniqueIdentifier>{cfe4c1b4-8336-4054-abd2-b6e29c46764f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Графика">
+      <UniqueIdentifier>{5507d914-5c81-4a46-80cf-61039f8541f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Графика\Элементы Управления">
+      <UniqueIdentifier>{2ed7605e-e2ab-4951-b096-a88cd528b0a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Системные">
+      <UniqueIdentifier>{4ac80e6a-0388-486f-8e0f-0e6c8aa027bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Графика\Логика">
+      <UniqueIdentifier>{3c034dc7-8a30-409e-b77d-9c82a281c030}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Обработка данных">
+      <UniqueIdentifier>{1b24bc33-4d13-4821-83f7-087ad349608d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Графика\Геометрия">
+      <UniqueIdentifier>{8d6d3cbc-09eb-4db4-a8b3-3294bcfece99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Поддержка">
+      <UniqueIdentifier>{7873d414-bc7b-49d4-bf13-45efa5e4200e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

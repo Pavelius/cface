@@ -5,8 +5,8 @@
 
 struct stringkey
 {
-	const char*		id;
-	const char*		text;
+	const char*			id;
+	const char*			text;
 };
 struct stringlib : adat<stringkey, 32>
 {

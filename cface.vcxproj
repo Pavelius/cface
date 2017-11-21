@@ -319,7 +319,6 @@
     <ClInclude Include="stringtree.h" />
     <ClInclude Include="surface.h" />
     <ClInclude Include="tagdata.h" />
-    <ClInclude Include="terminal.h" />
     <ClInclude Include="thread.h" />
     <ClInclude Include="vallist.h" />
     <ClInclude Include="valtree.h" />
