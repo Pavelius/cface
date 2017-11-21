@@ -1,6 +1,7 @@
 #include "crt.h"
 #include "draw.h"
 #include "widget.h"
+#include "wrapper.h"
 
 using namespace draw;
 

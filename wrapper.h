@@ -25,3 +25,7 @@ struct wrapper
 	virtual void*				getobject() { return this; }
 	virtual wrapper*			getwrapper(const char* id) { return 0; }
 };
+namespace hot
+{
+	extern wrapper*				source;
+}

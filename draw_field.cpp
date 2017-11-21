@@ -4,6 +4,7 @@
 #include "control_textedit.h"
 #include "control_table.h"
 #include "xsfield.h"
+#include "wrapper.h"
 
 using namespace draw;
 

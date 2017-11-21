@@ -1,6 +1,8 @@
 #include "crt.h"
 #include "wrapper.h"
 
+wrapper*				hot::source;
+
 const wrapper::command* wrapper::command::find(const char* id) const
 {
 	auto p = this;

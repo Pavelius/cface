@@ -17,9 +17,6 @@ enum column_flags {
 	ColumnReadOnly = 0x00200000, // Column not used for modify data
 	ColumnHideTitleText = 0x00400000,
 };
-//xsfield point_type[];
-//xsfield color_type[];
-//xsfield date_type[];
 
 namespace draw
 {

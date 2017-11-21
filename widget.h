@@ -2,11 +2,10 @@
 
 #define WIDGET(n) static widget::plugin plugin_##n(#n, wdt_##n)
 
+struct wrapper;
 struct widget
 {
-	// Each widget draw by this procedure
 	typedef int(*proc)(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips);
-	// Plugin for widget descriptor
 	struct plugin
 	{
 		const char*		id;
@@ -36,6 +35,7 @@ namespace draw
 	int						getdata(wrapper* source, const char* id);
 	char*					getdata(char* temp, wrapper* source, const char* id, const widget* childs, bool to_buffer, field_type_s& type);
 	inline const char*		getdatasource(const char* id, const char* link) { return link ? link : id; }
+	void					setdata(wrapper* source, const char* id, int value, bool instant = false);
 }
 int wdt_button(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const widget* childs = 0, const char* tips = 0);
 int wdt_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, wrapper* source = 0, int title = 0, const widget* childs = 0, const char* tips = 0);

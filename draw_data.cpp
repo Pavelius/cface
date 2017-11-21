@@ -1,7 +1,8 @@
 #include "crt.h"
 #include "draw.h"
-#include "xsref.h"
 #include "widget.h"
+#include "wrapper.h"
+#include "xsref.h"
 
 using namespace draw;
 
@@ -41,12 +42,12 @@ void draw::setdata(wrapper* source, const char* id, int value, bool instant)
 
 char* draw::getdata(char* temp, wrapper* source, const char* id, const widget* childs, bool to_buffer, field_type_s& type)
 {
+	temp[0] = 0;
 	type = FieldNumber;
 	auto field = source->getmeta()->find(id);
 	if(!field)
 		return 0;
 	auto value = getdata(source, id);
-	temp[0] = 0;
 	if(field->type == text_type)
 	{
 		type = FieldText;

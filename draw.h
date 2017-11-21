@@ -1,7 +1,6 @@
 #include "point.h"
 #include "surface.h"
 #include "sprite.h"
-#include "wrapper.h"
 
 #pragma once
 
@@ -99,7 +98,6 @@ namespace hot
 	extern const char*		name; // Text name of element (optional)
 	extern rect				element; // Element coordinates
 	extern proc				callback; // Callback proc
-	extern wrapper*			source; // Data source wrapper
 	extern bool				stop; // Set true if we need stop modal loop
 }
 namespace colors
@@ -285,7 +283,6 @@ namespace draw
 	void					setclip(rect rc);
 	inline void				setclip() { clipping.set(0, 0, getwidth(), getheight()); }
 	void					setcolor(unsigned char index);
-	void					setdata(wrapper* source, const char* id, int value, bool instant = false);
 	void					setfocus(const char* id);
 	void					setposition(int& x, int& y, int& width);
 	void					settimer(unsigned milleseconds);

@@ -45,7 +45,6 @@ const char*				hot::name; // Control name (optional)
 rect					hot::element; // Event rectange (optional)
 hot::proc				hot::callback; // Some methods can include callback procedure
 bool					hot::stop; // Set true if we need stop modal loop
-wrapper*				hot::source;
 bool					sys_optimize_mouse_move = true;
 rect					sys_static_area;
 // Locale draw variables
