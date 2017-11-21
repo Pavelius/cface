@@ -295,7 +295,7 @@ namespace draw
 	void					syscursor(bool enable);
 	void					sysmouse(bool enable);
 	void					sysredraw();
-	int						tabs(rect rc, bool show_close, bool right_side, void** data, int start, int count, int current, int* hilite, proctext gtext, proctext gstate = 0, rect position = {0,0,0,0});
+	int						tabs(rect rc, bool show_close, bool right_side, void** data, int start, int count, int current, int* hilite, proctext gtext, proctext gstate = 0, rect position = {0, 0, 0, 0});
 	void					text(int x, int y, const char* string, int count = -1, unsigned flags = 0);
 	int						text(rect rc, const char* string, unsigned state = 0, int* max_width = 0);
 	int						textc(int x, int y, int width, const char* string, int count = -1, unsigned flags = 0);
