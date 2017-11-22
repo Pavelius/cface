@@ -8,10 +8,11 @@ using namespace draw;
 
 static void callback_setvalue(wrapper* source, const char* id, int value)
 {
-	if(!source)
-		return;
-	xsref e = {source->getmeta(), source};
-	e.set(id, value);
+	if(source)
+	{
+		xsref e = {source->getmeta(), source};
+		e.set(id, value);
+	}
 }
 
 static void callback_setvalue()
@@ -33,10 +34,10 @@ void draw::setdata(wrapper* source, const char* id, int value, bool instant)
 		callback_setvalue(source, id, value);
 	else
 	{
-		execute(InputSetValue, value);
+		execute(callback_setvalue);
 		hot::name = id;
+		hot::param = value;
 		hot::source = source;
-		hot::callback = callback_setvalue;
 	}
 }
 

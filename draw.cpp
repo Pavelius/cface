@@ -43,7 +43,6 @@ bool					hot::pressed; // flag if any of mouse keys is pressed
 int						hot::param; // Event numeric parameter (optional)
 const char*				hot::name; // Control name (optional)
 rect					hot::element; // Event rectange (optional)
-hot::proc				hot::callback; // Some methods can include callback procedure
 bool					hot::stop; // Set true if we need stop modal loop
 bool					sys_optimize_mouse_move = true;
 rect					sys_static_area;

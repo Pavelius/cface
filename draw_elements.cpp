@@ -14,9 +14,8 @@ static void callback_setfocus()
 
 static void execute_setfocus(const char* id)
 {
-	execute(InputSetFocus);
+	execute(callback_setfocus);
 	hot::name = id;
-	hot::callback = callback_setfocus;
 }
 
 void draw::focusing(const char* id, const rect& rc, unsigned& flags)

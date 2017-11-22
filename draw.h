@@ -97,7 +97,6 @@ namespace hot
 	extern int				param; // Draw command context. Application can extend this structure
 	extern const char*		name; // Text name of element (optional)
 	extern rect				element; // Element coordinates
-	extern proc				callback; // Callback proc
 	extern bool				stop; // Set true if we need stop modal loop
 }
 namespace colors
@@ -232,6 +231,7 @@ namespace draw
 	void					decortext(unsigned flags);
 	bool					domodal();
 	void					execute(int id, int value = 0);
+	void					execute(void(*proc)());
 	void					focusing(const char* id, const rect& rc, unsigned& flags);
 	int						getbpp();
 	color					getcolor(color normal, unsigned flags);

@@ -426,23 +426,23 @@ int draw::rawinput()
 	{
 		TranslateMessage(&msg);
 		DispatchMessageA(&msg);
-		hot::key = handle(hwnd, msg);
-		if(hot::key == InputNoUpdate)
+		unsigned m = handle(hwnd, msg);
+		if(m == InputNoUpdate)
 			continue;
-		if(hot::key)
+		if(m)
 		{
-			if(hot::key != MouseMove && hot::key >= (int)MouseLeft)
+			if(m != MouseMove && m >= (unsigned)MouseLeft)
 			{
 				if(GetKeyState(VK_SHIFT)<0)
-					hot::key |= Shift;
+					m |= Shift;
 				if(GetKeyState(VK_MENU)<0)
-					hot::key |= Alt;
+					m |= Alt;
 				if(GetKeyState(VK_CONTROL)<0)
-					hot::key |= Ctrl;
+					m |= Ctrl;
 			}
-			if(hot::key == InputUpdate)
+			if(m == InputUpdate)
 				update_size(hwnd);
-			return hot::key;
+			return m;
 		}
 	}
 	return 0;

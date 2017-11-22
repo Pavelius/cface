@@ -68,11 +68,10 @@ static bool editstart(const rect& rc, wrapper* source, const char* id, unsigned 
 	}
 	if(result)
 	{
-		execute(InputEdit);
+		execute(callback_edit);
 		hot::name = id;
 		hot::element = rc;
 		hot::source = source;
-		hot::callback = callback_edit;
 		edit_flags = flags;
 		edit_childs = childs;
 	}
@@ -133,9 +132,8 @@ int wdt_field(int x, int y, int width, const char* id, unsigned flags, const cha
 	{
 		if(addbutton(rc, ":dropdown", F4, "Показать список"))
 		{
-			draw::execute(InputDropDown);
+			draw::execute(callback_dropdown_list);
 			hot::name = id;
-			hot::callback = callback_dropdown_list;
 			edit_childs = childs;
 		}
 	}
@@ -158,9 +156,8 @@ int wdt_field(int x, int y, int width, const char* id, unsigned flags, const cha
 	{
 		if(addbutton(rc, "...", F4, "Выбрать"))
 		{
-			draw::execute(InputChoose);
+			draw::execute(callback_choose_list);
 			hot::name = id;
-			hot::callback = callback_choose_list;
 		}
 	}
 	focusing(id, rc, flags);

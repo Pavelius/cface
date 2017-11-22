@@ -73,7 +73,6 @@ bool control::open(rect rc)
 	setfocus(id);
 	while(true)
 	{
-		//draw::rectf(rc, colors::form);
 		view(rc);
 		int id = draw::input();
 		switch(id)
@@ -198,7 +197,8 @@ int control::render(int x, int y, int width, unsigned flags, const wrapper::comm
 	if(tool(rc, isdisabled(flags), false, true))
 	{
 		draw::execute(InputExecute);
-		hot::name = id;
+		hot::name = e.id;
+		hot::source = (wrapper*)this;
 	}
 	auto value = e.icon;
 	if(value)
