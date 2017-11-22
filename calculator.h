@@ -4,7 +4,6 @@ enum calc_errors {
 	CalculatorNoError,
 	CalculatorNotFound,
 };
-
 // Simple script executor
 struct calculator
 {
@@ -19,6 +18,7 @@ struct calculator
 	{
 		const char*	name;
 		int			value;
+		operator bool() const { return name != 0; }
 	};
 	error			errors; // When error occurs, there is filed position
 	calculator*		parent; // Parent context. In function calling you can analize this field and make Call Stack tree.
@@ -32,8 +32,9 @@ struct calculator
 	calculator();
 	inline operator bool() const { return !errors; }
 	//
-	void			add(const char* name, int value);
 	void			clear();
 	int				evalute(const char* string); // Evalute code expression and return result
+	int				get(const char* name) const;
 	var*			find(const char* name);
+	void			set(const char* name, int value);
 };

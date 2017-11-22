@@ -213,7 +213,15 @@ int control::render(int x, int y, int width, unsigned flags, const wrapper::comm
 	{
 		auto name = e.label;
 		if(name)
-			tooltips(name);
+		{
+			if(e.key[0])
+			{
+				char temp[128];
+				tooltips("%1 (%2)", name, key2str(temp, e.key[0]));
+			}
+			else
+				tooltips(name);
+		}
 		statusbar("Выполнить команду '%1'", name);
 	}
 	return width;
