@@ -38,6 +38,7 @@ namespace draw
 		color				getcolor(color normal) const;
 		virtual char*		getdescription(char* result) const;
 		virtual char*		getname(char* result) const;
+		void				invoke(const char* name) const;
 		virtual bool		keyinput(int id);
 		virtual void		nonclient(rect rc);
 		bool				open(rect rc);

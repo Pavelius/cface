@@ -12,7 +12,7 @@ void draw::scrollv(const char* id, const rect& scroll, int& origin, int count, i
 	int dr = maximum - count;
 	int p = (origin*ds) / dr + scroll.y1;
 	auto a = area(scroll);
-	if(drag::active(id, ScrollV))
+	if(drag::active(id, DragScrollV))
 	{
 		a = AreaHilitedPressed;
 		p1 = hot::mouse.y - drag::value;
@@ -30,7 +30,7 @@ void draw::scrollv(const char* id, const rect& scroll, int& origin, int count, i
 			origin += count;
 		else
 		{
-			drag::begin(id, ScrollV);
+			drag::begin(id, DragScrollV);
 			drag::value = hot::mouse.y - p;
 		}
 		if(origin < 0)
@@ -68,7 +68,7 @@ void draw::scrollh(const char* id, const struct rect& scroll, int& origin, int c
 		return;
 	int p = (origin*ds) / dr + scroll.x1;
 	areas a = area(scroll);
-	if(drag::active(id, ScrollH))
+	if(drag::active(id, DragScrollH))
 	{
 		a = AreaHilitedPressed;
 		p1 = hot::mouse.x - drag::value;
@@ -86,7 +86,7 @@ void draw::scrollh(const char* id, const struct rect& scroll, int& origin, int c
 			origin += count;
 		else
 		{
-			drag::begin(id, ScrollH);
+			drag::begin(id, DragScrollH);
 			drag::value = hot::mouse.x - p;
 		}
 		if(origin < 0)

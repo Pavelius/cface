@@ -4,7 +4,7 @@ void draw::splitv(int x, int y, int& value, int height, const char* id, int size
 {
 	rect rc;
 	auto mode = AreaNormal;
-	if(drag::active(id, SplitterV))
+	if(drag::active(id, DragSplitV))
 	{
 		value = drag::value - (right_align ? (hot::mouse.x - drag::mouse.x) : (drag::mouse.x - hot::mouse.x));
 		mode = AreaHilitedPressed;
@@ -24,7 +24,7 @@ void draw::splitv(int x, int y, int& value, int height, const char* id, int size
 		mode = area(rc);
 	if(mode == AreaHilitedPressed && hot::key == MouseLeft && hot::pressed)
 	{
-		drag::begin(id, SplitterV);
+		drag::begin(id, DragSplitV);
 		drag::mouse = hot::mouse;
 		drag::value = value;
 	}
@@ -47,7 +47,7 @@ void draw::splith(int x, int y, int width, int& value, const char* id, int size,
 {
 	struct rect rc;
 	areas mode = AreaNormal;
-	if(drag::active(id, SplitterV))
+	if(drag::active(id, DragSplitH))
 	{
 		value = drag::value - (down_align ? (hot::mouse.y - drag::mouse.y) : (drag::mouse.y - hot::mouse.y));
 		mode = AreaHilitedPressed;
@@ -67,7 +67,7 @@ void draw::splith(int x, int y, int width, int& value, const char* id, int size,
 		mode = area(rc);
 	if(mode == AreaHilitedPressed && hot::key == MouseLeft && hot::pressed)
 	{
-		drag::begin(id, SplitterV);
+		drag::begin(id, DragSplitH);
 		drag::mouse = hot::mouse;
 		drag::value = value;
 	}

@@ -390,7 +390,7 @@ void table::background(rect& rc)
 	// background
 	list::background(rc);
 	// drag&drop
-	if(drag::active(id, InputChoose))
+	if(drag::active(id, DragColumn))
 		columns.data[drag::value].width = imax(hot::mouse.x - drag::mouse.x - column_total_width, 8);
 	// calculate size
 	reposition(rc.width());
@@ -454,7 +454,7 @@ void table::header(rect client)
 			if(hot::pressed && hot::key == MouseLeft)
 			{
 				column_total_width = w - e.width;
-				drag::begin(id, InputChoose);
+				drag::begin(id, DragColumn);
 				drag::mouse.x = hot::mouse.x - w;
 				drag::value = columns.indexof(&e);
 			}
@@ -484,17 +484,9 @@ void table::header(rect client)
 				table_sort_by_mouse = true;
 				last_direction = (last_direction == -1) ? 1 : -1;
 				if(last_direction == -1)
-				{
-					draw::execute(InputExecute);
-					hot::name = "sortas";
-					hot::source = this;
-				}
+					invoke("sortas");
 				else
-				{
-					draw::execute(InputExecute);
-					hot::name = "sortds";
-					hot::source = this;
-				}
+					invoke("sortds");
 			}
 		}
 		if(e.label)

@@ -99,6 +99,11 @@ bool control::open(rect rc)
 	}
 }
 
+static void invoke_context_menu()
+{
+	((control*)hot::source)->contextmenu();
+}
+
 void control::view(rect rc, bool show_toolbar)
 {
 	draw::state push;
@@ -123,7 +128,7 @@ void control::view(rect rc, bool show_toolbar)
 		if(!disabled)
 		{
 			if(!hot::pressed && hot::key == MouseRight)
-				draw::execute(InputMenu);
+				draw::execute(invoke_context_menu);
 		}
 	}
 	// Перед выводом настроим разные элементы.
@@ -140,41 +145,11 @@ bool control::keyinput(int id)
 {
 	switch(id)
 	{
-	case InputMenu:
-		contextmenu();
-		break;
-	//case InputChoose:
-	//	current_widget_element.choose();
-	//	break;
-	//case InputEdit:
-	//	current_widget_element.editing();
-	//	break;
-	//case InputEditPlus:
-	//	current_widget_element.addvalue(1);
-	//	break;
-	//case InputEditMinus:
-	//	current_widget_element.addvalue(-1);
-	//	break;
 	case KeyTab:
 	case KeyTab | Shift:
 		setfocus(getnext(getfocus(), id));
 		break;
-	//case InputExecute:
-	//	execute(current_widget_element.id, true);
-	//	break;
-	case InputSetFocus:
-		draw::setfocus(hot::name);
-		break;
-	//case InputSetValue:
-	//	current_widget_element.data.set(hot::param);
-	//	break;
 	default:
-		//pc = getcommands()->findbykey(id);
-		//if(pc)
-		//{
-		//	pc->type(this, true);
-		//	break;
-		//}
 		return false;
 	}
 	return true;
@@ -191,15 +166,23 @@ bool control::keyinput(int id)
 //	return height;
 //}
 
+static void invoke_callback()
+{
+	hot::source->execute(hot::name, true);
+}
+
+void control::invoke(const char* name) const
+{
+	draw::execute(invoke_callback);
+	hot::source = (wrapper*)this;
+	hot::name = name;
+}
+
 int control::render(int x, int y, int width, unsigned flags, const wrapper::command& e) const
 {
 	rect rc = {x, y, x + width, y + width};
 	if(tool(rc, isdisabled(flags), false, true))
-	{
-		draw::execute(InputExecute);
-		hot::name = e.id;
-		hot::source = (wrapper*)this;
-	}
+		invoke(e.id);
 	auto value = e.icon;
 	if(value)
 	{

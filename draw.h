@@ -8,15 +8,7 @@ extern "C" void* memset(void* destination, int value, unsigned size);
 
 enum draw_event_s {
 	// input events
-	InputUser = 0xE000,
-	InputSymbol = 0xED00, InputTimer,
-	InputKeyUp, InputIdle, InputUpdate, InputNoUpdate,
-	// widgets events
-	InputChoose, InputDropDown, InputSetFocus,
-	InputExecute, InputMenu, InputSetValue, InputEdit,
-	ScrollV, ScrollH, SplitterV, SplitterH,
-	TreeType, TreeFlags,
-	HtmlLink, HtmlControl, TabsControl, TabsCloseControl,
+	InputSymbol = 0xED00, InputTimer, InputIdle, InputUpdate, InputNoUpdate, InputExecute,
 	Executed,
 	// Keyboard and mouse input (can be overrided by flags)
 	MouseLeft = 0xEE00, MouseLeftDBL, MouseRight,
@@ -85,6 +77,9 @@ enum iflags
 	AlignWidth = 0xE000,
 	AlignMask = 0xF000,
 };
+enum drap_part_s : unsigned char {
+	DragElement, DragScrollH, DragScrollV, DragSplitH, DragSplitV, DragColumn,
+};
 typedef char* (*proctext)(char* result, void* object);
 namespace hot
 {
@@ -146,11 +141,11 @@ namespace draw
 	namespace drag
 	{
 		extern const char*	id;
-		extern int			part;
+		extern drap_part_s	part;
 		extern int			value;
 		extern point		mouse;
-		bool				active(const char* id, int part = 0);
-		void				begin(const char* id, int part = 0);
+		bool				active(const char* id, drap_part_s part);
+		void				begin(const char* id, drap_part_s part);
 	}
 	namespace clipboard
 	{

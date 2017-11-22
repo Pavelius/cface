@@ -238,7 +238,7 @@ bool textedit::editing(rect rco)
 	if(records)
 	{
 		records->filter = 0;
-		records->keyinput(InputUser);
+		records->keyinput(InputUpdate);
 		int line_count = records->maximum;
 		int line_height = records->pixels_per_line;
 		records_height = line_height*imin(10, line_count);
@@ -257,7 +257,7 @@ bool textedit::editing(rect rco)
 			{
 				update_records = false;
 				records->filter = string;
-				records->keyinput(InputUser);
+				records->keyinput(InputUpdate);
 				int line_count = records->maximum;
 				int line_height = records->pixels_per_line;
 				records_height = line_height*imin(10, line_count);
@@ -471,9 +471,9 @@ bool draw::controls::textedit::keyinput(int id)
 		select(0, false);
 		select(zlen(string), true);
 		break;
-	case InputEdit:
-		editing(hot::element);
-		break;
+	//case InputEdit:
+	//	editing(hot::element);
+	//	break;
 	default:
 		return scrollable::keyinput(id);
 	}

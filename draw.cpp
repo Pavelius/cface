@@ -22,7 +22,7 @@ color					colors::tabs::text;
 color					colors::tabs::back;
 // Drag elements
 const char*				draw::drag::id;
-int						draw::drag::part;
+drap_part_s				draw::drag::part;
 int						draw::drag::value;
 point					draw::drag::mouse;
 // Color context and font context
@@ -226,21 +226,20 @@ void set_light_theme()
 	command_theme_light->execute();
 }
 
-void draw::drag::begin(const char* id, int part)
+void draw::drag::begin(const char* id, drap_part_s part)
 {
 	drag::id = id;
-	drag::part = part;
 	drag::mouse = hot::mouse;
 }
 
-bool draw::drag::active(const char* id, int part)
+bool draw::drag::active(const char* id, drap_part_s part)
 {
-	if(drag::id == id && drag::part == part)
+	if(drag::id == id)
 	{
 		if(!hot::pressed || hot::key == KeyEscape)
 		{
 			drag::id = 0;
-			drag::part = 0;
+			drag::part = DragElement;
 			hot::key = 0;
 			hot::cursor = CursorArrow;
 			return false;
@@ -895,9 +894,7 @@ areas draw::area(rect rc)
 	if(!mouseinput)
 		return AreaNormal;
 	if(hot::mouse.in(rc))
-	{
 		return hot::pressed ? AreaHilitedPressed : AreaHilited;
-	}
 	return AreaNormal;
 }
 

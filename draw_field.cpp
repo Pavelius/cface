@@ -51,10 +51,8 @@ static bool editstart(const rect& rc, wrapper* source, const char* id, unsigned 
 	auto result = false;
 	switch(hot::key&CommandMask)
 	{
-	case 0: // Означает что есть другая комманда оформленная в виде execute()
 	case MouseMove:
 	case InputIdle:
-	case InputEdit:
 		// Команды не влияющие на вход в режим редактирования
 		break;
 	case MouseLeft:

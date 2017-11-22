@@ -226,9 +226,6 @@
     </ClCompile>
     <ClCompile Include="draw_dockbar.cpp" />
     <ClCompile Include="draw_field.cpp" />
-    <ClCompile Include="widget_form.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="control_list.cpp" />
     <ClCompile Include="draw_group.cpp" />
     <ClCompile Include="draw_scroll.cpp" />

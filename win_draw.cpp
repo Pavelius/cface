@@ -73,8 +73,8 @@ static void set_cursor(cursors e)
 	SetCursor(data[e]);
 }
 
-extern bool		sys_optimize_mouse_move;
-extern rect		sys_static_area;
+extern bool	sys_optimize_mouse_move;
+extern rect	sys_static_area;
 
 static int handle(HWND hwnd, MSG& msg)
 {
@@ -169,17 +169,13 @@ static int handle(HWND hwnd, MSG& msg)
 	case WM_KEYDOWN:
 		return tokey(msg.wParam);
 	case WM_KEYUP:
-		return InputKeyUp;
+		return InputUpdate;
 	case WM_CHAR:
 		hot::param = msg.wParam;
 		return InputSymbol;
 	case WM_MY_SIZE:
 	case WM_SIZE:
 		return InputUpdate;
-	case WM_COMMAND:
-		if(HIWORD(msg.wParam)==0)
-			return msg.lParam;
-		break;
 	}
 	return 0;
 }

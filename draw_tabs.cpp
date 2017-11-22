@@ -99,6 +99,5 @@ int draw::tabs(rect rc, bool show_close, bool right_side, void** data, int start
 			line(rcx.x2 - 4, rcx.y1 + 4, rcx.x1 + 4, rcx.y2 - 4, fore);
 		}
 	}
-	//return rc.x1 - ox1;
 	return result;
 }

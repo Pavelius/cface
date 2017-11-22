@@ -164,8 +164,7 @@ void list::redraw(rect rc)
 		// Если надо подсвечивать
 		if(hilite_rows
 			&& (rk == MouseMove || rk == MouseWheelDown
-				|| rk == MouseWheelUp || rk == MouseLeft || rk == MouseRight || rk == MouseLeftDBL
-				|| rk == InputIdle))
+				|| rk == MouseWheelUp || rk == MouseLeft || rk == MouseRight || rk == MouseLeftDBL))
 		{
 			if(!scroll.width() || hot::mouse.x<scroll.x1)
 				current = origin + (hot::mouse.y - rc.y1 - 2) / pixels_per_line;

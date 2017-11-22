@@ -13,6 +13,7 @@ struct wrapper
 		command*				child;
 		unsigned				key[2];
 		int						icon;
+		bool					hide;
 		//
 		operator bool() const { return id != 0; }
 		const command*			find(const char* id) const;
