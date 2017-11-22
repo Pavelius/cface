@@ -16,21 +16,18 @@ namespace draw
 			int				lines_per_page, pixels_per_line;
 			bool			show_grid_lines;
 			bool			hilite_rows;
-			command*		commands; // List of commands that can handle control (for toolbar).
 			list();
 			virtual void	background(rect& rc) override;
 			virtual void	collapse(int row) {} // expanding 'row'
 			void			correction();
 			void			ensurevisible(); // ensure that current selected item was visible on screen if current 'count' is count of items per line
 			virtual void	expand(int row, int level) {} // expanding 'row' with 'level' = get(row, TreeLevel) or 0
-			const command*	getcommands() const override { return commands; }
 			virtual int		getlevel(int row) const { return 0; } // 0 is no treemark, 1+ level of treemark (where 1 is root level).
 			int				getlastchild(int row) const; // get last element of same level
 			int				getparent(int row) const; // get parent index of 'row'
 			int				getroot(int row) const;
 			virtual bool	isgroup(int row) const { return false; }
 			bool			isopen(int row); // Is 'row' open ?
-			bool			keyinput(int id) override;
 			void			redraw(rect rc) override;
 			virtual bool	selecting(rect rc, int index, point mouse) { return true; }
 			void			toggle(int index);

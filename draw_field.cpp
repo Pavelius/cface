@@ -30,7 +30,9 @@ void callback_edit()
 	{
 		switch(type)
 		{
-		case FieldText: setdata(source, id, (int)szdup(temp), true); break;
+		case FieldText:
+			setdata(source, id, (int)szdup(temp), true);
+			break;
 		case FieldNumber:
 			if(childs)
 			{
@@ -39,7 +41,8 @@ void callback_edit()
 			else
 				setdata(source, id, sz2num(temp), true);
 			break;
-		default: break;
+		default:
+			break;
 		}
 	}
 	draw::fore = old_fore;
@@ -47,12 +50,12 @@ void callback_edit()
 
 static bool editstart(const rect& rc, wrapper* source, const char* id, unsigned flags, const widget* childs)
 {
-	auto msk = hot::key & 0xFFFF;
 	auto result = false;
 	switch(hot::key&CommandMask)
 	{
 	case MouseMove:
 	case InputIdle:
+	case InputTimer:
 		// Команды не влияющие на вход в режим редактирования
 		break;
 	case MouseLeft:
@@ -60,8 +63,11 @@ static bool editstart(const rect& rc, wrapper* source, const char* id, unsigned 
 	case MouseRight:
 		result = draw::areb(rc);
 		break;
+	case InputSymbol:
+		result = true;
+		break;
 	default:
-		result = (msk == InputSymbol || msk >= KeyLeft);
+		result = (hot::key&CommandMask) >= KeyLeft;
 		break;
 	}
 	if(result)

@@ -58,9 +58,6 @@
     <ClCompile Include="draw.cpp">
       <Filter>Графика\Логика</Filter>
     </ClCompile>
-    <ClCompile Include="draw_focusing.cpp">
-      <Filter>Графика\Логика</Filter>
-    </ClCompile>
     <ClCompile Include="draw_input.cpp">
       <Filter>Графика\Логика</Filter>
     </ClCompile>
@@ -138,9 +135,6 @@
     </ClCompile>
     <ClCompile Include="xsvalue.cpp">
       <Filter>Обработка данных</Filter>
-    </ClCompile>
-    <ClCompile Include="wrapper.cpp">
-      <Filter>Графика\Логика</Filter>
     </ClCompile>
     <ClCompile Include="resources.cpp">
       <Filter>Графика\Логика</Filter>
@@ -274,6 +268,12 @@
     <ClCompile Include="widget_settings.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
+    <ClCompile Include="wrapper.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_focusing.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="acol.h">
@@ -372,9 +372,6 @@
     <ClInclude Include="xsvalue.h">
       <Filter>Обработка данных</Filter>
     </ClInclude>
-    <ClInclude Include="wrapper.h">
-      <Filter>Графика\Логика</Filter>
-    </ClInclude>
     <ClInclude Include="resources.h">
       <Filter>Графика\Логика</Filter>
     </ClInclude>
@@ -460,6 +457,9 @@
       <Filter>Графика\Элементы Управления</Filter>
     </ClInclude>
     <ClInclude Include="widget_settings.h">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClInclude>
+    <ClInclude Include="wrapper.h">
       <Filter>Графика\Элементы Управления</Filter>
     </ClInclude>
   </ItemGroup>

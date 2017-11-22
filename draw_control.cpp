@@ -141,18 +141,20 @@ void control::view(rect rc, bool show_toolbar)
 		render(rt.x1, rt.y1, rt.width(), commands);
 }
 
-bool control::keyinput(int id)
+static void execute_tab(wrapper* object, bool run)
 {
-	switch(id)
-	{
-	case KeyTab:
-	case KeyTab | Shift:
-		setfocus(getnext(getfocus(), id));
-		break;
-	default:
-		return false;
-	}
-	return true;
+	auto pc = (control*)object;
+	setfocus(getnext(getfocus(), KeyTab));
+}
+
+void control::keyinput(int id)
+{
+	auto pc = getcommands();
+	if(!pc)
+		return;
+	auto p = pc->find(id);
+	if(p)
+		p->type(this, true);
 }
 
 //int wdt_separator(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)

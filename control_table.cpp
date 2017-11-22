@@ -349,7 +349,9 @@ unsigned execute_table_setting(wrapper* context, bool run)
 	return Executed;
 }
 
+extern wrapper::command list_commands[];
 wrapper::command table_commands[] = {
+	{"", "", 0, list_commands},
 	{"add", "Добавить", execute_table_add, 0, {F8}, -1},
 	{"addcopy", "Скопировать", execute_table_addcopy, 0, {F9}, 9},
 	{"change", "Изменить", execute_table_change, 0, {F2, KeyEnter}, 10},
@@ -375,7 +377,6 @@ show_header(true), show_event_rows(false)
 	id = "table";
 	columns.data = 0;
 	columns.count = 0;
-	commands = table_commands;
 }
 
 wrapper::command* table::getcommands() const
@@ -784,65 +785,65 @@ void table::clear()
 	current = 0;
 }
 
-bool table::keyinput(int id)
-{
-	unsigned time_clock;
-	int i;
-	switch(id)
-	{
-	case KeyLeft:
-		i = current_column;
-		if(current_column)
-		{
-			current_column--;
-			validate(-1, false);
-		}
-		if(i == current_column)
-		{
-			if(isopen(current))
-				toggle(current);
-			else
-				current = getparent(current);
-			ensurevisible();
-			validate(-1, false);
-		}
-		break;
-	case KeyRight:
-		if(isgroup(current) && !isopen(current))
-			toggle(current);
-		else if(current_column < maximum_column - 1)
-		{
-			current_column++;
-			validate(1, false);
-		}
-		break;
-	case InputSymbol:
-	case InputSymbol | Shift:
-		if(!hot::param || hot::param < 0x20)
-			break;
-		time_clock = clock();
-		if(!search_time || (time_clock-search_time)>2)
-			search_text[0] = 0;
-		if(true)
-		{
-			search_time = time_clock;
-			char* p = zend(search_text);
-			szput(&p, hot::param);
-			p[0] = 0;
-			int i1 = find(draw::getdatasource(columns.data[current_column].id, columns.data[current_column].link), search_text, current);
-			if(i1!=-1)
-			{
-				current = i1;
-				correction();
-				ensurevisible();
-			}
-		}
-		break;
-	default:
-		return list::keyinput(id);
-	}
-	return true;
-}
+//bool table::keyinput(int id)
+//{
+//	unsigned time_clock;
+//	int i;
+//	switch(id)
+//	{
+//	case KeyLeft:
+//		i = current_column;
+//		if(current_column)
+//		{
+//			current_column--;
+//			validate(-1, false);
+//		}
+//		if(i == current_column)
+//		{
+//			if(isopen(current))
+//				toggle(current);
+//			else
+//				current = getparent(current);
+//			ensurevisible();
+//			validate(-1, false);
+//		}
+//		break;
+//	case KeyRight:
+//		if(isgroup(current) && !isopen(current))
+//			toggle(current);
+//		else if(current_column < maximum_column - 1)
+//		{
+//			current_column++;
+//			validate(1, false);
+//		}
+//		break;
+//	case InputSymbol:
+//	case InputSymbol | Shift:
+//		if(!hot::param || hot::param < 0x20)
+//			break;
+//		time_clock = clock();
+//		if(!search_time || (time_clock-search_time)>2)
+//			search_text[0] = 0;
+//		if(true)
+//		{
+//			search_time = time_clock;
+//			char* p = zend(search_text);
+//			szput(&p, hot::param);
+//			p[0] = 0;
+//			int i1 = find(draw::getdatasource(columns.data[current_column].id, columns.data[current_column].link), search_text, current);
+//			if(i1!=-1)
+//			{
+//				current = i1;
+//				correction();
+//				ensurevisible();
+//			}
+//		}
+//		break;
+//	default:
+//		return list::keyinput(id);
+//	}
+//	return true;
+//}
 
 widget& table::addcol(widget::proc type, const char* id, const char* label, unsigned flags, const char* link, int width)
 {

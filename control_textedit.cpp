@@ -280,9 +280,6 @@ bool textedit::editing(rect rco)
 		int id = input();
 		switch(id)
 		{
-		case 0:
-			draw::execute(KeyEscape);
-			return false;
 		case KeyEscape:
 			if(records && show_records)
 			{
@@ -401,81 +398,81 @@ bool textedit::editing(rect rco)
 	return false;
 }
 
-bool draw::controls::textedit::keyinput(int id)
-{
-	int n;
-	char temp[8];
-	switch(id)
-	{
-	case KeyHome + Ctrl:
-	case KeyHome + Ctrl + Shift:
-		select(0, (hot::key&Shift) != 0);
-		break;
-	case KeyEnd + Ctrl:
-	case KeyEnd + Ctrl + Shift:
-		select(zlen(string), (hot::key&Shift) != 0);
-		break;
-	case InputSymbol:
-	case InputSymbol | Shift:
-		if(hot::param < 0x20 || readonly)
-			return true;
-		paste(szput(temp, hot::param));
-		break;
-	case KeyBackspace:
-		if(readonly)
-			return true;
-		if((p2 == -1 || p1 == p2) && p1 > 0)
-			select(p1 - 1, true);
-		clear();
-		break;
-	case KeyDelete:
-		if(readonly)
-			return false;
-		if(p2 == -1 || p1 == p2)
-			select(p1 + 1, true);
-		clear();
-		break;
-	case Ctrl + Alpha + 'X':
-		if(p2 != -1 && p1 != p2)
-		{
-			char* s1 = string + imin(p1, p2);
-			char* s2 = string + imax(p1, p2);
-			clipboard::copy(s1, s2 - s1);
-		}
-		if(!readonly)
-			clear();
-		break;
-	case Ctrl + Alpha + 'C':
-		if(p2 != -1 && p1 != p2)
-		{
-			char* s1 = string + imin(p1, p2);
-			char* s2 = string + imax(p1, p2);
-			clipboard::copy(s1, s2 - s1);
-		}
-		break;
-	case Ctrl + Alpha + 'V':
-		if(p1 == -1 || readonly)
-			return true;
-		n = clipboard::paste(0, maxlenght - p1);
-		if(n > (int)sizeof(char))
-		{
-			clear();
-			int i = zlen(string);
-			int x = (n / sizeof(string[0])) - 1;
-			memmove(string + p1 + x, string + p1, (i - p1 + x) * sizeof(string[0]));
-			clipboard::paste(string + p1, x * sizeof(string[0]));
-			select(p1 + x, false);
-		}
-		break;
-	case Ctrl + Alpha + 'A':
-		select(0, false);
-		select(zlen(string), true);
-		break;
-	//case InputEdit:
-	//	editing(hot::element);
-	//	break;
-	default:
-		return scrollable::keyinput(id);
-	}
-	return true;
-}
+//bool draw::controls::textedit::keyinput(int id)
+//{
+//	int n;
+//	char temp[8];
+//	switch(id)
+//	{
+//	case KeyHome + Ctrl:
+//	case KeyHome + Ctrl + Shift:
+//		select(0, (hot::key&Shift) != 0);
+//		break;
+//	case KeyEnd + Ctrl:
+//	case KeyEnd + Ctrl + Shift:
+//		select(zlen(string), (hot::key&Shift) != 0);
+//		break;
+//	case InputSymbol:
+//	case InputSymbol | Shift:
+//		if(hot::param < 0x20 || readonly)
+//			return true;
+//		paste(szput(temp, hot::param));
+//		break;
+//	case KeyBackspace:
+//		if(readonly)
+//			return true;
+//		if((p2 == -1 || p1 == p2) && p1 > 0)
+//			select(p1 - 1, true);
+//		clear();
+//		break;
+//	case KeyDelete:
+//		if(readonly)
+//			return false;
+//		if(p2 == -1 || p1 == p2)
+//			select(p1 + 1, true);
+//		clear();
+//		break;
+//	case Ctrl + Alpha + 'X':
+//		if(p2 != -1 && p1 != p2)
+//		{
+//			char* s1 = string + imin(p1, p2);
+//			char* s2 = string + imax(p1, p2);
+//			clipboard::copy(s1, s2 - s1);
+//		}
+//		if(!readonly)
+//			clear();
+//		break;
+//	case Ctrl + Alpha + 'C':
+//		if(p2 != -1 && p1 != p2)
+//		{
+//			char* s1 = string + imin(p1, p2);
+//			char* s2 = string + imax(p1, p2);
+//			clipboard::copy(s1, s2 - s1);
+//		}
+//		break;
+//	case Ctrl + Alpha + 'V':
+//		if(p1 == -1 || readonly)
+//			return true;
+//		n = clipboard::paste(0, maxlenght - p1);
+//		if(n > (int)sizeof(char))
+//		{
+//			clear();
+//			int i = zlen(string);
+//			int x = (n / sizeof(string[0])) - 1;
+//			memmove(string + p1 + x, string + p1, (i - p1 + x) * sizeof(string[0]));
+//			clipboard::paste(string + p1, x * sizeof(string[0]));
+//			select(p1 + x, false);
+//		}
+//		break;
+//	case Ctrl + Alpha + 'A':
+//		select(0, false);
+//		select(zlen(string), true);
+//		break;
+//	//case InputEdit:
+//	//	editing(hot::element);
+//	//	break;
+//	default:
+//		return scrollable::keyinput(id);
+//	}
+//	return true;
+//}

@@ -58,7 +58,7 @@ namespace draw
 			widget*				findcol(const char* id);
 			command*			getcommands() const override;
 			void				header(rect rc);
-			bool				keyinput(int id) override;
+			//bool				keyinput(int id);
 			virtual void		prerender() override;
 			void				reposition(int width);
 			virtual void		row(rect rc, int index) override;

@@ -21,8 +21,7 @@ using namespace draw::controls;
 list::list() : origin(0), maximum(0), current(0),
 maximum_width(0), origin_width(0),
 lines_per_page(0), pixels_per_line(0),
-show_grid_lines(false),  hilite_rows(false),
-commands(0)
+show_grid_lines(false),  hilite_rows(false)
 {
 	id = "list";
 }
@@ -198,73 +197,102 @@ void list::redraw(rect rc)
 		draw::scrollh(id, scrollh, origin_width, rc.width(), maximum_width, focused);
 }
 
-bool list::keyinput(int id)
+static unsigned execute_keyup(wrapper* context, bool run)
 {
-	switch(id)
-	{
-	case KeyUp:
-		current--;
-		correction();
-		ensurevisible();
-		break;
-	case KeyDown:
-		current++;
-		correction();
-		ensurevisible();
-		break;
-	case KeyHome:
-		if(current==0)
-			break;
-		current = 0;
-		correction();
-		ensurevisible();
-		break;
-	case KeyEnd:
-		current = maximum - 1;
-		correction();
-		ensurevisible();
-		break;
-	case KeyPageUp:
-		if(current!=origin)
-			current = origin;
-		else
-			current -= lines_per_page - 1;
-		correction();
-		ensurevisible();
-		break;
-	case KeyPageDown:
-		if(current!= (origin+lines_per_page-1))
-			current = (origin+lines_per_page-1);
-		else
-			current += lines_per_page - 1;
-		correction();
-		ensurevisible();
-		break;
-	case KeyEnter:
-		execute("change", true);
-		break;
-	case MouseLeftDBL:
-		if(!hot::mouse.in(hot::element))
-			break;
-		execute("change", true);
-		break;
-	case MouseWheelUp:
-		origin--;
-		if(origin<0)
-			origin = 0;
-		break;
-	case MouseWheelDown:
-		origin++;
-		if(origin>maximum - lines_per_page)
-			origin = maximum - lines_per_page;
-		if(origin<0)
-			origin = 0;
-		break;
-	default:
-		return control::keyinput(id);
-	}
-	return true;
+	auto pc = (list*)context;
+	pc->current--;
+	pc->correction();
+	pc->ensurevisible();
+	return Executed;
 }
+
+static unsigned execute_keydown(wrapper* context, bool run)
+{
+	auto pc = (list*)context;
+	pc->current++;
+	pc->correction();
+	pc->ensurevisible();
+	return Executed;
+}
+
+static unsigned execute_home(wrapper* context, bool run)
+{
+	auto pc = (list*)context;
+	if(pc->current == 0)
+		return Disabled;
+	pc->current = 0;
+	pc->correction();
+	pc->ensurevisible();
+	return Executed;
+}
+
+static unsigned execute_end(wrapper* context, bool run)
+{
+	auto pc = (list*)context;
+	pc->current = pc->maximum - 1;
+	pc->correction();
+	pc->ensurevisible();
+	return Executed;
+}
+
+static unsigned execute_page_up(wrapper* context, bool run)
+{
+	auto pc = (list*)context;
+	if(pc->current != pc->origin)
+		pc->current = pc->origin;
+	else
+		pc->current -= pc->lines_per_page - 1;
+	pc->correction();
+	pc->ensurevisible();
+	return Executed;
+}
+
+static unsigned execute_page_down(wrapper* context, bool run)
+{
+	auto pc = (list*)context;
+	if(pc->current != (pc->origin + pc->lines_per_page - 1))
+		pc->current = (pc->origin + pc->lines_per_page - 1);
+	else
+		pc->current += pc->lines_per_page - 1;
+	pc->correction();
+	pc->ensurevisible();
+	return Executed;
+}
+
+static unsigned execute_mouse_dbl_click(wrapper* context, bool run)
+{
+	auto pc = (list*)context;
+	if(!hot::mouse.in(hot::element))
+		return Disabled;
+	pc->invoke("change");
+	return Executed;
+}
+
+static unsigned execute_mouse_wheel_up(wrapper* context, bool run)
+{
+	auto pc = (list*)context;
+	pc->origin--;
+	if(pc->origin<0)
+		pc->origin = 0;
+	return Executed;
+}
+
+static unsigned execute_mouse_wheel_down(wrapper* context, bool run)
+{
+	auto pc = (list*)context;
+	pc->origin++;
+	if(pc->origin>pc->maximum - pc->lines_per_page)
+		pc->origin = pc->maximum - pc->lines_per_page;
+	if(pc->origin<0)
+		pc->origin = 0;
+	return Executed;
+}
+
+wrapper::command list_commands[] = {
+	{"keyup", "¬верх", execute_keyup, 0, {KeyUp}, 0, true},
+	{"keydown", "¬низ", execute_keydown, 0, {KeyDown}, 0, true},
+	{0}
+};
 
 listfilter::listfilter() :filter(0)
 {
