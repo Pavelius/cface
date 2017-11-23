@@ -141,6 +141,7 @@ int wdt_field(int x, int y, int width, const char* id, unsigned flags, const cha
 		if(addbutton(rc, ":dropdown", F4, "Показать список"))
 		{
 			draw::execute(callback_dropdown_list);
+			hot::element = rc;
 			hot::name = id;
 			edit_childs = childs;
 		}
@@ -171,8 +172,8 @@ int wdt_field(int x, int y, int width, const char* id, unsigned flags, const cha
 	focusing(id, rc, flags);
 	auto a = area(rc);
 	bool enter_edit = false;
-	//if(isfocused(flags) && id)
-	//	enter_edit = editstart(rc, source, id, flags, childs);
+	if(isfocused(flags) && id)
+		enter_edit = editstart(rc, source, id, flags, childs);
 	if(!enter_edit)
 	{
 		if(isfocused(flags))

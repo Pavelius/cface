@@ -142,11 +142,18 @@ void control::view(rect rc, bool show_toolbar)
 		render(rt.x1, rt.y1, rt.width(), commands);
 }
 
-static void execute_tab(control* object, bool run)
+static unsigned execute_tab(control* object, bool run)
 {
 	auto pc = (control*)object;
-	setfocus(getnext(getfocus(), KeyTab));
+	if(run)
+		setfocus(getnext(getfocus(), KeyTab));
+	return Executed;
 }
+
+control::command control::commands[] = {
+	{"tab", "Следующий элемент управления", execute_tab, 0, {KeyTab}, 0, HideCommand},
+	{0}
+};
 
 //int wdt_separator(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 //{
@@ -159,14 +166,14 @@ static void execute_tab(control* object, bool run)
 //	return height;
 //}
 
-static void invoke_callback()
+static void callback_invoke()
 {
 	hot::source->execute(hot::name, true);
 }
 
 void control::invoke(const char* name) const
 {
-	draw::execute(invoke_callback);
+	draw::execute(callback_invoke);
 	hot::source = (control*)this;
 	hot::name = name;
 }

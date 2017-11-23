@@ -172,6 +172,7 @@ int	textedit::hittest(rect rc, point pt, unsigned state) const
 
 void textedit::cashing(rect rc)
 {
+	rcclient = rc;
 	if(rc.width() != cashed_width)
 	{
 		cashed_width = rc.width();
@@ -190,11 +191,11 @@ void textedit::background(rect& rc)
 {
 	scrollable::background(rc);
 	rc = rc + rctext;
-	cashing(rc);
 }
 
 void textedit::redraw(rect rc)
 {
+	cashing(rc);
 	if(focused)
 	{
 		auto ev = hot::key&CommandMask;
@@ -229,54 +230,42 @@ void textedit::redraw(rect rc)
 	}
 }
 
+int textedit::getrecordsheight() const
+{
+	if(!records)
+		return 0;
+	auto line_count = records->maximum;
+	auto line_height = records->pixels_per_line;
+	return line_height*imin(10, line_count);
+}
+
+void textedit::updaterecords()
+{
+	if(!records)
+		return;
+	records->filter = string;
+	records->keyinput(InputUpdate);
+}
+
 bool textedit::editing(rect rco)
 {
 	draw::screenshoot push;
-	int i;
-	point pt;
 	rect rcv, rc = rco + rctext;
-	int records_height = 0;
-	if(records)
-	{
-		records->filter = 0;
-		records->execute("update", true);
-		int line_count = records->maximum;
-		int line_height = records->pixels_per_line;
-		records_height = line_height*imin(10, line_count);
-	}
-	bool show_records = (records_height != 0);
-	update_records = false;
 	focused = true;
+	updaterecords();
 	while(true)
 	{
 		push.restore();
-		cashing(rc);
 		nonclient(rc);
-		if(records)
+		if(isshowrecords())
 		{
-			if(update_records)
+			if(records->maximum)
 			{
-				update_records = false;
-				records->filter = string;
-				records->keyinput(InputUpdate);
-				int line_count = records->maximum;
-				int line_height = records->pixels_per_line;
-				records_height = line_height*imin(10, line_count);
-				show_records = (records_height != 0);
+				rcv.set(rco.x1, rco.y2 + 2, imin(rco.x1 + 300, rco.x2), rco.y2 + 4 + getrecordsheight());
+				records->view(rcv);
 			}
-			if(show_records)
-			{
-				if(records->maximum)
-				{
-					rcv.set(rco.x1, rco.y2 + 2, imin(rco.x1 + 300, rco.x2), rco.y2 + 4 + records_height);
-					records->view(rcv);
-				}
-				else
-				{
-					rcv.clear();
-					show_records = false;
-				}
-			}
+			else
+				rcv.clear();
 		}
 		int id = input();
 		switch(id)
@@ -284,11 +273,8 @@ bool textedit::editing(rect rco)
 		case 0:
 			return false;
 		case KeyEscape:
-			if(records && show_records)
-			{
-				show_records = false;
+			if(records && isshowrecords())
 				break;
-			}
 			return false;
 		case KeyTab:
 		case KeyTab | Shift:
@@ -296,60 +282,26 @@ bool textedit::editing(rect rco)
 			hot::key = id;
 			return true;
 		case KeyEnter:
-			if(records && show_records)
+			if(records && isshowrecords())
 			{
 				//auto value = records->get("current");
 				//if(value)
 				//	zcpy(string, value, maxlenght);
 				select(0, false);
 				select(zlen(string), true);
-				show_records = false;
 				break;
 			}
 			return true;
 		case InputUpdate:
 			// Выходим, потому что ушел фокус (меняли размер)
 			return false;
-		case KeyUp:
-		case KeyUp + Shift:
-			if(records && show_records)
-			{
-				records->keyinput(id);
-				break;
-			}
-			pt = getpos(rc, p1, align);
-			i = hittest(rc, {pt.x, (short)(pt.y - texth())}, align);
-			if(i == -3)
-				i = linee(lineb(p1) - 1);
-			if(i >= 0)
-				select(i, (id&Shift) != 0);
-			break;
-		case KeyDown:
-		case KeyDown + Shift:
-			if(records)
-			{
-				if(!show_records)
-				{
-					show_records = true;
-					break;
-				}
-				records->keyinput(id);
-				break;
-			}
-			pt = getpos(rc, p1, align);
-			i = hittest(rc, {pt.x, (short)(pt.y + texth())}, align);
-			if(i == -3)
-				i = linee(linee(p1) + 1);
-			if(i >= 0)
-				select(i, (id&Shift) != 0);
-			break;
 		case MouseLeft:
 		case MouseLeft + Ctrl:
 		case MouseLeft + Shift:
 		case MouseLeftDBL:
 		case MouseLeftDBL + Ctrl:
 		case MouseLeftDBL + Shift:
-			if(records && show_records && areb(rcv))
+			if(records && isshowrecords() && areb(rcv))
 			{
 				records->keyinput(id);
 				break;
@@ -363,14 +315,14 @@ bool textedit::editing(rect rco)
 			break;
 		case MouseWheelDown:
 		case MouseWheelUp:
-			if(records && show_records && areb(rcv))
+			if(records && isshowrecords() && areb(rcv))
 				records->keyinput(id);
 			else
 				keyinput(id);
 			break;
 		case KeyPageUp:
 		case KeyPageDown:
-			if(records && show_records)
+			if(records && isshowrecords())
 				records->keyinput(id);
 			else
 				keyinput(id);
@@ -381,6 +333,76 @@ bool textedit::editing(rect rco)
 		}
 	}
 	return false;
+}
+
+unsigned textedit::down(control* source, bool run)
+{
+	auto pc = (textedit*)source;
+	if(run)
+	{
+		if(pc->records)
+			pc->records->keyinput(KeyDown);
+		else
+		{
+			auto pt = pc->getpos(pc->rcclient, pc->p1, pc->align);
+			auto i = pc->hittest(pc->rcclient, {pt.x, (short)(pt.y + texth())}, pc->align);
+			if(i == -3)
+				i = pc->linee(pc->linee(pc->p1) + 1);
+			if(i >= 0)
+				pc->select(i, false);
+		}
+	}
+	return Executed;
+}
+
+unsigned textedit::downs(control* source, bool run)
+{
+	auto pc = (textedit*)source;
+	if(run)
+	{
+		auto pt = pc->getpos(pc->rcclient, pc->p1, pc->align);
+		auto i = pc->hittest(pc->rcclient, {pt.x, (short)(pt.y + texth())}, pc->align);
+		if(i == -3)
+			i = pc->linee(pc->linee(pc->p1) + 1);
+		if(i >= 0)
+			pc->select(i, true);
+	}
+	return Executed;
+}
+
+unsigned textedit::up(control* source, bool run)
+{
+	auto pc = (textedit*)source;
+	if(run)
+	{
+		if(pc->records && pc->isshowrecords())
+			pc->records->keyinput(KeyUp);
+		else
+		{
+			auto pt = pc->getpos(pc->rcclient, pc->p1, pc->align);
+			auto i = pc->hittest(pc->rcclient, {pt.x, (short)(pt.y - texth())}, pc->align);
+			if(i == -3)
+				i = pc->linee(pc->lineb(pc->p1) - 1);
+			if(i >= 0)
+				pc->select(i, false);
+		}
+	}
+	return Executed;
+}
+
+unsigned textedit::ups(control* source, bool run)
+{
+	auto pc = (textedit*)source;
+	if(run)
+	{
+		auto pt = pc->getpos(pc->rcclient, pc->p1, pc->align);
+		auto i = pc->hittest(pc->rcclient, {pt.x, (short)(pt.y - texth())}, pc->align);
+		if(i == -3)
+			i = pc->linee(pc->lineb(pc->p1) - 1);
+		if(i >= 0)
+			pc->select(i, true);
+	}
+	return Executed;
 }
 
 unsigned textedit::symbol(control* source, bool run)
@@ -518,9 +540,12 @@ unsigned textedit::leftcs(control* source, bool run)
 	return Executed;
 }
 
-control::command textedit_commands[] = {
+control::command textedit::commands[] = {
+	{"super", "", 0, control::commands},
 	{"backspace", "Удалить символ слево", textedit::backspace, 0, {KeyBackspace}, 0, HideCommand},
 	{"delete", "Удалить символ", textedit::delsym, 0, {KeyDelete}, 0, HideCommand},
+	{"down", "Перейти вниз", textedit::down, 0, {KeyDown}, 0, HideCommand},
+	{"down_shift", "Перейти вниз", textedit::downs, 0, {KeyDown | Shift}, 0, HideCommand},
 	{"end", "В конец", textedit::end, 0, {KeyEnd}, 0, HideCommand},
 	{"home", "В начало", textedit::home, 0, {KeyHome}, 0, HideCommand},
 	{"left", "Переместиться влево", textedit::left, 0, {KeyLeft}, 0, HideCommand},
@@ -536,13 +561,10 @@ control::command textedit_commands[] = {
 	{"select_home", "Выделить до начала строки", execute_select_home, 0, {Shift | KeyHome}, 0, HideCommand},
 	{"text_end", "В конец текста", execute_text_end, 0, {Ctrl | KeyEnd}, 0, HideCommand},
 	{"symbol", "Символ", textedit::symbol, 0, {InputSymbol, InputSymbol | Shift}, 0, HideCommand},
+	{"up", "Переместиться вверх", textedit::up, 0, {KeyUp}, 0, HideCommand},
+	{"up_shift", "Переместиться вверх", textedit::ups, 0, {KeyUp | Shift}, 0, HideCommand},
 	{0}
 };
-
-control::command* textedit::getcommands() const
-{
-	return textedit_commands;
-}
 
 //	case Ctrl + Alpha + 'X':
 //		if(p2 != -1 && p1 != p2)

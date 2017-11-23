@@ -11,11 +11,12 @@ namespace draw
 			char*			string;
 			unsigned		maxlenght;
 			int				p1, p2;
-			rect			rctext;
+			rect			rctext, rcclient;
 			struct listfilter* records;
 			unsigned		align;
 			bool			readonly;
 			bool			update_records;
+			static command	commands[];
 			//
 			textedit(char* string, unsigned maxlenght);
 			//
@@ -25,13 +26,17 @@ namespace draw
 			virtual void	cashing(rect rc);
 			void			correct();
 			static unsigned delsym(control* source, bool run);
+			static unsigned down(control* source, bool run);
+			static unsigned downs(control* source, bool run);
 			bool			editing(rect rc);
 			static unsigned end(control* source, bool run);
 			void			ensurevisible(int linenumber);
-			command*		getcommands() const override;
+			command*		getcommands() const override { return commands; }
+			int				getrecordsheight() const;
 			static unsigned home(control* source, bool run);
 			int				hittest(rect rc, point pt, unsigned state) const;
 			void			invalidate() override;
+			bool			isshowrecords() const { return getrecordsheight() != 0; }
 			int				lineb(int index) const;
 			int				linee(int index) const;
 			int				linen(int index) const;
@@ -52,6 +57,9 @@ namespace draw
 			static unsigned rightcs(control* source, bool run);
 			void			select(int index, bool shift);
 			static unsigned symbol(control* source, bool run);
+			static unsigned up(control* source, bool run);
+			void			updaterecords();
+			static unsigned ups(control* source, bool run);
 		protected:
 			int				cashed_width;
 			int				cashed_string;
