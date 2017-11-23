@@ -150,11 +150,10 @@ void list::redraw(rect rc)
 		}
 		// Если надо подсвечивать
 		if(hilite_rows
-			&& (rk == MouseMove || rk == MouseWheelDown
-				|| rk == MouseWheelUp || rk == MouseLeft || rk == MouseRight || rk == MouseLeftDBL))
+			&& (rk == MouseMove || rk == MouseWheelDown || rk == MouseWheelUp || rk == MouseLeft || rk == MouseRight || rk == MouseLeftDBL))
 		{
 			if(!scroll.width() || hot::mouse.x<scroll.x1)
-				current = origin + (hot::mouse.y - rc.y1 - 2) / pixels_per_line;
+				current = origin + (hot::mouse.y - rc.y1) / pixels_per_line;
 		}
 	}
 	if(true)

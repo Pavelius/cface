@@ -22,6 +22,11 @@ void draw::execute(void(*id)())
 	current_callback = id;
 }
 
+//COMMAND(after_render)
+//{
+//	draw::rectf(sys_static_area, colors::blue, 128);
+//}
+
 int draw::input(bool redraw)
 {
 	auto temp_command = current_command;
