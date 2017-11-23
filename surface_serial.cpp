@@ -4,33 +4,27 @@
 
 #pragma pack(push)
 #pragma pack(1)
-namespace
+struct bmp_header
 {
-	namespace bmp
-	{
-		struct header
-		{
-			unsigned short	signature; // for bitmap 4D42
-			unsigned		size; // size in bytes all file
-			unsigned short	reserved[2]; // reserved, must be null
-			unsigned		bits; // offset to bitmap bits from top of this structure
-		};
-		struct info
-		{
-			unsigned		size; // The number of bytes required by the structure.
-			int				width; // The width of the bitmap, in pixels. If biCompression is BI_JPEG or BI_PNG, the biWidth member specifies the width of the decompressed JPEG or PNG image file, respectively.
-			int				height; // The height of the bitmap, in pixels. If biHeight is positive, the bitmap is a bottom-up DIB and its origin is the lower-left corner. If biHeight is negative, the bitmap is a top-down DIB and its origin is the upper-left corner.
-			unsigned short	planes; // The number of planes for the target device. This value must be set to 1.
-			unsigned short	bpp; // Bits per pixels. Can be 8, 16, 24, 32
-			unsigned		compression;
-			unsigned		size_image; // The size, in bytes, of the image.This may be set to zero for BI_RGB bitmaps.
-			int				pels_per_meter_x; // The horizontal resolution, in pixels-per-meter, of the target device for the bitmap. An application can use this value to select a bitmap from a resource group that best matches the characteristics of the current device.
-			int				pels_per_meter_y; // The vertical resolution, in pixels-per-meter, of the target device for the bitmap.
-			unsigned		color_used; // Used mainly with 8-bit per pixel image format.
-			unsigned		color_important;
-		};
-	}
-}
+	unsigned short	signature; // for bitmap 4D42
+	unsigned		size; // size in bytes all file
+	unsigned short	reserved[2]; // reserved, must be null
+	unsigned		bits; // offset to bitmap bits from top of this structure
+};
+struct bmp_info
+{
+	unsigned		size; // The number of bytes required by the structure.
+	int				width; // The width of the bitmap, in pixels. If biCompression is BI_JPEG or BI_PNG, the biWidth member specifies the width of the decompressed JPEG or PNG image file, respectively.
+	int				height; // The height of the bitmap, in pixels. If biHeight is positive, the bitmap is a bottom-up DIB and its origin is the lower-left corner. If biHeight is negative, the bitmap is a top-down DIB and its origin is the upper-left corner.
+	unsigned short	planes; // The number of planes for the target device. This value must be set to 1.
+	unsigned short	bpp; // Bits per pixels. Can be 8, 16, 24, 32
+	unsigned		compression;
+	unsigned		size_image; // The size, in bytes, of the image.This may be set to zero for BI_RGB bitmaps.
+	int				pels_per_meter_x; // The horizontal resolution, in pixels-per-meter, of the target device for the bitmap. An application can use this value to select a bitmap from a resource group that best matches the characteristics of the current device.
+	int				pels_per_meter_y; // The vertical resolution, in pixels-per-meter, of the target device for the bitmap.
+	unsigned		color_used; // Used mainly with 8-bit per pixel image format.
+	unsigned		color_important;
+};
 #pragma pack(pop)
 
 //void io::stream::writescan(void* p, int width, int height, int scan_line, int element_size)
@@ -46,12 +40,12 @@ namespace
 
 void draw::write(const char* url, unsigned char* bits, int width, int height, int bpp, int scanline, color* pallette)
 {
-	bmp::header bmf = {0};
-	bmp::info bmi = {0};
+	bmp_header bmf = {0};
+	bmp_info bmi = {0};
 	//
 	bmf.size = sizeof(bmf);
 	bmf.signature = 0x4D42;
-	bmf.bits = sizeof(bmp::header) + sizeof(bmp::info);
+	bmf.bits = sizeof(bmp_header) + sizeof(bmp_info);
 	//
 	bmi.size = sizeof(bmi);
 	bmi.width = width;
@@ -148,9 +142,9 @@ static struct bmp_bitmap_plugin : public draw::surface::plugin
 		if(!inspect(width, height, bpp, input, input_size))
 			return ErrorIllegalByteSequence;
 		bpp = iabs(bpp);
-		auto ph = (bmp::header*)input;
-		auto pi = (bmp::info*)(input + sizeof(bmp::header));
-		unsigned char* ppal = (unsigned char*)pi + sizeof(bmp::info);
+		auto ph = (bmp_header*)input;
+		auto pi = (bmp_info*)(input + sizeof(bmp_header));
+		unsigned char* ppal = (unsigned char*)pi + sizeof(bmp_info);
 		unsigned char* pb = (unsigned char*)input + ph->bits;
 		int output_bpp = bpp;
 		int input_bpp = bpp;
@@ -173,8 +167,8 @@ static struct bmp_bitmap_plugin : public draw::surface::plugin
 	{
 		if(input[1] != 0x4D || input[0] != 0x42)
 			return false;
-		auto ph = (bmp::header*)input;
-		auto pi = (bmp::info*)(input + sizeof(bmp::header));
+		auto ph = (bmp_header*)input;
+		auto pi = (bmp_info*)(input + sizeof(bmp_header));
 		width = pi->width;
 		height = pi->height;
 		bpp = -pi->bpp;

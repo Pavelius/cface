@@ -3,7 +3,6 @@
 #include "crt.h"
 #include "draw.h"
 #include "io.h"
-#include "menu.h"
 #include "control_table.h"
 #include "xsref.h"
 

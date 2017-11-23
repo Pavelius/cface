@@ -297,7 +297,6 @@
     <ClInclude Include="hotkey.h" />
     <ClInclude Include="io.h" />
     <ClInclude Include="io_ftp.h" />
-    <ClInclude Include="menu.h" />
     <ClInclude Include="pathfind.h" />
     <ClInclude Include="pma.h" />
     <ClInclude Include="point.h" />

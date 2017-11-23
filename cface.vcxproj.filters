@@ -56,28 +56,28 @@
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
     <ClCompile Include="draw.cpp">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
     <ClCompile Include="draw_input.cpp">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
     <ClCompile Include="draw_text.cpp">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
     <ClCompile Include="draw_textf.cpp">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
     <ClCompile Include="draw_window.cpp">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
     <ClCompile Include="drawable.cpp">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
     <ClCompile Include="bitops.cpp">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
     <ClCompile Include="color.cpp">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
     <ClCompile Include="io.cpp">
       <Filter>Системные</Filter>
@@ -107,10 +107,10 @@
       <Filter>Коллекции</Filter>
     </ClCompile>
     <ClCompile Include="sprite.cpp">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
     <ClCompile Include="sprite_store.cpp">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
     <ClCompile Include="xsbase.cpp">
       <Filter>Обработка данных</Filter>
@@ -137,7 +137,7 @@
       <Filter>Обработка данных</Filter>
     </ClCompile>
     <ClCompile Include="resources.cpp">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
     <ClCompile Include="point.cpp">
       <Filter>Графика\Геометрия</Filter>
@@ -146,10 +146,10 @@
       <Filter>Графика\Геометрия</Filter>
     </ClCompile>
     <ClCompile Include="pma.cpp">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
     <ClCompile Include="screenshoot.cpp">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
     <ClCompile Include="valtree.cpp">
       <Filter>Коллекции</Filter>
@@ -158,10 +158,10 @@
       <Filter>Коллекции</Filter>
     </ClCompile>
     <ClCompile Include="surface.cpp">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
     <ClCompile Include="surface_serial.cpp">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
     <ClCompile Include="draw_data.cpp">
       <Filter>Графика\Элементы Управления</Filter>
@@ -316,22 +316,19 @@
       <Filter>Графика\Элементы Управления</Filter>
     </ClInclude>
     <ClInclude Include="draw.h">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClInclude>
     <ClInclude Include="drawable.h">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClInclude>
     <ClInclude Include="font.h">
-      <Filter>Графика\Логика</Filter>
-    </ClInclude>
-    <ClInclude Include="menu.h">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClInclude>
     <ClInclude Include="bitops.h">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClInclude>
     <ClInclude Include="color.h">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClInclude>
     <ClInclude Include="io.h">
       <Filter>Системные</Filter>
@@ -346,7 +343,7 @@
       <Filter>Коллекции</Filter>
     </ClInclude>
     <ClInclude Include="sprite.h">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClInclude>
     <ClInclude Include="xsbase.h">
       <Filter>Обработка данных</Filter>
@@ -370,7 +367,7 @@
       <Filter>Обработка данных</Filter>
     </ClInclude>
     <ClInclude Include="resources.h">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClInclude>
     <ClInclude Include="point.h">
       <Filter>Графика\Геометрия</Filter>
@@ -385,10 +382,10 @@
       <Filter>Графика\Геометрия</Filter>
     </ClInclude>
     <ClInclude Include="pma.h">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClInclude>
     <ClInclude Include="screenshoot.h">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClInclude>
     <ClInclude Include="thread.h">
       <Filter>Системные</Filter>
@@ -397,7 +394,7 @@
       <Filter>Коллекции</Filter>
     </ClInclude>
     <ClInclude Include="surface.h">
-      <Filter>Графика\Логика</Filter>
+      <Filter>Графика\Базовые элементы</Filter>
     </ClInclude>
     <ClInclude Include="draw_control.h">
       <Filter>Графика\Элементы Управления</Filter>
@@ -476,9 +473,6 @@
     <Filter Include="Системные">
       <UniqueIdentifier>{4ac80e6a-0388-486f-8e0f-0e6c8aa027bb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Графика\Логика">
-      <UniqueIdentifier>{3c034dc7-8a30-409e-b77d-9c82a281c030}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Обработка данных">
       <UniqueIdentifier>{1b24bc33-4d13-4821-83f7-087ad349608d}</UniqueIdentifier>
     </Filter>
@@ -487,6 +481,9 @@
     </Filter>
     <Filter Include="Поддержка">
       <UniqueIdentifier>{7873d414-bc7b-49d4-bf13-45efa5e4200e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Графика\Базовые элементы">
+      <UniqueIdentifier>{3c034dc7-8a30-409e-b77d-9c82a281c030}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

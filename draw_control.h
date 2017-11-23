@@ -75,6 +75,18 @@ namespace draw
 		virtual void			prerender() {}
 		void					view(rect rc, bool show_toolbar = false);
 	};
+	struct menu
+	{
+		unsigned				count;
+		bool					separator;
+		void*					handle;
+		menu();
+		~menu();
+		void					add(const char* label, unsigned data, bool disabled = false, bool checked = false);
+		void					add(const char* id, draw::control* object);
+		void					addseparator();
+		unsigned				choose(int x, int y);
+	};
 	void						dockbar(rect& rc);
 	unsigned					getdocked(control** output, unsigned count, dock_s type);
 	int							view(rect rc, control** pages, int count, int& current, bool show_toolbar, unsigned tab_state, int padding);
