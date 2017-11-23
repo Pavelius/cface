@@ -18,14 +18,20 @@ bool				table_sort_by_mouse;
 struct row_control : control
 {
 	table*		parent;
+	void*		object;
 
-	row_control(table* parent) : parent(parent)
+	row_control(table* parent, unsigned index) : parent(parent), object(parent->rows.get(index))
 	{
 	}
 
 	const xsfield* getmeta() const override
 	{
 		return parent->fields;
+	}
+
+	void* getobject() override
+	{
+		return object;
 	}
 
 };
@@ -91,8 +97,8 @@ int tbl_text(int x, int y, int width, const char* id, unsigned flags, const char
 
 int tbl_number(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
-	char temp[32]; sznum(temp, value);
 	auto data_value = getdata(source, getdatasource(id, link));
+	char temp[32]; sznum(temp, data_value);
 	auto height = draw::texth();
 	tbl_hilight(x, y, width, flags, label);
 	tbl_setposition(x, y, width);
@@ -533,7 +539,7 @@ void table::row(rect rc, int index)
 	bool first_row = true;
 	if(!columns.data)
 		return;
-	xsref rowref = {fields, rows.get(index)};
+	row_control rwr(this, index);
 	for(auto& e : columns)
 	{
 		if(e.flags&ColumnHide)
@@ -552,8 +558,7 @@ void table::row(rect rc, int index)
 			flags |= Checked;
 		if(focused)
 			flags |= Focused;
-		row_control rwr(this);
-		e.type(r1.x1, r1.y1, r1.width(), id, flags, e.label, index, e.link, &rwr, e.title, e.childs, e.tips);
+		e.type(r1.x1, r1.y1, r1.width(), e.id, flags, e.label, index, e.link, &rwr, e.title, e.childs, e.tips);
 		if(show_grid_lines)
 			line(r1.x2, r1.y1, r1.x2, r1.y2 - 1, colors::form);
 		r1.x1 = r1.x2;

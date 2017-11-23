@@ -128,8 +128,11 @@ void control::view(rect rc, bool show_toolbar)
 		hot::element = rc;
 		if(!disabled)
 		{
-			if(!hot::pressed && hot::key == MouseRight)
+			if(hot::key == MouseRight && !hot::pressed)
+			{
 				draw::execute(invoke_context_menu);
+				hot::source = this;
+			}
 		}
 	}
 	// Перед выводом настроим разные элементы.
