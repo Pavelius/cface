@@ -61,7 +61,7 @@ bool control::open(const char* title, unsigned state, int width, int height)
 		rc.offset(metrics::padding*2);
 		view(rc);
 		int id = draw::input();
-		if(id == KeyEscape)
+		if(id == KeyEscape || !id)
 			return false;
 		if(focused)
 			keyinput(id);

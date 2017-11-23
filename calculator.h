@@ -3,6 +3,7 @@
 enum calc_errors {
 	CalculatorNoError,
 	CalculatorNotFound,
+	CalculatorNotFoundFunction,
 };
 // Simple script executor
 struct calculator
