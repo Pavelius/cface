@@ -117,7 +117,7 @@ int tbl_check(int x, int y, int width, const char* id, unsigned flags, const cha
 	auto data_value = getdata(source, pid);
 	tbl_hilight(x, y, width, flags, 0);
 	tbl_setposition(x, y, width);
-	auto height = wdt_clipart(x, y, width, id, (value == data_value) ? Checked : 0, ":checkbox", value, link, source, title, childs, tips);
+	auto height = wdt_clipart(x, y, width, id, (value == data_value) ? Checked : 0, ":check", value, link, source, title, childs, tips);
 	auto executed = false;
 	if(areb({x, y, x + width, y + height}))
 	{
@@ -127,7 +127,7 @@ int tbl_check(int x, int y, int width, const char* id, unsigned flags, const cha
 	if(isfocused(flags) && ischecked(flags) && hot::key==KeySpace)
 		executed = true;
 	if(executed)
-		draw::setdata(source, pid, value);
+		draw::setdata(source, pid, value, true);
 	return height;
 }
 
@@ -146,8 +146,16 @@ int tbl_image(int x, int y, int width, const char* id, unsigned flags, const cha
 
 int tbl_date(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
-	//	getstrfdat(text, get(object, e), true);
-	return 0;
+	char temp[64];
+	auto data_value = getdata(source, getdatasource(id, link));
+	auto height = draw::texth(); temp[64];
+	if(data_value)
+		getstrfdat(temp, data_value, true);
+	tbl_hilight(x, y, width, flags, temp);
+	tbl_setposition(x, y, width);
+	if(data_value)
+		tbl_text({x, y, x + width, y + height}, temp, flags);
+	return height + table_padding * 2;
 }
 
 int tbl_point(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
