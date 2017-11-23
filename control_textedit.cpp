@@ -290,8 +290,9 @@ bool textedit::editing(rect rco)
 			}
 			return false;
 		case KeyTab:
-		case KeyTab|Shift:
+		case KeyTab | Shift:
 			draw::execute(id);
+			hot::key = id;
 			return true;
 		case KeyEnter:
 			if(records && show_records)
@@ -319,14 +320,6 @@ bool textedit::editing(rect rco)
 		case KeyRight + Ctrl + Shift:
 		case KeyRight + Shift:
 			right((id&Shift) != 0, (id&Ctrl) != 0);
-			break;
-		case KeyHome:
-		case KeyHome + Shift:
-			select(lineb(p1), (id&Shift) != 0);
-			break;
-		case KeyEnd:
-		case KeyEnd + Shift:
-			select(linee(p1), (id&Shift) != 0);
 			break;
 		case KeyUp:
 		case KeyUp + Shift:
@@ -375,6 +368,7 @@ bool textedit::editing(rect rco)
 			if(!areb(rc) && hot::pressed)
 			{
 				draw::execute(id);
+				hot::key = id;
 				return true;
 			}
 			break;
@@ -436,11 +430,59 @@ static unsigned execute_delete(wrapper* source, bool run)
 	return Executed;
 }
 
+static unsigned execute_home(wrapper* source, bool run)
+{
+	auto pc = (textedit*)source;
+	pc->select(pc->lineb(pc->p1), false);
+	return Executed;
+}
+
+static unsigned execute_end(wrapper* source, bool run)
+{
+	auto pc = (textedit*)source;
+	pc->select(pc->linee(pc->p1), false);
+	return Executed;
+}
+
+static unsigned execute_text_end(wrapper* source, bool run)
+{
+	auto pc = (textedit*)source;
+	pc->select(zlen(pc->string), false);
+	return Executed;
+}
+
+static unsigned execute_select_home(wrapper* source, bool run)
+{
+	auto pc = (textedit*)source;
+	pc->select(pc->lineb(pc->p1), true);
+	return Executed;
+}
+
+static unsigned execute_select_end(wrapper* source, bool run)
+{
+	auto pc = (textedit*)source;
+	pc->select(pc->linee(pc->p1), true);
+	return Executed;
+}
+
+static unsigned execute_select_all(wrapper* source, bool run)
+{
+	auto pc = (textedit*)source;
+	pc->select(0, false);
+	pc->select(zlen(pc->string), true);
+	return Executed;
+}
+
 wrapper::command textedit_commands[] = {
-	{"symbol", "Символ", execute_symbol, 0, {InputSymbol}, 0, HideCommand},
-	{"symbol", "Символ", execute_symbol, 0, {InputSymbol|Shift}, 0, HideCommand},
 	{"backspace", "Удалить символ слево", execute_backspace, 0, {KeyBackspace}, 0, HideCommand},
 	{"delete", "Удалить символ", execute_delete, 0, {KeyDelete}, 0, HideCommand},
+	{"end", "В конец", execute_end, 0, {KeyEnd}, 0, HideCommand},
+	{"home", "В начало", execute_home, 0, {KeyHome}, 0, HideCommand},
+	{"select_all", "Выделить все", execute_select_all, 0, {Ctrl | (Alpha + 'A')}, 0, HideToolbar},
+	{"select_end", "Выделить до конца строки", execute_select_end, 0, {Shift | KeyEnd}, 0, HideCommand},
+	{"select_home", "Выделить до начала строки", execute_select_home, 0, {Shift | KeyHome}, 0, HideCommand},
+	{"text_end", "В конец текста", execute_text_end, 0, {Ctrl | KeyEnd}, 0, HideCommand},
+	{"symbol", "Символ", execute_symbol, 0, {InputSymbol, InputSymbol | Shift}, 0, HideCommand},
 	{0}
 };
 
@@ -449,20 +491,6 @@ wrapper::command* textedit::getcommands() const
 	return textedit_commands;
 }
 
-//bool draw::controls::textedit::keyinput(int id)
-//{
-//	int n;
-//	char temp[8];
-//	switch(id)
-//	{
-//	case KeyHome + Ctrl:
-//	case KeyHome + Ctrl + Shift:
-//		select(0, (hot::key&Shift) != 0);
-//		break;
-//	case KeyEnd + Ctrl:
-//	case KeyEnd + Ctrl + Shift:
-//		select(zlen(string), (hot::key&Shift) != 0);
-//		break;
 //	case Ctrl + Alpha + 'X':
 //		if(p2 != -1 && p1 != p2)
 //		{
@@ -495,12 +523,3 @@ wrapper::command* textedit::getcommands() const
 //			select(p1 + x, false);
 //		}
 //		break;
-//	case Ctrl + Alpha + 'A':
-//		select(0, false);
-//		select(zlen(string), true);
-//		break;
-//	default:
-//		return scrollable::keyinput(id);
-//	}
-//	return true;
-//}

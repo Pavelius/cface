@@ -3,7 +3,7 @@
 struct xsfield;
 
 enum command_view_s {
-	ViewIcon, ViewIconAndText, ViewText,
+	ViewIcon, ViewIconAndText, ViewText, HideToolbar,
 	HideCommand,
 };
 

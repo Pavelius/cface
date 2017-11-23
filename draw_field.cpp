@@ -10,6 +10,7 @@ using namespace draw;
 
 static unsigned edit_flags;
 static const widget* edit_childs;
+static int edit_command;
 
 void callback_edit()
 {
@@ -26,6 +27,8 @@ void callback_edit()
 	te.align = edit_flags;
 	te.p1 = 0;
 	te.p2 = zlen(temp);
+	if(edit_command)
+		hot::key = edit_command;
 	if(te.editing(hot::element))
 	{
 		switch(type)
@@ -51,6 +54,7 @@ void callback_edit()
 static bool editstart(const rect& rc, wrapper* source, const char* id, unsigned flags, const widget* childs)
 {
 	auto result = false;
+	edit_command = 0;
 	switch(hot::key&CommandMask)
 	{
 	case MouseMove:
@@ -61,6 +65,7 @@ static bool editstart(const rect& rc, wrapper* source, const char* id, unsigned 
 	case MouseLeft:
 	case MouseLeftDBL:
 	case MouseRight:
+		edit_command = hot::key;
 		result = draw::areb(rc);
 		break;
 	case InputSymbol:
