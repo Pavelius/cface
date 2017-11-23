@@ -280,6 +280,8 @@ bool textedit::editing(rect rco)
 		int id = input();
 		switch(id)
 		{
+		case 0:
+			return false;
 		case KeyEscape:
 			if(records && show_records)
 			{
@@ -398,6 +400,55 @@ bool textedit::editing(rect rco)
 	return false;
 }
 
+static unsigned execute_symbol(wrapper* source, bool run)
+{
+	char temp[8];
+	auto pc = (textedit*)source;
+	if(hot::param < 0x20 || pc->readonly)
+		return Disabled;
+	if(run)
+		pc->paste(szput(temp, hot::param));
+	return Executed;
+}
+
+static unsigned execute_backspace(wrapper* source, bool run)
+{
+	auto pc = (textedit*)source;
+	if(pc->readonly)
+		return Disabled;
+	if(run)
+	{
+		if((pc->p2 == -1 || pc->p1 == pc->p2) && pc->p1 > 0)
+			pc->select(pc->p1 - 1, true);
+		pc->clear();
+	}
+	return Executed;
+}
+
+static unsigned execute_delete(wrapper* source, bool run)
+{
+	auto pc = (textedit*)source;
+	if(pc->readonly)
+		return Disabled;
+	if(pc->p2 == -1 || pc->p1 == pc->p2)
+		pc->select(pc->p1 + 1, true);
+	pc->clear();
+	return Executed;
+}
+
+wrapper::command textedit_commands[] = {
+	{"symbol", "Символ", execute_symbol, 0, {InputSymbol}, 0, HideCommand},
+	{"symbol", "Символ", execute_symbol, 0, {InputSymbol|Shift}, 0, HideCommand},
+	{"backspace", "Удалить символ слево", execute_backspace, 0, {KeyBackspace}, 0, HideCommand},
+	{"delete", "Удалить символ", execute_delete, 0, {KeyDelete}, 0, HideCommand},
+	{0}
+};
+
+wrapper::command* textedit::getcommands() const
+{
+	return textedit_commands;
+}
+
 //bool draw::controls::textedit::keyinput(int id)
 //{
 //	int n;
@@ -411,26 +462,6 @@ bool textedit::editing(rect rco)
 //	case KeyEnd + Ctrl:
 //	case KeyEnd + Ctrl + Shift:
 //		select(zlen(string), (hot::key&Shift) != 0);
-//		break;
-//	case InputSymbol:
-//	case InputSymbol | Shift:
-//		if(hot::param < 0x20 || readonly)
-//			return true;
-//		paste(szput(temp, hot::param));
-//		break;
-//	case KeyBackspace:
-//		if(readonly)
-//			return true;
-//		if((p2 == -1 || p1 == p2) && p1 > 0)
-//			select(p1 - 1, true);
-//		clear();
-//		break;
-//	case KeyDelete:
-//		if(readonly)
-//			return false;
-//		if(p2 == -1 || p1 == p2)
-//			select(p1 + 1, true);
-//		clear();
 //		break;
 //	case Ctrl + Alpha + 'X':
 //		if(p2 != -1 && p1 != p2)
@@ -468,9 +499,6 @@ bool textedit::editing(rect rco)
 //		select(0, false);
 //		select(zlen(string), true);
 //		break;
-//	//case InputEdit:
-//	//	editing(hot::element);
-//	//	break;
 //	default:
 //		return scrollable::keyinput(id);
 //	}

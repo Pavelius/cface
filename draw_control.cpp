@@ -185,14 +185,13 @@ int control::render(int x, int y, int width, unsigned flags, const wrapper::comm
 	rect rc = {x, y, x + width, y + width};
 	if(tool(rc, isdisabled(flags), false, true))
 		invoke(e.id);
-	auto value = e.icon;
-	if(value)
+	switch(e.view)
 	{
-		if(value == -1)
-			value = 0;
+	case ViewIcon:
 		image(rc.x1 + rc.width() / 2, rc.y1 + rc.height() / 2,
-			metrics::toolbar, value, 0,
+			metrics::toolbar, e.icon, 0,
 			(isdisabled(flags)) ? 0x80 : 0xFF);
+		break;
 	}
 	if(areb(rc))
 	{
@@ -222,6 +221,10 @@ int	control::render(int x, int y, int width, const wrapper::command* commands) c
 	auto height = metrics::toolbar->get(0).getrect(0,0,0).height() + 4;
 	for(auto p = commands; *p; p++)
 	{
+		if(!p->type)
+			continue;
+		if(p->view == HideCommand)
+			continue;
 		auto width = height;
 		if(x + width > x2)
 		{

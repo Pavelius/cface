@@ -33,7 +33,7 @@ int draw::input(bool redraw)
 	if(temp_callback)
 	{
 		temp_callback();
-		temp_command = InputUpdate;
+		temp_command = InputNoUpdate;
 	}
 	hot::key = 0;
 	if(temp_command)

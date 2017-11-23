@@ -168,8 +168,6 @@ static int handle(HWND hwnd, MSG& msg)
 		break;
 	case WM_KEYDOWN:
 		return tokey(msg.wParam);
-	case WM_KEYUP:
-		return InputUpdate;
 	case WM_CHAR:
 		hot::param = msg.wParam;
 		return InputSymbol;

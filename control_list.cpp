@@ -289,8 +289,8 @@ static unsigned execute_mouse_wheel_down(wrapper* context, bool run)
 }
 
 wrapper::command list_commands[] = {
-	{"keyup", "¬верх", execute_keyup, 0, {KeyUp}, 0, true},
-	{"keydown", "¬низ", execute_keydown, 0, {KeyDown}, 0, true},
+	{"keyup", "¬верх", execute_keyup, 0, {KeyUp}, 0, HideCommand},
+	{"keydown", "¬низ", execute_keydown, 0, {KeyDown}, 0, HideCommand},
 	{0}
 };
 

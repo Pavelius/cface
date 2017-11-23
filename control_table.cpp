@@ -352,7 +352,7 @@ unsigned execute_table_setting(wrapper* context, bool run)
 extern wrapper::command list_commands[];
 wrapper::command table_commands[] = {
 	{"", "", 0, list_commands},
-	{"add", "Добавить", execute_table_add, 0, {F8}, -1},
+	{"add", "Добавить", execute_table_add, 0, {F8}, 0},
 	{"addcopy", "Скопировать", execute_table_addcopy, 0, {F9}, 9},
 	{"change", "Изменить", execute_table_change, 0, {F2, KeyEnter}, 10},
 	{"copy", "Копировать", execute_table_copy, 0, {Ctrl + Alpha + 'C'}, 4},

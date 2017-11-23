@@ -2,6 +2,11 @@
 
 struct xsfield;
 
+enum command_view_s {
+	ViewIcon, ViewIconAndText, ViewText,
+	HideCommand,
+};
+
 struct wrapper
 {
 	struct command
@@ -13,7 +18,7 @@ struct wrapper
 		command*				child;
 		unsigned				key[2];
 		int						icon;
-		bool					hide;
+		command_view_s			view;
 		//
 		operator bool() const { return id != 0; }
 		const command*			find(const char* id) const;

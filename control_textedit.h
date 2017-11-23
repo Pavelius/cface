@@ -25,7 +25,7 @@ namespace draw
 			void			correct();
 			bool			editing(rect rc);
 			void			ensurevisible(int linenumber);
-			//bool			keyinput(int id);
+			command*		getcommands() const override;
 			int				hittest(rect rc, point pt, unsigned state) const;
 			void			invalidate() override;
 			int				lineb(int index) const;
