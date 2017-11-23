@@ -206,8 +206,6 @@ namespace draw
 	extern color			fore; // Foreground color (curently selected color)
 	extern const sprite*	font; // Currently selected font
 	//
-	bool					addbutton(rect& rc, const char* label, int key, const char* tips);
-	int						addbutton(rect& rc, const char* t1, int k1, const char* tt1, const char* t2, int k2, const char* tt2);
 	void					addelement(const char* id, const rect& rc);
 	int						aligned(int x, int width, unsigned state, int string_width);
 	int						alignedh(const rect& rc, const char* string, unsigned state);
@@ -227,7 +225,6 @@ namespace draw
 	bool					domodal();
 	void					execute(int id, int value = 0);
 	void					execute(void(*proc)());
-	void					focusing(const char* id, const rect& rc, unsigned& flags);
 	int						getbpp();
 	color					getcolor(color normal, unsigned flags);
 	color					getcolor(rect rc, color normal, color hilite, unsigned flags);
@@ -290,7 +287,6 @@ namespace draw
 	void					syscursor(bool enable);
 	void					sysmouse(bool enable);
 	void					sysredraw();
-	int						tabs(rect rc, bool show_close, bool right_side, void** data, int start, int count, int current, int* hilite, proctext gtext, proctext gstate = 0, rect position = {0, 0, 0, 0});
 	void					text(int x, int y, const char* string, int count = -1, unsigned flags = 0);
 	int						text(rect rc, const char* string, unsigned state = 0, int* max_width = 0);
 	int						textc(int x, int y, int width, const char* string, int count = -1, unsigned flags = 0);
