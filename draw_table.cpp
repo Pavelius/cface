@@ -2,8 +2,8 @@
 #include "collections.h"
 #include "crt.h"
 #include "draw.h"
+#include "draw_table.h"
 #include "io.h"
-#include "control_table.h"
 #include "xsref.h"
 
 using namespace draw;

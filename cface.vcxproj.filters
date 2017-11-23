@@ -40,21 +40,6 @@
     <ClCompile Include="win_util.cpp">
       <Filter>Платформа\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="control_list.cpp">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClCompile>
-    <ClCompile Include="control_scrollable.cpp">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClCompile>
-    <ClCompile Include="control_table.cpp">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClCompile>
-    <ClCompile Include="control_textedit.cpp">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClCompile>
-    <ClCompile Include="control_tree.cpp">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClCompile>
     <ClCompile Include="draw.cpp">
       <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
@@ -271,6 +256,21 @@
     <ClCompile Include="draw_focusing.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
+    <ClCompile Include="draw_textedit.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_tree.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_table.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_scrollable.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_list.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="acol.h">
@@ -299,21 +299,6 @@
     </ClInclude>
     <ClInclude Include="win.h">
       <Filter>Платформа\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="control_list.h">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClInclude>
-    <ClInclude Include="control_scrollable.h">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClInclude>
-    <ClInclude Include="control_table.h">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClInclude>
-    <ClInclude Include="control_textedit.h">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClInclude>
-    <ClInclude Include="control_tree.h">
-      <Filter>Графика\Элементы Управления</Filter>
     </ClInclude>
     <ClInclude Include="draw.h">
       <Filter>Графика\Базовые элементы</Filter>
@@ -451,6 +436,21 @@
       <Filter>Графика\Элементы Управления</Filter>
     </ClInclude>
     <ClInclude Include="widget_settings.h">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClInclude>
+    <ClInclude Include="draw_textedit.h">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClInclude>
+    <ClInclude Include="draw_tree.h">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClInclude>
+    <ClInclude Include="draw_table.h">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClInclude>
+    <ClInclude Include="draw_scrollable.h">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClInclude>
+    <ClInclude Include="draw_list.h">
       <Filter>Графика\Элементы Управления</Filter>
     </ClInclude>
   </ItemGroup>

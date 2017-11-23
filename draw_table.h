@@ -1,6 +1,6 @@
 #include "aref.h"
 #include "collection.h"
-#include "control_list.h"
+#include "draw_list.h"
 #include "widget.h"
 
 #pragma once
@@ -45,7 +45,6 @@ namespace draw
 			bool				show_event_rows;
 			//
 			table(collection& e);
-			//table(void* data, unsigned size, unsigned& count, unsigned max_count = 0);
 			//
 			widget&				addcol(widget::proc type, const char* id, const char* label, unsigned flags = 0, const char* link = 0, int width = -1);
 			virtual void*		addrow(const void* copy) { return rows.add(copy); }
@@ -58,7 +57,6 @@ namespace draw
 			widget*				findcol(const char* id);
 			command*			getcommands() const override;
 			void				header(rect rc);
-			//bool				keyinput(int id);
 			virtual void		prerender() override;
 			void				reposition(int width);
 			virtual void		row(rect rc, int index) override;

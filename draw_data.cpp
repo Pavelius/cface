@@ -18,6 +18,7 @@ static void callback_setvalue(control* source, const char* id, int value)
 static void callback_setvalue()
 {
 	callback_setvalue(hot::source, hot::name, hot::param);
+	execute(InputUpdate);
 }
 
 int	draw::getdata(control* source, const char* id)

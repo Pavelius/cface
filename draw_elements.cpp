@@ -8,9 +8,10 @@ using namespace draw;
 static void callback_setfocus()
 {
 	draw::setfocus(hot::name);
+	execute(InputUpdate);
 }
 
-static void execute_setfocus(const char* id)
+static void invoke_setfocus(const char* id)
 {
 	execute(callback_setfocus);
 	hot::name = id;
@@ -25,7 +26,7 @@ void draw::focusing(const char* id, const rect& rc, unsigned& flags)
 	if(getfocus() == id)
 		flags |= Focused;
 	else if(area(rc) == AreaHilitedPressed && hot::key == MouseLeft && hot::pressed)
-		execute_setfocus(id);
+		invoke_setfocus(id);
 	addelement(id, rc);
 }
 
@@ -134,7 +135,7 @@ int wdt_check(int x, int y, int width, const char* id, unsigned flags, const cha
 		if(!hot::pressed)
 			need_value = true;
 		else
-			execute_setfocus(id);
+			invoke_setfocus(id);
 	}
 	if(isfocused(flags))
 	{

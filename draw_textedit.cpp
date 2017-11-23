@@ -1,7 +1,7 @@
 #include "crt.h"
-#include "control_textedit.h"
-#include "control_list.h"
 #include "draw.h"
+#include "draw_textedit.h"
+#include "draw_list.h"
 #include "screenshoot.h"
 
 using namespace draw;
@@ -383,7 +383,7 @@ bool textedit::editing(rect rco)
 	return false;
 }
 
-static unsigned execute_symbol(control* source, bool run)
+unsigned textedit::symbol(control* source, bool run)
 {
 	char temp[8];
 	auto pc = (textedit*)source;
@@ -394,7 +394,7 @@ static unsigned execute_symbol(control* source, bool run)
 	return Executed;
 }
 
-static unsigned execute_backspace(control* source, bool run)
+unsigned textedit::backspace(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	if(pc->readonly)
@@ -408,7 +408,7 @@ static unsigned execute_backspace(control* source, bool run)
 	return Executed;
 }
 
-static unsigned execute_delete(control* source, bool run)
+unsigned textedit::delsym(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	if(pc->readonly)
@@ -419,14 +419,14 @@ static unsigned execute_delete(control* source, bool run)
 	return Executed;
 }
 
-static unsigned execute_home(control* source, bool run)
+unsigned textedit::home(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->select(pc->lineb(pc->p1), false);
 	return Executed;
 }
 
-static unsigned execute_end(control* source, bool run)
+unsigned textedit::end(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->select(pc->linee(pc->p1), false);
@@ -462,56 +462,56 @@ static unsigned execute_select_all(control* source, bool run)
 	return Executed;
 }
 
-static unsigned execute_right(control* source, bool run)
+unsigned textedit::right(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->right(false, false);
 	return Executed;
 }
 
-static unsigned execute_right_shift(control* source, bool run)
+unsigned textedit::rights(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->right(true, false);
 	return Executed;
 }
 
-static unsigned execute_right_crtl(control* source, bool run)
+unsigned textedit::rightc(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->right(false, true);
 	return Executed;
 }
 
-static unsigned execute_right_crtl_shift(control* source, bool run)
+unsigned textedit::rightcs(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->right(true, true);
 	return Executed;
 }
 
-static unsigned execute_left(control* source, bool run)
+unsigned textedit::left(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->left(false, false);
 	return Executed;
 }
 
-static unsigned execute_left_shift(control* source, bool run)
+unsigned textedit::lefts(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->left(true, false);
 	return Executed;
 }
 
-static unsigned execute_left_crtl(control* source, bool run)
+unsigned textedit::leftc(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->left(false, true);
 	return Executed;
 }
 
-static unsigned execute_left_crtl_shift(control* source, bool run)
+unsigned textedit::leftcs(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->left(true, true);
@@ -519,23 +519,23 @@ static unsigned execute_left_crtl_shift(control* source, bool run)
 }
 
 control::command textedit_commands[] = {
-	{"backspace", "Удалить символ слево", execute_backspace, 0, {KeyBackspace}, 0, HideCommand},
-	{"delete", "Удалить символ", execute_delete, 0, {KeyDelete}, 0, HideCommand},
-	{"end", "В конец", execute_end, 0, {KeyEnd}, 0, HideCommand},
-	{"home", "В начало", execute_home, 0, {KeyHome}, 0, HideCommand},
-	{"left", "Переместиться влево", execute_left, 0, {KeyLeft}, 0, HideCommand},
-	{"left_shift", "Переместиться влево", execute_left_shift, 0, {KeyLeft | Shift}, 0, HideCommand},
-	{"left_ctrl", "Переместиться влево", execute_left_crtl, 0, {KeyLeft | Ctrl}, 0, HideCommand},
-	{"left_ctrl_shift", "Переместиться влево", execute_left_crtl_shift, 0, {KeyLeft | Ctrl | Shift}, 0, HideCommand},
-	{"right", "Переместиться вправо", execute_right, 0, {KeyRight}, 0, HideCommand},
-	{"right_shift", "Переместиться вправо", execute_right_shift, 0, {KeyRight | Shift}, 0, HideCommand},
-	{"right_ctrl", "Переместиться вправо", execute_right_crtl, 0, {KeyRight | Ctrl}, 0, HideCommand},
-	{"right_ctrl_shift", "Переместиться вправо", execute_right_crtl_shift, 0, {KeyRight | Ctrl | Shift}, 0, HideCommand},
+	{"backspace", "Удалить символ слево", textedit::backspace, 0, {KeyBackspace}, 0, HideCommand},
+	{"delete", "Удалить символ", textedit::delsym, 0, {KeyDelete}, 0, HideCommand},
+	{"end", "В конец", textedit::end, 0, {KeyEnd}, 0, HideCommand},
+	{"home", "В начало", textedit::home, 0, {KeyHome}, 0, HideCommand},
+	{"left", "Переместиться влево", textedit::left, 0, {KeyLeft}, 0, HideCommand},
+	{"left_shift", "Переместиться влево", textedit::lefts, 0, {KeyLeft | Shift}, 0, HideCommand},
+	{"left_ctrl", "Переместиться влево", textedit::leftc, 0, {KeyLeft | Ctrl}, 0, HideCommand},
+	{"left_ctrl_shift", "Переместиться влево", textedit::leftcs, 0, {KeyLeft | Ctrl | Shift}, 0, HideCommand},
+	{"right", "Переместиться вправо", textedit::right, 0, {KeyRight}, 0, HideCommand},
+	{"right_shift", "Переместиться вправо", textedit::rights, 0, {KeyRight | Shift}, 0, HideCommand},
+	{"right_ctrl", "Переместиться вправо", textedit::rightc, 0, {KeyRight | Ctrl}, 0, HideCommand},
+	{"right_ctrl_shift", "Переместиться вправо", textedit::rightcs, 0, {KeyRight | Ctrl | Shift}, 0, HideCommand},
 	{"select_all", "Выделить все", execute_select_all, 0, {Ctrl | (Alpha + 'A')}, 0, HideToolbar},
 	{"select_end", "Выделить до конца строки", execute_select_end, 0, {Shift | KeyEnd}, 0, HideCommand},
 	{"select_home", "Выделить до начала строки", execute_select_home, 0, {Shift | KeyHome}, 0, HideCommand},
 	{"text_end", "В конец текста", execute_text_end, 0, {Ctrl | KeyEnd}, 0, HideCommand},
-	{"symbol", "Символ", execute_symbol, 0, {InputSymbol, InputSymbol | Shift}, 0, HideCommand},
+	{"symbol", "Символ", textedit::symbol, 0, {InputSymbol, InputSymbol | Shift}, 0, HideCommand},
 	{0}
 };
 

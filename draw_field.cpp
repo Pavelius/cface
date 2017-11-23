@@ -1,8 +1,8 @@
 #include "amem.h"
 #include "crt.h"
 #include "draw.h"
-#include "control_textedit.h"
-#include "control_table.h"
+#include "draw_textedit.h"
+#include "draw_table.h"
 #include "xsfield.h"
 
 using namespace draw;
@@ -171,8 +171,8 @@ int wdt_field(int x, int y, int width, const char* id, unsigned flags, const cha
 	focusing(id, rc, flags);
 	auto a = area(rc);
 	bool enter_edit = false;
-	if(isfocused(flags) && id)
-		enter_edit = editstart(rc, source, id, flags, childs);
+	//if(isfocused(flags) && id)
+	//	enter_edit = editstart(rc, source, id, flags, childs);
 	if(!enter_edit)
 	{
 		if(isfocused(flags))
