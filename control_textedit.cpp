@@ -238,7 +238,7 @@ bool textedit::editing(rect rco)
 	if(records)
 	{
 		records->filter = 0;
-		records->keyinput(InputUpdate);
+		records->execute("update", true);
 		int line_count = records->maximum;
 		int line_height = records->pixels_per_line;
 		records_height = line_height*imin(10, line_count);
@@ -309,18 +309,6 @@ bool textedit::editing(rect rco)
 		case InputUpdate:
 			// Выходим, потому что ушел фокус (меняли размер)
 			return false;
-		case KeyLeft:
-		case KeyLeft + Ctrl:
-		case KeyLeft + Ctrl + Shift:
-		case KeyLeft + Shift:
-			left((id&Shift) != 0, (id&Ctrl) != 0);
-			break;
-		case KeyRight:
-		case KeyRight + Ctrl:
-		case KeyRight + Ctrl + Shift:
-		case KeyRight + Shift:
-			right((id&Shift) != 0, (id&Ctrl) != 0);
-			break;
 		case KeyUp:
 		case KeyUp + Shift:
 			if(records && show_records)
@@ -473,11 +461,75 @@ static unsigned execute_select_all(wrapper* source, bool run)
 	return Executed;
 }
 
+static unsigned execute_right(wrapper* source, bool run)
+{
+	auto pc = (textedit*)source;
+	pc->right(false, false);
+	return Executed;
+}
+
+static unsigned execute_right_shift(wrapper* source, bool run)
+{
+	auto pc = (textedit*)source;
+	pc->right(true, false);
+	return Executed;
+}
+
+static unsigned execute_right_crtl(wrapper* source, bool run)
+{
+	auto pc = (textedit*)source;
+	pc->right(false, true);
+	return Executed;
+}
+
+static unsigned execute_right_crtl_shift(wrapper* source, bool run)
+{
+	auto pc = (textedit*)source;
+	pc->right(true, true);
+	return Executed;
+}
+
+static unsigned execute_left(wrapper* source, bool run)
+{
+	auto pc = (textedit*)source;
+	pc->left(false, false);
+	return Executed;
+}
+
+static unsigned execute_left_shift(wrapper* source, bool run)
+{
+	auto pc = (textedit*)source;
+	pc->left(true, false);
+	return Executed;
+}
+
+static unsigned execute_left_crtl(wrapper* source, bool run)
+{
+	auto pc = (textedit*)source;
+	pc->left(false, true);
+	return Executed;
+}
+
+static unsigned execute_left_crtl_shift(wrapper* source, bool run)
+{
+	auto pc = (textedit*)source;
+	pc->left(true, true);
+	return Executed;
+}
+
 wrapper::command textedit_commands[] = {
 	{"backspace", "Удалить символ слево", execute_backspace, 0, {KeyBackspace}, 0, HideCommand},
 	{"delete", "Удалить символ", execute_delete, 0, {KeyDelete}, 0, HideCommand},
 	{"end", "В конец", execute_end, 0, {KeyEnd}, 0, HideCommand},
 	{"home", "В начало", execute_home, 0, {KeyHome}, 0, HideCommand},
+	{"left", "Переместиться влево", execute_left, 0, {KeyLeft}, 0, HideCommand},
+	{"left_shift", "Переместиться влево", execute_left_shift, 0, {KeyLeft | Shift}, 0, HideCommand},
+	{"left_ctrl", "Переместиться влево", execute_left_crtl, 0, {KeyLeft | Ctrl}, 0, HideCommand},
+	{"left_ctrl_shift", "Переместиться влево", execute_left_crtl_shift, 0, {KeyLeft | Ctrl | Shift}, 0, HideCommand},
+	{"right", "Переместиться вправо", execute_right, 0, {KeyRight}, 0, HideCommand},
+	{"right_shift", "Переместиться вправо", execute_right_shift, 0, {KeyRight | Shift}, 0, HideCommand},
+	{"right_ctrl", "Переместиться вправо", execute_right_crtl, 0, {KeyRight | Ctrl}, 0, HideCommand},
+	{"right_ctrl_shift", "Переместиться вправо", execute_right_crtl_shift, 0, {KeyRight | Ctrl | Shift}, 0, HideCommand},
 	{"select_all", "Выделить все", execute_select_all, 0, {Ctrl | (Alpha + 'A')}, 0, HideToolbar},
 	{"select_end", "Выделить до конца строки", execute_select_end, 0, {Shift | KeyEnd}, 0, HideCommand},
 	{"select_home", "Выделить до начала строки", execute_select_home, 0, {Shift | KeyHome}, 0, HideCommand},

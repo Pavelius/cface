@@ -147,16 +147,6 @@ static void execute_tab(wrapper* object, bool run)
 	setfocus(getnext(getfocus(), KeyTab));
 }
 
-void control::keyinput(int id)
-{
-	auto pc = getcommands();
-	if(!pc)
-		return;
-	auto p = pc->find(id);
-	if(p)
-		p->type(this, true);
-}
-
 //int wdt_separator(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
 //{
 //	auto height = metrics::toolbar->height;

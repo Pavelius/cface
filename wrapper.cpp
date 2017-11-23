@@ -50,3 +50,13 @@ unsigned wrapper::execute(const char* id, bool run)
 		return p->type(this, run);
 	return 0;
 }
+
+void wrapper::keyinput(int id)
+{
+	auto pc = getcommands();
+	if(!pc)
+		return;
+	auto p = pc->find(id);
+	if(p)
+		p->type(this, true);
+}

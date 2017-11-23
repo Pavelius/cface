@@ -24,12 +24,13 @@ struct wrapper
 		const command*			find(const char* id) const;
 		const command*			find(int id) const;
 	};
-	virtual unsigned			execute(const char* id, bool run);
+	unsigned					execute(const char* id, bool run = true);
 	virtual const command*		getcommands() const { return 0; }
 	virtual int					geticon(const command& e) const { return e.icon; }
 	virtual const xsfield*		getmeta() const { return 0; }
 	virtual void*				getobject() { return this; }
 	virtual wrapper*			getwrapper(const char* id) { return 0; }
+	void						keyinput(int id);
 };
 namespace hot
 {

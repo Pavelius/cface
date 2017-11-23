@@ -39,7 +39,6 @@ namespace draw
 		virtual char*		getdescription(char* result) const;
 		virtual char*		getname(char* result) const;
 		void				invoke(const char* name) const;
-		void				keyinput(int id);
 		virtual void		nonclient(rect rc);
 		bool				open(rect rc);
 		bool				open(const char* title, unsigned state, int width, int height);
