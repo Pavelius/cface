@@ -1,11 +1,9 @@
 #include "crt.h"
 #include "draw.h"
+#include "draw_control.h"
 #include "widget.h"
-#include "wrapper.h"
 
 using namespace draw;
-
-static wrapper* hot_source;
 
 static void callback_setfocus()
 {
@@ -60,7 +58,7 @@ int draw::addbutton(rect& rc, const char* t1, int k1, const char* tt1, const cha
 	return result;
 }
 
-int wdt_radio_element(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+int wdt_radio_element(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
 	if(!label || !label[0])
 		return 0;
@@ -97,7 +95,7 @@ int wdt_radio_element(int x, int y, int width, const char* id, unsigned flags, c
 	return rc1.height() + metrics::padding * 2;
 }
 
-int wdt_radio(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+int wdt_radio(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
 	int y0 = y;
 	auto current_value = getdata(source, getdatasource(id, link));
@@ -113,7 +111,7 @@ int wdt_radio(int x, int y, int width, const char* id, unsigned flags, const cha
 	return y - y0;
 }
 
-int wdt_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+int wdt_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
 	if(!label || !label[0])
 		return 0;
@@ -152,7 +150,7 @@ int wdt_check(int x, int y, int width, const char* id, unsigned flags, const cha
 	return rc1.height() + metrics::padding * 2;
 }
 
-int wdt_button(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+int wdt_button(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
 	if(!label || !label[0])
 		return 0;

@@ -63,7 +63,7 @@ void menu::addseparator()
 		separator = true;
 }
 
-void menu::add(const char* id, wrapper* object)
+void menu::add(const char* id, draw::control* object)
 {
 	auto pe = object->getcommands()->find(id);
 	if(pe)

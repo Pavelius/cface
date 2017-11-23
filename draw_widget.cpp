@@ -28,7 +28,7 @@ static char* get_text(char* result, void* object)
 	return result;
 }
 
-int wdt_tabs(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+int wdt_tabs(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
 	if(!childs)
 		return 0;

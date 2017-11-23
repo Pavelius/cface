@@ -1,19 +1,19 @@
 #include "crt.h"
 #include "draw.h"
+#include "draw_control.h"
 #include "widget.h"
-#include "wrapper.h"
 
 using namespace draw;
 
-static unsigned getflags(const wrapper* source, const widget* p, unsigned flags)
+static unsigned getflags(const control* source, const widget* p, unsigned flags)
 {
 	unsigned result = p->flags;
-	if(isdisabled(flags) || (p->id && ((wrapper*)source)->execute(p->id,false)==Disabled))
+	if(isdisabled(flags) || (p->id && ((control*)source)->execute(p->id,false)==Disabled))
 		result |= Disabled;
 	return result;
 }
 
-int wdt_vertical(widget::proc pw, int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips,
+int wdt_vertical(widget::proc pw, int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips,
 	int* elements, int count, int start)
 {
 	int columns_count = imax(width / 220, 1);
@@ -48,7 +48,7 @@ int wdt_vertical(widget::proc pw, int x, int y, int width, const char* id, unsig
 	return y2 - y1;
 }
 
-int wdt_vertical(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+int wdt_vertical(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
 	if(!childs)
 		return 0;
@@ -58,7 +58,7 @@ int wdt_vertical(int x, int y, int width, const char* id, unsigned flags, const 
 	return y - y0;
 }
 
-int wdt_horizontal(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+int wdt_horizontal(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
 	if(!childs || !childs[0].width)
 		return 0;
@@ -90,7 +90,7 @@ int wdt_title(int& x, int y, int& width, unsigned flags, const char* label, int 
 	return draw::texth();
 }
 
-int wdt_group(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+int wdt_group(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
 	int y0 = y;
 	setposition(x, y, width); // Первая рамка (может надо двойную ?)
@@ -117,7 +117,7 @@ int wdt_group(int x, int y, int width, const char* id, unsigned flags, const cha
 	return y - y0;
 }
 
-int wdt_label(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+int wdt_label(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
 	draw::state push;
 	setposition(x, y, width);

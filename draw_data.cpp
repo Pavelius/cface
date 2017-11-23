@@ -1,12 +1,12 @@
 #include "crt.h"
 #include "draw.h"
+#include "draw_control.h"
 #include "widget.h"
-#include "wrapper.h"
 #include "xsref.h"
 
 using namespace draw;
 
-static void callback_setvalue(wrapper* source, const char* id, int value)
+static void callback_setvalue(control* source, const char* id, int value)
 {
 	if(source)
 	{
@@ -20,7 +20,7 @@ static void callback_setvalue()
 	callback_setvalue(hot::source, hot::name, hot::param);
 }
 
-int	draw::getdata(wrapper* source, const char* id)
+int	draw::getdata(control* source, const char* id)
 {
 	if(!source)
 		return 0;
@@ -28,7 +28,7 @@ int	draw::getdata(wrapper* source, const char* id)
 	return e.get(id);
 }
 
-void draw::setdata(wrapper* source, const char* id, int value, bool instant)
+void draw::setdata(control* source, const char* id, int value, bool instant)
 {
 	if(instant)
 		callback_setvalue(source, id, value);
@@ -41,7 +41,7 @@ void draw::setdata(wrapper* source, const char* id, int value, bool instant)
 	}
 }
 
-char* draw::getdata(char* temp, wrapper* source, const char* id, const widget* childs, bool to_buffer, field_type_s& type)
+char* draw::getdata(char* temp, control* source, const char* id, const widget* childs, bool to_buffer, field_type_s& type)
 {
 	temp[0] = 0;
 	type = FieldNumber;

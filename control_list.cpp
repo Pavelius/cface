@@ -1,21 +1,9 @@
-/* Copyright 2013 by Pavel Chistyakov
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License. */
-
 #include "crt.h"
 #include "draw.h"
 #include "control_list.h"
 #include "xsref.h"
 
+using namespace draw;
 using namespace draw::controls;
 
 list::list() : origin(0), maximum(0), current(0),
@@ -197,7 +185,7 @@ void list::redraw(rect rc)
 		draw::scrollh(id, scrollh, origin_width, rc.width(), maximum_width, focused);
 }
 
-static unsigned execute_keyup(wrapper* context, bool run)
+static unsigned execute_keyup(control* context, bool run)
 {
 	auto pc = (list*)context;
 	pc->current--;
@@ -206,7 +194,7 @@ static unsigned execute_keyup(wrapper* context, bool run)
 	return Executed;
 }
 
-static unsigned execute_keydown(wrapper* context, bool run)
+static unsigned execute_keydown(control* context, bool run)
 {
 	auto pc = (list*)context;
 	pc->current++;
@@ -215,7 +203,7 @@ static unsigned execute_keydown(wrapper* context, bool run)
 	return Executed;
 }
 
-static unsigned execute_home(wrapper* context, bool run)
+static unsigned execute_home(control* context, bool run)
 {
 	auto pc = (list*)context;
 	if(pc->current == 0)
@@ -226,7 +214,7 @@ static unsigned execute_home(wrapper* context, bool run)
 	return Executed;
 }
 
-static unsigned execute_end(wrapper* context, bool run)
+static unsigned execute_end(control* context, bool run)
 {
 	auto pc = (list*)context;
 	pc->current = pc->maximum - 1;
@@ -235,7 +223,7 @@ static unsigned execute_end(wrapper* context, bool run)
 	return Executed;
 }
 
-static unsigned execute_page_up(wrapper* context, bool run)
+static unsigned execute_page_up(control* context, bool run)
 {
 	auto pc = (list*)context;
 	if(pc->current != pc->origin)
@@ -247,7 +235,7 @@ static unsigned execute_page_up(wrapper* context, bool run)
 	return Executed;
 }
 
-static unsigned execute_page_down(wrapper* context, bool run)
+static unsigned execute_page_down(control* context, bool run)
 {
 	auto pc = (list*)context;
 	if(pc->current != (pc->origin + pc->lines_per_page - 1))
@@ -259,7 +247,7 @@ static unsigned execute_page_down(wrapper* context, bool run)
 	return Executed;
 }
 
-static unsigned execute_mouse_dbl_click(wrapper* context, bool run)
+static unsigned execute_mouse_dbl_click(control* context, bool run)
 {
 	auto pc = (list*)context;
 	if(!hot::mouse.in(hot::element))
@@ -268,7 +256,7 @@ static unsigned execute_mouse_dbl_click(wrapper* context, bool run)
 	return Executed;
 }
 
-static unsigned execute_mouse_wheel_up(wrapper* context, bool run)
+static unsigned execute_mouse_wheel_up(control* context, bool run)
 {
 	auto pc = (list*)context;
 	pc->origin--;
@@ -277,7 +265,7 @@ static unsigned execute_mouse_wheel_up(wrapper* context, bool run)
 	return Executed;
 }
 
-static unsigned execute_mouse_wheel_down(wrapper* context, bool run)
+static unsigned execute_mouse_wheel_down(control* context, bool run)
 {
 	auto pc = (list*)context;
 	pc->origin++;
@@ -288,7 +276,7 @@ static unsigned execute_mouse_wheel_down(wrapper* context, bool run)
 	return Executed;
 }
 
-wrapper::command list_commands[] = {
+control::command list_commands[] = {
 	{"keyup", "¬верх", execute_keyup, 0, {KeyUp}, 0, HideCommand},
 	{"keydown", "¬низ", execute_keydown, 0, {KeyDown}, 0, HideCommand},
 	{0}

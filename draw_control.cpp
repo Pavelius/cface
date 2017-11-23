@@ -9,6 +9,7 @@ extern rect			sys_static_area;
 sprite*				metrics::toolbar = (sprite*)loadb("toolbar.pma");
 sprite*				metrics::tree = (sprite*)loadb("tree.pma");
 control::plugin*	control::plugin::first;
+control*			hot::source;
 
 control::plugin::plugin(control& element) : element(element)
 {
@@ -141,13 +142,13 @@ void control::view(rect rc, bool show_toolbar)
 		render(rt.x1, rt.y1, rt.width(), commands);
 }
 
-static void execute_tab(wrapper* object, bool run)
+static void execute_tab(control* object, bool run)
 {
 	auto pc = (control*)object;
 	setfocus(getnext(getfocus(), KeyTab));
 }
 
-//int wdt_separator(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+//int wdt_separator(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 //{
 //	auto height = metrics::toolbar->height;
 //	//if(e.separator && *e.separator)
@@ -166,11 +167,11 @@ static void invoke_callback()
 void control::invoke(const char* name) const
 {
 	draw::execute(invoke_callback);
-	hot::source = (wrapper*)this;
+	hot::source = (control*)this;
 	hot::name = name;
 }
 
-int control::render(int x, int y, int width, unsigned flags, const wrapper::command& e) const
+int control::render(int x, int y, int width, unsigned flags, const control::command& e) const
 {
 	rect rc = {x, y, x + width, y + width};
 	if(tool(rc, isdisabled(flags), false, true))
@@ -201,7 +202,7 @@ int control::render(int x, int y, int width, unsigned flags, const wrapper::comm
 	return width;
 }
 
-int	control::render(int x, int y, int width, const wrapper::command* commands) const
+int	control::render(int x, int y, int width, const control::command* commands) const
 {
 	if(!commands)
 		return 0;
@@ -221,17 +222,75 @@ int	control::render(int x, int y, int width, const wrapper::command* commands) c
 			// wdt_dropdown(x, y, 6, "toolbar_dropdown", 0, 0, 0, 0, source, 0, p, 0);
 			break;
 		}
-		render(x, y, width, p->type((wrapper*)this, false), *p);
+		render(x, y, width, p->type((control*)this, false), *p);
 		x += width;
 	}
 	return height + metrics::padding * 2;
 }
 
-int wdt_control(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+const control::command* control::command::find(const char* id) const
+{
+	auto p = this;
+	if(!p)
+		return 0;
+	while(*p)
+	{
+		if(p->child)
+		{
+			auto v = p->child->find(id);
+			if(v)
+				return v;
+		}
+		else if(strcmp(p->id, id) == 0)
+			return p;
+		p++;
+	}
+	return 0;
+}
+
+const control::command* control::command::find(int id) const
+{
+	auto p = this;
+	if(!p)
+		return 0;
+	while(*p)
+	{
+		if(p->child)
+		{
+			auto v = p->child->find(id);
+			if(v)
+				return v;
+		}
+		else if(p->key[0] == id || p->key[1] == id)
+			return p;
+		p++;
+	}
+	return 0;
+}
+
+unsigned control::execute(const char* id, bool run)
+{
+	auto p = getcommands()->find(id);
+	if(p)
+		return p->type(this, run);
+	return 0;
+}
+
+void control::keyinput(int id)
+{
+	auto pc = getcommands();
+	if(!pc)
+		return;
+	auto p = pc->find(id);
+	if(p)
+		p->type(this, true);
+}
+
+int wdt_control(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::control* source, int title, const widget* childs, const char* tips)
 {
 	if(!source)
 		return 0;
-	auto pc = source->getwrapper(draw::getdatasource(id, link));
+	auto pc = source->getcontrol(draw::getdatasource(id, link));
 	if(!pc)
 		return 0;
 	if(!value)

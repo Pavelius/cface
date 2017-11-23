@@ -4,6 +4,7 @@
 #include "draw.h"
 #include "screenshoot.h"
 
+using namespace draw;
 using namespace draw::controls;
 
 static bool isspace(char sym)
@@ -382,7 +383,7 @@ bool textedit::editing(rect rco)
 	return false;
 }
 
-static unsigned execute_symbol(wrapper* source, bool run)
+static unsigned execute_symbol(control* source, bool run)
 {
 	char temp[8];
 	auto pc = (textedit*)source;
@@ -393,7 +394,7 @@ static unsigned execute_symbol(wrapper* source, bool run)
 	return Executed;
 }
 
-static unsigned execute_backspace(wrapper* source, bool run)
+static unsigned execute_backspace(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	if(pc->readonly)
@@ -407,7 +408,7 @@ static unsigned execute_backspace(wrapper* source, bool run)
 	return Executed;
 }
 
-static unsigned execute_delete(wrapper* source, bool run)
+static unsigned execute_delete(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	if(pc->readonly)
@@ -418,42 +419,42 @@ static unsigned execute_delete(wrapper* source, bool run)
 	return Executed;
 }
 
-static unsigned execute_home(wrapper* source, bool run)
+static unsigned execute_home(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->select(pc->lineb(pc->p1), false);
 	return Executed;
 }
 
-static unsigned execute_end(wrapper* source, bool run)
+static unsigned execute_end(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->select(pc->linee(pc->p1), false);
 	return Executed;
 }
 
-static unsigned execute_text_end(wrapper* source, bool run)
+static unsigned execute_text_end(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->select(zlen(pc->string), false);
 	return Executed;
 }
 
-static unsigned execute_select_home(wrapper* source, bool run)
+static unsigned execute_select_home(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->select(pc->lineb(pc->p1), true);
 	return Executed;
 }
 
-static unsigned execute_select_end(wrapper* source, bool run)
+static unsigned execute_select_end(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->select(pc->linee(pc->p1), true);
 	return Executed;
 }
 
-static unsigned execute_select_all(wrapper* source, bool run)
+static unsigned execute_select_all(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->select(0, false);
@@ -461,63 +462,63 @@ static unsigned execute_select_all(wrapper* source, bool run)
 	return Executed;
 }
 
-static unsigned execute_right(wrapper* source, bool run)
+static unsigned execute_right(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->right(false, false);
 	return Executed;
 }
 
-static unsigned execute_right_shift(wrapper* source, bool run)
+static unsigned execute_right_shift(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->right(true, false);
 	return Executed;
 }
 
-static unsigned execute_right_crtl(wrapper* source, bool run)
+static unsigned execute_right_crtl(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->right(false, true);
 	return Executed;
 }
 
-static unsigned execute_right_crtl_shift(wrapper* source, bool run)
+static unsigned execute_right_crtl_shift(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->right(true, true);
 	return Executed;
 }
 
-static unsigned execute_left(wrapper* source, bool run)
+static unsigned execute_left(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->left(false, false);
 	return Executed;
 }
 
-static unsigned execute_left_shift(wrapper* source, bool run)
+static unsigned execute_left_shift(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->left(true, false);
 	return Executed;
 }
 
-static unsigned execute_left_crtl(wrapper* source, bool run)
+static unsigned execute_left_crtl(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->left(false, true);
 	return Executed;
 }
 
-static unsigned execute_left_crtl_shift(wrapper* source, bool run)
+static unsigned execute_left_crtl_shift(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->left(true, true);
 	return Executed;
 }
 
-wrapper::command textedit_commands[] = {
+control::command textedit_commands[] = {
 	{"backspace", "Удалить символ слево", execute_backspace, 0, {KeyBackspace}, 0, HideCommand},
 	{"delete", "Удалить символ", execute_delete, 0, {KeyDelete}, 0, HideCommand},
 	{"end", "В конец", execute_end, 0, {KeyEnd}, 0, HideCommand},
@@ -538,7 +539,7 @@ wrapper::command textedit_commands[] = {
 	{0}
 };
 
-wrapper::command* textedit::getcommands() const
+control::command* textedit::getcommands() const
 {
 	return textedit_commands;
 }

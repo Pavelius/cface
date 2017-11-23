@@ -4,7 +4,6 @@
 #include "control_textedit.h"
 #include "control_table.h"
 #include "xsfield.h"
-#include "wrapper.h"
 
 using namespace draw;
 
@@ -51,7 +50,7 @@ void callback_edit()
 	draw::fore = old_fore;
 }
 
-static bool editstart(const rect& rc, wrapper* source, const char* id, unsigned flags, const widget* childs)
+static bool editstart(const rect& rc, control* source, const char* id, unsigned flags, const widget* childs)
 {
 	auto result = false;
 	edit_command = 0;
@@ -120,7 +119,7 @@ static void callback_choose_list()
 {
 }
 
-int wdt_field(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+int wdt_field(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
 	field_type_s field_type;
 	draw::state push;

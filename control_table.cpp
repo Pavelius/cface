@@ -16,11 +16,11 @@ static unsigned		search_time;
 const char*			table_sort_column_id;
 bool				table_sort_by_mouse;
 
-struct row_wrapper : wrapper
+struct row_control : control
 {
 	table*		parent;
 
-	row_wrapper(table* parent) : parent(parent)
+	row_control(table* parent) : parent(parent)
 	{
 	}
 
@@ -31,9 +31,9 @@ struct row_wrapper : wrapper
 
 };
 
-table* gettable(wrapper* source)
+table* gettable(control* source)
 {
-	return ((row_wrapper*)source)->parent;
+	return ((row_control*)source)->parent;
 }
 
 void tbl_hilight(int x, int y, int width, unsigned flags, const char* label)
@@ -79,7 +79,7 @@ void tbl_text(rect rc, const char* value, unsigned flags)
 	}
 }
 
-int tbl_text(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+int tbl_text(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
 	auto data_value = (const char*)getdata(source, getdatasource(id, link));
 	auto height = draw::texth();
@@ -90,7 +90,7 @@ int tbl_text(int x, int y, int width, const char* id, unsigned flags, const char
 	return height + table_padding * 2;
 }
 
-int tbl_number(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+int tbl_number(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
 	char temp[32]; sznum(temp, value);
 	auto data_value = getdata(source, getdatasource(id, link));
@@ -101,12 +101,12 @@ int tbl_number(int x, int y, int width, const char* id, unsigned flags, const ch
 	return height + table_padding * 2;
 }
 
-int tbl_reference(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+int tbl_reference(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
 	return 0;
 }
 
-int tbl_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+int tbl_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
 	auto pid = getdatasource(id, link);
 	auto data_value = getdata(source, pid);
@@ -126,7 +126,7 @@ int tbl_check(int x, int y, int width, const char* id, unsigned flags, const cha
 	return height;
 }
 
-int tbl_image(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+int tbl_image(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
 	auto data_value = getdata(source, getdatasource(id, link));
 	auto pc = gettable(source);
@@ -139,25 +139,25 @@ int tbl_image(int x, int y, int width, const char* id, unsigned flags, const cha
 	return 0;
 }
 
-int tbl_date(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+int tbl_date(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
 	//	getstrfdat(text, get(object, e), true);
 	return 0;
 }
 
-int tbl_point(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+int tbl_point(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
 	//	szprint(text, "%1i, %2i", ((point*)&i)->x, ((point*)&i)->y);
 	return 0;
 }
 
-int tbl_color(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+int tbl_color(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
 	//	szprint(text, "%1i, %2i, %3i", ((color*)&i)->r, ((color*)&i)->g, ((color*)&i)->b);
 	return 0;
 }
 
-int tbl_linenumber(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, wrapper* source, int title, const widget* childs, const char* tips)
+int tbl_linenumber(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
 	char temp[32]; sznum(temp, value + 1);
 	tbl_hilight(x, y, width, flags, label);
@@ -166,7 +166,7 @@ int tbl_linenumber(int x, int y, int width, const char* id, unsigned flags, cons
 	return 0;
 }
 
-unsigned execute_table_add(wrapper* context, bool run)
+unsigned execute_table_add(control* context, bool run)
 {
 	auto pc = (table*)context;
 	if(pc->no_change_count)
@@ -178,7 +178,7 @@ unsigned execute_table_add(wrapper* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_addcopy(wrapper* context, bool run)
+unsigned execute_table_addcopy(control* context, bool run)
 {
 	auto pc = (table*)context;
 	if(pc->no_change_count)
@@ -190,7 +190,7 @@ unsigned execute_table_addcopy(wrapper* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_copy(wrapper* context, bool run)
+unsigned execute_table_copy(control* context, bool run)
 {
 	auto pc = (table*)context;
 	if(run)
@@ -202,7 +202,7 @@ unsigned execute_table_copy(wrapper* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_delete(wrapper* context, bool run)
+unsigned execute_table_delete(control* context, bool run)
 {
 	auto pc = (table*)context;
 	if(pc->no_change_order)
@@ -221,7 +221,7 @@ unsigned execute_table_delete(wrapper* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_change(wrapper* context, bool run)
+unsigned execute_table_change(control* context, bool run)
 {
 	auto pc = (table*)context;
 	if(pc->no_change_content)
@@ -235,7 +235,7 @@ unsigned execute_table_change(wrapper* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_movedown(wrapper* context, bool run)
+unsigned execute_table_movedown(control* context, bool run)
 {
 	auto pc = (table*)context;
 	if(pc->no_change_order)
@@ -253,7 +253,7 @@ unsigned execute_table_movedown(wrapper* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_moveup(wrapper* context, bool run)
+unsigned execute_table_moveup(control* context, bool run)
 {
 	auto pc = (table*)context;
 	if(pc->no_change_order)
@@ -271,7 +271,7 @@ unsigned execute_table_moveup(wrapper* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_sortas(wrapper* context, bool run)
+unsigned execute_table_sortas(control* context, bool run)
 {
 	auto pc = (table*)context;
 	if(pc->no_change_order)
@@ -289,7 +289,7 @@ unsigned execute_table_sortas(wrapper* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_sortds(wrapper* context, bool run)
+unsigned execute_table_sortds(control* context, bool run)
 {
 	auto pc = (table*)context;
 	if(pc->no_change_order)
@@ -307,7 +307,7 @@ unsigned execute_table_sortds(wrapper* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_export(wrapper* context, bool run)
+unsigned execute_table_export(control* context, bool run)
 {
 	auto pc = (table*)context;
 	char temp[260] = {0};
@@ -322,7 +322,7 @@ unsigned execute_table_export(wrapper* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_import(wrapper* context, bool run)
+unsigned execute_table_import(control* context, bool run)
 {
 	auto pc = (table*)context;
 	if(pc->no_change_order || pc->no_change_content || pc->no_change_count)
@@ -339,7 +339,7 @@ unsigned execute_table_import(wrapper* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_setting(wrapper* context, bool run)
+unsigned execute_table_setting(control* context, bool run)
 {
 	auto pc = (table*)context;
 	if(!pc->use_setting)
@@ -349,8 +349,8 @@ unsigned execute_table_setting(wrapper* context, bool run)
 	return Executed;
 }
 
-extern wrapper::command list_commands[];
-wrapper::command table_commands[] = {
+extern control::command list_commands[];
+control::command table_commands[] = {
 	{"", "", 0, list_commands},
 	{"add", "Добавить", execute_table_add, 0, {F8}, 0},
 	{"addcopy", "Скопировать", execute_table_addcopy, 0, {F9}, 9},
@@ -379,7 +379,7 @@ show_header(true), show_event_rows(false)
 	columns.count = 0;
 }
 
-wrapper::command* table::getcommands() const
+control::command* table::getcommands() const
 {
 	return table_commands;
 }
@@ -553,7 +553,7 @@ void table::row(rect rc, int index)
 			flags |= Checked;
 		if(focused)
 			flags |= Focused;
-		row_wrapper rwr(this);
+		row_control rwr(this);
 		e.type(r1.x1, r1.y1, r1.width(), id, flags, e.label, index, e.link, &rwr, e.title, e.childs, e.tips);
 		if(show_grid_lines)
 			line(r1.x2, r1.y1, r1.x2, r1.y2 - 1, colors::form);
@@ -1028,7 +1028,7 @@ void table::contextmenu()
 	e.addseparator();
 	if(use_setting)
 		e.add("setting", this);
-	auto result = (wrapper::command*)e.choose(hot::mouse.x, hot::mouse.y);
+	auto result = (control::command*)e.choose(hot::mouse.x, hot::mouse.y);
 	if(result)
 		result->type(this, true);
 }
