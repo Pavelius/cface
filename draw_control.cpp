@@ -59,7 +59,7 @@ bool control::open(const char* title, unsigned state, int width, int height)
 		rect rc = {0, 0, draw::getwidth(), draw::getheight()};
 		draw::rectf(rc, colors::form);
 		rc.offset(metrics::padding*2);
-		view(rc);
+		view(rc, show_toolbar);
 		int id = draw::input();
 		if(id == KeyEscape || !id)
 			return false;

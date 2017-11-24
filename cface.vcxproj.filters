@@ -470,9 +470,6 @@
     <Filter Include="Графика\Элементы Управления">
       <UniqueIdentifier>{2ed7605e-e2ab-4951-b096-a88cd528b0a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Системные">
-      <UniqueIdentifier>{4ac80e6a-0388-486f-8e0f-0e6c8aa027bb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Обработка данных">
       <UniqueIdentifier>{1b24bc33-4d13-4821-83f7-087ad349608d}</UniqueIdentifier>
     </Filter>
@@ -484,6 +481,9 @@
     </Filter>
     <Filter Include="Графика\Базовые элементы">
       <UniqueIdentifier>{3c034dc7-8a30-409e-b77d-9c82a281c030}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Системные">
+      <UniqueIdentifier>{4ac80e6a-0388-486f-8e0f-0e6c8aa027bb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

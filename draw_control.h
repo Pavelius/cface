@@ -16,8 +16,8 @@ enum command_view_s {
 struct xsfield;
 
 #define CONTROL_PAR(name) {"", "", 0, name::commands}
-#define CONTROL_KEY(cpr, key) {#cpr, "", (control::command::proc)&cpr, 0, {key}, 0, HideCommand}
-#define CONTROL_ICN(cpr, text, key, icon) {#cpr, text, (control::command::proc)&cpr, 0, {key}, icon, ViewIcon}
+#define CONTROL_KEY(cpr, key) {#cpr, "", (command::proc)&cpr, 0, {key}, 0, HideCommand}
+#define CONTROL_ICN(cpr, text, key, icon) {#cpr, text, (command::proc)&cpr, 0, {key}, icon, ViewIcon}
 
 namespace draw
 {

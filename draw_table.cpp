@@ -124,14 +124,14 @@ int tbl_check(int x, int y, int width, const char* id, unsigned flags, const cha
 	auto data_value = getdata(source, pid);
 	tbl_hilight(x, y, width, flags, 0);
 	tbl_setposition(x, y, width);
-	auto height = wdt_clipart(x, y, width, id, (value == data_value) ? Checked : 0, ":check", value, link, source, title, childs, tips);
+	auto height = wdt_clipart(x, y, width, id, data_value ? Checked : 0, ":check", value, link, source, title, childs, tips);
 	auto executed = false;
 	if(areb({x, y, x + width, y + height}))
 	{
 		if(hot::key == MouseLeft && !hot::pressed)
 			executed = true;
 	}
-	if(isfocused(flags) && ischecked(flags) && hot::key == KeySpace)
+	if(isfocused(flags) && data_value && hot::key == KeySpace)
 		executed = true;
 	if(executed)
 		draw::setdata(source, pid, value, true);
