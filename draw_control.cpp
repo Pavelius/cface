@@ -145,16 +145,15 @@ void control::view(rect rc, bool show_toolbar)
 		render(rt.x1, rt.y1, rt.width(), commands);
 }
 
-static unsigned execute_tab(control* object, bool run)
+unsigned control::keytab(bool run)
 {
-	auto pc = (control*)object;
 	if(run)
 		setfocus(getnext(getfocus(), KeyTab));
 	return Executed;
 }
 
 control::command control::commands[] = {
-	{"tab", "Следующий элемент управления", execute_tab, 0, {KeyTab}, 0, HideCommand},
+	CONTROL_KEY(keytab, KeyTab),
 	{0}
 };
 
@@ -232,7 +231,7 @@ int	control::render(int x, int y, int width, const control::command* commands) c
 			// wdt_dropdown(x, y, 6, "toolbar_dropdown", 0, 0, 0, 0, source, 0, p, 0);
 			break;
 		}
-		render(x, y, width, p->type((control*)this, false), *p);
+		render(x, y, width, (((control*)this)->*p->type)(false), *p);
 		x += width;
 	}
 	return height + metrics::padding * 2;
@@ -282,7 +281,7 @@ unsigned control::execute(const char* id, bool run)
 {
 	auto p = getcommands()->find(id);
 	if(p)
-		return p->type(this, run);
+		return (this->*p->type)(run);
 	return 0;
 }
 
@@ -293,7 +292,7 @@ void control::keyinput(int id)
 		return;
 	auto p = pc->find(id);
 	if(p)
-		p->type(this, true);
+		(this->*p->type)(true);
 }
 
 int wdt_control(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::control* source, int title, const widget* childs, const char* tips)

@@ -184,41 +184,48 @@ void list::redraw(rect rc)
 		draw::scrollh(id, scrollh, origin_width, rc.width(), maximum_width, focused);
 }
 
-static unsigned execute_keyup(control* context, bool run)
+unsigned list::keyup(bool run)
 {
-	auto pc = (list*)context;
-	pc->current--;
-	pc->correction();
-	pc->ensurevisible();
+	if(run)
+	{
+		current--;
+		correction();
+		ensurevisible();
+	}
 	return Executed;
 }
 
-static unsigned execute_keydown(control* context, bool run)
+unsigned list::keydown(bool run)
 {
-	auto pc = (list*)context;
-	pc->current++;
-	pc->correction();
-	pc->ensurevisible();
+	if(run)
+	{
+		current++;
+		correction();
+		ensurevisible();
+	}
 	return Executed;
 }
 
-static unsigned execute_home(control* context, bool run)
+unsigned list::keyhome(bool run)
 {
-	auto pc = (list*)context;
-	if(pc->current == 0)
+	if(current == 0)
 		return Disabled;
-	pc->current = 0;
-	pc->correction();
-	pc->ensurevisible();
+	if(run)
+	{
+		current = 0;
+		correction();
+		ensurevisible();
+	}
 	return Executed;
 }
 
-static unsigned execute_end(control* context, bool run)
+unsigned list::keyend(bool run)
 {
-	auto pc = (list*)context;
-	pc->current = pc->maximum - 1;
-	pc->correction();
-	pc->ensurevisible();
+	if(current == maximum - 1)
+		return Disabled;
+	current = maximum - 1;
+	correction();
+	ensurevisible();
 	return Executed;
 }
 
@@ -275,9 +282,9 @@ static unsigned execute_mouse_wheel_down(control* context, bool run)
 	return Executed;
 }
 
-control::command list_commands[] = {
-	{"keyup", "¬верх", execute_keyup, 0, {KeyUp}, 0, HideCommand},
-	{"keydown", "¬низ", execute_keydown, 0, {KeyDown}, 0, HideCommand},
+control::command list::commands[] = {
+	CONTROL_KEY(keyup, KeyUp),
+	CONTROL_KEY(keydown, KeyDown),
 	{0}
 };
 

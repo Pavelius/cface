@@ -9,6 +9,13 @@
 using namespace draw;
 using namespace draw::controls;
 
+xsfield widget_type[] = {
+	BSREQ(widget, id, text_type),
+	BSREQ(widget, label, text_type),
+	BSREQ(widget, childs, widget_type),
+	{0}
+};
+
 static const int	table_padding = 4;
 static char			search_text[32];
 static unsigned		search_time;
@@ -44,7 +51,7 @@ table* gettable(control* source)
 void tbl_hilight(int x, int y, int width, unsigned flags, const char* label)
 {
 	auto height = draw::texth() + 8;
-	rect rc = { x, y, x + width, y + height };
+	rect rc = {x, y, x + width, y + height};
 	draw::area(rc);
 	if(!ischecked(flags))
 		return;
@@ -77,7 +84,7 @@ void tbl_text(rect rc, const char* value, unsigned flags)
 			rect rc1;
 			rc1.x1 = rc.x1 - metrics::padding;
 			rc1.y1 = rc.y1 - metrics::padding;
-			rc1.x2 = rc.x1 + imin(w1, 320) + metrics::padding*2;
+			rc1.x2 = rc.x1 + imin(w1, 320) + metrics::padding * 2;
 			rc1.y2 = rc.y1 + draw::texth() + 4;
 			tooltips(rc1, value);
 		}
@@ -124,7 +131,7 @@ int tbl_check(int x, int y, int width, const char* id, unsigned flags, const cha
 		if(hot::key == MouseLeft && !hot::pressed)
 			executed = true;
 	}
-	if(isfocused(flags) && ischecked(flags) && hot::key==KeySpace)
+	if(isfocused(flags) && ischecked(flags) && hot::key == KeySpace)
 		executed = true;
 	if(executed)
 		draw::setdata(source, pid, value, true);
@@ -140,7 +147,7 @@ int tbl_image(int x, int y, int width, const char* id, unsigned flags, const cha
 	if(data_value == -1)
 		return 0;
 	tbl_setposition(x, y, width);
-	draw::image(x + width/2, y + width/2, pc->rowsimages, data_value, 0);
+	draw::image(x + width / 2, y + width / 2, pc->rowsimages, data_value, 0);
 	return 0;
 }
 
@@ -179,33 +186,30 @@ int tbl_linenumber(int x, int y, int width, const char* id, unsigned flags, cons
 	return 0;
 }
 
-unsigned execute_table_add(control* context, bool run)
+unsigned table::add(bool run)
 {
-	auto pc = (table*)context;
-	if(pc->no_change_count)
+	if(no_change_count)
 		return Disabled;
-	if(pc->no_change_max_count)// && pc->rows.count>= pc->rows.count_max)
+	if(no_change_max_count)// && pc->rows.count>= pc->rows.count_max)
 		return Disabled;
-	if(pc->no_change_content)
+	if(no_change_content)
 		return Disabled;
 	return Executed;
 }
 
-unsigned execute_table_addcopy(control* context, bool run)
+unsigned table::addcopy(bool run)
 {
-	auto pc = (table*)context;
-	if(pc->no_change_count)
+	if(no_change_count)
 		return Disabled;
-	if(pc->no_change_max_count)// && pc->rows.count>= pc->rows.count_max)
+	if(no_change_max_count)// && pc->rows.count>= pc->rows.count_max)
 		return Disabled;
-	if(pc->no_change_content)
+	if(no_change_content)
 		return Disabled;
 	return Executed;
 }
 
-unsigned execute_table_copy(control* context, bool run)
+unsigned table::copy(bool run)
 {
-	auto pc = (table*)context;
 	if(run)
 	{
 		char temp[260]; temp[0] = 0;
@@ -215,114 +219,107 @@ unsigned execute_table_copy(control* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_delete(control* context, bool run)
+unsigned table::remove(bool run)
 {
-	auto pc = (table*)context;
-	if(pc->no_change_order)
+	if(no_change_order)
 		return Disabled;
-	int i = pc->rows.getcount();
-	if(i==0)
+	int i = rows.getcount();
+	if(i == 0)
 		return Disabled;
 	if(run)
 	{
-		pc->rows.remove(pc->current);
-		if(pc->current>=i-1)
-			pc->current--;
-		pc->correction();
-		pc->ensurevisible();
+		rows.remove(current);
+		if(current >= i - 1)
+			current--;
+		correction();
+		ensurevisible();
 	}
 	return Executed;
 }
 
-unsigned execute_table_change(control* context, bool run)
+unsigned table::change(bool run)
 {
-	auto pc = (table*)context;
-	if(pc->no_change_content)
+	if(no_change_content)
 		return Disabled;
-	if(pc->columns.data[pc->current_column].flags&ColumnReadOnly)
+	if(columns.data[current_column].flags&ColumnReadOnly)
 		return Disabled;
-	if(!pc->canedit(pc->current, pc->columns.data[pc->current_column]))
+	if(!canedit(current, columns.data[current_column]))
 		return Disabled;
 	if(run)
-		pc->changing((void*)pc->rows.get(pc->current), pc->columns.data[pc->current_column]);
+		changing((void*)rows.get(current), columns.data[current_column]);
 	return Executed;
 }
 
-unsigned execute_table_movedown(control* context, bool run)
+unsigned table::movedown(bool run)
 {
-	auto pc = (table*)context;
-	if(pc->no_change_order)
+	if(no_change_order)
 		return Disabled;
-	int i = pc->rows.getcount();
-	if(i<2 || pc->current>=i-1)
+	int i = rows.getcount();
+	if(i < 2 || current >= i - 1)
 		return Disabled;
 	if(run)
 	{
-		pc->rows.swap(pc->current, pc->current+1);
-		pc->current++;
-		pc->correction();
-		pc->ensurevisible();
+		rows.swap(current, current + 1);
+		current++;
+		correction();
+		ensurevisible();
 	}
 	return Executed;
 }
 
-unsigned execute_table_moveup(control* context, bool run)
+unsigned table::moveup(bool run)
 {
-	auto pc = (table*)context;
-	if(pc->no_change_order)
+	if(no_change_order)
 		return Disabled;
-	int i = pc->rows.getcount();
-	if(i<2 || pc->current==0)
+	int i = rows.getcount();
+	if(i < 2 || current == 0)
 		return Disabled;
 	if(run)
 	{
-		pc->rows.swap(pc->current, pc->current-1);
-		pc->current--;
-		pc->correction();
-		pc->ensurevisible();
+		rows.swap(current, current - 1);
+		current--;
+		correction();
+		ensurevisible();
 	}
 	return Executed;
 }
 
-unsigned execute_table_sortas(control* context, bool run)
+unsigned table::sortas(bool run)
 {
-	auto pc = (table*)context;
-	if(pc->no_change_order)
+	if(no_change_order)
 		return Disabled;
-	if(pc->rows.getcount()<2)
+	if(rows.getcount() < 2)
 		return Disabled;
 	if(run)
 	{
 		if(table_sort_by_mouse)
-			pc->sort(table_sort_column_id, 1);
+			sort(table_sort_column_id, 1);
 		else
-			pc->sort(pc->columns.data[pc->current_column].id, 1);
+			sort(columns.data[current_column].id, 1);
 		table_sort_by_mouse = false;
 	}
 	return Executed;
 }
 
-unsigned execute_table_sortds(control* context, bool run)
+unsigned table::sortds(bool run)
 {
-	auto pc = (table*)context;
-	if(pc->no_change_order)
+	if(no_change_order)
 		return Disabled;
-	if(pc->rows.getcount()<2)
+	if(rows.getcount() < 2)
 		return Disabled;
 	if(run)
 	{
 		if(table_sort_by_mouse)
-			pc->sort(table_sort_column_id, -1);
+			sort(table_sort_column_id, -1);
 		else
-			pc->sort(pc->columns.data[pc->current_column].id, -1);
+			sort(columns.data[current_column].id, -1);
 		table_sort_by_mouse = false;
 	}
 	return Executed;
 }
 
-unsigned execute_table_export(control* context, bool run)
+unsigned table::exportdata(bool run)
 {
-	auto pc = (table*)context;
 	char temp[260] = {0};
 	char filter[2048]; io::plugin::getfilter(filter);
 	if(run)
@@ -335,10 +332,9 @@ unsigned execute_table_export(control* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_import(control* context, bool run)
+unsigned table::importdata(bool run)
 {
-	auto pc = (table*)context;
-	if(pc->no_change_order || pc->no_change_content || pc->no_change_count)
+	if(no_change_order || no_change_content || no_change_count)
 		return Disabled;
 	if(run)
 	{
@@ -352,33 +348,61 @@ unsigned execute_table_import(control* context, bool run)
 	return Executed;
 }
 
-unsigned execute_table_setting(control* context, bool run)
+unsigned table::setting(bool run)
 {
-	auto pc = (table*)context;
-	if(!pc->use_setting)
+	if(!use_setting)
 		return Disabled;
 	if(run)
-		pc->setting();
+	{
+		adatc<widget, 64> data_columns;
+		table table_columns(data_columns);
+		table_columns.fields = widget_type;
+		window dc(-1, -1, 400, 300, WFMinmax | WFResize, 0, "TableSetting");
+		draw::control* controls[64] = {&table_columns, 0};
+		setcaption("Настройки");
+		const int dy = texth() + 8 + metrics::padding * 2;
+		int current_control = 0;
+		table_columns.addcol(tbl_text, "label", "Название", ColumnSizeAuto | ColumnReadOnly);
+		table_columns.addcol(tbl_number, "width", "Ширина");
+		table_columns.use_setting = false;
+		data_columns.clear();
+		for(auto& e : columns)
+		{
+			if(!e.label || e.label[0] == 0)
+				continue;
+			data_columns.add(e);
+		}
+		tuning(controls);
+		while(true)
+		{
+			rect rc = {0, 0, getwidth(), getheight() - dy};
+			rectf({0, 0, getwidth(), getheight()}, colors::form);
+			rc.offset(metrics::padding * 2);
+			draw::view(rc, controls, zlen(controls), current_control, false, 0, metrics::padding);
+			rc.y1 = getheight() - dy - metrics::padding;
+			rc.x2 = getwidth() - metrics::padding;
+			rc.x1 = rc.x2 - 100;
+			wdt_button(rc.x1, rc.y1, 100, "cancel", 0, "Отменить");
+			rc.x1 = rc.x1 - 100;
+			wdt_button(rc.x1, rc.y1, 100, "apply", 0, "OK");
+			int id = input();
+			switch(id)
+			{
+			case 0:
+			case KeyEscape:
+				return false;
+			case KeyEnter:
+				for(unsigned i = 0; i < data_columns.count; i++)
+					columns.data[i] = data_columns.data[i];
+				return true;
+			default:
+				table_columns.keyinput(id);
+				break;
+			}
+		}
+	}
 	return Executed;
 }
-
-extern control::command list_commands[];
-control::command table_commands[] = {
-	{"", "", 0, list_commands},
-	{"add", "Добавить", execute_table_add, 0, {F8}, 0},
-	{"addcopy", "Скопировать", execute_table_addcopy, 0, {F9}, 9},
-	{"change", "Изменить", execute_table_change, 0, {F2, KeyEnter}, 10},
-	{"copy", "Копировать", execute_table_copy, 0, {Ctrl + Alpha + 'C'}, 4},
-	{"delete", "Удалить", execute_table_delete, 0, {KeyDelete}, 19},
-	{"export", "Экспортировать данные", execute_table_export, 0, {0}, 2},
-	{"import", "Импортировать данные", execute_table_import, 0, {0}, 1},
-	{"moveup", "Переместить вверх", execute_table_moveup, 0, {0}, 21},
-	{"movedown", "Переместить вниз", execute_table_movedown, 0, {0}, 22},
-	{"setting", "Настройки", execute_table_setting, 0, {0}, 16},
-	{"sortas", "Сортировать по возрастанию", execute_table_sortas, 0, {0}, 11},
-	{"sortds", "Сортировать по убыванию", execute_table_sortds, 0, {0}, 12},
-	{0}
-};
 
 table::table(collection& rows) : rows(rows), rowsimages(metrics::tree),
 maximum_column(0), current_column(0),
@@ -390,11 +414,6 @@ show_header(true), show_event_rows(false)
 	id = "table";
 	columns.data = 0;
 	columns.count = 0;
-}
-
-control::command* table::getcommands() const
-{
-	return table_commands;
 }
 
 static int column_total_width;
@@ -596,7 +615,7 @@ static int compare(const void* p1, const void* p2, void* param)
 			result = strcmp((char*)v1, (char*)v2);
 		else
 			result = v1 - v2;
-		if(result!=0)
+		if(result != 0)
 			return result*d->direction;
 	}
 	return 0;
@@ -626,9 +645,9 @@ widget*	table::findcol(const char* id)
 
 void table::sort(table::sortinfo* psi, int i1, int i2)
 {
-	if(i2==-1)
-		i2 = maximum-1;
-	if(i2<=0)
+	if(i2 == -1)
+		i2 = maximum - 1;
+	if(i2 <= 0)
 		return;
 	table_compare_data cd;
 	cd.orders = psi;
@@ -669,7 +688,7 @@ void table::validate(int direction, bool editable)
 			direction = -1;
 		}
 		auto& e = columns.data[current_column];
-		if((!editable || (editable && e.type!=tbl_check))
+		if((!editable || (editable && e.type != tbl_check))
 			&& canedit(current, e)
 			&& (e.flags&ColumnHide) == 0)
 			return;
@@ -717,7 +736,7 @@ bool table::selecting(rect rc, int index, point mouse)
 		{
 			if(!canedit(index, e))
 				return false;
-			if(e.type==tbl_check)
+			if(e.type == tbl_check)
 				return false;
 			current_column = columns.indexof(&e);
 			break;
@@ -797,65 +816,61 @@ void table::clear()
 	current = 0;
 }
 
-//bool table::keyinput(int id)
-//{
-//	unsigned time_clock;
-//	int i;
-//	switch(id)
-//	{
-//	case KeyLeft:
-//		i = current_column;
-//		if(current_column)
-//		{
-//			current_column--;
-//			validate(-1, false);
-//		}
-//		if(i == current_column)
-//		{
-//			if(isopen(current))
-//				toggle(current);
-//			else
-//				current = getparent(current);
-//			ensurevisible();
-//			validate(-1, false);
-//		}
-//		break;
-//	case KeyRight:
-//		if(isgroup(current) && !isopen(current))
-//			toggle(current);
-//		else if(current_column < maximum_column - 1)
-//		{
-//			current_column++;
-//			validate(1, false);
-//		}
-//		break;
-//	case InputSymbol:
-//	case InputSymbol | Shift:
-//		if(!hot::param || hot::param < 0x20)
-//			break;
-//		time_clock = clock();
-//		if(!search_time || (time_clock-search_time)>2)
-//			search_text[0] = 0;
-//		if(true)
-//		{
-//			search_time = time_clock;
-//			char* p = zend(search_text);
-//			szput(&p, hot::param);
-//			p[0] = 0;
-//			int i1 = find(draw::getdatasource(columns.data[current_column].id, columns.data[current_column].link), search_text, current);
-//			if(i1!=-1)
-//			{
-//				current = i1;
-//				correction();
-//				ensurevisible();
-//			}
-//		}
-//		break;
-//	default:
-//		return list::keyinput(id);
-//	}
-//	return true;
-//}
+unsigned table::left(bool run)
+{
+	auto i = current_column;
+	if(current_column)
+	{
+		current_column--;
+		validate(-1, false);
+	}
+	if(i == current_column)
+	{
+		if(isopen(current))
+			toggle(current);
+		else
+			current = getparent(current);
+		ensurevisible();
+		validate(-1, false);
+	}
+	return Executed;
+}
+
+unsigned table::right(bool run)
+{
+	if(isgroup(current) && !isopen(current))
+		toggle(current);
+	else if(current_column < maximum_column - 1)
+	{
+		current_column++;
+		validate(1, false);
+	}
+	return Executed;
+}
+
+unsigned table::symbol(bool run)
+{
+	if(!hot::param || hot::param < 0x20)
+		return Disabled;
+	auto time_clock = clock();
+	if(!search_time || (time_clock - search_time) > 2)
+		search_text[0] = 0;
+	if(true)
+	{
+		search_time = time_clock;
+		char* p = zend(search_text);
+		szput(&p, hot::param);
+		p[0] = 0;
+		int i1 = find(draw::getdatasource(columns.data[current_column].id, columns.data[current_column].link), search_text, current);
+		if(i1 != -1)
+		{
+			current = i1;
+			correction();
+			ensurevisible();
+		}
+	}
+	return Executed;
+}
 
 widget& table::addcol(widget::proc type, const char* id, const char* label, unsigned flags, const char* link, int width)
 {
@@ -956,57 +971,6 @@ void table::tuning(draw::control** data)
 {
 }
 
-bool table::setting()
-{
-	adatc<widget, 64> data_columns;
-	table table_columns(data_columns);
-	window dc(-1, -1, 400, 300, WFMinmax|WFResize, 0, "TableSetting");
-	draw::control* controls[64] = {&table_columns, 0};
-	setcaption("Настройки");
-	const int dy = texth() + 8 + metrics::padding*2;
-	int current_control = 0;
-	table_columns.addcol(tbl_text, "label", "Название", ColumnSizeAuto|ColumnReadOnly);
-	table_columns.addcol(tbl_number, "width", "Ширина");
-	//table_columns.fields = widget_type;
-	table_columns.use_setting = false;
-	data_columns.clear();
-	for(auto& e : columns)
-	{
-		if(!e.label || e.label[0]==0)
-			continue;
-		data_columns.add(e);
-	}
-	tuning(controls);
-	while(true)
-	{
-		rect rc = {0, 0, getwidth(), getheight()-dy};
-		rectf({0, 0, getwidth(), getheight()}, colors::form);
-		rc.offset(metrics::padding*2);
-		draw::view(rc, controls, zlen(controls), current_control, false, 0, metrics::padding);
-		rc.y1 = getheight() - dy - metrics::padding;
-		rc.x2 = getwidth() - metrics::padding;
-		rc.x1 = rc.x2 - 100;
-		wdt_button(rc.x1, rc.y1, 100, "cancel", 0, "Отменить");
-		rc.x1 = rc.x1 - 100;
-		wdt_button(rc.x1, rc.y1, 100, "apply", 0, "OK");
-		int id = input();
-		switch(id)
-		{
-		case 0:
-		case KeyEscape:
-			return false;
-		case KeyEnter:
-			for(unsigned i = 0; i < data_columns.count; i++)
-				columns.data[i] = data_columns.data[i];
-			return true;
-		default:
-			table_columns.keyinput(id);
-			break;
-		}
-	}
-	return true;
-}
-
 void table::contextmenu()
 {
 	menu e;
@@ -1042,5 +1006,26 @@ void table::contextmenu()
 		e.add("setting", this);
 	auto result = (control::command*)e.choose(hot::mouse.x, hot::mouse.y);
 	if(result)
-		result->type(this, true);
+		(this->*result->type)(true);
 }
+
+control::command table::commands[] = {
+	CONTROL_PAR(list),
+	CONTROL_ICN(add, "Добавить", F8, 0),
+	CONTROL_ICN(addcopy, "Скопировать", F9, 9),
+	CONTROL_ICN(change, "Изменить", F2, 10),
+	CONTROL_ICN(copy, "Копировать", Ctrl + Alpha + 'C', 4),
+	CONTROL_ICN(remove, "Удалить", KeyDelete, 19),
+	CONTROL_ICN(moveup, "Переместить вверх", 0, 21),
+	CONTROL_ICN(movedown, "Переместить вниз", 0, 22),
+	CONTROL_ICN(sortas, "Сортировать по возрастанию", 0, 11),
+	CONTROL_ICN(sortds, "Сортировать по убыванию", 0, 12),
+	CONTROL_ICN(exportdata, "Экспортировать данные", 0, 2),
+	CONTROL_ICN(importdata, "Импортировать данные", 0, 1),
+	CONTROL_ICN(setting, "Настройки", 0, 16),
+	CONTROL_KEY(left, KeyLeft),
+	CONTROL_KEY(right, KeyRight),
+	CONTROL_KEY(symbol, InputSymbol),
+	CONTROL_KEY(symbol, InputSymbol | Shift),
+	{0}
+};

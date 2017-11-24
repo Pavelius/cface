@@ -81,7 +81,7 @@ void menu::add(const char* id, draw::control* object)
 				zcat(ps, ", ");
 			key2str(zend(ps), key);
 		}
-		add(temp, (unsigned)pe, pe->type(object, false) == Disabled, false);
+		add(temp, (unsigned)pe, (object->*pe->type)(false) == Disabled, false);
 	}
 }
 

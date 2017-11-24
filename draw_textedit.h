@@ -22,18 +22,18 @@ namespace draw
 			//
 			void			clear();
 			void			background(rect& rc) override;
-			static unsigned backspace(control* source, bool run);
+			unsigned		backspace(bool run);
 			virtual void	cashing(rect rc);
 			void			correct();
-			static unsigned delsym(control* source, bool run);
-			static unsigned down(control* source, bool run);
-			static unsigned downs(control* source, bool run);
+			unsigned		delsym(bool run);
+			unsigned		down(bool run);
+			unsigned		downs(bool run);
 			bool			editing(rect rc);
-			static unsigned end(control* source, bool run);
+			unsigned		end(bool run);
 			void			ensurevisible(int linenumber);
 			command*		getcommands() const override { return commands; }
 			int				getrecordsheight() const;
-			static unsigned home(control* source, bool run);
+			unsigned		home(bool run);
 			int				hittest(rect rc, point pt, unsigned state) const;
 			void			invalidate() override;
 			bool			isshowrecords() const { return getrecordsheight() != 0; }
@@ -41,25 +41,25 @@ namespace draw
 			int				linee(int index) const;
 			int				linen(int index) const;
 			void			left(bool shift, bool ctrl);
-			static unsigned	left(control* source, bool run);
-			static unsigned leftc(control* source, bool run);
-			static unsigned lefts(control* source, bool run);
-			static unsigned leftcs(control* source, bool run);
+			unsigned		left(bool run);
+			unsigned		leftc(bool run);
+			unsigned		lefts(bool run);
+			unsigned		leftcs(bool run);
 			int				getbegin() const;
 			int				getend() const;
 			point			getpos(rect rc, int index, unsigned state) const;
 			void			paste(const char* string);
 			void			redraw(rect rc) override;
 			void			right(bool shift, bool ctrl);
-			static unsigned right(control* source, bool run);
-			static unsigned rights(control* source, bool run);
-			static unsigned rightc(control* source, bool run);
-			static unsigned rightcs(control* source, bool run);
+			unsigned		right(bool run);
+			unsigned		rights(bool run);
+			unsigned		rightc(bool run);
+			unsigned		rightcs(bool run);
 			void			select(int index, bool shift);
-			static unsigned symbol(control* source, bool run);
-			static unsigned up(control* source, bool run);
+			unsigned		symbol(bool run);
+			unsigned		up(bool run);
 			void			updaterecords();
-			static unsigned ups(control* source, bool run);
+			unsigned		ups(bool run);
 		protected:
 			int				cashed_width;
 			int				cashed_string;

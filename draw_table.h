@@ -43,27 +43,42 @@ namespace draw
 			bool				use_setting;
 			bool				show_header;
 			bool				show_event_rows;
+			static command		commands[];
 			//
 			table(collection& e);
 			//
+			unsigned			add(bool run);
+			unsigned			addcopy(bool run);
 			widget&				addcol(widget::proc type, const char* id, const char* label, unsigned flags = 0, const char* link = 0, int width = -1);
 			virtual void*		addrow(const void* copy) { return rows.add(copy); }
 			virtual void		background(rect& rc) override;
 			virtual bool		canedit(int index, const widget& e) const;
+			unsigned			change(bool run);
 			virtual bool		changing(void* object, widget& e);
 			void				clear();
 			virtual void		contextmenu() override;
+			unsigned			copy(bool run);
+			unsigned			exportdata(bool run);
 			int					find(const char* id, const char* text, int start);
 			widget*				findcol(const char* id);
-			command*			getcommands() const override;
+			command*			getcommands() const override { return commands; }
 			void				header(rect rc);
+			unsigned			importdata(bool run);
+			unsigned			left(bool run);
+			unsigned			movedown(bool run);
+			unsigned			moveup(bool run);
 			virtual void		prerender() override;
+			unsigned			remove(bool run);
 			void				reposition(int width);
+			unsigned			right(bool run);
 			virtual void		row(rect rc, int index) override;
 			virtual bool		selecting(rect rc, int index, point mouse) override;
-			bool				setting();
+			unsigned			setting(bool run);
 			void				sort(const char* id, int direction = 0, int i1 = 0, int i2 = -1);
 			void				sort(sortinfo* pi, int i1 = 0, int i2 = -1);
+			unsigned			sortas(bool run);
+			unsigned			sortds(bool run);
+			unsigned			symbol(bool run);
 			int					totalwidth() const;
 			virtual void		treemark(rect rc, int index, int level) const;
 			virtual void		tuning(control** controls);

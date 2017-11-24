@@ -15,6 +15,10 @@ enum command_view_s {
 
 struct xsfield;
 
+#define CONTROL_PAR(name) {"", "", 0, name::commands}
+#define CONTROL_KEY(cpr, key) {#cpr, "", (control::command::proc)&cpr, 0, {key}, 0, HideCommand}
+#define CONTROL_ICN(cpr, text, key, icon) {#cpr, text, (control::command::proc)&cpr, 0, {key}, icon, ViewIcon}
+
 namespace draw
 {
 	struct control
@@ -28,7 +32,7 @@ namespace draw
 		};
 		struct command
 		{
-			typedef unsigned(*proc)(control* object, bool run);
+			typedef unsigned(control::*proc)(bool run);
 			const char*			id;
 			const char*			label;
 			proc				type;
@@ -38,8 +42,8 @@ namespace draw
 			command_view_s		view;
 			//
 			operator bool() const { return id != 0; }
-			const command*	find(const char* id) const;
-			const command*	find(int id) const;
+			const command*		find(const char* id) const;
+			const command*		find(int id) const;
 		};
 		const char*				id;
 		dock_s					dock;
@@ -67,6 +71,7 @@ namespace draw
 		virtual void*			getobject() { return this; }
 		void					invoke(const char* name) const;
 		void					keyinput(int id);
+		unsigned				keytab(bool run);
 		virtual void			nonclient(rect rc);
 		bool					open(rect rc);
 		bool					open(const char* title, unsigned state, int width, int height);

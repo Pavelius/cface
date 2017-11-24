@@ -16,6 +16,7 @@ namespace draw
 			int				lines_per_page, pixels_per_line;
 			bool			show_grid_lines;
 			bool			hilite_rows;
+			static command	commands[];
 			list();
 			virtual void	background(rect& rc) override;
 			virtual void	collapse(int row) {} // expanding 'row'
@@ -28,6 +29,10 @@ namespace draw
 			int				getroot(int row) const;
 			virtual bool	isgroup(int row) const { return false; }
 			bool			isopen(int row); // Is 'row' open ?
+			unsigned		keydown(bool run);
+			unsigned		keyend(bool run);
+			unsigned		keyhome(bool run);
+			unsigned		keyup(bool run);
 			void			redraw(rect rc) override;
 			virtual bool	selecting(rect rc, int index, point mouse) { return true; }
 			void			toggle(int index);
