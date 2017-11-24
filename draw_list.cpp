@@ -184,7 +184,7 @@ void list::redraw(rect rc)
 		draw::scrollh(id, scrollh, origin_width, rc.width(), maximum_width, focused);
 }
 
-unsigned list::keyup(bool run)
+unsigned list::up(bool run)
 {
 	if(run)
 	{
@@ -195,7 +195,7 @@ unsigned list::keyup(bool run)
 	return Executed;
 }
 
-unsigned list::keydown(bool run)
+unsigned list::down(bool run)
 {
 	if(run)
 	{
@@ -206,7 +206,7 @@ unsigned list::keydown(bool run)
 	return Executed;
 }
 
-unsigned list::keyhome(bool run)
+unsigned list::home(bool run)
 {
 	if(current == 0)
 		return Disabled;
@@ -219,7 +219,7 @@ unsigned list::keyhome(bool run)
 	return Executed;
 }
 
-unsigned list::keyend(bool run)
+unsigned list::end(bool run)
 {
 	if(current == maximum - 1)
 		return Disabled;
@@ -229,64 +229,53 @@ unsigned list::keyend(bool run)
 	return Executed;
 }
 
-static unsigned execute_page_up(control* context, bool run)
+unsigned list::pageup(bool run)
 {
-	auto pc = (list*)context;
-	if(pc->current != pc->origin)
-		pc->current = pc->origin;
+	if(current != origin)
+		current = origin;
 	else
-		pc->current -= pc->lines_per_page - 1;
-	pc->correction();
-	pc->ensurevisible();
+		current -= lines_per_page - 1;
+	correction();
+	ensurevisible();
 	return Executed;
 }
 
-static unsigned execute_page_down(control* context, bool run)
+unsigned list::pagedown(bool run)
 {
-	auto pc = (list*)context;
-	if(pc->current != (pc->origin + pc->lines_per_page - 1))
-		pc->current = (pc->origin + pc->lines_per_page - 1);
+	if(current != (origin + lines_per_page - 1))
+		current = (origin + lines_per_page - 1);
 	else
-		pc->current += pc->lines_per_page - 1;
-	pc->correction();
-	pc->ensurevisible();
+		current += lines_per_page - 1;
+	correction();
+	ensurevisible();
 	return Executed;
 }
 
-static unsigned execute_mouse_dbl_click(control* context, bool run)
+unsigned list::dblclick(bool run)
 {
-	auto pc = (list*)context;
 	if(!hot::mouse.in(hot::element))
 		return Disabled;
-	pc->invoke("change");
+	invoke("change");
 	return Executed;
 }
 
-static unsigned execute_mouse_wheel_up(control* context, bool run)
+unsigned list::wheelup(bool run)
 {
-	auto pc = (list*)context;
-	pc->origin--;
-	if(pc->origin<0)
-		pc->origin = 0;
+	origin--;
+	if(origin<0)
+		origin = 0;
 	return Executed;
 }
 
-static unsigned execute_mouse_wheel_down(control* context, bool run)
+unsigned list::wheeldown(bool run)
 {
-	auto pc = (list*)context;
-	pc->origin++;
-	if(pc->origin>pc->maximum - pc->lines_per_page)
-		pc->origin = pc->maximum - pc->lines_per_page;
-	if(pc->origin<0)
-		pc->origin = 0;
+	origin++;
+	if(origin>maximum - lines_per_page)
+		origin = maximum - lines_per_page;
+	if(origin<0)
+		origin = 0;
 	return Executed;
 }
-
-control::command list::commands[] = {
-	CONTROL_KEY(keyup, KeyUp),
-	CONTROL_KEY(keydown, KeyDown),
-	{0}
-};
 
 listfilter::listfilter() :filter(0)
 {
@@ -308,3 +297,15 @@ void listdata::row(rect rc, int index)
 		text(rc.x1, rc.y1, p);
 	}
 }
+
+control::command list::commands[] = {
+	CONTROL_KEY(up, KeyUp),
+	CONTROL_KEY(down, KeyDown),
+	CONTROL_KEY(end, KeyEnd),
+	CONTROL_KEY(home, KeyHome),
+	CONTROL_KEY(pagedown, KeyPageDown),
+	CONTROL_KEY(pageup, KeyPageUp),
+	CONTROL_KEY(wheeldown, MouseWheelDown),
+	CONTROL_KEY(wheelup, MouseWheelUp),
+	{0}
+};
