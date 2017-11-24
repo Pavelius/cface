@@ -271,6 +271,9 @@
     <ClCompile Include="draw_list.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
+    <ClCompile Include="draw_clipart.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="acol.h">

@@ -1,15 +1,11 @@
 #include "crt.h"
 #include "draw.h"
-#include "draw_control.h"
-#include "widget.h"
 
-using namespace draw;
-
-int wdt_clipart(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
+int draw::clipart(int x, int y, int width, unsigned flags, const char* string)
 {
-	if(label[0] != ':')
+	if(!string || string[0] != ':')
 		return 0;
-	auto p = label + 1;
+	auto p = string + 1;
 	if(strcmp(p, "check") == 0)
 	{
 		rect rc = {x, y, x + 14, y + 14};
@@ -104,7 +100,7 @@ bool draw::buttonv(rect rc, bool checked, bool focused, bool disabled, bool bord
 				flags |= Disabled;
 			if(focused)
 				flags |= Focused;
-			wdt_clipart(rc.x1, rc.y1, rc.width(), "clipart", 0, string, 0, 0, 0, 0, 0, 0);
+			clipart(rc.x1, rc.y1, rc.width(), flags, string);
 		}
 		else
 			text(rc, string, AlignCenter);
@@ -162,7 +158,7 @@ bool draw::buttonh(rect rc, bool checked, bool focused, bool disabled, bool bord
 				flags |= Disabled;
 			if(focused)
 				flags |= Focused;
-			wdt_clipart(rc.x1, rc.y1, rc.width(), "clipart", flags, string, 0, 0, 0, 0, 0, 0);
+			clipart(rc.x1, rc.y1, rc.width(), flags, string);
 		}
 		else
 			text(rc, string, AlignCenterCenter);

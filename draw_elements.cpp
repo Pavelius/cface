@@ -74,7 +74,7 @@ int wdt_radio_element(int x, int y, int width, const char* id, unsigned flags, c
 	rc.x2 = rc1.x2;
 	decortext(flags);
 	focusing(id, rc, flags);
-	wdt_clipart(x + 2, y + imax((rc1.height() - 14) / 2, 0), 0, id, flags, ":radio");
+	clipart(x + 2, y + imax((rc1.height() - 14) / 2, 0), width, flags, ":radio");
 	bool need_select = false;
 	auto a = draw::area(rc);
 	if((a == AreaHilited || a == AreaHilitedPressed) && !isdisabled(flags) && hot::key == MouseLeft)
@@ -126,7 +126,7 @@ int wdt_check(int x, int y, int width, const char* id, unsigned flags, const cha
 	rc.y2 = rc1.y2;
 	rc.x2 = rc1.x2;
 	focusing(id, rc, flags);
-	wdt_clipart(x + 2, y + imax((rc1.height() - 14) / 2, 0), 0, "clipart", flags, ":check");
+	clipart(x + 2, y + imax((rc1.height() - 14) / 2, 0), 0, flags, ":check");
 	decortext(flags);
 	auto a = draw::area(rc);
 	auto need_value = false;
@@ -169,7 +169,6 @@ int wdt_button(int x, int y, int width, const char* id, unsigned flags, const ch
 	return rc.height() + metrics::padding * 2;
 }
 
-WIDGET(clipart);
 WIDGET(button);
 WIDGET(check);
 WIDGET(radio);

@@ -124,7 +124,7 @@ int tbl_check(int x, int y, int width, const char* id, unsigned flags, const cha
 	auto data_value = getdata(source, pid);
 	tbl_hilight(x, y, width, flags, 0);
 	tbl_setposition(x, y, width);
-	auto height = wdt_clipart(x, y, width, id, data_value ? Checked : 0, ":check", value, link, source, title, childs, tips);
+	auto height = clipart(x, y, width, data_value ? Checked : 0, ":check");
 	auto executed = false;
 	if(areb({x, y, x + width, y + height}))
 	{

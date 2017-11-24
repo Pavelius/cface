@@ -9,13 +9,13 @@ extern "C" void* memset(void* destination, int value, unsigned size);
 enum draw_event_s {
 	// input events
 	InputSymbol = 0xED00, InputTimer, InputIdle, InputUpdate, InputNoUpdate, InputExecute,
-	Executed,
 	// Keyboard and mouse input (can be overrided by flags)
 	MouseLeft = 0xEE00, MouseLeftDBL, MouseRight,
 	MouseMove, MouseWheelUp, MouseWheelDown,
 	KeyLeft, KeyRight, KeyUp, KeyDown, KeyPageUp, KeyPageDown, KeyHome, KeyEnd,
 	KeyBackspace, KeyEnter, KeyDelete, KeyEscape, KeySpace, KeyTab,
 	F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
+	Executed,
 	// named keys range
 	Alpha,
 	FirstKey = MouseLeft,
@@ -221,6 +221,7 @@ namespace draw
 	void					circle(int x, int y, int radius);
 	void					circle(int x, int y, int radius, const color c1);
 	void					circlef(int x, int y, int radius, const color c1, unsigned char alpha = 0xFF);
+	int						clipart(int x, int y, int width, unsigned flags, const char* string);
 	void					decortext(unsigned flags);
 	bool					domodal();
 	void					execute(int id, int value = 0);
