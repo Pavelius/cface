@@ -172,9 +172,6 @@
     <ClCompile Include="draw_tooltips.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
-    <ClCompile Include="draw_widget.cpp">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClCompile>
     <ClCompile Include="draw_button.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>

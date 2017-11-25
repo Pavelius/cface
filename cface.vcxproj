@@ -217,7 +217,6 @@
     <ClCompile Include="vallist.cpp" />
     <ClCompile Include="valtree.cpp" />
     <ClCompile Include="valtree_serial.cpp" />
-    <ClCompile Include="draw_widget.cpp" />
     <ClCompile Include="draw_button.cpp" />
     <ClCompile Include="draw_control.cpp" />
     <ClCompile Include="widget_dialog.cpp">
