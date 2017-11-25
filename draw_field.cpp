@@ -13,41 +13,40 @@ static int edit_command;
 
 void callback_edit()
 {
-	field_type_s type;
-	auto id = hot::name;
-	auto source = hot::source;
-	auto childs = edit_childs;
-	char temp[8192]; temp[0] = 0;
-	if(!getdata(temp, source, id, edit_childs, true, type))
-		return;
-	auto old_fore = draw::fore;
-	draw::fore = colors::text;
-	draw::controls::textedit te(temp, sizeof(temp));
-	te.align = edit_flags;
-	te.p1 = 0;
-	te.p2 = zlen(temp);
-	if(edit_command)
-		hot::key = edit_command;
-	if(te.editing(hot::element))
-	{
-		switch(type)
-		{
-		case FieldText:
-			setdata(source, id, (int)szdup(temp), true);
-			break;
-		case FieldNumber:
-			if(childs)
-			{
+	//auto id = hot::name;
+	//auto source = hot::source;
+	//auto childs = edit_childs;
+	//char temp[8192]; temp[0] = 0;
+	//if(!getdata(temp, source, id, edit_childs, true, type))
+	//	return;
+	//auto old_fore = draw::fore;
+	//draw::fore = colors::text;
+	//draw::controls::textedit te(temp, sizeof(temp));
+	//te.align = edit_flags;
+	//te.p1 = 0;
+	//te.p2 = zlen(temp);
+	//if(edit_command)
+	//	hot::key = edit_command;
+	//if(te.editing(hot::element))
+	//{
+	//	switch(type)
+	//	{
+	//	case FieldText:
+	//		setdata(source, id, (int)szdup(temp), true);
+	//		break;
+	//	case FieldNumber:
+	//		if(childs)
+	//		{
 
-			}
-			else
-				setdata(source, id, sz2num(temp), true);
-			break;
-		default:
-			break;
-		}
-	}
-	draw::fore = old_fore;
+	//		}
+	//		else
+	//			setdata(source, id, sz2num(temp), true);
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
+	//draw::fore = old_fore;
 }
 
 static bool editstart(const rect& rc, control* source, const char* id, unsigned flags, const widget* childs)
@@ -99,7 +98,7 @@ static void callback_dropdown_list()
 	draw::controls::table source_table(source);
 	source_table.fields = widget_type;
 	source_table.pixels_per_line = texth() + 8;
-	source_table.addcol(tbl_text, "label", "Заголовок", ColumnSizeAuto);
+	source_table.addcol(FieldText | ColumnSizeAuto, "label", "Заголовок");
 	source_table.show_header = false;
 	source_table.no_change_content = true;
 	source_table.no_change_max_count = true;
@@ -117,71 +116,4 @@ static void callback_dropdown_list()
 
 static void callback_choose_list()
 {
-}
-
-int wdt_field(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
-{
-	field_type_s field_type;
-	draw::state push;
-	char number_text[32];
-	auto p = getdata(number_text, source, getdatasource(id, link), childs, false, field_type);
-	if(!p)
-		return 0;
-	setposition(x, y, width);
-	wdt_title(x, y, width, flags, label, title);
-	rect rc = {x, y, x + width, y + draw::texth() + 8};
-	if(getfocus() == id)
-		flags |= Focused;
-	decortext(flags);
-	if(!isdisabled(flags))
-		draw::rectf(rc, colors::window);
-	draw::rectb(rc, colors::border);
-	if(childs)
-	{
-		if(addbutton(rc, ":dropdown", F4, "Показать список"))
-		{
-			draw::execute(callback_dropdown_list);
-			hot::element = rc;
-			hot::name = id;
-			edit_childs = childs;
-		}
-	}
-	if(field_type == FieldNumber)
-	{
-		auto result = addbutton(rc, "+", KeyUp, "Увеличить", "-", KeyDown, "Уменьшить");
-		if(result)
-		{
-			auto inc = 0;
-			switch(result)
-			{
-			case 1: inc = 1; break;
-			case 2: inc = -1; break;
-			}
-			auto value = getdata(source, getdatasource(id, link));
-			setdata(source, id, value + inc);
-		}
-	}
-	else if(field_type == FieldReference)
-	{
-		if(addbutton(rc, "...", F4, "Выбрать"))
-		{
-			draw::execute(callback_choose_list);
-			hot::name = id;
-		}
-	}
-	focusing(id, rc, flags);
-	auto a = area(rc);
-	bool enter_edit = false;
-	if(isfocused(flags) && id)
-		enter_edit = editstart(rc, source, id, flags, childs);
-	if(!enter_edit)
-	{
-		if(isfocused(flags))
-			draw::texte(rc + metrics::edit, p, flags, 0, zlen(p));
-		else
-			draw::texte(rc + metrics::edit, p, flags, -1, -1);
-		if(tips && a == AreaHilited)
-			tooltips(tips);
-	}
-	return rc.height() + metrics::padding * 2;
 }

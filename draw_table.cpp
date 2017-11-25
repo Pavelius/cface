@@ -93,7 +93,8 @@ void tbl_text(rect rc, const char* value, unsigned flags)
 
 int tbl_text(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
-	auto data_value = (const char*)getdata(source, getdatasource(id, link));
+	//auto data_value = (const char*)getdata(source, getdatasource(id, link));
+	auto data_value = "Test";
 	auto height = draw::texth();
 	tbl_hilight(x, y, width, flags, data_value);
 	tbl_setposition(x, y, width);
@@ -104,7 +105,8 @@ int tbl_text(int x, int y, int width, const char* id, unsigned flags, const char
 
 int tbl_number(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
-	auto data_value = getdata(source, getdatasource(id, link));
+	//auto data_value = getdata(source, getdatasource(id, link));
+	auto data_value = 0;
 	char temp[32]; sznum(temp, data_value);
 	auto height = draw::texth();
 	tbl_hilight(x, y, width, flags, label);
@@ -120,8 +122,9 @@ int tbl_reference(int x, int y, int width, const char* id, unsigned flags, const
 
 int tbl_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
-	auto pid = getdatasource(id, link);
-	auto data_value = getdata(source, pid);
+	//auto pid = getdatasource(id, link);
+	//auto data_value = getdata(source, pid);
+	auto data_value = 0;
 	tbl_hilight(x, y, width, flags, 0);
 	tbl_setposition(x, y, width);
 	auto height = clipart(x, y, width, data_value ? Checked : 0, ":check");
@@ -133,14 +136,15 @@ int tbl_check(int x, int y, int width, const char* id, unsigned flags, const cha
 	}
 	if(isfocused(flags) && data_value && hot::key == KeySpace)
 		executed = true;
-	if(executed)
-		draw::setdata(source, pid, value, true);
+	//if(executed)
+	//	draw::setdata(source, pid, value, true);
 	return height;
 }
 
 int tbl_image(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
-	auto data_value = getdata(source, getdatasource(id, link));
+	//auto data_value = getdata(source, getdatasource(id, link));
+	auto data_value = 0;
 	auto pc = gettable(source);
 	if(!pc->rowsimages)
 		return 0;
@@ -153,16 +157,17 @@ int tbl_image(int x, int y, int width, const char* id, unsigned flags, const cha
 
 int tbl_date(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
-	char temp[64];
-	auto data_value = getdata(source, getdatasource(id, link));
-	auto height = draw::texth(); temp[64];
-	if(data_value)
-		getstrfdat(temp, data_value, true);
-	tbl_hilight(x, y, width, flags, temp);
-	tbl_setposition(x, y, width);
-	if(data_value)
-		tbl_text({x, y, x + width, y + height}, temp, flags);
-	return height + table_padding * 2;
+	//char temp[64];
+	//auto data_value = getdata(source, getdatasource(id, link));
+	//auto height = draw::texth(); temp[64];
+	//if(data_value)
+	//	getstrfdat(temp, data_value, true);
+	//tbl_hilight(x, y, width, flags, temp);
+	//tbl_setposition(x, y, width);
+	//if(data_value)
+	//	tbl_text({x, y, x + width, y + height}, temp, flags);
+	//return height + table_padding * 2;
+	return 0;
 }
 
 int tbl_point(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
@@ -362,8 +367,8 @@ unsigned table::setting(bool run)
 		setcaption("Настройки");
 		const int dy = texth() + 8 + metrics::padding * 2;
 		int current_control = 0;
-		table_columns.addcol(tbl_text, "label", "Название", ColumnSizeAuto | ColumnReadOnly);
-		table_columns.addcol(tbl_number, "width", "Ширина");
+		//table_columns.addcol(tbl_text, "label", "Название", ColumnSizeAuto | ColumnReadOnly);
+		//table_columns.addcol(tbl_number, "width", "Ширина");
 		table_columns.use_setting = false;
 		data_columns.clear();
 		for(auto& e : columns)
@@ -382,9 +387,9 @@ unsigned table::setting(bool run)
 			rc.y1 = getheight() - dy - metrics::padding;
 			rc.x2 = getwidth() - metrics::padding;
 			rc.x1 = rc.x2 - 100;
-			wdt_button(rc.x1, rc.y1, 100, "cancel", 0, "Отменить");
+			//wdt_button(rc.x1, rc.y1, 100, "cancel", 0, "Отменить");
 			rc.x1 = rc.x1 - 100;
-			wdt_button(rc.x1, rc.y1, 100, "apply", 0, "OK");
+			//wdt_button(rc.x1, rc.y1, 100, "apply", 0, "OK");
 			int id = input();
 			switch(id)
 			{
@@ -511,7 +516,7 @@ void table::header(rect client)
 		}
 		if(areb(rc) && hot::key == MouseLeft && !hot::pressed)
 		{
-			if(e.type != tbl_linenumber)
+			if(e.gettype() != LineNumber)
 			{
 				table_sort_column_id = e.id;
 				table_sort_by_mouse = true;
@@ -524,7 +529,8 @@ void table::header(rect client)
 		}
 		if(e.label)
 		{
-			if(e.type == tbl_check || e.type == tbl_image)
+			auto type = e.gettype();
+			if(type == FieldCheck || type == FieldImage)
 				textc(rc.x1 + 4 + (rc.width() - 8 - textw(e.label)) / 2, rc.y1 + 4, rc.width() - 8, e.label);
 			else
 				tbl_text({rc.x1 + 4, rc.y1 + 4, rc.x2 - 8, rc.y2 - 4}, e.label, 0);
@@ -585,7 +591,7 @@ void table::row(rect rc, int index)
 			flags |= Checked;
 		if(focused)
 			flags |= Focused;
-		e.type(r1.x1, r1.y1, r1.width(), e.id, flags, e.label, index, e.link, &rwr, e.title, e.childs, e.tips);
+		//e.type(r1.x1, r1.y1, r1.width(), e.id, flags, e.label, index, e.link, &rwr, e.title, e.childs, e.tips);
 		if(show_grid_lines)
 			line(r1.x2, r1.y1, r1.x2, r1.y2 - 1, colors::form);
 		r1.x1 = r1.x2;
@@ -665,9 +671,14 @@ void table::sort(const char* id, int direction, int i1, int i2)
 
 bool table::canedit(int index, const widget& e) const
 {
-	if(e.type == tbl_linenumber || e.type == tbl_image)
+	switch(e.gettype())
+	{
+	case LineNumber:
+	case FieldImage:
 		return false;
-	return true;
+	default:
+		return true;
+	}
 }
 
 void table::validate(int direction, bool editable)
@@ -688,7 +699,7 @@ void table::validate(int direction, bool editable)
 			direction = -1;
 		}
 		auto& e = columns.data[current_column];
-		if((!editable || (editable && e.type != tbl_check))
+		if((!editable || (editable && e.gettype() != FieldCheck))
 			&& canedit(current, e)
 			&& (e.flags&ColumnHide) == 0)
 			return;
@@ -736,7 +747,7 @@ bool table::selecting(rect rc, int index, point mouse)
 		{
 			if(!canedit(index, e))
 				return false;
-			if(e.type == tbl_check)
+			if(e.gettype() == FieldCheck)
 				return false;
 			current_column = columns.indexof(&e);
 			break;
@@ -861,52 +872,55 @@ unsigned table::symbol(bool run)
 		char* p = zend(search_text);
 		szput(&p, hot::param);
 		p[0] = 0;
-		int i1 = find(draw::getdatasource(columns.data[current_column].id, columns.data[current_column].link), search_text, current);
-		if(i1 != -1)
-		{
-			current = i1;
-			correction();
-			ensurevisible();
-		}
+		//int i1 = find(draw::getdatasource(columns.data[current_column].id, columns.data[current_column].link), search_text, current);
+		//if(i1 != -1)
+		//{
+		//	current = i1;
+		//	correction();
+		//	ensurevisible();
+		//}
 	}
 	return Executed;
 }
 
-widget& table::addcol(widget::proc type, const char* id, const char* label, unsigned flags, const char* link, int width)
+widget& table::addcol(unsigned flags, const char* id, const char* label, int width)
 {
 	auto p = columns.addu(id);
 	memset(p, 0, sizeof(p[0]));
-	p->type = type;
 	p->id = id;
 	p->label = label;
 	p->flags = flags;
-	p->link = link;
 	p->width = width;
-	if(type == tbl_number && flags == 0)
-		p->flags = AlignRight;
-	else if(type == tbl_check || type == tbl_image)
+	switch(p->gettype())
+	{
+	case LineNumber:
+		if(p->flags == 0)
+			p->flags = AlignRight;
+		break;
+	case FieldCheck:
+	case FieldImage:
 		p->flags |= ColumnHideTitleText;
+		break;
+	}
 	if(p->width == -1)
 	{
-		if(p->type == tbl_linenumber)
-			p->width = 50;
-		else if(p->type == tbl_number)
-			p->width = 64;
-		else if(p->type == tbl_check || p->type == tbl_image)
+		switch(p->gettype())
 		{
+		case LineNumber:
+			p->width = 50;
+			break;
+		case FieldNumber:
+			p->width = 64;
+			break;
+		case FieldCheck:
+		case FieldImage:
 			p->width = 22;
 			p->flags |= ColumnSizeFixed;
-		}
-		else if(p->type == tbl_date)
-		{
-			if(font)
-				p->width = draw::textw('0') * 16;
-			else
-				p->width = 112;
-			p->flags |= ColumnSizeFixed;
-		}
-		else
+			break;
+		default:
 			p->width = 150;
+			break;
+		}
 	}
 	return *p;
 }
@@ -938,10 +952,13 @@ void table::reposition(int w1)
 		else
 		{
 			// Check minimal width
-			if(e.type == tbl_check)
+			switch(e.gettype())
 			{
+			case FieldCheck:
+			case FieldImage:
 				if(e.width < 18)
 					e.width = 18;
+				break;
 			}
 			w2 += e.width;
 		}

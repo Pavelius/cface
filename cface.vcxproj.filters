@@ -148,19 +148,10 @@
     <ClCompile Include="surface_serial.cpp">
       <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
-    <ClCompile Include="draw_data.cpp">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClCompile>
     <ClCompile Include="draw_dockbar.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
-    <ClCompile Include="draw_elements.cpp">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClCompile>
     <ClCompile Include="draw_field.cpp">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClCompile>
-    <ClCompile Include="draw_group.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
     <ClCompile Include="draw_scroll.cpp">
@@ -272,6 +263,9 @@
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
     <ClCompile Include="draw_clipart.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_form.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
   </ItemGroup>
@@ -435,9 +429,6 @@
     <ClInclude Include="selector.h">
       <Filter>Обработка данных</Filter>
     </ClInclude>
-    <ClInclude Include="widget.h">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClInclude>
     <ClInclude Include="widget_settings.h">
       <Filter>Графика\Элементы Управления</Filter>
     </ClInclude>
@@ -454,6 +445,12 @@
       <Filter>Графика\Элементы Управления</Filter>
     </ClInclude>
     <ClInclude Include="draw_list.h">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClInclude>
+    <ClInclude Include="draw_form.h">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClInclude>
+    <ClInclude Include="widget.h">
       <Filter>Графика\Элементы Управления</Filter>
     </ClInclude>
   </ItemGroup>

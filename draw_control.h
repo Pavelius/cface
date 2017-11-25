@@ -75,6 +75,7 @@ namespace draw
 		virtual void			nonclient(rect rc);
 		bool					open(rect rc);
 		bool					open(const char* title, unsigned state, int width, int height);
+		bool					open(const char* title);
 		int						render(int x, int y, int width, unsigned flags, const command& e) const;
 		int						render(int x, int y, int width, const command* commands) const;
 		virtual void			redraw(rect rc) {}

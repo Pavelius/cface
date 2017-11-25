@@ -137,7 +137,6 @@ namespace metrics
 }
 namespace draw
 {
-	enum field_type_s {FieldText, FieldNumber, FieldReference};
 	namespace drag
 	{
 		extern const char*	id;
@@ -202,11 +201,12 @@ namespace draw
 		textplugin(const char* name, proc e);
 		static textplugin*	find(const char* name);
 	};
+	typedef int(*widgetproc)(int x, int y, int width, unsigned flags, const char* label, int value, void* data, const char* tips);
 	extern rect				clipping; // Clipping area
 	extern color			fore; // Foreground color (curently selected color)
 	extern const sprite*	font; // Currently selected font
 	//
-	void					addelement(const char* id, const rect& rc);
+	void					addelement(int id, const rect& rc);
 	int						aligned(int x, int width, unsigned state, int string_width);
 	int						alignedh(const rect& rc, const char* string, unsigned state);
 	areas					area(rect rc);
@@ -229,9 +229,9 @@ namespace draw
 	int						getbpp();
 	color					getcolor(color normal, unsigned flags);
 	color					getcolor(rect rc, color normal, color hilite, unsigned flags);
-	const char*				getfocus();
+	int						getfocus();
 	int						getheight();
-	const char*				getnext(const char* id, int key);
+	int						getnext(int id, int key);
 	int						getwidth();
 	window*					getwindow();
 	void					glyph(int x, int y, int sym, unsigned flags);
@@ -276,7 +276,7 @@ namespace draw
 	void					setclip(rect rc);
 	inline void				setclip() { clipping.set(0, 0, getwidth(), getheight()); }
 	void					setcolor(unsigned char index);
-	void					setfocus(const char* id);
+	void					setfocus(int id);
 	void					setposition(int& x, int& y, int& width);
 	void					settimer(unsigned milleseconds);
 	int						sheetline(rect rc, bool background = true);
@@ -288,6 +288,7 @@ namespace draw
 	void					syscursor(bool enable);
 	void					sysmouse(bool enable);
 	void					sysredraw();
+	int						tabs(rect rc, bool show_close, bool right_side, void** data, int start, int count, int current, int* hilite, proctext gtext, proctext gstate = 0, rect position = {0, 0, 0, 0});
 	void					text(int x, int y, const char* string, int count = -1, unsigned flags = 0);
 	int						text(rect rc, const char* string, unsigned state = 0, int* max_width = 0);
 	int						textc(int x, int y, int width, const char* string, int count = -1, unsigned flags = 0);

@@ -4,12 +4,12 @@
 
 struct focusable_element
 {
-	const char*	id;
+	int			id;
 	rect		rc;
 	operator bool() const { return id != 0; }	
 };
-static const char*			current_focus;
-static focusable_element	elements[128];
+static int					current_focus;
+static focusable_element	elements[96];
 static focusable_element*	render_control = elements;
 
 COMMAND(clear_render)
@@ -17,7 +17,7 @@ COMMAND(clear_render)
 	render_control = elements;
 }
 
-static focusable_element* getby(const char* id)
+static focusable_element* getby(int id)
 {
 	if(!id)
 		return 0;
@@ -25,7 +25,7 @@ static focusable_element* getby(const char* id)
 	{
 		if(!e)
 			return 0;
-		if(strcmp(e.id, id) == 0)
+		if(e.id==id)
 			return &e;
 	}
 	return 0;
@@ -54,7 +54,7 @@ static focusable_element* getlast()
 	return p;
 }
 
-void draw::addelement(const char* id, const rect& rc)
+void draw::addelement(int id, const rect& rc)
 {
 	if(!render_control
 		|| render_control >= elements + sizeof(elements) / sizeof(elements[0]) - 1)
@@ -65,17 +65,17 @@ void draw::addelement(const char* id, const rect& rc)
 	render_control++;
 }
 
-const char* draw::getfocus()
+int draw::getfocus()
 {
 	return current_focus;
 }
 
-void draw::setfocus(const char* id)
+void draw::setfocus(int id)
 {
 	current_focus = id;
 }
 
-const char* draw::getnext(const char* id, int key)
+int draw::getnext(int id, int key)
 {
 	if(!key)
 		return id;

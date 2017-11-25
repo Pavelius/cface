@@ -49,7 +49,7 @@ namespace draw
 			//
 			unsigned			add(bool run);
 			unsigned			addcopy(bool run);
-			widget&				addcol(widget::proc type, const char* id, const char* label, unsigned flags = 0, const char* link = 0, int width = -1);
+			widget&				addcol(unsigned flags, const char* id, const char* label, int width = -1);
 			virtual void*		addrow(const void* copy) { return rows.add(copy); }
 			virtual void		background(rect& rc) override;
 			virtual bool		canedit(int index, const widget& e) const;

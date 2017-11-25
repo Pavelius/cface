@@ -48,9 +48,14 @@ void control::nonclient(rect rc)
 	redraw(rc);
 }
 
+bool control::open(const char* title)
+{
+	return open(title, WFMinmax | WFResize, 640, 480);
+}
+
 bool control::open(const char* title, unsigned state, int width, int height)
 {
-	draw::window dc(-1, -1, width, height, WFMinmax | WFResize);
+	draw::window dc(-1, -1, width, height, state);
 	if(title)
 		draw::setcaption(title);
 	setfocus(0);
@@ -71,7 +76,7 @@ bool control::open(const char* title, unsigned state, int width, int height)
 bool control::open(rect rc)
 {
 	sys_static_area.set(0, 0, draw::getwidth(), draw::getheight());
-	setfocus(id);
+	focused = true;
 	while(true)
 	{
 		view(rc);
@@ -95,8 +100,7 @@ bool control::open(rect rc)
 		case MouseLeftDBL:
 			return true;
 		}
-		if(focused)
-			keyinput(id);
+		keyinput(id);
 	}
 }
 
@@ -119,8 +123,6 @@ void control::view(rect rc, bool show_toolbar)
 	unsigned flags = 0;
 	if(disabled)
 		flags |= Disabled;
-	draw::focusing(id, rc, flags);
-	focused = isfocused(flags);
 	background(rc);
 	// Теперь мы имеем область элемента
 	if(areb(rc))
@@ -294,21 +296,3 @@ void control::keyinput(int id)
 	if(p)
 		(this->*p->type)(true);
 }
-
-int wdt_control(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, draw::control* source, int title, const widget* childs, const char* tips)
-{
-	if(!source)
-		return 0;
-	auto pc = source->getcontrol(draw::getdatasource(id, link));
-	if(!pc)
-		return 0;
-	if(!value)
-		value = draw::getheight() - y;
-	setposition(x, y, width);
-	value -= metrics::padding*2;
-	auto pcz = (control*)pc;
-	pcz->view({x, y, x + width, y + value}, true);
-	return value;
-}
-
-WIDGET(control);
