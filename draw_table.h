@@ -24,7 +24,7 @@ namespace draw
 	{
 		struct table : public list
 		{
-			typedef void		(table::*renderproc)(rect rc, int index, void* data, const widget & e) const;
+			typedef void		(table::*renderproc)(rect rc, int index, unsigned flags, void* data, const widget & e) const;
 			struct sortinfo
 			{
 				const char*		id;
@@ -50,7 +50,7 @@ namespace draw
 			//
 			unsigned			add(bool run);
 			unsigned			addcopy(bool run);
-			widget&				addcol(unsigned flags, const char* id, const char* label, int width = -1);
+			widget&				addcol(unsigned flags, const char* id, const char* label = 0, int width = -1);
 			virtual void*		addrow(const void* copy) { return rows.add(copy); }
 			virtual void		background(rect& rc) override;
 			virtual bool		canedit(int index, const widget& e) const;
@@ -60,15 +60,18 @@ namespace draw
 			virtual void		contextmenu() override;
 			unsigned			copy(bool run);
 			unsigned			exportdata(bool run);
-			void				field(rect rc, int index, void* data, const widget & e) const;
 			int					find(const char* id, const char* text, int start);
 			widget*				findcol(const char* id);
 			command*			getcommands() const override { return commands; }
 			void				header(rect rc);
 			unsigned			importdata(bool run);
+			void				rendercheck(rect rc, int index, unsigned flags, void* data, const widget & e) const;
+			void				renderfield(rect rc, int index, unsigned flags, void* data, const widget & e) const;
+			void				renderlabel(rect rc, const char* value, unsigned flags) const;
+			void				renderno(rect rc, int index, unsigned flags, void* data, const widget & e) const;
 			void				rendertext(rect rc, const char * value, unsigned flags) const;
 			unsigned			left(bool run);
-			void				linenumber(rect rc, int index, void * data, const widget & e) const;
+			void				linenumber(rect rc, int index, unsigned flags, void * data, const widget & e) const;
 			unsigned			movedown(bool run);
 			unsigned			moveup(bool run);
 			virtual void		prerender() override;

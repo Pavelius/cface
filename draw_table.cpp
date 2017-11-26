@@ -24,8 +24,8 @@ bool				table_sort_by_mouse;
 
 static table::renderproc render_procs[] = {
 	&table::linenumber,
-	&table::field, &table::field, &table::field, &table::field,
-	&table::field, &table::field, &table::field, &table::field, &table::field,
+	&table::renderfield, &table::renderfield, &table::renderfield, &table::renderfield,
+	&table::renderfield, &table::renderfield, &table::rendercheck, &table::renderfield, &table::renderfield,
 	&table::linenumber,
 };
 static_assert(sizeof(render_procs) / sizeof(render_procs[0]) == LineNumber + 1, "Invalid table render procs");
@@ -46,57 +46,10 @@ void tbl_hilight(int x, int y, int width, unsigned flags, const char* label)
 		hot::element = rc;
 }
 
-void tbl_setposition(int& x, int& y, int& width)
+static void setposition(rect& rc)
 {
-	x += table_padding;
-	y += table_padding;
-	width -= table_padding * 2;
+	rc.offset(table_padding, table_padding);
 }
-
-//int tbl_text(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
-//{
-//	auto data_value = (const char*)getdata(source, getdatasource(id, link));
-//	auto data_value = "Test";
-//	auto height = draw::texth();
-//	tbl_hilight(x, y, width, flags, data_value);
-//	tbl_setposition(x, y, width);
-//	if(data_value)
-//		tbl_text({x, y, x + width, y + height}, (const char*)data_value, flags);
-//	return height + table_padding * 2;
-//}
-//
-//int tbl_number(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
-//{
-//	//auto data_value = getdata(source, getdatasource(id, link));
-//	auto data_value = 0;
-//	char temp[32]; sznum(temp, data_value);
-//	auto height = draw::texth();
-//	tbl_hilight(x, y, width, flags, label);
-//	tbl_setposition(x, y, width);
-//	draw::text({x, y, x + width, y + height}, temp, flags);
-//	return height + table_padding * 2;
-//}
-
-//int tbl_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
-//{
-//	//auto pid = getdatasource(id, link);
-//	//auto data_value = getdata(source, pid);
-//	auto data_value = 0;
-//	tbl_hilight(x, y, width, flags, 0);
-//	tbl_setposition(x, y, width);
-//	auto height = clipart(x, y, width, data_value ? Checked : 0, ":check");
-//	auto executed = false;
-//	if(areb({x, y, x + width, y + height}))
-//	{
-//		if(hot::key == MouseLeft && !hot::pressed)
-//			executed = true;
-//	}
-//	if(isfocused(flags) && data_value && hot::key == KeySpace)
-//		executed = true;
-//	//if(executed)
-//	//	draw::setdata(source, pid, value, true);
-//	return height;
-//}
 
 int tbl_image(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
@@ -127,26 +80,8 @@ int tbl_date(int x, int y, int width, const char* id, unsigned flags, const char
 	return 0;
 }
 
-int tbl_point(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
-{
-	//	szprint(text, "%1i, %2i", ((point*)&i)->x, ((point*)&i)->y);
-	return 0;
-}
-
-int tbl_color(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
-{
-	//	szprint(text, "%1i, %2i, %3i", ((color*)&i)->r, ((color*)&i)->g, ((color*)&i)->b);
-	return 0;
-}
-
-int tbl_linenumber(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
-{
-	char temp[32]; sznum(temp, value + 1);
-	tbl_hilight(x, y, width, flags, label);
-	tbl_setposition(x, y, width);
-	draw::text(x, y, temp);
-	return 0;
-}
+//	szprint(text, "%1i, %2i", ((point*)&i)->x, ((point*)&i)->y);
+//	szprint(text, "%1i, %2i, %3i", ((color*)&i)->r, ((color*)&i)->g, ((color*)&i)->b);
 
 unsigned table::add(bool run)
 {
@@ -488,9 +423,9 @@ void table::header(rect client)
 		{
 			auto type = e.gettype();
 			if(type == WidgetCheck || type == WidgetImage)
-				textc(rc.x1 + 4 + (rc.width() - 8 - textw(e.label)) / 2, rc.y1 + 4, rc.width() - 8, e.label);
+				renderlabel({rc.x1 + 4, rc.y1 + 4, rc.x2 - 8, rc.y2 - 4}, e.label, TextSingleLine | AlignCenterCenter);
 			else
-				rendertext({rc.x1 + 4, rc.y1 + 4, rc.x2 - 8, rc.y2 - 4}, e.label, 0);
+				renderlabel({rc.x1 + 4, rc.y1 + 4, rc.x2 - 8, rc.y2 - 4}, e.label, TextSingleLine);
 		}
 		if(e.tips && areb(rc))
 			tooltips(e.tips);
@@ -507,7 +442,7 @@ void table::header(rect client)
 	line(client.x1, client.y2 - 1, client.x2, client.y2 - 1, bc);
 }
 
-void table::rendertext(rect rc, const char* value, unsigned flags) const
+void table::renderlabel(rect rc, const char* value, unsigned flags) const
 {
 	draw::state push;
 	draw::setclip(rc);
@@ -528,16 +463,75 @@ void table::rendertext(rect rc, const char* value, unsigned flags) const
 	}
 }
 
-void table::linenumber(rect rc, int index, void* data, const widget& e) const
+void table::rendertext(rect rc, const char* value, unsigned flags) const
 {
-	char temp[32]; sznum(temp, index + 1);
-	rendertext(rc, temp, e.flags);
+	if(ischecked(flags))
+	{
+		if(value && flags&ColumnSmallHilite)
+			draw::hilight({rc.x1, rc.y1, imin(rc.x2, rc.x1 + draw::textw(value) + 12), rc.y2}, flags);
+		else
+			draw::hilight(rc, flags);
+	}
+	setposition(rc);
+	renderlabel(rc, value, flags);
 }
 
-void table::field(rect rc, int index, void* data, const widget& e) const
+void table::renderno(rect rc, int index, unsigned flags, void* data, const widget& e) const
+{
+}
+
+void table::rendercheck(rect rc, int index, unsigned flags, void* data, const widget& e) const
+{
+	if(ischecked(flags))
+		draw::hilight(rc, flags);
+	xsref r = {fields, data};
+	auto ischecked = false;
+	if(e.value)
+		ischecked = (r.get(e.id) & e.value) != 0;
+	else
+		ischecked = r.get(e.id) != 0;
+	setposition(rc);
+	auto executed = false;
+	if(areb(rc))
+	{
+		if(hot::key == MouseLeft && !hot::pressed)
+			executed = true;
+	}
+	if((flags&(Checked | Focused)) == (Checked | Focused) && hot::key == KeySpace)
+		executed = true;
+	if(executed)
+	{
+		if(ischecked)
+		{
+			if(e.value)
+				r.set(e.id, r.get(e.id) & (~e.value));
+			else
+				r.set(e.id, 0);
+			ischecked = false;
+		}
+		else
+		{
+			ischecked = true;
+			if(e.value)
+				r.set(e.id, e.value);
+			else
+				r.set(e.id, 1);
+		}
+	}
+	clipart(rc.x1, rc.y1, rc.width(), ischecked ? Checked : 0, ":check");
+}
+
+void table::linenumber(rect rc, int index, unsigned flags, void* data, const widget& e) const
+{
+	char temp[32]; sznum(temp, index + 1);
+	rendertext(rc, temp, flags & 0xFFFFFFF0);
+}
+
+void table::renderfield(rect rc, int index, unsigned flags, void* data, const widget& e) const
 {
 	xsref r = {fields, data};
 	auto type = fields->find(e.id);
+	rendertext(rc, "Test", flags & 0xFFFFFFF0);
 }
 
 void table::row(rect rc, int index)
@@ -581,7 +575,7 @@ void table::row(rect rc, int index)
 			flags |= Checked;
 		if(focused)
 			flags |= Focused;
-		(this->*render_procs[e.gettype()])(r1, index, data, e);
+		(this->*render_procs[e.gettype()])(r1, index, flags, data, e);
 		if(show_grid_lines)
 			line(r1.x2, r1.y1, r1.x2, r1.y2 - 1, colors::form);
 		r1.x1 = r1.x2;
@@ -884,8 +878,8 @@ widget& table::addcol(unsigned flags, const char* id, const char* label, int wid
 	switch(p->gettype())
 	{
 	case LineNumber:
-		if(p->flags == 0)
-			p->flags = AlignRight;
+		if(p->getflags() == 0)
+			p->flags |= AlignRightCenter;
 		break;
 	case WidgetCheck:
 	case WidgetImage:

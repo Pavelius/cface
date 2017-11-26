@@ -20,6 +20,7 @@ namespace draw
 		int					title; // Title width (if 0 then title taken from parent)
 		const char*			tips; // Tooltips value
 		operator bool() const { return flags != 0; }
+		unsigned			getflags() const { return flags & 0xFFFFFFF0; }
 		control_s			gettype() const { return (control_s)(flags & 0xF); }
 		widget&				settips(const char* v) { tips = v; return *this; }
 		widget&				setvalue(int v) { value = v; return *this; }
