@@ -58,7 +58,6 @@ bool control::open(const char* title, unsigned state, int width, int height)
 	draw::window dc(-1, -1, width, height, state);
 	if(title)
 		draw::setcaption(title);
-	setfocus(0);
 	while(true)
 	{
 		rect rc = {0, 0, draw::getwidth(), draw::getheight()};
@@ -68,8 +67,7 @@ bool control::open(const char* title, unsigned state, int width, int height)
 		int id = draw::input();
 		if(id == KeyEscape || !id)
 			return false;
-		if(focused)
-			keyinput(id);
+		keyinput(id);
 	}
 }
 
@@ -146,18 +144,6 @@ void control::view(rect rc, bool show_toolbar)
 	if(rt.height())
 		render(rt.x1, rt.y1, rt.width(), commands);
 }
-
-unsigned control::keytab(bool run)
-{
-	if(run)
-		setfocus(getnext(getfocus(), KeyTab));
-	return Executed;
-}
-
-control::command control::commands[] = {
-	CONTROL_KEY(keytab, KeyTab),
-	{0}
-};
 
 //int wdt_separator(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 //{

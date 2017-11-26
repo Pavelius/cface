@@ -1,15 +1,35 @@
 #include "crt.h"
 #include "draw.h"
 #include "draw_form.h"
+#include "xsref.h"
 
 using namespace draw;
 using namespace draw::controls;
+
+static struct control_i
+{
+	const char*	name;
+	int			(form::*proc)(int x, int y, int width, const widget& e);
+} control_data[] = {
+	{},
+	{"Декорация", &form::decoration},
+	{"Группа", &form::group},
+	{"Закладки", &form::tabs},
+};
 
 static char* get_text(char* result, void* object)
 {
 	if(((widget*)object)->label)
 		zcpy(result, ((widget*)object)->label, 259);
 	return result;
+}
+
+static const xsfield* getdatatype(const form* source, const widget& e)
+{
+	auto meta = source->getmeta();
+	if(!meta)
+		return 0;
+	return meta->find(e.id);
 }
 
 static void callback_setfocus()
@@ -29,7 +49,7 @@ unsigned form::getflags(const widget& e) const
 	unsigned result = e.flags;
 	if(disabled)
 		result |= Disabled;
-	if(getfocus() == (int)&e)
+	if(getfocus() == &e)
 		result |= Focused;
 	return result;
 }
@@ -107,8 +127,9 @@ int form::field(int x, int y, int width, const widget& e)
 {
 	auto field_type = e.gettype();
 	draw::state push;
-	char number_text[32];
-	auto p = getdata(number_text, e);
+	char temp[260];
+	auto type = getdatatype(this, e);
+	auto p = getdata(temp, e);
 	if(!p)
 		return 0;
 	setposition(x, y, width);
@@ -118,52 +139,52 @@ int form::field(int x, int y, int width, const widget& e)
 	if(!isdisabled(flags))
 		draw::rectf(rc, colors::window);
 	draw::rectb(rc, colors::border);
-	//if(e.childs)
-	//{
-	//	if(addbutton(rc, ":dropdown", F4, "Показать список"))
-	//	{
+	if(e.childs)
+	{
+		if(addbutton(rc, ":dropdown", F4, "Показать список"))
+		{
 	//		draw::execute(callback_dropdown_list);
 	//		hot::element = rc;
 	//		hot::name = id;
 	//		edit_childs = childs;
-	//	}
-	//}
-	//if(field_type == FieldNumber)
-	//{
-	//	auto result = addbutton(rc, "+", KeyUp, "Увеличить", "-", KeyDown, "Уменьшить");
-	//	if(result)
-	//	{
-	//		auto inc = 0;
-	//		switch(result)
-	//		{
-	//		case 1: inc = 1; break;
-	//		case 2: inc = -1; break;
-	//		}
-	//		auto value = getdata(source, getdatasource(id, link));
-	//		setdata(source, id, value + inc);
-	//	}
-	//}
-	//else if(field_type == FieldReference)
-	//{
-	//	if(addbutton(rc, "...", F4, "Выбрать"))
-	//	{
+		}
+	}
+	if(type == number_type)
+	{
+		auto result = addbutton(rc, "+", KeyUp, "Увеличить", "-", KeyDown, "Уменьшить");
+		if(result)
+		{
+			auto inc = 0;
+			switch(result)
+			{
+			case 1: inc = 1; break;
+			case 2: inc = -1; break;
+			}
+			auto value = getdata(e);
+			setdata(e, value + inc);
+		}
+	}
+	else if(type!=text_type)
+	{
+		if(addbutton(rc, "...", F4, "Выбрать"))
+		{
 	//		draw::execute(callback_choose_list);
 	//		hot::name = id;
-	//	}
-	//}
-	//focusing(id, rc, flags);
-	//auto a = area(rc);
-	//bool enter_edit = false;
+		}
+	}
+	focusing(rc, flags, e);
+	auto a = area(rc);
+	bool enter_edit = false;
 	//if(isfocused(flags) && id)
 	//	enter_edit = editstart(rc, source, id, flags, childs);
 	//if(!enter_edit)
 	//{
-	//	if(isfocused(flags))
-	//		draw::texte(rc + metrics::edit, p, flags, 0, zlen(p));
-	//	else
-	//		draw::texte(rc + metrics::edit, p, flags, -1, -1);
-	//	if(tips && a == AreaHilited)
-	//		tooltips(tips);
+		if(isfocused(flags))
+			draw::texte(rc + metrics::edit, p, flags, 0, zlen(p));
+		else
+			draw::texte(rc + metrics::edit, p, flags, -1, -1);
+		if(e.tips && a == AreaHilited)
+			tooltips(e.tips);
 	//}
 	return rc.height() + metrics::padding * 2;
 }
@@ -212,12 +233,12 @@ void form::focusing(const rect& rc, unsigned& flags, const widget& e)
 	if(flags&Disabled)
 		return;
 	if(!getfocus())
-		setfocus((int)&e);
-	if(getfocus() == (int)&e)
+		setfocus(&e);
+	if(getfocus() == &e)
 		flags |= Focused;
 	else if(area(rc) == AreaHilitedPressed && hot::key == MouseLeft && hot::pressed)
 		invoke_setfocus(id);
-	addelement((int)&e, rc);
+	addelement(&e, rc);
 }
 
 bool form::addbutton(rect& rc, const char* t1, int k1, const char* tt1)
@@ -358,75 +379,71 @@ int form::button(int x, int y, int width, const widget& e)
 //	callback_setvalue(hot::source, hot::name, hot::param);
 //	execute(InputUpdate);
 //}
-//
-//int	draw::getdata(control* source, const char* id)
-//{
-//	if(!source)
-//		return 0;
-//	xsref e = {source->getmeta(), source->getobject()};
-//	return e.get(id);
-//}
-//
-//void draw::setdata(control* source, const char* id, int value, bool instant)
-//{
-//	if(instant)
-//		callback_setvalue(source, id, value);
-//	else
-//	{
+
+int form::getdata(const widget& w)
+{
+	xsref e = {getmeta(), getobject()};
+	return e.get(w.id);
+}
+
+void form::setdata(const widget& w, int value, bool instant)
+{
+	if(instant)
+	{
+		//callback_setvalue(source, id, value);
+	}
+	else
+	{
 //		execute(callback_setvalue);
 //		hot::name = id;
 //		hot::param = value;
 //		hot::source = source;
-//	}
-//}
-//
-//char* draw::getdata(char* temp, control* source, const char* id, const widget* childs, bool to_buffer, field_type_s& type)
-//{
-//	temp[0] = 0;
-//	type = FieldNumber;
-//	auto field = source->getmeta()->find(id);
-//	if(!field)
-//		return 0;
-//	auto value = getdata(source, id);
-//	if(field->type == text_type)
-//	{
-//		type = FieldText;
-//		if(to_buffer)
-//		{
-//			if(value)
-//				zcpy(temp, (char*)value);
-//			return temp;
-//		}
-//		if(!value)
-//			return "";
-//		return (char*)value;
-//	}
-//	if(field->type == number_type)
-//	{
-//		type = FieldNumber;
-//		if(childs)
-//		{
-//			for(auto p = childs; *p; p++)
-//			{
-//				if(p->value == value && p->label)
-//				{
-//					zcpy(temp, p->label);
-//					return temp;
-//				}
-//			}
-//		}
-//		szprint(temp, "%1i", value);
-//	}
-//	else
-//	{
-//		type = FieldReference;
-//		xsref xr = {field->type, (void*)value};
-//		auto pv = xr.get("name");
-//		if(!pv)
-//			return "";
-//		if(!to_buffer)
-//			return (char*)pv;
-//		zcpy(temp, (char*)pv);
-//	}
-//	return temp;
-//}
+	}
+}
+
+char* form::getdata(char* result, const widget& e, bool to_buffer)
+{
+	result[0] = 0;
+	auto field = getdatatype(this, e);
+	if(!field)
+		return 0;
+	auto value = getdata(e);
+	if(field->type == text_type)
+	{
+		if(to_buffer)
+		{
+			if(value)
+				zcpy(result, (char*)value);
+			return result;
+		}
+		if(!value)
+			return "";
+		return (char*)value;
+	}
+	else if(field->type == number_type)
+	{
+		if(e.childs)
+		{
+			for(auto p = e.childs; *p; p++)
+			{
+				if(p->value == value && p->label)
+				{
+					zcpy(result, p->label);
+					return result;
+				}
+			}
+		}
+		szprint(result, "%1i", value);
+	}
+	else
+	{
+		xsref xr = {field->type, (void*)value};
+		auto pv = xr.get("name");
+		if(!pv)
+			return "";
+		if(!to_buffer)
+			return (char*)pv;
+		zcpy(result, (char*)pv);
+	}
+	return result;
+}

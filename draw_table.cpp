@@ -22,31 +22,14 @@ static unsigned		search_time;
 const char*			table_sort_column_id;
 bool				table_sort_by_mouse;
 
-struct row_control : control
-{
-	table*		parent;
-	void*		object;
-
-	row_control(table* parent, unsigned index) : parent(parent), object(parent->rows.get(index))
-	{
-	}
-
-	const xsfield* getmeta() const override
-	{
-		return parent->fields;
-	}
-
-	void* getobject() override
-	{
-		return object;
-	}
-
+static table::renderproc render_procs[] = {
+	&table::linenumber,
+	&table::field, &table::field, &table::field, &table::field,
+	&table::field, &table::field, &table::field, &table::field, &table::field,
+	&table::linenumber,
 };
+static_assert(sizeof(render_procs) / sizeof(render_procs[0]) == LineNumber + 1, "Invalid table render procs");
 
-table* gettable(control* source)
-{
-	return ((row_control*)source)->parent;
-}
 
 void tbl_hilight(int x, int y, int width, unsigned flags, const char* label)
 {
@@ -70,88 +53,62 @@ void tbl_setposition(int& x, int& y, int& width)
 	width -= table_padding * 2;
 }
 
-void tbl_text(rect rc, const char* value, unsigned flags)
-{
-	draw::state push;
-	draw::setclip(rc);
-	draw::text(rc, value, flags);
-	if(draw::areb(rc))
-	{
-		int w1 = draw::textw(value);
-		int w = rc.width();
-		if(w1 > w)
-		{
-			rect rc1;
-			rc1.x1 = rc.x1 - metrics::padding;
-			rc1.y1 = rc.y1 - metrics::padding;
-			rc1.x2 = rc.x1 + imin(w1, 320) + metrics::padding * 2;
-			rc1.y2 = rc.y1 + draw::texth() + 4;
-			tooltips(rc1, value);
-		}
-	}
-}
+//int tbl_text(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
+//{
+//	auto data_value = (const char*)getdata(source, getdatasource(id, link));
+//	auto data_value = "Test";
+//	auto height = draw::texth();
+//	tbl_hilight(x, y, width, flags, data_value);
+//	tbl_setposition(x, y, width);
+//	if(data_value)
+//		tbl_text({x, y, x + width, y + height}, (const char*)data_value, flags);
+//	return height + table_padding * 2;
+//}
+//
+//int tbl_number(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
+//{
+//	//auto data_value = getdata(source, getdatasource(id, link));
+//	auto data_value = 0;
+//	char temp[32]; sznum(temp, data_value);
+//	auto height = draw::texth();
+//	tbl_hilight(x, y, width, flags, label);
+//	tbl_setposition(x, y, width);
+//	draw::text({x, y, x + width, y + height}, temp, flags);
+//	return height + table_padding * 2;
+//}
 
-int tbl_text(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
-{
-	//auto data_value = (const char*)getdata(source, getdatasource(id, link));
-	auto data_value = "Test";
-	auto height = draw::texth();
-	tbl_hilight(x, y, width, flags, data_value);
-	tbl_setposition(x, y, width);
-	if(data_value)
-		tbl_text({x, y, x + width, y + height}, (const char*)data_value, flags);
-	return height + table_padding * 2;
-}
-
-int tbl_number(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
-{
-	//auto data_value = getdata(source, getdatasource(id, link));
-	auto data_value = 0;
-	char temp[32]; sznum(temp, data_value);
-	auto height = draw::texth();
-	tbl_hilight(x, y, width, flags, label);
-	tbl_setposition(x, y, width);
-	draw::text({x, y, x + width, y + height}, temp, flags);
-	return height + table_padding * 2;
-}
-
-int tbl_reference(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
-{
-	return 0;
-}
-
-int tbl_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
-{
-	//auto pid = getdatasource(id, link);
-	//auto data_value = getdata(source, pid);
-	auto data_value = 0;
-	tbl_hilight(x, y, width, flags, 0);
-	tbl_setposition(x, y, width);
-	auto height = clipart(x, y, width, data_value ? Checked : 0, ":check");
-	auto executed = false;
-	if(areb({x, y, x + width, y + height}))
-	{
-		if(hot::key == MouseLeft && !hot::pressed)
-			executed = true;
-	}
-	if(isfocused(flags) && data_value && hot::key == KeySpace)
-		executed = true;
-	//if(executed)
-	//	draw::setdata(source, pid, value, true);
-	return height;
-}
+//int tbl_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
+//{
+//	//auto pid = getdatasource(id, link);
+//	//auto data_value = getdata(source, pid);
+//	auto data_value = 0;
+//	tbl_hilight(x, y, width, flags, 0);
+//	tbl_setposition(x, y, width);
+//	auto height = clipart(x, y, width, data_value ? Checked : 0, ":check");
+//	auto executed = false;
+//	if(areb({x, y, x + width, y + height}))
+//	{
+//		if(hot::key == MouseLeft && !hot::pressed)
+//			executed = true;
+//	}
+//	if(isfocused(flags) && data_value && hot::key == KeySpace)
+//		executed = true;
+//	//if(executed)
+//	//	draw::setdata(source, pid, value, true);
+//	return height;
+//}
 
 int tbl_image(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
 {
 	//auto data_value = getdata(source, getdatasource(id, link));
-	auto data_value = 0;
-	auto pc = gettable(source);
-	if(!pc->rowsimages)
-		return 0;
-	if(data_value == -1)
-		return 0;
-	tbl_setposition(x, y, width);
-	draw::image(x + width / 2, y + width / 2, pc->rowsimages, data_value, 0);
+	//auto data_value = 0;
+	//auto pc = gettable(source);
+	//if(!pc->rowsimages)
+	//	return 0;
+	//if(data_value == -1)
+	//	return 0;
+	//tbl_setposition(x, y, width);
+	//draw::image(x + width / 2, y + width / 2, pc->rowsimages, data_value, 0);
 	return 0;
 }
 
@@ -530,10 +487,10 @@ void table::header(rect client)
 		if(e.label)
 		{
 			auto type = e.gettype();
-			if(type == FieldCheck || type == FieldImage)
+			if(type == WidgetCheck || type == WidgetImage)
 				textc(rc.x1 + 4 + (rc.width() - 8 - textw(e.label)) / 2, rc.y1 + 4, rc.width() - 8, e.label);
 			else
-				tbl_text({rc.x1 + 4, rc.y1 + 4, rc.x2 - 8, rc.y2 - 4}, e.label, 0);
+				rendertext({rc.x1 + 4, rc.y1 + 4, rc.x2 - 8, rc.y2 - 4}, e.label, 0);
 		}
 		if(e.tips && areb(rc))
 			tooltips(e.tips);
@@ -548,6 +505,39 @@ void table::header(rect client)
 		line(client.x2, client.y1, client.x2, client.y2, bc);
 	}
 	line(client.x1, client.y2 - 1, client.x2, client.y2 - 1, bc);
+}
+
+void table::rendertext(rect rc, const char* value, unsigned flags) const
+{
+	draw::state push;
+	draw::setclip(rc);
+	draw::text(rc, value, flags);
+	if(draw::areb(rc))
+	{
+		int w1 = draw::textw(value);
+		int w = rc.width();
+		if(w1 > w)
+		{
+			rect rc1;
+			rc1.x1 = rc.x1 - metrics::padding;
+			rc1.y1 = rc.y1 - metrics::padding;
+			rc1.x2 = rc.x1 + imin(w1, 320) + metrics::padding * 2;
+			rc1.y2 = rc.y1 + draw::texth() + 4;
+			tooltips(rc1, value);
+		}
+	}
+}
+
+void table::linenumber(rect rc, int index, void* data, const widget& e) const
+{
+	char temp[32]; sznum(temp, index + 1);
+	rendertext(rc, temp, e.flags);
+}
+
+void table::field(rect rc, int index, void* data, const widget& e) const
+{
+	xsref r = {fields, data};
+	auto type = fields->find(e.id);
 }
 
 void table::row(rect rc, int index)
@@ -572,7 +562,7 @@ void table::row(rect rc, int index)
 	bool first_row = true;
 	if(!columns.data)
 		return;
-	row_control rwr(this, index);
+	void* data = rows.get(index);
 	for(auto& e : columns)
 	{
 		if(e.flags&ColumnHide)
@@ -591,7 +581,7 @@ void table::row(rect rc, int index)
 			flags |= Checked;
 		if(focused)
 			flags |= Focused;
-		//e.type(r1.x1, r1.y1, r1.width(), e.id, flags, e.label, index, e.link, &rwr, e.title, e.childs, e.tips);
+		(this->*render_procs[e.gettype()])(r1, index, data, e);
 		if(show_grid_lines)
 			line(r1.x2, r1.y1, r1.x2, r1.y2 - 1, colors::form);
 		r1.x1 = r1.x2;
@@ -674,7 +664,7 @@ bool table::canedit(int index, const widget& e) const
 	switch(e.gettype())
 	{
 	case LineNumber:
-	case FieldImage:
+	case WidgetImage:
 		return false;
 	default:
 		return true;
@@ -699,7 +689,7 @@ void table::validate(int direction, bool editable)
 			direction = -1;
 		}
 		auto& e = columns.data[current_column];
-		if((!editable || (editable && e.gettype() != FieldCheck))
+		if((!editable || (editable && e.gettype() != WidgetCheck))
 			&& canedit(current, e)
 			&& (e.flags&ColumnHide) == 0)
 			return;
@@ -747,7 +737,7 @@ bool table::selecting(rect rc, int index, point mouse)
 		{
 			if(!canedit(index, e))
 				return false;
-			if(e.gettype() == FieldCheck)
+			if(e.gettype() == WidgetCheck)
 				return false;
 			current_column = columns.indexof(&e);
 			break;
@@ -897,8 +887,8 @@ widget& table::addcol(unsigned flags, const char* id, const char* label, int wid
 		if(p->flags == 0)
 			p->flags = AlignRight;
 		break;
-	case FieldCheck:
-	case FieldImage:
+	case WidgetCheck:
+	case WidgetImage:
 		p->flags |= ColumnHideTitleText;
 		break;
 	}
@@ -909,11 +899,8 @@ widget& table::addcol(unsigned flags, const char* id, const char* label, int wid
 		case LineNumber:
 			p->width = 50;
 			break;
-		case FieldNumber:
-			p->width = 64;
-			break;
-		case FieldCheck:
-		case FieldImage:
+		case WidgetCheck:
+		case WidgetImage:
 			p->width = 22;
 			p->flags |= ColumnSizeFixed;
 			break;
@@ -954,8 +941,8 @@ void table::reposition(int w1)
 			// Check minimal width
 			switch(e.gettype())
 			{
-			case FieldCheck:
-			case FieldImage:
+			case WidgetCheck:
+			case WidgetImage:
 				if(e.width < 18)
 					e.width = 18;
 				break;

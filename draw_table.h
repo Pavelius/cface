@@ -24,6 +24,7 @@ namespace draw
 	{
 		struct table : public list
 		{
+			typedef void		(table::*renderproc)(rect rc, int index, void* data, const widget & e) const;
 			struct sortinfo
 			{
 				const char*		id;
@@ -59,12 +60,15 @@ namespace draw
 			virtual void		contextmenu() override;
 			unsigned			copy(bool run);
 			unsigned			exportdata(bool run);
+			void				field(rect rc, int index, void* data, const widget & e) const;
 			int					find(const char* id, const char* text, int start);
 			widget*				findcol(const char* id);
 			command*			getcommands() const override { return commands; }
 			void				header(rect rc);
 			unsigned			importdata(bool run);
+			void				rendertext(rect rc, const char * value, unsigned flags) const;
 			unsigned			left(bool run);
+			void				linenumber(rect rc, int index, void * data, const widget & e) const;
 			unsigned			movedown(bool run);
 			unsigned			moveup(bool run);
 			virtual void		prerender() override;
@@ -86,11 +90,3 @@ namespace draw
 		};
 	}
 }
-int tbl_check(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, draw::control* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
-int tbl_date(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, draw::control* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
-int tbl_image(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, draw::control* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
-int tbl_linenumber(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, draw::control* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
-int tbl_number(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, draw::control* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
-int tbl_reference(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, draw::control* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);
-void tbl_text(rect rc, const char* value, unsigned flags);
-int tbl_text(int x, int y, int width, const char* id, unsigned flags, const char* label, int value = 0, const char* link = 0, draw::control* source = 0, int title = 0, const draw::widget* childs = 0, const char* tips = 0);

@@ -206,7 +206,6 @@ namespace draw
 	extern color			fore; // Foreground color (curently selected color)
 	extern const sprite*	font; // Currently selected font
 	//
-	void					addelement(int id, const rect& rc);
 	int						aligned(int x, int width, unsigned state, int string_width);
 	int						alignedh(const rect& rc, const char* string, unsigned state);
 	areas					area(rect rc);
@@ -229,7 +228,6 @@ namespace draw
 	int						getbpp();
 	color					getcolor(color normal, unsigned flags);
 	color					getcolor(rect rc, color normal, color hilite, unsigned flags);
-	int						getfocus();
 	int						getheight();
 	int						getnext(int id, int key);
 	int						getwidth();
@@ -276,7 +274,6 @@ namespace draw
 	void					setclip(rect rc);
 	inline void				setclip() { clipping.set(0, 0, getwidth(), getheight()); }
 	void					setcolor(unsigned char index);
-	void					setfocus(int id);
 	void					setposition(int& x, int& y, int& width);
 	void					settimer(unsigned milleseconds);
 	int						sheetline(rect rc, bool background = true);

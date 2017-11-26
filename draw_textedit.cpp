@@ -524,7 +524,6 @@ unsigned textedit::leftcs(bool run)
 }
 
 control::command textedit::commands[] = {
-	{"super", "", 0, control::commands},
 	CONTROL_KEY(backspace, KeyBackspace),
 	CONTROL_KEY(delsym, KeyDelete),
 	CONTROL_KEY(down, KeyDown),

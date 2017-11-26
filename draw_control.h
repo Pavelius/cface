@@ -52,7 +52,6 @@ namespace draw
 		bool					show_background;
 		bool					show_border;
 		bool					show_toolbar;
-		static command			commands[];
 		//
 		control::control() : id(0), dock(DockWorkspace),
 			show_border(true), show_background(true), show_toolbar(true),
@@ -63,7 +62,7 @@ namespace draw
 		unsigned				execute(const char* id, bool run = true);
 		color					getcolor(color normal) const;
 		virtual control*		getcontrol(const char* id) { return 0; }
-		virtual const command*	getcommands() const { return commands; }
+		virtual const command*	getcommands() const { return 0; }
 		virtual int				geticon(const command& e) const { return e.icon; }
 		virtual char*			getdescription(char* result) const;
 		virtual const xsfield*	getmeta() const { return 0; }
@@ -71,7 +70,6 @@ namespace draw
 		virtual void*			getobject() { return this; }
 		void					invoke(const char* name) const;
 		void					keyinput(int id);
-		unsigned				keytab(bool run);
 		virtual void			nonclient(rect rc);
 		bool					open(rect rc);
 		bool					open(const char* title, unsigned state, int width, int height);

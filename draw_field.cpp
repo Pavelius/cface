@@ -98,7 +98,7 @@ static void callback_dropdown_list()
 	draw::controls::table source_table(source);
 	source_table.fields = widget_type;
 	source_table.pixels_per_line = texth() + 8;
-	source_table.addcol(FieldText | ColumnSizeAuto, "label", "Заголовок");
+	source_table.addcol(WidgetField | ColumnSizeAuto, "label", "Заголовок");
 	source_table.show_header = false;
 	source_table.no_change_content = true;
 	source_table.no_change_max_count = true;

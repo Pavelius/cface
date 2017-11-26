@@ -4,8 +4,8 @@ namespace draw
 {
 	enum control_s : unsigned char {
 		NoWidget,
-		WidgetLabel, WidgetGroup, WidgetTabs, WidgetControl, WidgetButton,
-		FieldText, FieldNumber, FieldCheck, FieldRadio, FieldImage,
+		WidgetLabel, WidgetGroup, WidgetTabs, WidgetControl,
+		WidgetButton, WidgetField, WidgetCheck, WidgetRadio, WidgetImage,
 		LineNumber,
 	};
 	struct widget

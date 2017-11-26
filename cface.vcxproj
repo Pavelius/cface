@@ -183,6 +183,7 @@
     <ClCompile Include="draw.cpp" />
     <ClCompile Include="drawable.cpp" />
     <ClCompile Include="draw_clipart.cpp" />
+    <ClCompile Include="draw_focus.cpp" />
     <ClCompile Include="draw_focusing.cpp" />
     <ClCompile Include="draw_form.cpp" />
     <ClCompile Include="draw_input.cpp" />
