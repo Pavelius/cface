@@ -1,5 +1,5 @@
 #include "crt.h"
-#include "xsfield.h"
+#include "xsbase.h"
 
 const char* xsfield::getdata(char* result, const char* id, const void* object, bool tobuffer) const
 {
@@ -21,6 +21,25 @@ const char* xsfield::getdata(char* result, const char* id, const void* object, b
 	{
 		auto value = requisit->get(requisit->ptr(object));
 		sznum(result, value);
+	}
+	else if(requisit->reference)
+	{
+		object = (void*)requisit->get(requisit->ptr((void*)object));
+		if(!object)
+			return 0;
+		auto value_type = requisit->type;
+		requisit = value_type->find("name");
+		if(!requisit)
+			requisit = value_type->find("text");
+		if(!requisit)
+			requisit = value_type->find("id");
+		auto value = (const char*)requisit->get(requisit->ptr(object));
+		if(value)
+		{
+			if(!tobuffer)
+				return value;
+			zcpy(result, value);
+		}
 	}
 	return result;
 }

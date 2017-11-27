@@ -307,5 +307,6 @@ control::command list::commands[] = {
 	CONTROL_KEY(pageup, KeyPageUp),
 	CONTROL_KEY(wheeldown, MouseWheelDown),
 	CONTROL_KEY(wheelup, MouseWheelUp),
+	CONTROL_KEY(dblclick, MouseLeftDBL),
 	{0}
 };
