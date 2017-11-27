@@ -43,11 +43,11 @@ void draw::scrollv(const char* id, const rect& scroll, int& origin, int count, i
 	{
 	case AreaHilited:
 		rectf({scroll.x1, scroll.y1, scroll.x2 + 1, scroll.y2 + 1}, colors::button, 128);
-		buttonv({scroll.x1, p, scroll.width(), ss}, false, false, false, true, 0);
+		buttonv({scroll.x1, p, scroll.x1 + scroll.width(), p + ss}, false, false, false, true, 0);
 		break;
 	case AreaHilitedPressed:
 		rectf({scroll.x1, scroll.y1, scroll.x2 + 1, scroll.y2 + 1}, colors::button, 128);
-		buttonv({scroll.x1, p, scroll.width(), ss}, true, false, false, true, 0);
+		buttonv({scroll.x1, p, scroll.x1 + scroll.width(), p + ss}, true, false, false, true, 0);
 		break;
 	default:
 		if(focused)

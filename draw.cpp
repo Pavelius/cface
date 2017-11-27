@@ -230,11 +230,12 @@ void draw::drag::begin(const char* id, drap_part_s part)
 {
 	drag::id = id;
 	drag::mouse = hot::mouse;
+	drag::part = part;
 }
 
 bool draw::drag::active(const char* id, drap_part_s part)
 {
-	if(drag::id == id)
+	if(drag::id == id && drag::part==part)
 	{
 		if(!hot::pressed || hot::key == KeyEscape)
 		{
