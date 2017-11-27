@@ -742,18 +742,17 @@ int table::find(const char* id, const char* value, int index)
 	int i1 = index;
 	int i2 = maximum;
 	int sz = zlen(value);
-	auto fd = fields->find(id);
-	if(fd && fd->type == text_type)
+	auto type = fields->find(id);
+	if(!type)
+		return -1;
+	for(; i1 < i2; i1++)
 	{
-		for(; i1 < i2; i1++)
-		{
-			auto po = rows.get(i1);
-			auto pv = (const char*)fd->get(fd->ptr(po));
-			if(!pv)
-				continue;
-			if(szcmpi(pv, value, sz) == 0)
-				return i1;
-		}
+		char temp[4096];
+		auto pv = fields->getdata(temp, id, rows.get(i1), false);
+		if(!pv)
+			continue;
+		if(szcmpi(pv, value, sz) == 0)
+			return i1;
 	}
 	return -1;
 }
@@ -769,18 +768,18 @@ bool table::changing(void* object, const char* id)
 		line(hot::element.x1, hot::element.y1, hot::element.x1, hot::element.y2, colors::form);
 		line(hot::element.x1, hot::element.y2, hot::element.x2, hot::element.y2, colors::form);
 	}
-	textedit te(temp, sizeof(temp));
+	textedit te(temp, sizeof(temp), true);
 	auto result = te.editing(hot::element);
 	if(result)
 		fields->setdata(temp, id, object);
 	// Some keys must be handled by this control
-	//switch(hot::key)
-	//{
-	//case KeyDown:
-	//case KeyUp:
-	//	draw::execute(hot::key, 0);
-	//	break;
-	//}
+	switch(hot::key)
+	{
+	case KeyDown:
+	case KeyUp:
+		draw::execute(hot::key, 0);
+		break;
+	}
 	return result;
 }
 
@@ -827,21 +826,18 @@ unsigned table::symbol(bool run)
 	if(!hot::param || hot::param < 0x20)
 		return Disabled;
 	auto time_clock = clock();
-	if(!search_time || (time_clock - search_time) > 2)
+	if(!search_time || (time_clock - search_time) > (2*1000))
 		search_text[0] = 0;
-	if(true)
+	search_time = time_clock;
+	char* p = zend(search_text);
+	szput(&p, hot::param);
+	p[0] = 0;
+	int i1 = find(columns.data[current_column].id, search_text, current);
+	if(i1 != -1)
 	{
-		search_time = time_clock;
-		char* p = zend(search_text);
-		szput(&p, hot::param);
-		p[0] = 0;
-		//int i1 = find(draw::getdatasource(columns.data[current_column].id, columns.data[current_column].link), search_text, current);
-		//if(i1 != -1)
-		//{
-		//	current = i1;
-		//	correction();
-		//	ensurevisible();
-		//}
+		current = i1;
+		correction();
+		ensurevisible();
 	}
 	return 0;
 }

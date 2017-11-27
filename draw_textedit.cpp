@@ -12,7 +12,7 @@ static bool isspace(char sym)
 	return sym == ' ' || sym == 10 || sym == 13 || sym == 9;
 }
 
-textedit::textedit(char* string, unsigned maxlenght) : string(string),
+textedit::textedit(char* string, unsigned maxlenght, bool select_text) : string(string),
 maxlenght(maxlenght),
 p1(0), p2(-1),
 readonly(false),
@@ -24,6 +24,8 @@ cashed_string(0),
 cashed_origin(0)
 {
 	wheels.y = 8;
+	if(select_text)
+		select(zlen(string), true);
 }
 
 int	textedit::getbegin() const
@@ -436,90 +438,102 @@ unsigned textedit::delsym(bool run)
 
 unsigned textedit::home(bool run)
 {
-	select(lineb(p1), false);
+	if(run)
+		select(lineb(p1), false);
 	return 0;
 }
 
 unsigned textedit::end(bool run)
 {
-	select(linee(p1), false);
+	if(run)
+		select(linee(p1), false);
 	return 0;
 }
 
-static unsigned execute_text_end(control* source, bool run)
+unsigned textedit::text_end(bool run)
 {
-	auto pc = (textedit*)source;
-	pc->select(zlen(pc->string), false);
+	if(run)
+		select(zlen(string), false);
 	return 0;
 }
 
-static unsigned execute_select_home(control* source, bool run)
+unsigned textedit::select_home(bool run)
 {
-	auto pc = (textedit*)source;
-	pc->select(pc->lineb(pc->p1), true);
+	if(run)
+		select(lineb(p1), true);
 	return 0;
 }
 
-static unsigned execute_select_end(control* source, bool run)
+unsigned textedit::select_end(bool run)
 {
-	auto pc = (textedit*)source;
-	pc->select(pc->linee(pc->p1), true);
+	if(run)
+		select(linee(p1), true);
 	return 0;
 }
 
-static unsigned execute_select_all(control* source, bool run)
+unsigned textedit::select_all(bool run)
 {
-	auto pc = (textedit*)source;
-	pc->select(0, false);
-	pc->select(zlen(pc->string), true);
+	if(run)
+	{
+		select(0, false);
+		select(zlen(string), true);
+	}
 	return 0;
 }
 
 unsigned textedit::right(bool run)
 {
-	right(false, false);
+	if(run)
+		right(false, false);
 	return 0;
 }
 
 unsigned textedit::rights(bool run)
 {
-	right(true, false);
+	if(run)
+		right(true, false);
 	return 0;
 }
 
 unsigned textedit::rightc(bool run)
 {
-	right(false, true);
+	if(run)
+		right(false, true);
 	return 0;
 }
 
 unsigned textedit::rightcs(bool run)
 {
-	right(true, true);
+	if(run)
+		right(true, true);
 	return 0;
 }
 
 unsigned textedit::left(bool run)
 {
-	left(false, false);
+	if(run)
+		left(false, false);
 	return 0;
 }
 
 unsigned textedit::lefts(bool run)
 {
-	left(true, false);
+	if(run)
+		left(true, false);
 	return 0;
 }
 
 unsigned textedit::leftc(bool run)
 {
-	left(false, true);
+	if(run)
+		left(false, true);
 	return 0;
 }
 
 unsigned textedit::leftcs(bool run)
 {
-	left(true, true);
+	if(run)
+		left(true, true);
 	return 0;
 }
 
@@ -528,8 +542,8 @@ control::command textedit::commands[] = {
 	CONTROL_KEY(delsym, KeyDelete),
 	CONTROL_KEY(down, KeyDown),
 	CONTROL_KEY(downs, KeyDown | Shift),
-	//{"end", "В конец", textedit::end, 0, {KeyEnd}, 0, HideCommand},
-	//{"home", "В начало", textedit::home, 0, {KeyHome}, 0, HideCommand},
+	CONTROL_KEY(end, KeyEnd),
+	CONTROL_KEY(home, KeyHome),
 	CONTROL_KEY(left, KeyLeft),
 	CONTROL_KEY(lefts, KeyLeft | Shift),
 	CONTROL_KEY(leftc, KeyLeft | Ctrl),
@@ -538,10 +552,10 @@ control::command textedit::commands[] = {
 	CONTROL_KEY(rights, KeyRight | Shift),
 	CONTROL_KEY(rightc, KeyRight | Ctrl),
 	CONTROL_KEY(rightcs, KeyRight | Ctrl | Shift),
-	//{"select_all", "Выделить все", execute_select_all, 0, {Ctrl | (Alpha + 'A')}, 0, HideToolbar},
-	//{"select_end", "Выделить до конца строки", execute_select_end, 0, {Shift | KeyEnd}, 0, HideCommand},
-	//{"select_home", "Выделить до начала строки", execute_select_home, 0, {Shift | KeyHome}, 0, HideCommand},
-	//{"text_end", "В конец текста", execute_text_end, 0, {Ctrl | KeyEnd}, 0, HideCommand},
+	CONTROL_KEY(select_all, Ctrl | (Alpha + 'A')),
+	CONTROL_KEY(select_end, Shift | KeyEnd),
+	CONTROL_KEY(select_home, Shift | KeyHome),
+	CONTROL_KEY(text_end, Ctrl | KeyEnd),
 	CONTROL_KEY(symbol, InputSymbol),
 	CONTROL_KEY(symbol, InputSymbol | Shift),
 	//{"up", "Переместиться вверх", textedit::up, 0, {KeyUp}, 0, HideCommand},

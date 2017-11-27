@@ -18,7 +18,7 @@ namespace draw
 			bool			update_records;
 			static command	commands[];
 			//
-			textedit(char* string, unsigned maxlenght);
+			textedit(char* string, unsigned maxlenght, bool select_text);
 			//
 			void			clear();
 			void			background(rect& rc) override;
@@ -56,7 +56,11 @@ namespace draw
 			unsigned		rightc(bool run);
 			unsigned		rightcs(bool run);
 			void			select(int index, bool shift);
+			unsigned		select_all(bool run);
+			unsigned		select_end(bool run);
+			unsigned		select_home(bool run);
 			unsigned		symbol(bool run);
+			unsigned		text_end(bool run);
 			unsigned		up(bool run);
 			void			updaterecords();
 			unsigned		ups(bool run);
