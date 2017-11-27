@@ -25,7 +25,7 @@ bool				table_sort_by_mouse;
 static table::renderproc render_procs[] = {
 	&table::linenumber,
 	&table::renderfield, &table::renderfield, &table::renderfield, &table::renderfield,
-	&table::renderfield, &table::renderfield, &table::rendercheck, &table::renderfield, &table::renderfield,
+	&table::renderfield, &table::renderfield, &table::rendercheck, &table::renderfield, &table::renderimage,
 	&table::linenumber,
 };
 static_assert(sizeof(render_procs) / sizeof(render_procs[0]) == LineNumber + 1, "Invalid table render procs");
@@ -56,12 +56,6 @@ int tbl_image(int x, int y, int width, const char* id, unsigned flags, const cha
 	//auto data_value = getdata(source, getdatasource(id, link));
 	//auto data_value = 0;
 	//auto pc = gettable(source);
-	//if(!pc->rowsimages)
-	//	return 0;
-	//if(data_value == -1)
-	//	return 0;
-	//tbl_setposition(x, y, width);
-	//draw::image(x + width / 2, y + width / 2, pc->rowsimages, data_value, 0);
 	return 0;
 }
 
@@ -423,9 +417,9 @@ void table::header(rect client)
 		{
 			auto type = e.gettype();
 			if(type == WidgetCheck || type == WidgetImage)
-				renderlabel({rc.x1 + 4, rc.y1 + 4, rc.x2 - 8, rc.y2 - 4}, e.label, TextSingleLine | AlignCenterCenter);
+				showlabel({rc.x1 + 4, rc.y1 + 4, rc.x2 - 8, rc.y2 - 4}, e.label, TextSingleLine | AlignCenterCenter);
 			else
-				renderlabel({rc.x1 + 4, rc.y1 + 4, rc.x2 - 8, rc.y2 - 4}, e.label, TextSingleLine);
+				showlabel({rc.x1 + 4, rc.y1 + 4, rc.x2 - 8, rc.y2 - 4}, e.label, TextSingleLine);
 		}
 		if(e.tips && areb(rc))
 			tooltips(e.tips);
@@ -442,8 +436,9 @@ void table::header(rect client)
 	line(client.x1, client.y2 - 1, client.x2, client.y2 - 1, bc);
 }
 
-void table::renderlabel(rect rc, const char* value, unsigned flags) const
+void table::showlabel(rect rc, const char* value, unsigned flags) const
 {
+	flags = flags & 0xFFFFFFF0;
 	draw::state push;
 	draw::setclip(rc);
 	draw::text(rc, value, flags);
@@ -463,7 +458,7 @@ void table::renderlabel(rect rc, const char* value, unsigned flags) const
 	}
 }
 
-void table::rendertext(rect rc, const char* value, unsigned flags) const
+void table::showtext(rect rc, const char* value, unsigned flags) const
 {
 	if(ischecked(flags))
 	{
@@ -473,7 +468,7 @@ void table::rendertext(rect rc, const char* value, unsigned flags) const
 			draw::hilight(rc, flags);
 	}
 	setposition(rc);
-	renderlabel(rc, value, flags);
+	showlabel(rc, value, flags);
 }
 
 void table::renderno(rect rc, int index, unsigned flags, void* data, const widget& e) const
@@ -494,7 +489,7 @@ void table::rendercheck(rect rc, int index, unsigned flags, void* data, const wi
 	auto executed = false;
 	if(areb(rc))
 	{
-		if(hot::key == MouseLeft && !hot::pressed)
+		if(hot::key == MouseLeft && hot::pressed)
 			executed = true;
 	}
 	if((flags&(Checked | Focused)) == (Checked | Focused) && hot::key == KeySpace)
@@ -524,14 +519,42 @@ void table::rendercheck(rect rc, int index, unsigned flags, void* data, const wi
 void table::linenumber(rect rc, int index, unsigned flags, void* data, const widget& e) const
 {
 	char temp[32]; sznum(temp, index + 1);
-	rendertext(rc, temp, flags & 0xFFFFFFF0);
+	showtext(rc, temp, flags);
 }
 
 void table::renderfield(rect rc, int index, unsigned flags, void* data, const widget& e) const
 {
-	xsref r = {fields, data};
-	auto type = fields->find(e.id);
-	rendertext(rc, "Test", flags & 0xFFFFFFF0);
+	auto requisit = fields->find(e.id);
+	if(!requisit)
+		return;
+	char temp[260];
+	if(requisit->type == text_type)
+	{
+		auto value = (const char*)requisit->get(data);
+		if(value)
+			showtext(rc, value, flags);
+	}
+	else if(requisit->type == number_type)
+	{
+		auto value = requisit->get(data);
+		sznum(temp, value);
+		showtext(rc, temp, flags);
+	}
+}
+
+void table::renderimage(rect rc, int index, unsigned flags, void* data, const widget& e) const
+{
+	if(rowsimages)
+		return;
+	auto requisit = fields->find(e.id);
+	if(!requisit)
+		return;
+	auto value = requisit->get(data);
+	if(value == -1)
+		return;
+	setposition(rc);
+	draw::image(rc.x1 + rc.width() / 2, rc.y1 + rc.height() / 2, rowsimages, value, 0);
+
 }
 
 void table::row(rect rc, int index)
@@ -899,9 +922,16 @@ widget& table::addcol(unsigned flags, const char* id, const char* label, int wid
 			p->flags |= ColumnSizeFixed;
 			break;
 		default:
+			if(fields && (p->flags&AlignMask)==0)
+			{
+				auto requisit = fields->find(p->id);
+				if(requisit->type == number_type)
+					p->flags |= AlignRightCenter;
+			}
 			p->width = 150;
 			break;
 		}
+		p->flags |= TextSingleLine;
 	}
 	return *p;
 }

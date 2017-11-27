@@ -67,9 +67,8 @@ namespace draw
 			unsigned			importdata(bool run);
 			void				rendercheck(rect rc, int index, unsigned flags, void* data, const widget & e) const;
 			void				renderfield(rect rc, int index, unsigned flags, void* data, const widget & e) const;
-			void				renderlabel(rect rc, const char* value, unsigned flags) const;
+			void				renderimage(rect rc, int index, unsigned flags, void* data, const widget& e) const;
 			void				renderno(rect rc, int index, unsigned flags, void* data, const widget & e) const;
-			void				rendertext(rect rc, const char * value, unsigned flags) const;
 			unsigned			left(bool run);
 			void				linenumber(rect rc, int index, unsigned flags, void * data, const widget & e) const;
 			unsigned			movedown(bool run);
@@ -81,6 +80,8 @@ namespace draw
 			virtual void		row(rect rc, int index) override;
 			virtual bool		selecting(rect rc, int index, point mouse) override;
 			unsigned			setting(bool run);
+			void				showlabel(rect rc, const char* value, unsigned flags) const;
+			void				showtext(rect rc, const char * value, unsigned flags) const;
 			void				sort(const char* id, int direction = 0, int i1 = 0, int i2 = -1);
 			void				sort(sortinfo* pi, int i1 = 0, int i2 = -1);
 			unsigned			sortas(bool run);
