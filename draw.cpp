@@ -41,7 +41,6 @@ int						hot::key; // Событие, которое происходит в данный момент
 point					hot::mouse; // current mouse coordinates
 bool					hot::pressed; // flag if any of mouse keys is pressed
 int						hot::param; // Event numeric parameter (optional)
-const char*				hot::name; // Control name (optional)
 rect					hot::element; // Event rectange (optional)
 bool					hot::stop; // Set true if we need stop modal loop
 bool					sys_optimize_mouse_move = true;

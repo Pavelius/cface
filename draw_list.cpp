@@ -192,7 +192,7 @@ unsigned list::up(bool run)
 		correction();
 		ensurevisible();
 	}
-	return Executed;
+	return 0;
 }
 
 unsigned list::down(bool run)
@@ -203,7 +203,7 @@ unsigned list::down(bool run)
 		correction();
 		ensurevisible();
 	}
-	return Executed;
+	return 0;
 }
 
 unsigned list::home(bool run)
@@ -216,7 +216,7 @@ unsigned list::home(bool run)
 		correction();
 		ensurevisible();
 	}
-	return Executed;
+	return 0;
 }
 
 unsigned list::end(bool run)
@@ -226,7 +226,7 @@ unsigned list::end(bool run)
 	current = maximum - 1;
 	correction();
 	ensurevisible();
-	return Executed;
+	return 0;
 }
 
 unsigned list::pageup(bool run)
@@ -237,7 +237,7 @@ unsigned list::pageup(bool run)
 		current -= lines_per_page - 1;
 	correction();
 	ensurevisible();
-	return Executed;
+	return 0;
 }
 
 unsigned list::pagedown(bool run)
@@ -248,7 +248,7 @@ unsigned list::pagedown(bool run)
 		current += lines_per_page - 1;
 	correction();
 	ensurevisible();
-	return Executed;
+	return 0;
 }
 
 unsigned list::dblclick(bool run)
@@ -256,7 +256,7 @@ unsigned list::dblclick(bool run)
 	if(!hot::mouse.in(hot::element))
 		return Disabled;
 	invoke("change");
-	return Executed;
+	return 0;
 }
 
 unsigned list::wheelup(bool run)
@@ -264,7 +264,7 @@ unsigned list::wheelup(bool run)
 	origin--;
 	if(origin<0)
 		origin = 0;
-	return Executed;
+	return 0;
 }
 
 unsigned list::wheeldown(bool run)
@@ -274,7 +274,7 @@ unsigned list::wheeldown(bool run)
 		origin = maximum - lines_per_page;
 	if(origin<0)
 		origin = 0;
-	return Executed;
+	return 0;
 }
 
 listfilter::listfilter() :filter(0)

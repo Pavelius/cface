@@ -11,7 +11,9 @@ using namespace draw::controls;
 
 xsfield widget_type[] = {
 	BSREQ(widget, id, text_type),
+	BSREQ(widget, flags, number_type),
 	BSREQ(widget, label, text_type),
+	BSREQ(widget, width, number_type),
 	BSREQ(widget, childs, widget_type),
 	{0}
 };
@@ -22,56 +24,17 @@ static unsigned		search_time;
 const char*			table_sort_column_id;
 bool				table_sort_by_mouse;
 
-static table::renderproc render_procs[] = {
-	&table::linenumber,
-	&table::renderfield, &table::renderfield, &table::renderfield, &table::renderfield,
-	&table::renderfield, &table::renderfield, &table::rendercheck, &table::renderfield, &table::renderimage,
-	&table::linenumber,
+table::renderproc table::renders[] = {
+	&renderno,
+	&renderno, &renderno, &renderno, &renderno,
+	&renderfield, &renderfield, &rendercheck, &renderfield, &renderimage,
+	&linenumber,
 };
-static_assert(sizeof(render_procs) / sizeof(render_procs[0]) == LineNumber + 1, "Invalid table render procs");
-
-
-void tbl_hilight(int x, int y, int width, unsigned flags, const char* label)
-{
-	auto height = draw::texth() + 8;
-	rect rc = {x, y, x + width, y + height};
-	draw::area(rc);
-	if(!ischecked(flags))
-		return;
-	if(label && flags&ColumnSmallHilite)
-		draw::hilight({x, y, x + imin(width, draw::textw(label) + 12), y + height}, flags);
-	else
-		draw::hilight(rc, flags);
-	if(isfocused(flags))
-		hot::element = rc;
-}
+static_assert(sizeof(table::renders) / sizeof(table::renders[0]) == LineNumber + 1, "Invalid table render procs");
 
 static void setposition(rect& rc)
 {
 	rc.offset(table_padding, table_padding);
-}
-
-int tbl_image(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
-{
-	//auto data_value = getdata(source, getdatasource(id, link));
-	//auto data_value = 0;
-	//auto pc = gettable(source);
-	return 0;
-}
-
-int tbl_date(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
-{
-	//char temp[64];
-	//auto data_value = getdata(source, getdatasource(id, link));
-	//auto height = draw::texth(); temp[64];
-	//if(data_value)
-	//	getstrfdat(temp, data_value, true);
-	//tbl_hilight(x, y, width, flags, temp);
-	//tbl_setposition(x, y, width);
-	//if(data_value)
-	//	tbl_text({x, y, x + width, y + height}, temp, flags);
-	//return height + table_padding * 2;
-	return 0;
 }
 
 //	szprint(text, "%1i, %2i", ((point*)&i)->x, ((point*)&i)->y);
@@ -85,7 +48,7 @@ unsigned table::add(bool run)
 		return Disabled;
 	if(no_change_content)
 		return Disabled;
-	return Executed;
+	return 0;
 }
 
 unsigned table::addcopy(bool run)
@@ -96,7 +59,7 @@ unsigned table::addcopy(bool run)
 		return Disabled;
 	if(no_change_content)
 		return Disabled;
-	return Executed;
+	return 0;
 }
 
 unsigned table::copy(bool run)
@@ -107,7 +70,7 @@ unsigned table::copy(bool run)
 		//if(get(rows.get(current), columns.data[current_column], temp))
 		//	clipboard::copy(temp, zlen(temp));
 	}
-	return Executed;
+	return 0;
 }
 
 unsigned table::remove(bool run)
@@ -125,7 +88,7 @@ unsigned table::remove(bool run)
 		correction();
 		ensurevisible();
 	}
-	return Executed;
+	return 0;
 }
 
 unsigned table::change(bool run)
@@ -138,7 +101,7 @@ unsigned table::change(bool run)
 		return Disabled;
 	if(run)
 		changing((void*)rows.get(current), columns.data[current_column]);
-	return Executed;
+	return 0;
 }
 
 unsigned table::movedown(bool run)
@@ -155,7 +118,7 @@ unsigned table::movedown(bool run)
 		correction();
 		ensurevisible();
 	}
-	return Executed;
+	return 0;
 }
 
 unsigned table::moveup(bool run)
@@ -172,7 +135,7 @@ unsigned table::moveup(bool run)
 		correction();
 		ensurevisible();
 	}
-	return Executed;
+	return 0;
 }
 
 unsigned table::sortas(bool run)
@@ -189,7 +152,7 @@ unsigned table::sortas(bool run)
 			sort(columns.data[current_column].id, 1);
 		table_sort_by_mouse = false;
 	}
-	return Executed;
+	return 0;
 }
 
 unsigned table::sortds(bool run)
@@ -206,7 +169,7 @@ unsigned table::sortds(bool run)
 			sort(columns.data[current_column].id, -1);
 		table_sort_by_mouse = false;
 	}
-	return Executed;
+	return 0;
 }
 
 unsigned table::exportdata(bool run)
@@ -216,11 +179,9 @@ unsigned table::exportdata(bool run)
 	if(run)
 	{
 		if(dialog::save(0, temp, filter))
-		{
-			//write(temp);
-		}
+			rows.write(temp, fields);
 	}
-	return Executed;
+	return 0;
 }
 
 unsigned table::importdata(bool run)
@@ -232,11 +193,9 @@ unsigned table::importdata(bool run)
 		char temp[260] = {0};
 		char filter[2048]; io::plugin::getfilter(filter);
 		if(dialog::open(0, temp, filter))
-		{
-			//read(temp);
-		}
+			rows.read(temp, fields);
 	}
-	return Executed;
+	return 0;
 }
 
 unsigned table::setting(bool run)
@@ -253,9 +212,11 @@ unsigned table::setting(bool run)
 		setcaption("Настройки");
 		const int dy = texth() + 8 + metrics::padding * 2;
 		int current_control = 0;
-		//table_columns.addcol(tbl_text, "label", "Название", ColumnSizeAuto | ColumnReadOnly);
-		//table_columns.addcol(tbl_number, "width", "Ширина");
+		table_columns.addcol(WidgetField | ColumnSizeAuto | ColumnReadOnly, "label", "Название");
+		table_columns.addcol(WidgetField, "width", "Ширина");
 		table_columns.use_setting = false;
+		table_columns.show_grid_lines = true;
+		table_columns.focused = true;
 		data_columns.clear();
 		for(auto& e : columns)
 		{
@@ -292,7 +253,7 @@ unsigned table::setting(bool run)
 			}
 		}
 	}
-	return Executed;
+	return 0;
 }
 
 table::table(collection& rows) : rows(rows), rowsimages(metrics::tree),
@@ -530,13 +491,13 @@ void table::renderfield(rect rc, int index, unsigned flags, void* data, const wi
 	char temp[260];
 	if(requisit->type == text_type)
 	{
-		auto value = (const char*)requisit->get(data);
+		auto value = (const char*)requisit->get(requisit->ptr(data));
 		if(value)
 			showtext(rc, value, flags);
 	}
 	else if(requisit->type == number_type)
 	{
-		auto value = requisit->get(data);
+		auto value = requisit->get(requisit->ptr(data));
 		sznum(temp, value);
 		showtext(rc, temp, flags);
 	}
@@ -598,7 +559,7 @@ void table::row(rect rc, int index)
 			flags |= Checked;
 		if(focused)
 			flags |= Focused;
-		(this->*render_procs[e.gettype()])(r1, index, flags, data, e);
+		(this->*renders[e.gettype()])(r1, index, flags, data, e);
 		if(show_grid_lines)
 			line(r1.x2, r1.y1, r1.x2, r1.y2 - 1, colors::form);
 		r1.x1 = r1.x2;
@@ -851,7 +812,7 @@ unsigned table::left(bool run)
 		ensurevisible();
 		validate(-1, false);
 	}
-	return Executed;
+	return 0;
 }
 
 unsigned table::right(bool run)
@@ -863,7 +824,7 @@ unsigned table::right(bool run)
 		current_column++;
 		validate(1, false);
 	}
-	return Executed;
+	return 0;
 }
 
 unsigned table::symbol(bool run)
@@ -887,7 +848,7 @@ unsigned table::symbol(bool run)
 		//	ensurevisible();
 		//}
 	}
-	return Executed;
+	return 0;
 }
 
 widget& table::addcol(unsigned flags, const char* id, const char* label, int width)
@@ -922,11 +883,14 @@ widget& table::addcol(unsigned flags, const char* id, const char* label, int wid
 			p->flags |= ColumnSizeFixed;
 			break;
 		default:
-			if(fields && (p->flags&AlignMask)==0)
+			if(fields && (p->flags&AlignMask) == 0)
 			{
 				auto requisit = fields->find(p->id);
-				if(requisit->type == number_type)
-					p->flags |= AlignRightCenter;
+				if(requisit)
+				{
+					if(requisit->type == number_type)
+						p->flags |= AlignRightCenter;
+				}
 			}
 			p->width = 150;
 			break;

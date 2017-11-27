@@ -15,7 +15,6 @@ enum draw_event_s {
 	KeyLeft, KeyRight, KeyUp, KeyDown, KeyPageUp, KeyPageDown, KeyHome, KeyEnd,
 	KeyBackspace, KeyEnter, KeyDelete, KeyEscape, KeySpace, KeyTab,
 	F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
-	Executed,
 	// named keys range
 	Alpha,
 	FirstKey = MouseLeft,
@@ -90,7 +89,6 @@ namespace hot
 	extern point			mouse; // current mouse coordinates
 	extern bool				pressed; // flag if any of mouse keys is pressed
 	extern int				param; // Draw command context. Application can extend this structure
-	extern const char*		name; // Text name of element (optional)
 	extern rect				element; // Element coordinates
 	extern bool				stop; // Set true if we need stop modal loop
 }
@@ -156,7 +154,7 @@ namespace draw
 		bool				color(struct color& result, struct color* custom = 0);
 		bool				folder(const char* title, char* path);
 		bool				open(const char* title, char* path, const char* filter, int filter_index = 0, const char* ext = 0);
-		bool				save(const char* title, char* path, const char* filter, int filter_index = 0, const char* ext = 0);
+		bool				save(const char* title, char* path, const char* filter, int filter_index = 0);
 	}
 	struct state // Push state in stack
 	{
@@ -224,7 +222,6 @@ namespace draw
 	void					decortext(unsigned flags);
 	bool					domodal();
 	void					execute(int id, int value = 0);
-	void					execute(void(*proc)());
 	int						getbpp();
 	color					getcolor(color normal, unsigned flags);
 	color					getcolor(rect rc, color normal, color hilite, unsigned flags);

@@ -19,7 +19,7 @@ bool draw::dialog::open(const char* title, char* path, const char* filter, int f
     return GetOpenFileNameA(&ofn) != 0;
 }
 
-bool draw::dialog::save(const char* title, char* path, const char* filter, int filter_index, const char* ext)
+bool draw::dialog::save(const char* title, char* path, const char* filter, int filter_index)
 {
     OPENFILENAME ofn;
     memset(&ofn, 0, sizeof(ofn));
@@ -31,9 +31,30 @@ bool draw::dialog::save(const char* title, char* path, const char* filter, int f
     ofn.lpstrFile = path;
     ofn.nMaxFile = 260;
     ofn.lpstrTitle = title;
-    ofn.lpstrDefExt = ext;
     ofn.Flags = OFN_EXPLORER | OFN_CREATEPROMPT | OFN_OVERWRITEPROMPT;
-    return GetSaveFileNameA(&ofn) != 0;
+    auto result = GetSaveFileNameA(&ofn) != 0;
+	if(result)
+	{
+		if(filter && !szext(path))
+		{
+			auto p = filter;
+			while(--ofn.nFilterIndex != 0)
+			{
+				p = zend(p) + 1;
+				p = zend(p) + 1;
+			}
+			auto p1 = szext(zend(p) + 1);
+			if(p1)
+			{
+				zcat(path, '.');
+				auto ps = zend(path);
+				while(ischa(*p1))
+					*ps++ = *p1++;
+				*ps++ = 0;
+			}
+		}
+	}
+	return result;
 }
 
 bool draw::dialog::color(struct color& result, struct color* custom)

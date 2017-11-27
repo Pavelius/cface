@@ -94,6 +94,8 @@ bool collection::read(const char* url, xsfield* fields)
 bool collection::write(const char* url, xsfield* fields)
 {
 	auto ex = szext(url);
+	if(!ex)
+		return false;
 	auto pp = io::plugin::find(ex);
 	if(pp)
 	{

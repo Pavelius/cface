@@ -1,7 +1,5 @@
 #include "draw.h"
 
-using namespace draw;
-
 bool draw::tool(rect rc, bool disabled, bool checked, bool press)
 {
 	if(disabled)

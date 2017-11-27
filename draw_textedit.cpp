@@ -351,7 +351,7 @@ unsigned textedit::down(bool run)
 				select(i, false);
 		}
 	}
-	return Executed;
+	return 0;
 }
 
 unsigned textedit::downs(bool run)
@@ -365,7 +365,7 @@ unsigned textedit::downs(bool run)
 		if(i >= 0)
 			select(i, true);
 	}
-	return Executed;
+	return 0;
 }
 
 unsigned textedit::up(bool run)
@@ -384,7 +384,7 @@ unsigned textedit::up(bool run)
 				select(i, false);
 		}
 	}
-	return Executed;
+	return 0;
 }
 
 unsigned textedit::ups(bool run)
@@ -398,7 +398,7 @@ unsigned textedit::ups(bool run)
 		if(i >= 0)
 			select(i, true);
 	}
-	return Executed;
+	return 0;
 }
 
 unsigned textedit::symbol(bool run)
@@ -408,7 +408,7 @@ unsigned textedit::symbol(bool run)
 		return Disabled;
 	if(run)
 		paste(szput(temp, hot::param));
-	return Executed;
+	return 0;
 }
 
 unsigned textedit::backspace(bool run)
@@ -421,7 +421,7 @@ unsigned textedit::backspace(bool run)
 			select(p1 - 1, true);
 		clear();
 	}
-	return Executed;
+	return 0;
 }
 
 unsigned textedit::delsym(bool run)
@@ -431,40 +431,40 @@ unsigned textedit::delsym(bool run)
 	if(p2 == -1 || p1 == p2)
 		select(p1 + 1, true);
 	clear();
-	return Executed;
+	return 0;
 }
 
 unsigned textedit::home(bool run)
 {
 	select(lineb(p1), false);
-	return Executed;
+	return 0;
 }
 
 unsigned textedit::end(bool run)
 {
 	select(linee(p1), false);
-	return Executed;
+	return 0;
 }
 
 static unsigned execute_text_end(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->select(zlen(pc->string), false);
-	return Executed;
+	return 0;
 }
 
 static unsigned execute_select_home(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->select(pc->lineb(pc->p1), true);
-	return Executed;
+	return 0;
 }
 
 static unsigned execute_select_end(control* source, bool run)
 {
 	auto pc = (textedit*)source;
 	pc->select(pc->linee(pc->p1), true);
-	return Executed;
+	return 0;
 }
 
 static unsigned execute_select_all(control* source, bool run)
@@ -472,55 +472,55 @@ static unsigned execute_select_all(control* source, bool run)
 	auto pc = (textedit*)source;
 	pc->select(0, false);
 	pc->select(zlen(pc->string), true);
-	return Executed;
+	return 0;
 }
 
 unsigned textedit::right(bool run)
 {
 	right(false, false);
-	return Executed;
+	return 0;
 }
 
 unsigned textedit::rights(bool run)
 {
 	right(true, false);
-	return Executed;
+	return 0;
 }
 
 unsigned textedit::rightc(bool run)
 {
 	right(false, true);
-	return Executed;
+	return 0;
 }
 
 unsigned textedit::rightcs(bool run)
 {
 	right(true, true);
-	return Executed;
+	return 0;
 }
 
 unsigned textedit::left(bool run)
 {
 	left(false, false);
-	return Executed;
+	return 0;
 }
 
 unsigned textedit::lefts(bool run)
 {
 	left(true, false);
-	return Executed;
+	return 0;
 }
 
 unsigned textedit::leftc(bool run)
 {
 	left(false, true);
-	return Executed;
+	return 0;
 }
 
 unsigned textedit::leftcs(bool run)
 {
 	left(true, true);
-	return Executed;
+	return 0;
 }
 
 control::command textedit::commands[] = {

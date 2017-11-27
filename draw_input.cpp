@@ -12,10 +12,6 @@ void draw::execute(int id, int param)
 	hot::param = param;
 }
 
-void draw::execute(void(*id)())
-{
-}
-
 //COMMAND(after_render)
 //{
 //	draw::rectf(sys_static_area, colors::blue, 128);

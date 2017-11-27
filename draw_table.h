@@ -45,6 +45,7 @@ namespace draw
 			bool				show_header;
 			bool				show_event_rows;
 			static command		commands[];
+			static renderproc	renders[];
 			//
 			table(collection& e);
 			//

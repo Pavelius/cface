@@ -10,6 +10,8 @@ sprite*				metrics::toolbar = (sprite*)loadb("toolbar.pma");
 sprite*				metrics::tree = (sprite*)loadb("tree.pma");
 control::plugin*	control::plugin::first;
 control*			hot::source;
+static void			(*current_callback)();
+static const char*	current_name;
 
 control::plugin::plugin(control& element) : element(element)
 {
@@ -105,7 +107,7 @@ bool control::open(rect rc)
 
 static void invoke_context_menu()
 {
-	((control*)hot::source)->contextmenu();
+	hot::source->contextmenu();
 }
 
 void control::view(rect rc, bool show_toolbar)
@@ -130,10 +132,7 @@ void control::view(rect rc, bool show_toolbar)
 		if(!disabled)
 		{
 			if(hot::key == MouseRight && !hot::pressed)
-			{
-				draw::execute(invoke_context_menu);
-				hot::source = this;
-			}
+				execute(invoke_context_menu);
 		}
 	}
 	// Перед выводом настроим разные элементы.
@@ -159,14 +158,13 @@ void control::view(rect rc, bool show_toolbar)
 
 static void callback_invoke()
 {
-	hot::source->execute(hot::name, true);
+	hot::source->execute(current_name, true);
 }
 
 void control::invoke(const char* name) const
 {
-	draw::execute(callback_invoke);
-	hot::source = (control*)this;
-	hot::name = name;
+	const_cast<control*>(this)->execute(callback_invoke);
+	current_name = name;
 }
 
 int control::render(int x, int y, int width, unsigned flags, const control::command& e) const
@@ -274,12 +272,33 @@ unsigned control::execute(const char* id, bool run)
 	return 0;
 }
 
+void control::execute(void(*proc)())
+{
+	draw::execute(InputExecute);
+	hot::source = this;
+	current_callback = proc;
+}
+
 void control::keyinput(int id)
 {
-	auto pc = getcommands();
-	if(!pc)
-		return;
-	auto p = pc->find(id);
-	if(p)
-		(this->*p->type)(true);
+	const command* pc;
+	switch(id)
+	{
+	case InputExecute:
+		if(current_callback)
+		{
+			auto p = current_callback;
+			current_callback = 0;
+			p();
+		}
+		break;
+	default:
+		pc = getcommands();
+		if(!pc)
+			return;
+		pc = pc->find(id);
+		if(pc)
+			(this->*pc->type)(true);
+		break;
+	}
 }
