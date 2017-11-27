@@ -231,7 +231,7 @@
     <ClCompile Include="draw_scroll.cpp" />
     <ClCompile Include="draw_scrollable.cpp" />
     <ClCompile Include="widget_settings.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="draw_splitter.cpp" />
     <ClCompile Include="draw_statusbar.cpp" />
@@ -269,7 +269,7 @@
     <ClInclude Include="draw_control.h" />
     <ClInclude Include="widget.h" />
     <ClInclude Include="widget_settings.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="draw_table.h" />
     <ClInclude Include="draw_textedit.h" />
