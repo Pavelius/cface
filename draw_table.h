@@ -56,7 +56,7 @@ namespace draw
 			virtual void		background(rect& rc) override;
 			virtual bool		canedit(int index, const widget& e) const;
 			unsigned			change(bool run);
-			virtual bool		changing(void* object, widget& e);
+			virtual bool		changing(void* object, const char* id);
 			void				clear();
 			virtual void		contextmenu() override;
 			unsigned			copy(bool run);

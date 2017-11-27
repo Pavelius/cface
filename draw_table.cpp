@@ -3,6 +3,7 @@
 #include "crt.h"
 #include "draw.h"
 #include "draw_table.h"
+#include "draw_textedit.h"
 #include "io.h"
 #include "xsref.h"
 
@@ -100,7 +101,7 @@ unsigned table::change(bool run)
 	if(!canedit(current, columns.data[current_column]))
 		return Disabled;
 	if(run)
-		changing((void*)rows.get(current), columns.data[current_column]);
+		changing((void*)rows.get(current), columns.data[current_column].id);
 	return 0;
 }
 
@@ -488,19 +489,10 @@ void table::renderfield(rect rc, int index, unsigned flags, void* data, const wi
 	auto requisit = fields->find(e.id);
 	if(!requisit)
 		return;
-	char temp[260];
-	if(requisit->type == text_type)
-	{
-		auto value = (const char*)requisit->get(requisit->ptr(data));
-		if(value)
-			showtext(rc, value, flags);
-	}
-	else if(requisit->type == number_type)
-	{
-		auto value = requisit->get(requisit->ptr(data));
-		sznum(temp, value);
-		showtext(rc, temp, flags);
-	}
+	char temp[1024];
+	auto p = fields->getdata(temp, e.id, data, false);
+	if(p)
+		showtext(rc, p, flags);
 }
 
 void table::renderimage(rect rc, int index, unsigned flags, void* data, const widget& e) const
@@ -555,10 +547,13 @@ void table::row(rect rc, int index)
 		if(r1.x1 >= rc.x2)
 			break;
 		unsigned flags = e.flags;
-		if(index == current && i == current_column)
-			flags |= Checked;
 		if(focused)
 			flags |= Focused;
+		if(index == current && i == current_column)
+		{
+			flags |= Checked;
+			hot::element = r1;
+		}
 		(this->*renders[e.gettype()])(r1, index, flags, data, e);
 		if(show_grid_lines)
 			line(r1.x2, r1.y1, r1.x2, r1.y2 - 1, colors::form);
@@ -763,21 +758,22 @@ int table::find(const char* id, const char* value, int index)
 	return -1;
 }
 
-bool table::changing(void* object, widget& e)
+bool table::changing(void* object, const char* id)
 {
-	//element e1(e, 0);
-	//e1.row = current;
-	//e1.context = this;
-	//xsref rowref = {fields, rows.get(e1.row)};
-	//e1.data = rowref.getvalue(e.getdata());
-	//draw::rectf(hot::element, colors::window);
-	//if(show_grid_lines)
-	//{
-	//	line(hot::element.x1, hot::element.y1, hot::element.x1, hot::element.y2, colors::form);
-	//	line(hot::element.x1, hot::element.y2, hot::element.x2, hot::element.y2, colors::form);
-	//}
-	//auto result = e1.editing();
-	//// Some keys must be handled by this control
+	char temp[4196]; temp[0] = 0;
+	if(!fields->getdata(temp, id, object, true))
+		return false;
+	draw::rectf(hot::element, colors::window);
+	if(show_grid_lines)
+	{
+		line(hot::element.x1, hot::element.y1, hot::element.x1, hot::element.y2, colors::form);
+		line(hot::element.x1, hot::element.y2, hot::element.x2, hot::element.y2, colors::form);
+	}
+	textedit te(temp, sizeof(temp));
+	auto result = te.editing(hot::element);
+	if(result)
+		fields->setdata(temp, id, object);
+	// Some keys must be handled by this control
 	//switch(hot::key)
 	//{
 	//case KeyDown:
@@ -785,8 +781,7 @@ bool table::changing(void* object, widget& e)
 	//	draw::execute(hot::key, 0);
 	//	break;
 	//}
-	//return result;
-	return true;
+	return result;
 }
 
 void table::clear()

@@ -542,7 +542,8 @@ control::command textedit::commands[] = {
 	//{"select_end", "Выделить до конца строки", execute_select_end, 0, {Shift | KeyEnd}, 0, HideCommand},
 	//{"select_home", "Выделить до начала строки", execute_select_home, 0, {Shift | KeyHome}, 0, HideCommand},
 	//{"text_end", "В конец текста", execute_text_end, 0, {Ctrl | KeyEnd}, 0, HideCommand},
-	//{"symbol", "Символ", textedit::symbol, 0, {InputSymbol, InputSymbol | Shift}, 0, HideCommand},
+	CONTROL_KEY(symbol, InputSymbol),
+	CONTROL_KEY(symbol, InputSymbol | Shift),
 	//{"up", "Переместиться вверх", textedit::up, 0, {KeyUp}, 0, HideCommand},
 	//{"up_shift", "Переместиться вверх", textedit::ups, 0, {KeyUp | Shift}, 0, HideCommand},
 	{0}

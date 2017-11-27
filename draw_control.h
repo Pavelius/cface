@@ -60,7 +60,7 @@ namespace draw
 		virtual void			background(rect& rc);
 		virtual void			contextmenu() {}
 		unsigned				execute(const char* id, bool run = true);
-		void					execute(void (*proc)());
+		void					execute(void(*proc)());
 		color					getcolor(color normal) const;
 		virtual control*		getcontrol(const char* id) { return 0; }
 		virtual const command*	getcommands() const { return 0; }
@@ -75,10 +75,10 @@ namespace draw
 		bool					open(rect rc);
 		bool					open(const char* title, unsigned state, int width, int height);
 		bool					open(const char* title);
+		virtual void			prerender() {}
 		int						render(int x, int y, int width, unsigned flags, const command& e) const;
 		int						render(int x, int y, int width, const command* commands) const;
 		virtual void			redraw(rect rc) {}
-		virtual void			prerender() {}
 		void					view(rect rc, bool show_toolbar = false);
 	};
 	struct menu
