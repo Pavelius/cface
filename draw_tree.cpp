@@ -1,6 +1,6 @@
 #include "crt.h"
 #include "draw.h"
-#include "widget_tree.h"
+#include "draw_tree.h"
 
 using namespace draw::controls;
 
@@ -259,5 +259,5 @@ void tree::addrow(void* object)
 		return;
 	element e = {0};
 	e.param = (int)object;
-	add(&e);
+	rows.add(&e);
 }

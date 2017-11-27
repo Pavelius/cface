@@ -240,9 +240,7 @@
     <ClCompile Include="draw_textedit.cpp" />
     <ClCompile Include="draw_toolbar.cpp" />
     <ClCompile Include="draw_tooltips.cpp" />
-    <ClCompile Include="draw_tree.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="draw_tree.cpp" />
     <ClCompile Include="win_date.cpp" />
     <ClCompile Include="win_draw.cpp" />
     <ClCompile Include="win_draw_dlg.cpp" />
@@ -275,9 +273,7 @@
     </ClInclude>
     <ClInclude Include="draw_table.h" />
     <ClInclude Include="draw_textedit.h" />
-    <ClInclude Include="draw_tree.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="draw_tree.h" />
     <ClInclude Include="aref.h" />
     <ClInclude Include="autogrow.h" />
     <ClInclude Include="base.h" />
