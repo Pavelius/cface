@@ -49,6 +49,12 @@ unsigned table::add(bool run)
 		return Disabled;
 	if(no_change_content)
 		return Disabled;
+	if(run)
+	{
+		auto p = rows.add();
+		select(rows.indexof(p));
+		invoke("change");
+	}
 	return 0;
 }
 
@@ -60,6 +66,12 @@ unsigned table::addcopy(bool run)
 		return Disabled;
 	if(no_change_content)
 		return Disabled;
+	if(run)
+	{
+		auto p = rows.add(rows.get(current));
+		select(rows.indexof(p));
+		invoke("change");
+	}
 	return 0;
 }
 
@@ -67,9 +79,10 @@ unsigned table::copy(bool run)
 {
 	if(run)
 	{
-		char temp[260]; temp[0] = 0;
-		//if(get(rows.get(current), columns.data[current_column], temp))
-		//	clipboard::copy(temp, zlen(temp));
+		char temp[4096]; temp[0] = 0;
+		auto p = fields->getdata(temp, columns[current_column].id, rows.get(current), false);
+		if(p)
+			clipboard::copy(temp, zlen(temp));
 	}
 	return 0;
 }
@@ -226,6 +239,7 @@ unsigned table::setting(bool run)
 			data_columns.add(e);
 		}
 		tuning(controls);
+		setfocus(0);
 		while(true)
 		{
 			rect rc = {0, 0, getwidth(), getheight() - dy};
@@ -234,10 +248,8 @@ unsigned table::setting(bool run)
 			draw::view(rc, controls, zlen(controls), current_control, false, 0, metrics::padding);
 			rc.y1 = getheight() - dy - metrics::padding;
 			rc.x2 = getwidth() - metrics::padding;
-			rc.x1 = rc.x2 - 100;
-			//wdt_button(rc.x1, rc.y1, 100, "cancel", 0, "Отменить");
-			rc.x1 = rc.x1 - 100;
-			//wdt_button(rc.x1, rc.y1, 100, "apply", 0, "OK");
+			rc.x1 = rc.x2 - 100; button(rc.x1, rc.y1, 100, KeyEscape, "Отменить");
+			rc.x1 = rc.x1 - 100; button(rc.x1, rc.y1, 100, KeyEnter, "OK");
 			int id = input();
 			switch(id)
 			{
@@ -249,6 +261,8 @@ unsigned table::setting(bool run)
 					columns.data[i] = data_columns.data[i];
 				return true;
 			default:
+				if(dodialog(id))
+					break;
 				table_columns.keyinput(id);
 				break;
 			}

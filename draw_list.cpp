@@ -27,6 +27,12 @@ bool list::isopen(int row)
 	return (row<maximum - 1) ? (getlevel(row + 1)>getlevel(row)) : false;
 }
 
+void list::select(int index)
+{
+	current = index;
+	ensurevisible();
+}
+
 void list::toggle(int index)
 {
 	if(!isgroup(index))

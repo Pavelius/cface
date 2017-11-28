@@ -241,9 +241,6 @@
     <ClCompile Include="widget_settings.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
-    <ClCompile Include="draw_focusing.cpp">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClCompile>
     <ClCompile Include="draw_textedit.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
@@ -265,11 +262,14 @@
     <ClCompile Include="draw_form.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
-    <ClCompile Include="draw_focus.cpp">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClCompile>
     <ClCompile Include="xsfield_data.cpp">
       <Filter>Обработка данных</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_focusing.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_dialog.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

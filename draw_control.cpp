@@ -124,6 +124,8 @@ void control::view(rect rc, bool show_toolbar)
 	unsigned flags = 0;
 	if(disabled)
 		flags |= Disabled;
+	focusing((int)this, flags, rc);
+	focused = isfocused(flags);
 	background(rc);
 	// Теперь мы имеем область элемента
 	if(areb(rc))

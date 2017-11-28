@@ -9,7 +9,7 @@ struct adatc : adat<T, count_max>, collection
 {
 	adatc() { initialize(); }
 	void					add(const T& e) { adat::add(e); }
-	void*					add(const void* element = 0) override { if(count < count_max) data[count] = (T&)element; return data + count++; }
+	void*					add(const void* element = 0) override { if(count < count_max) data[count] = *((T*)element); return data + count++; }
 	void					clear() override { adat::clear(); }
 	void*					get(int index) const override { return (T*)data + index; }
 	unsigned				getcount() const { return adat::getcount(); }

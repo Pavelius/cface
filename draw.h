@@ -204,6 +204,7 @@ namespace draw
 	extern color			fore; // Foreground color (curently selected color)
 	extern const sprite*	font; // Currently selected font
 	//
+	void					addelement(int id, const rect& rc);
 	int						aligned(int x, int width, unsigned state, int string_width);
 	int						alignedh(const rect& rc, const char* string, unsigned state);
 	areas					area(rect rc);
@@ -214,17 +215,21 @@ namespace draw
 	void					blit(surface& dest, int x, int y, int width, int height, unsigned flags, surface& source, int x_source, int y_source, int width_source, int height_source);
 	bool					buttonh(rect rc, bool checked, bool focused, bool disabled, bool border, const char* string, int key = 0, bool press = false, const char* tips = 0);
 	bool					buttonv(rect rc, bool checked, bool focused, bool disabled, bool border, const char* string, int key = 0, bool press = false);
+	int						button(int x, int y, int width, int id, const char* label, bool disabled = false, int key = 0, const char* tips = 0);
 	extern surface*			canvas;
 	void					circle(int x, int y, int radius);
 	void					circle(int x, int y, int radius, const color c1);
 	void					circlef(int x, int y, int radius, const color c1, unsigned char alpha = 0xFF);
 	int						clipart(int x, int y, int width, unsigned flags, const char* string);
 	void					decortext(unsigned flags);
+	bool					dodialog(int id);
 	bool					domodal();
 	void					execute(int id, int value = 0);
+	void					focusing(int id, unsigned& flags, rect rc);
 	int						getbpp();
 	color					getcolor(color normal, unsigned flags);
 	color					getcolor(rect rc, color normal, color hilite, unsigned flags);
+	int						getfocus();
 	int						getheight();
 	int						getnext(int id, int key);
 	int						getwidth();
@@ -243,6 +248,7 @@ namespace draw
 	void					image(int x, int y, const sprite* e, int id, int flags, unsigned char alpha, color* pal);
 	void					initialize();
 	int						input(bool redraw = false);
+	void					invoke(void(*callback)());
 	void					line(int x1, int y1, int x2, int y2); // Draw line
 	void					line(int x1, int y1, int x2, int y2, unsigned char color); // Draw line
 	void					line(int x1, int y1, int x2, int y2, color c1); // Draw line
@@ -271,6 +277,7 @@ namespace draw
 	void					setclip(rect rc);
 	inline void				setclip() { clipping.set(0, 0, getwidth(), getheight()); }
 	void					setcolor(unsigned char index);
+	void					setfocus(int id);
 	void					setposition(int& x, int& y, int& width);
 	void					settimer(unsigned milleseconds);
 	int						sheetline(rect rc, bool background = true);

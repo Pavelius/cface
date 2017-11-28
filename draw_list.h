@@ -37,6 +37,7 @@ namespace draw
 			unsigned		pageup(bool run);
 			void			redraw(rect rc) override;
 			virtual bool	selecting(rect rc, int index, point mouse) { return true; }
+			void			select(int index);
 			void			toggle(int index);
 			virtual void	row(rect rc, int index); // Draw single row - part of list
 			unsigned		up(bool run);
