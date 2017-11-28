@@ -9,7 +9,7 @@ struct focusable_element
 	rect			rc;
 	operator bool() const { return id != 0; }
 };
-static int					current_focus;
+static int					current_focus; // Current focus element
 static focusable_element	elements[96];
 static focusable_element*	render_control = elements;
 

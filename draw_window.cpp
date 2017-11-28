@@ -63,6 +63,7 @@ void draw::window::resizing(const rect& rc)
 
 void draw::window::opening()
 {
+	focus = getfocus();
 	if(!identifier)
 		return;
 	auto e = windows.find(szdup(identifier));
@@ -73,6 +74,7 @@ void draw::window::opening()
 
 void draw::window::closing()
 {
+	setfocus(focus);
 	if(!identifier)
 		return;
 	auto e = windows.addu(szdup(identifier));

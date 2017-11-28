@@ -60,7 +60,7 @@ bool control::open(const char* title, unsigned state, int width, int height)
 	draw::window dc(-1, -1, width, height, state);
 	if(title)
 		draw::setcaption(title);
-	focused = true;
+	setfocus(0);
 	while(true)
 	{
 		rect rc = {0, 0, draw::getwidth(), draw::getheight()};
@@ -284,6 +284,8 @@ void control::execute(void(*proc)())
 void control::keyinput(int id)
 {
 	const command* pc;
+	if(dodialog(id))
+		return;
 	switch(id)
 	{
 	case InputExecute:
