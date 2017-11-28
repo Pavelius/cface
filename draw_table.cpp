@@ -232,11 +232,9 @@ unsigned table::setting(bool run)
 		table_columns.show_grid_lines = true;
 		table_columns.focused = true;
 		data_columns.clear();
-		for(auto& e : columns)
+		for(int i=0; i<columns.count; i++)
 		{
-			if(!e.label || e.label[0] == 0)
-				continue;
-			data_columns.add(e);
+			data_columns.add(columns.data[i]);
 		}
 		tuning(controls);
 		setfocus(0);
