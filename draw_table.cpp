@@ -248,8 +248,8 @@ unsigned table::setting(bool run)
 			draw::view(rc, controls, zlen(controls), current_control, false, 0, metrics::padding);
 			rc.y1 = getheight() - dy - metrics::padding;
 			rc.x2 = getwidth() - metrics::padding;
-			rc.x1 = rc.x2 - 100; button(rc.x1, rc.y1, 100, KeyEscape, "Отменить");
-			rc.x1 = rc.x1 - 100; button(rc.x1, rc.y1, 100, KeyEnter, "OK");
+			rc.x1 = rc.x2 - 100; button(rc.x1, rc.y1, 100, KeyEscape, 0, "Отменить");
+			rc.x1 = rc.x1 - 100; button(rc.x1, rc.y1, 100, KeyEnter, 0, "OK");
 			int id = input();
 			switch(id)
 			{
