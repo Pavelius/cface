@@ -190,52 +190,39 @@ void list::redraw(rect rc)
 		draw::scrollh(id, scrollh, origin_width, rc.width(), maximum_width, focused);
 }
 
-unsigned list::up(bool run)
+void list::keyup(int id)
 {
-	if(run)
-	{
-		current--;
-		correction();
-		ensurevisible();
-	}
-	return 0;
+	current--;
+	correction();
+	ensurevisible();
 }
 
-unsigned list::down(bool run)
+void list::keydown(int id)
 {
-	if(run)
-	{
-		current++;
-		correction();
-		ensurevisible();
-	}
-	return 0;
+	current++;
+	correction();
+	ensurevisible();
 }
 
-unsigned list::home(bool run)
+void list::keyhome(int id)
 {
 	if(current == 0)
-		return Disabled;
-	if(run)
-	{
-		current = 0;
-		correction();
-		ensurevisible();
-	}
-	return 0;
+		return;
+	current = 0;
+	correction();
+	ensurevisible();
 }
 
-unsigned list::end(bool run)
+void list::keyend(int id)
 {
 	if(current == maximum - 1)
-		return Disabled;
+		return;
 	current = maximum - 1;
 	correction();
 	ensurevisible();
-	return 0;
 }
 
-unsigned list::pageup(bool run)
+void list::keypageup(int id)
 {
 	if(current != origin)
 		current = origin;
@@ -243,10 +230,9 @@ unsigned list::pageup(bool run)
 		current -= lines_per_page - 1;
 	correction();
 	ensurevisible();
-	return 0;
 }
 
-unsigned list::pagedown(bool run)
+void list::keypagedown(int id)
 {
 	if(current != (origin + lines_per_page - 1))
 		current = (origin + lines_per_page - 1);
@@ -254,33 +240,22 @@ unsigned list::pagedown(bool run)
 		current += lines_per_page - 1;
 	correction();
 	ensurevisible();
-	return 0;
 }
 
-unsigned list::dblclick(bool run)
+void list::mouseleftdbl(point position, int id)
 {
-	if(!hot::mouse.in(hot::element))
-		return Disabled;
+	if(!position.in(hot::element))
+		return;
 	invoke("change");
-	return 0;
 }
 
-unsigned list::wheelup(bool run)
+void list::mousewheel(point position, int id, int step)
 {
-	origin--;
-	if(origin<0)
-		origin = 0;
-	return 0;
-}
-
-unsigned list::wheeldown(bool run)
-{
-	origin++;
+	origin += step;
 	if(origin>maximum - lines_per_page)
 		origin = maximum - lines_per_page;
 	if(origin<0)
 		origin = 0;
-	return 0;
 }
 
 listfilter::listfilter() :filter(0)
@@ -303,16 +278,3 @@ void listdata::row(rect rc, int index)
 		text(rc.x1, rc.y1, p);
 	}
 }
-
-control::command list::commands[] = {
-	CONTROL_KEY(up, KeyUp),
-	CONTROL_KEY(down, KeyDown),
-	CONTROL_KEY(end, KeyEnd),
-	CONTROL_KEY(home, KeyHome),
-	CONTROL_KEY(pagedown, KeyPageDown),
-	CONTROL_KEY(pageup, KeyPageUp),
-	CONTROL_KEY(wheeldown, MouseWheelDown),
-	CONTROL_KEY(wheelup, MouseWheelUp),
-	CONTROL_KEY(dblclick, MouseLeftDBL),
-	{0}
-};

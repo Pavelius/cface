@@ -64,20 +64,22 @@ namespace draw
 			int					find(const char* id, const char* text, int start);
 			widget*				findcol(const char* id);
 			command*			getcommands() const override { return commands; }
+			virtual const char*	gettext(char* result, void* data, const char* id) const;
 			void				header(rect rc);
 			unsigned			importdata(bool run);
+			void				inputsymbol(int id, int symbol) override;
+			void				keyleft(int id) override;
+			void				keyright(int id) override;
 			void				rendercheck(rect rc, int index, unsigned flags, void* data, const widget & e) const;
 			void				renderfield(rect rc, int index, unsigned flags, void* data, const widget & e) const;
 			void				renderimage(rect rc, int index, unsigned flags, void* data, const widget& e) const;
 			void				renderno(rect rc, int index, unsigned flags, void* data, const widget & e) const;
-			unsigned			left(bool run);
 			void				linenumber(rect rc, int index, unsigned flags, void * data, const widget & e) const;
 			unsigned			movedown(bool run);
 			unsigned			moveup(bool run);
 			virtual void		prerender() override;
 			unsigned			remove(bool run);
 			void				reposition(int width);
-			unsigned			right(bool run);
 			virtual void		row(rect rc, int index) override;
 			virtual bool		selecting(rect rc, int index, point mouse) override;
 			unsigned			setting(bool run);
@@ -87,7 +89,6 @@ namespace draw
 			void				sort(sortinfo* pi, int i1 = 0, int i2 = -1);
 			unsigned			sortas(bool run);
 			unsigned			sortds(bool run);
-			unsigned			symbol(bool run);
 			int					totalwidth() const;
 			virtual void		treemark(rect rc, int index, int level) const;
 			virtual void		tuning(control** controls);

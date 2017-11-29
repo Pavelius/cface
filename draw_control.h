@@ -16,7 +16,6 @@ enum command_view_s {
 struct xsfield;
 
 #define CONTROL_PAR(name) {"", "", 0, name::commands}
-#define CONTROL_KEY(cpr, key) {#cpr, "", (command::proc)&cpr, 0, {key}, 0, HideCommand}
 #define CONTROL_ICN(cpr, text, key, icon) {#cpr, text, (command::proc)&cpr, 0, {key}, icon, ViewIcon}
 
 namespace draw
@@ -70,7 +69,30 @@ namespace draw
 		virtual char*			getname(char* result) const;
 		virtual void*			getobject() { return this; }
 		void					invoke(const char* name) const;
+		virtual void			inputidle() {}
+		virtual void			inputsymbol(int id, int symbol) {}
+		virtual void			inputtimer() {}
+		virtual void			inputupdate() {}
+		virtual void			keybackspace(int id) {}
+		virtual void			keydelete(int id) {}
+		virtual void			keydown(int id) {}
+		virtual void			keyend(int id) {}
+		virtual void			keyenter(int id) {}
+		virtual void			keyescape(int id) {}
+		virtual void			keyhome(int id) {}
+		virtual void			keyleft(int id) {}
 		void					keyinput(int id);
+		virtual void			keypagedown(int id) {}
+		virtual void			keypageup(int id) {}
+		virtual void			keyright(int id) {}
+		virtual void			keyspace(int id) {}
+		virtual void			keytab(int id) {}
+		virtual void			keyup(int id) {}
+		virtual void			mouseleft(point position, int id, bool pressed) {}
+		virtual void			mouseleftdbl(point position, int id) {}
+		virtual void			mousemove(point position, int id) {}
+		virtual void			mouseright(point position, int id, bool pressed) {}
+		virtual void			mousewheel(point position, int id, int step) {}
 		virtual void			nonclient(rect rc);
 		bool					open(rect rc);
 		bool					open(const char* title, unsigned state, int width, int height);

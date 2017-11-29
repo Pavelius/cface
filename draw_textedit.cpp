@@ -337,138 +337,60 @@ bool textedit::editing(rect rco)
 	return false;
 }
 
-unsigned textedit::down(bool run)
+void textedit::keydown(int id)
 {
-	if(run)
-	{
-		if(records)
-			records->keyinput(KeyDown);
-		else
-		{
-			auto pt = getpos(rcclient, p1, align);
-			auto i = hittest(rcclient, {pt.x, (short)(pt.y + texth())}, align);
-			if(i == -3)
-				i = linee(linee(p1) + 1);
-			if(i >= 0)
-				select(i, false);
-		}
-	}
-	return 0;
-}
-
-unsigned textedit::downs(bool run)
-{
-	if(run)
+	if(records)
+		records->keyinput(KeyDown);
+	else
 	{
 		auto pt = getpos(rcclient, p1, align);
 		auto i = hittest(rcclient, {pt.x, (short)(pt.y + texth())}, align);
 		if(i == -3)
 			i = linee(linee(p1) + 1);
 		if(i >= 0)
-			select(i, true);
+			select(i, (id & Shift)!=0);
 	}
-	return 0;
 }
 
-unsigned textedit::up(bool run)
+void textedit::keyup(int id)
 {
-	if(run)
-	{
-		if(records && isshowrecords())
-			records->keyinput(KeyUp);
-		else
-		{
-			auto pt = getpos(rcclient, p1, align);
-			auto i = hittest(rcclient, {pt.x, (short)(pt.y - texth())}, align);
-			if(i == -3)
-				i = linee(lineb(p1) - 1);
-			if(i >= 0)
-				select(i, false);
-		}
-	}
-	return 0;
-}
-
-unsigned textedit::ups(bool run)
-{
-	if(run)
+	if(records && isshowrecords())
+		records->keyinput(KeyUp);
+	else
 	{
 		auto pt = getpos(rcclient, p1, align);
 		auto i = hittest(rcclient, {pt.x, (short)(pt.y - texth())}, align);
 		if(i == -3)
 			i = linee(lineb(p1) - 1);
 		if(i >= 0)
-			select(i, true);
+			select(i, (id & Shift)!=0);
 	}
-	return 0;
 }
 
-unsigned textedit::symbol(bool run)
+void textedit::inputsymbol(int id, int symbol)
 {
 	char temp[8];
 	if(hot::param < 0x20 || readonly)
-		return Disabled;
-	if(run)
-		paste(szput(temp, hot::param));
-	return 0;
+		return;
+	paste(szput(temp, hot::param));
 }
 
-unsigned textedit::backspace(bool run)
+void textedit::keybackspace(int id)
 {
 	if(readonly)
-		return Disabled;
-	if(run)
-	{
-		if((p2 == -1 || p1 == p2) && p1 > 0)
-			select(p1 - 1, true);
-		clear();
-	}
-	return 0;
+		return;
+	if((p2 == -1 || p1 == p2) && p1 > 0)
+		select(p1 - 1, true);
+	clear();
 }
 
-unsigned textedit::delsym(bool run)
+void textedit::keydelete(int id)
 {
 	if(readonly)
-		return Disabled;
+		return;
 	if(p2 == -1 || p1 == p2)
 		select(p1 + 1, true);
 	clear();
-	return 0;
-}
-
-unsigned textedit::home(bool run)
-{
-	if(run)
-		select(lineb(p1), false);
-	return 0;
-}
-
-unsigned textedit::end(bool run)
-{
-	if(run)
-		select(linee(p1), false);
-	return 0;
-}
-
-unsigned textedit::text_end(bool run)
-{
-	if(run)
-		select(zlen(string), false);
-	return 0;
-}
-
-unsigned textedit::select_home(bool run)
-{
-	if(run)
-		select(lineb(p1), true);
-	return 0;
-}
-
-unsigned textedit::select_end(bool run)
-{
-	if(run)
-		select(linee(p1), true);
-	return 0;
 }
 
 unsigned textedit::select_all(bool run)
@@ -481,87 +403,25 @@ unsigned textedit::select_all(bool run)
 	return 0;
 }
 
-unsigned textedit::right(bool run)
+void textedit::keyright(int id)
 {
-	if(run)
-		right(false, false);
-	return 0;
+	right((id&Shift) != 0, (id&Ctrl) != 0);
 }
 
-unsigned textedit::rights(bool run)
+void textedit::keyleft(int id)
 {
-	if(run)
-		right(true, false);
-	return 0;
+	left((id&Shift) != 0, (id&Ctrl) != 0);
 }
 
-unsigned textedit::rightc(bool run)
+void textedit::keyhome(int id)
 {
-	if(run)
-		right(false, true);
-	return 0;
+	select(lineb(p1), (id&Shift)!=0);
 }
 
-unsigned textedit::rightcs(bool run)
+void textedit::keyend(int id)
 {
-	if(run)
-		right(true, true);
-	return 0;
+	select(linee(p1), (id&Shift) != 0);
 }
-
-unsigned textedit::left(bool run)
-{
-	if(run)
-		left(false, false);
-	return 0;
-}
-
-unsigned textedit::lefts(bool run)
-{
-	if(run)
-		left(true, false);
-	return 0;
-}
-
-unsigned textedit::leftc(bool run)
-{
-	if(run)
-		left(false, true);
-	return 0;
-}
-
-unsigned textedit::leftcs(bool run)
-{
-	if(run)
-		left(true, true);
-	return 0;
-}
-
-control::command textedit::commands[] = {
-	CONTROL_KEY(backspace, KeyBackspace),
-	CONTROL_KEY(delsym, KeyDelete),
-	CONTROL_KEY(down, KeyDown),
-	CONTROL_KEY(downs, KeyDown | Shift),
-	CONTROL_KEY(end, KeyEnd),
-	CONTROL_KEY(home, KeyHome),
-	CONTROL_KEY(left, KeyLeft),
-	CONTROL_KEY(lefts, KeyLeft | Shift),
-	CONTROL_KEY(leftc, KeyLeft | Ctrl),
-	CONTROL_KEY(leftcs, KeyLeft | Ctrl | Shift),
-	CONTROL_KEY(right, KeyRight),
-	CONTROL_KEY(rights, KeyRight | Shift),
-	CONTROL_KEY(rightc, KeyRight | Ctrl),
-	CONTROL_KEY(rightcs, KeyRight | Ctrl | Shift),
-	CONTROL_KEY(select_all, Ctrl | (Alpha + 'A')),
-	CONTROL_KEY(select_end, Shift | KeyEnd),
-	CONTROL_KEY(select_home, Shift | KeyHome),
-	CONTROL_KEY(text_end, Ctrl | KeyEnd),
-	CONTROL_KEY(symbol, InputSymbol),
-	CONTROL_KEY(symbol, InputSymbol | Shift),
-	//{"up", "Переместиться вверх", textedit::up, 0, {KeyUp}, 0, HideCommand},
-	//{"up_shift", "Переместиться вверх", textedit::ups, 0, {KeyUp | Shift}, 0, HideCommand},
-	{0}
-};
 
 //	case Ctrl + Alpha + 'X':
 //		if(p2 != -1 && p1 != p2)

@@ -286,7 +286,7 @@ void control::keyinput(int id)
 	const command* pc;
 	if(dodialog(id))
 		return;
-	switch(id)
+	switch(id & 0xFFFF)
 	{
 	case InputExecute:
 		if(current_callback)
@@ -296,10 +296,46 @@ void control::keyinput(int id)
 			p();
 		}
 		break;
+	case KeyLeft: keyleft(id); break;
+	case KeyRight: keyright(id); break;
+	case KeyUp: keyup(id); break;
+	case KeyDown: keydown(id); break;
+	case KeyHome: keyhome(id); break;
+	case KeyEnd: keyend(id); break;
+	case KeyPageDown: keypagedown(id); break;
+	case KeyPageUp: keypageup(id); break;
+	case KeyEnter: keyenter(id); break;
+	case KeySpace: keyspace(id); break;
+	case KeyEscape: keyescape(id); break;
+	case KeyDelete: keydelete(id); break;
+	case KeyBackspace: keybackspace(id); break;
+	case KeyTab: keytab(id); break;
+	case MouseLeft:
+		mouseleft(hot::mouse, id, hot::pressed);
+		break;
+	case MouseRight:
+		mouseright(hot::mouse, id, hot::pressed);
+		break;
+	case MouseWheelDown:
+		mousewheel(hot::mouse, id, 1);
+		break;
+	case MouseWheelUp:
+		mousewheel(hot::mouse, id, -1);
+		break;
+	case MouseMove:
+		mousemove(hot::mouse, id);
+		break;
+	case MouseLeftDBL:
+		mouseleftdbl(hot::mouse, id);
+		break;
+	case InputTimer: inputtimer(); break;
+	case InputSymbol: inputsymbol(id, hot::param); break;
+	case InputUpdate: inputupdate(); break;
+	case InputIdle: inputidle(); break;
 	default:
 		pc = getcommands();
 		if(!pc)
-			return;
+			break;
 		pc = pc->find(id);
 		if(pc)
 			(this->*pc->type)(true);

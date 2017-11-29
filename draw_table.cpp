@@ -80,9 +80,9 @@ unsigned table::copy(bool run)
 	if(run)
 	{
 		char temp[4096]; temp[0] = 0;
-		auto p = fields->getdata(temp, columns[current_column].id, rows.get(current), false);
+		auto p = gettext(temp, rows.get(current), columns[current_column].id);
 		if(p)
-			clipboard::copy(temp, zlen(temp));
+			clipboard::copy(p, zlen(p));
 	}
 	return 0;
 }
@@ -232,7 +232,7 @@ unsigned table::setting(bool run)
 		table_columns.show_grid_lines = true;
 		table_columns.focused = true;
 		data_columns.clear();
-		for(int i=0; i<columns.count; i++)
+		for(int i = 0; i < columns.count; i++)
 		{
 			data_columns.add(columns.data[i]);
 		}
@@ -445,6 +445,11 @@ void table::showtext(rect rc, const char* value, unsigned flags) const
 	showlabel(rc, value, flags);
 }
 
+const char* table::gettext(char* result, void* data, const char* id) const
+{
+	return fields->getdata(result, id, data, false);
+}
+
 void table::renderno(rect rc, int index, unsigned flags, void* data, const widget& e) const
 {
 }
@@ -502,7 +507,7 @@ void table::renderfield(rect rc, int index, unsigned flags, void* data, const wi
 	if(!requisit)
 		return;
 	char temp[1024];
-	auto p = fields->getdata(temp, e.id, data, false);
+	auto p = gettext(temp, data, e.id);
 	if(p)
 		showtext(rc, p, flags);
 }
@@ -801,7 +806,7 @@ void table::clear()
 	current = 0;
 }
 
-unsigned table::left(bool run)
+void table::keyleft(int id)
 {
 	auto i = current_column;
 	if(current_column)
@@ -818,10 +823,9 @@ unsigned table::left(bool run)
 		ensurevisible();
 		validate(-1, false);
 	}
-	return 0;
 }
 
-unsigned table::right(bool run)
+void table::keyright(int id)
 {
 	if(isgroup(current) && !isopen(current))
 		toggle(current);
@@ -830,15 +834,14 @@ unsigned table::right(bool run)
 		current_column++;
 		validate(1, false);
 	}
-	return 0;
 }
 
-unsigned table::symbol(bool run)
+void table::inputsymbol(int id, int symbol)
 {
-	if(!hot::param || hot::param < 0x20)
-		return Disabled;
+	if(!symbol || symbol < 0x20)
+		return;
 	auto time_clock = clock();
-	if(!search_time || (time_clock - search_time) > (2*1000))
+	if(!search_time || (time_clock - search_time) > (2 * 1000))
 		search_text[0] = 0;
 	search_time = time_clock;
 	char* p = zend(search_text);
@@ -851,7 +854,6 @@ unsigned table::symbol(bool run)
 		correction();
 		ensurevisible();
 	}
-	return 0;
 }
 
 widget& table::addcol(unsigned flags, const char* id, const char* label, int width)
@@ -1005,7 +1007,6 @@ void table::contextmenu()
 }
 
 control::command table::commands[] = {
-	CONTROL_PAR(list),
 	CONTROL_ICN(add, "Добавить", F8, 0),
 	CONTROL_ICN(addcopy, "Скопировать", F9, 9),
 	CONTROL_ICN(change, "Изменить", F2, 10),
@@ -1018,9 +1019,5 @@ control::command table::commands[] = {
 	CONTROL_ICN(exportdata, "Экспортировать данные", 0, 2),
 	CONTROL_ICN(importdata, "Импортировать данные", 0, 1),
 	CONTROL_ICN(setting, "Настройки", 0, 16),
-	CONTROL_KEY(left, KeyLeft),
-	CONTROL_KEY(right, KeyRight),
-	CONTROL_KEY(symbol, InputSymbol),
-	CONTROL_KEY(symbol, InputSymbol | Shift),
 	{0}
 };
