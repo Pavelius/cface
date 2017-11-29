@@ -2,6 +2,7 @@
 #include "draw.h"
 
 command*		command_after_render;
+command*		command_clear_render;
 static int		current_command;
 extern rect		sys_static_area;
 
@@ -19,6 +20,7 @@ void draw::execute(int id, int param)
 
 int draw::input(bool redraw)
 {
+	command_clear_render->execute();
 	hot::key = current_command;
 	current_command = 0;
 	if(hot::key)

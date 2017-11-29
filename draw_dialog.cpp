@@ -46,7 +46,7 @@ void draw::focusing(int id, unsigned& flags, rect rc)
 	addelement(id, rc);
 	if(!getfocus())
 		setfocus(id);
-	else if(getfocus() == id)
+	if(getfocus() == id)
 		flags |= Focused;
 	else if(area(rc) == AreaHilitedPressed && hot::key == MouseLeft && hot::pressed)
 	{
@@ -55,7 +55,7 @@ void draw::focusing(int id, unsigned& flags, rect rc)
 	}
 }
 
-int	draw::button(int x, int y, int width, int id, unsigned flags, const char* label, int key, const char* tips)
+int	draw::button(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips)
 {
 	setposition(x, y, width);
 	struct rect rc = {x, y, x + width, y + 4 * 2 + draw::texth()};
@@ -98,7 +98,42 @@ int draw::radio(int x, int y, int width, int id, unsigned flags, const char* lab
 	}
 	if(need_select)
 		execute(id);
-	draw::text({rc1.x1 + 2, rc1.y1 + 2, rc1.x2 - 2, rc1.y2 - 2}, label);
+	rc = rc1; rc.offset(2);
+	draw::text(rc, label);
+	if(tips && a == AreaHilited)
+		tooltips(tips);
+	return rc1.height() + metrics::padding * 2;
+}
+
+int draw::checkbox(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips)
+{
+	draw::state push;
+	setposition(x, y, width);
+	rect rc = {x, y, x + width, y};
+	rect rc1 = {rc.x1 + 22, rc.y1, rc.x2, rc.y2};
+	draw::textw(rc1, label);
+	rc.y1 = rc1.y1;
+	rc.y2 = rc1.y2;
+	rc.x2 = rc1.x2;
+	focusing(id, flags, rc);
+	clipart(x + 2, y + imax((rc1.height() - 14) / 2, 0), 0, flags, ":check");
+	decortext(flags);
+	auto a = draw::area(rc);
+	auto need_value = false;
+	if((a == AreaHilited || a == AreaHilitedPressed) && !isdisabled(flags) && hot::key == MouseLeft)
+	{
+		if(!hot::pressed)
+			need_value = true;
+	}
+	if(isfocused(flags))
+	{
+		draw::rectx({rc1.x1 - 2, rc1.y1 - 1, rc1.x2 + 2, rc1.y2 + 1}, draw::fore);
+		if(!isdisabled(flags) && hot::key == KeySpace)
+			need_value = true;
+	}
+	if(need_value)
+		execute(id);
+	draw::text(rc1, label);
 	if(tips && a == AreaHilited)
 		tooltips(tips);
 	return rc1.height() + metrics::padding * 2;

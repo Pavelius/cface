@@ -1,3 +1,4 @@
+#include "command.h"
 #include "crt.h"
 #include "draw.h"
 
@@ -12,6 +13,11 @@ struct focusable_element
 static int					current_focus; // Current focus element
 static focusable_element	elements[96];
 static focusable_element*	render_control = elements;
+
+COMMAND(clear_render)
+{
+	render_control = elements;
+}
 
 static focusable_element* getby(int id)
 {
