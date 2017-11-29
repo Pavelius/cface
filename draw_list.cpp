@@ -249,6 +249,11 @@ void list::mouseleftdbl(point position, int id)
 	invoke("change");
 }
 
+void list::keyenter(int id)
+{
+	invoke("change");
+}
+
 void list::mousewheel(point position, int id, int step)
 {
 	origin += step;

@@ -114,7 +114,9 @@ unsigned table::change(bool run)
 	if(!canedit(current, columns.data[current_column]))
 		return Disabled;
 	if(run)
-		changing((void*)rows.get(current), columns.data[current_column].id);
+		changing((void*)rows.get(current),
+			columns.data[current_column].id,
+			columns.data[current_column].flags);
 	return 0;
 }
 
@@ -774,7 +776,7 @@ int table::find(const char* id, const char* value, int index)
 	return -1;
 }
 
-bool table::changing(void* object, const char* id)
+bool table::changing(void* object, const char* id, unsigned flags)
 {
 	char temp[4196]; temp[0] = 0;
 	if(!fields->getdata(temp, id, object, true))
@@ -786,6 +788,7 @@ bool table::changing(void* object, const char* id)
 		line(hot::element.x1, hot::element.y2, hot::element.x2, hot::element.y2, colors::form);
 	}
 	textedit te(temp, sizeof(temp), true);
+	te.align = flags;
 	auto result = te.editing(hot::element);
 	if(result)
 		fields->setdata(temp, id, object);

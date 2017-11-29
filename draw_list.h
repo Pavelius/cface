@@ -28,6 +28,7 @@ namespace draw
 			int				getroot(int row) const;
 			void			keydown(int id) override;
 			void			keyend(int id) override;
+			void			keyenter(int id) override;
 			void			keyhome(int id) override;
 			void			keypagedown(int id) override;
 			void			keypageup(int id) override;
