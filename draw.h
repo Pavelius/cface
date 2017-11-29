@@ -90,7 +90,6 @@ namespace hot
 	extern bool				pressed; // flag if any of mouse keys is pressed
 	extern int				param; // Draw command context. Application can extend this structure
 	extern rect				element; // Element coordinates
-	extern bool				stop; // Set true if we need stop modal loop
 }
 namespace colors
 {

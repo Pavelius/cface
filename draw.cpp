@@ -42,7 +42,6 @@ point					hot::mouse; // current mouse coordinates
 bool					hot::pressed; // flag if any of mouse keys is pressed
 int						hot::param; // Event numeric parameter (optional)
 rect					hot::element; // Event rectange (optional)
-bool					hot::stop; // Set true if we need stop modal loop
 bool					sys_optimize_mouse_move = true;
 rect					sys_static_area;
 // Locale draw variables
@@ -1846,14 +1845,4 @@ void draw::initialize()
 {
 	set_light_theme();
 	command_app_initialize->execute();
-}
-
-bool draw::domodal()
-{
-	if(hot::stop)
-	{
-		hot::stop = false;
-		return false;
-	}
-	return true;
 }
