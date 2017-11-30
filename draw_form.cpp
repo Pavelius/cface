@@ -6,16 +6,26 @@
 using namespace draw;
 using namespace draw::controls;
 
-static struct control_i
-{
-	const char*	name;
-	int			(form::*proc)(int x, int y, int width, const widget& e);
-} control_data[] = {
-	{},
+form::control_i form::renders[] = {
+	{"", &form::renderno},
+	//
 	{"Декорация", &form::decoration},
 	{"Группа", &form::group},
 	{"Закладки", &form::tabs},
+	{"", &form::renderno},
+	{"Кнопка", &form::button},
+	{"Поле", &form::field},
+	{"Пометка", &form::check},
+	{"Выбор", &form::radio},
+	{"Изображение", &form::renderno},
+	{"", &form::renderno},
 };
+static_assert(sizeof(form::renders) / sizeof(form::renders[0]) == LineNumber + 1, "Invalid form render procs");
+
+static void callback_setfocus()
+{
+	draw::setfocus(hot::param);
+}
 
 static char* get_text(char* result, void* object)
 {
@@ -26,27 +36,27 @@ static char* get_text(char* result, void* object)
 
 static const xsfield* getdatatype(const form* source, const widget& e)
 {
+	if(!e.id)
+		return 0;
 	auto meta = source->getmeta();
 	if(!meta)
 		return 0;
 	return meta->find(e.id);
 }
 
-static void callback_setfocus()
+void form::setfocus(const widget* e)
 {
-	//draw::setfocus(hot::name);
-	//execute(InputUpdate);
+	draw::setfocus((int)&e);
 }
 
-static void invoke_setfocus(const char* id)
+const widget* form::getfocus()
 {
-	//execute(callback_setfocus);
-	//hot::name = id;
+	return (const widget*)draw::getfocus();
 }
 
-unsigned form::getflags(const widget& e) const
+unsigned form::getflags(const widget& e, unsigned flags) const
 {
-	unsigned result = e.flags;
+	unsigned result = e.flags | (flags & (Disabled|Checked|Focused));
 	if(disabled)
 		result |= Disabled;
 	if(getfocus() == &e)
@@ -56,6 +66,10 @@ unsigned form::getflags(const widget& e) const
 
 int form::header(int& x, int y, int& width, unsigned flags, const char* label, int title)
 {
+	if(!label)
+		return 0;
+	if(!title)
+		title = 100;
 	char temp[1024];
 	draw::state push;
 	zcpy(temp, label, sizeof(temp)-2);
@@ -67,42 +81,52 @@ int form::header(int& x, int y, int& width, unsigned flags, const char* label, i
 	return draw::texth();
 }
 
-int form::group(int x, int y, int width, const widget& e)
+int form::group(int x, int y, int width, unsigned flags, const widget& e)
 {
+	if(!e.childs)
+		return 0;
+	flags = getflags(e, flags);
 	int y0 = y;
-	setposition(x, y, width); // Первая рамка (может надо двойную ?)
-	int x1 = x, y1 = y, w1 = width;
-	setposition(x, y, width); // Отступ от рамки
-	draw::state push;
-	draw::font = metrics::font;
-	if(e.label)
-		y += texth() + metrics::padding * 2;
-	if(e.childs[0].width)
-		y += horizontal(x, y, width, e);
-	else
-		y += vertical(x, y, width, e);
 	if(e.label)
 	{
+		setposition(x, y, width); // Первая рамка (может надо двойную ?)
+		int x1 = x, y1 = y, w1 = width;
+		setposition(x, y, width); // Отступ от рамки
+		draw::state push;
+		draw::font = metrics::font;
+		if(e.label)
+			y += texth() + metrics::padding * 2;
+		if(e.childs[0].width)
+			y += horizontal(x, y, width, flags, e);
+		else
+			y += vertical(x, y, width, flags, e);
 		color c1 = colors::border.mix(colors::window, 128);
 		color c2 = c1.darken();
 		gradv({x1, y1, x1 + w1, y1 + texth() + metrics::padding * 2}, c1, c2);
 		fore = colors::text.mix(c1, 96);
 		text(x1 + (w1 - textw(e.label)) / 2, y1 + metrics::padding, e.label);
+		rectb({x1, y1, x1 + w1, y}, colors::border);
+		y += metrics::padding;
 	}
-	y += metrics::padding;
-	rectb({x1, y1, x1 + w1, y}, colors::border);
+	else
+	{
+		if(e.childs[0].width)
+			y += horizontal(x, y, width, flags, e);
+		else
+			y += vertical(x, y, width, flags, e);
+	}
 	return y - y0;
 }
 
-int form::vertical(int x, int y, int width, const widget& e)
+int form::vertical(int x, int y, int width, unsigned flags, const widget& e)
 {
 	int y0 = y;
-	//for(auto p = e.childs; *p; p++)
-	//	y += p->type(x, y, width, getflags(*p), p->label, p->value, getdata(*p), p->tips);
+	for(auto p = e.childs; *p; p++)
+		y += element(x, y, width, flags, *p);
 	return y - y0;
 }
 
-int form::horizontal(int x, int y, int width, const widget& e)
+int form::horizontal(int x, int y, int width, unsigned flags, const widget& e)
 {
 	int mh = 0;
 	int n = 0;
@@ -110,20 +134,15 @@ int form::horizontal(int x, int y, int width, const widget& e)
 	{
 		auto w = width*p->width / 12;
 		auto x1 = x + width*n / 12;
-		//auto h = p->type(x, y, width, getflags(*p), p->label, p->value, getdata(*p), p->tips);
-		//if(h > mh)
-		//	mh = h;
+		auto h = element(x1, y, w, flags, *p);
+		if(h > mh)
+			mh = h;
 		n += p->width;
 	}
-	return y + mh;
+	return mh;
 }
 
-int form::element(int x, int y, int width, const widget& e)
-{
-	return 0;
-}
-
-int form::field(int x, int y, int width, const widget& e)
+int form::field(int x, int y, int width, unsigned flags, const widget& e)
 {
 	auto field_type = e.gettype();
 	draw::state push;
@@ -132,9 +151,10 @@ int form::field(int x, int y, int width, const widget& e)
 	auto p = getdata(temp, e);
 	if(!p)
 		return 0;
+	flags = getflags(e, flags);
 	setposition(x, y, width);
+	header(x, y, width, flags, e.label, e.title);
 	rect rc = {x, y, x + width, y + draw::texth() + 8};
-	auto flags = getflags(e);
 	decortext(flags);
 	if(!isdisabled(flags))
 		draw::rectf(rc, colors::window);
@@ -189,7 +209,7 @@ int form::field(int x, int y, int width, const widget& e)
 	return rc.height() + metrics::padding * 2;
 }
 
-int form::tabs(int x, int y, int width, const widget& e)
+int form::tabs(int x, int y, int width, unsigned flags, const widget& e)
 {
 	if(!e.childs)
 		return 0;
@@ -208,37 +228,31 @@ int form::tabs(int x, int y, int width, const widget& e)
 	auto count = ps - data;
 	auto current = getdata(e);
 	rect rc = {x, y, x + width, y + tab_height};
-	int tabs_hilite;
+	int tabs_hilite = -1;
 	if(draw::tabs(rc, false, false, (void**)data, 0, count, current, &tabs_hilite, get_text, 0, {0,0,0,0}))
 	{
-		//if(tabs_hilite != -1)
-		//	setdata(source, getdatasource(id, link), tabs_hilite);
+		if(tabs_hilite != -1)
+		{
+			setdata(e, tabs_hilite);
+			current = tabs_hilite;
+		}
 	}
 	y += tab_height + metrics::padding;
-	auto& pw = e.childs[0];
-	return 0;
-	//return pw.type(x, y, width, pw.id, pw.flags, pw.label, pw.value, pw.link, source, pw.title, pw.childs, pw.tips) + (y - y0);
+	return element(x, y, width, flags, e.childs[current]);
 }
 
-int form::decoration(int x, int y, int width, const widget& e)
+int form::decoration(int x, int y, int width, unsigned flags, const widget& e)
 {
 	draw::state push;
+	flags = getflags(e, flags);
 	setposition(x, y, width);
-	decortext(getflags(e));
+	decortext(flags);
 	return draw::textf(x, y, width, e.label) + metrics::padding * 2;
 }
 
 void form::focusing(const rect& rc, unsigned& flags, const widget& e)
 {
-	if(flags&Disabled)
-		return;
-	if(!getfocus())
-		setfocus(&e);
-	if(getfocus() == &e)
-		flags |= Focused;
-	else if(area(rc) == AreaHilitedPressed && hot::key == MouseLeft && hot::pressed)
-		invoke_setfocus(id);
-	addelement(&e, rc);
+	draw::focusing((int)&e, flags, rc);
 }
 
 bool form::addbutton(rect& rc, const char* t1, int k1, const char* tt1)
@@ -270,7 +284,7 @@ int form::addbutton(rect& rc, const char* t1, int k1, const char* tt1, const cha
 	return result;
 }
 
-int form::radio(int x, int y, int width, const widget& e)
+int form::radio(int x, int y, int width, unsigned flags, const widget& e)
 {
 	if(!e.label || !e.label[0])
 		return 0;
@@ -283,7 +297,7 @@ int form::radio(int x, int y, int width, const widget& e)
 	rc.y1 = rc1.y1;
 	rc.y2 = rc1.y2;
 	rc.x2 = rc1.x2;
-	auto flags = getflags(e);
+	flags = getflags(e, flags);
 	decortext(flags);
 	focusing(rc, flags, e);
 	clipart(x + 2, y + imax((rc1.height() - 14) / 2, 0), width, flags, ":radio");
@@ -293,6 +307,11 @@ int form::radio(int x, int y, int width, const widget& e)
 	{
 		if(!hot::pressed)
 			need_select = true;
+		else
+		{
+			execute(callback_setfocus);
+			hot::param = (int)&e;
+		}
 	}
 	if(isfocused(flags))
 	{
@@ -308,14 +327,14 @@ int form::radio(int x, int y, int width, const widget& e)
 	return rc1.height() + metrics::padding * 2;
 }
 
-int form::check(int x, int y, int width, const widget& e)
+int form::check(int x, int y, int width, unsigned flags, const widget& e)
 {
 	if(!e.label || !e.label[0])
 		return 0;
 	setposition(x, y, width);
 	rect rc = {x, y, x + width, y};
 	rect rc1 = {rc.x1 + 22, rc.y1, rc.x2, rc.y2};
-	auto flags = getflags(e);
+	flags = getflags(e, flags);
 	if(getdata(e))
 		flags |= Checked;
 	draw::textw(rc1, e.label);
@@ -323,7 +342,6 @@ int form::check(int x, int y, int width, const widget& e)
 	rc.y2 = rc1.y2;
 	rc.x2 = rc1.x2;
 	focusing(rc, flags, e);
-	clipart(x + 2, y + imax((rc1.height() - 14) / 2, 0), 0, flags, ":check");
 	decortext(flags);
 	auto a = draw::area(rc);
 	auto need_value = false;
@@ -332,7 +350,10 @@ int form::check(int x, int y, int width, const widget& e)
 		if(!hot::pressed)
 			need_value = true;
 		else
-			invoke_setfocus(id);
+		{
+			execute(callback_setfocus);
+			hot::param = (int)&e;
+		}
 	}
 	if(isfocused(flags))
 	{
@@ -341,20 +362,24 @@ int form::check(int x, int y, int width, const widget& e)
 			need_value;
 	}
 	if(need_value)
+	{
 		setdata(e, ischecked(flags) ? 0 : 1);
+		flags ^= Checked;
+	}
+	clipart(x + 2, y + imax((rc1.height() - 14) / 2, 0), 0, flags, ":check");
 	draw::text(rc1, e.label);
 	if(e.tips && a == AreaHilited)
 		tooltips(e.tips);
 	return rc1.height() + metrics::padding * 2;
 }
 
-int form::button(int x, int y, int width, const widget& e)
+int form::button(int x, int y, int width, unsigned flags, const widget& e)
 {
 	if(!e.label || !e.label[0])
 		return 0;
 	setposition(x, y, width);
 	struct rect rc = {x, y, x + width, y + 4 * 2 + draw::texth()};
-	auto flags = getflags(e);
+	flags = getflags(e, flags);
 	focusing(rc, flags, e);
 	if(buttonh({x, y, x + width, rc.y2},
 		ischecked(flags), isfocused(flags), isdisabled(flags), true,
@@ -382,6 +407,8 @@ int form::button(int x, int y, int width, const widget& e)
 
 int form::getdata(const widget& w)
 {
+	if(!w.id)
+		return 0;
 	xsref e = {getmeta(), getobject()};
 	return e.get(w.id);
 }
@@ -446,4 +473,17 @@ char* form::getdata(char* result, const widget& e, bool to_buffer)
 		zcpy(result, (char*)pv);
 	}
 	return result;
+}
+
+int form::element(int x, int y, int width, unsigned flags, const widget& e)
+{
+	return (this->*renders[e.flags & 0xF].proc)(x, y, width, flags, e);
+}
+
+int form::view(int x, int y, int width, const widget* widgets)
+{
+	widget e; memset(&e, 0, sizeof(e));
+	e.flags = WidgetGroup;
+	e.childs = widgets;
+	return element(x, y, width, 0, e);
 }

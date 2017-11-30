@@ -223,7 +223,7 @@ namespace draw
 	int						clipart(int x, int y, int width, unsigned flags, const char* string);
 	void					decortext(unsigned flags);
 	bool					dodialog(int id);
-	bool					domodal();
+	void					execute(void(*callback)());
 	void					execute(int id, int value = 0);
 	void					focusing(int id, unsigned& flags, rect rc);
 	int						getbpp();
@@ -248,7 +248,6 @@ namespace draw
 	void					image(int x, int y, const sprite* e, int id, int flags, unsigned char alpha, color* pal);
 	void					initialize();
 	int						input(bool redraw = false);
-	void					invoke(void(*callback)());
 	void					line(int x1, int y1, int x2, int y2); // Draw line
 	void					line(int x1, int y1, int x2, int y2, unsigned char color); // Draw line
 	void					line(int x1, int y1, int x2, int y2, color c1); // Draw line
