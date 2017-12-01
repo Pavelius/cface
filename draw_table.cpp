@@ -239,7 +239,7 @@ unsigned table::setting(bool run)
 			data_columns.add(columns.data[i]);
 		}
 		tuning(controls);
-		setfocus(0);
+		setfocus(0, true);
 		while(true)
 		{
 			rect rc = {0, 0, getwidth(), getheight() - dy};

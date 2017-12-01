@@ -27,10 +27,10 @@ namespace draw
 			int				check(int x, int y, int width, unsigned flags, const widget& e);
 			int				decoration(int x, int y, int width, unsigned flags, const widget& e);
 			int				element(int x, int y, int width, unsigned flags, const widget& e);
+			bool			isvisible(const widget& e) const { return true; }
 			int				field(int x, int y, int width, unsigned flags, const widget& e);
 			void			focusing(const rect& rc, unsigned& flags, const widget& e);
 			unsigned		getflags(const widget& e, unsigned flags) const;
-			static const widget* getfocus();
 			int				getdata(const widget& e);
 			char*			getdata(char* result, const widget& e, bool to_buffer = false);
 			const xsfield*	getmeta() const override { return fields; }
@@ -41,7 +41,7 @@ namespace draw
 			int				radio(int x, int y, int width, unsigned flags, const widget& e);
 			int				renderno(int x, int y, int width, unsigned flags, const widget& e) { return 0; }
 			void			setdata(const widget& e, int value, bool instant = false);
-			static void		setfocus(const widget* value);
+			static void		setfocus(const widget& value);
 			int				tabs(int x, int y, int width, unsigned flags, const widget& e);
 			int				vertical(int x, int y, int width, unsigned flags, const widget& e);
 			int				view(int x, int y, int width, const widget* source);

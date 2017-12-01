@@ -277,7 +277,7 @@ namespace draw
 	void					setclip(rect rc);
 	inline void				setclip() { clipping.set(0, 0, getwidth(), getheight()); }
 	void					setcolor(unsigned char index);
-	void					setfocus(int id);
+	void					setfocus(int id, bool intant);
 	void					setposition(int& x, int& y, int& width);
 	void					settimer(unsigned milleseconds);
 	int						sheetline(rect rc, bool background = true);

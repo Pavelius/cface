@@ -2,6 +2,29 @@
 
 static void(*current_execute)();
 
+static int current_focus; // Current focus element
+
+static void callback_setfocus()
+{
+	draw::setfocus(hot::param, true);
+}
+
+int draw::getfocus()
+{
+	return current_focus;
+}
+
+void draw::setfocus(int value, bool instant)
+{
+	if(instant)
+		current_focus = value;
+	else
+	{
+		execute(callback_setfocus);
+		hot::param = value;
+	}
+}
+
 bool draw::dodialog(int id)
 {
 	switch(id)
@@ -21,7 +44,7 @@ bool draw::dodialog(int id)
 	case KeyTab | Ctrl | Shift:
 		id = getnext(getfocus(), id);
 		if(id)
-			setfocus(id);
+			setfocus(id, true);
 		return true;
 	}
 	return false;

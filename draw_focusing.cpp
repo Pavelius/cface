@@ -10,7 +10,6 @@ struct focusable_element
 	rect			rc;
 	operator bool() const { return id != 0; }
 };
-static int					current_focus; // Current focus element
 static focusable_element	elements[96];
 static focusable_element*	render_control = elements;
 
@@ -54,16 +53,6 @@ static focusable_element* getlast()
 		p = &e;
 	}
 	return p;
-}
-
-int draw::getfocus()
-{
-	return current_focus;
-}
-
-void draw::setfocus(int value)
-{
-	current_focus = value;
 }
 
 void draw::addelement(int id, const rect& rc)

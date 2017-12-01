@@ -1,25 +1,17 @@
 #include "crt.h"
 #include "draw.h"
 
-static void callback_setfocus()
-{
-	draw::setfocus(hot::param);
-}
-
 void draw::focusing(int id, unsigned& flags, rect rc)
 {
 	if(flags&Disabled)
 		return;
 	addelement(id, rc);
 	if(!getfocus())
-		setfocus(id);
+		setfocus(id, true);
 	if(getfocus() == id)
 		flags |= Focused;
 	else if(area(rc) == AreaHilitedPressed && hot::key == MouseLeft && hot::pressed)
-	{
-		execute(callback_setfocus);
-		hot::param = id;
-	}
+		setfocus(id, false);
 }
 
 int	draw::button(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips)

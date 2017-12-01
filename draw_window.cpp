@@ -74,7 +74,7 @@ void draw::window::opening()
 
 void draw::window::closing()
 {
-	setfocus(focus);
+	setfocus(focus, true);
 	if(!identifier)
 		return;
 	auto e = windows.addu(szdup(identifier));

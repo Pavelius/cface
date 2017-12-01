@@ -60,7 +60,7 @@ bool control::open(const char* title, unsigned state, int width, int height)
 	draw::window dc(-1, -1, width, height, state);
 	if(title)
 		draw::setcaption(title);
-	setfocus(0);
+	setfocus(0, true);
 	while(true)
 	{
 		rect rc = {0, 0, draw::getwidth(), draw::getheight()};
