@@ -9,9 +9,13 @@ extern rect			sys_static_area;
 sprite*				metrics::toolbar = (sprite*)loadb("toolbar.pma");
 sprite*				metrics::tree = (sprite*)loadb("tree.pma");
 control::plugin*	control::plugin::first;
-control*			hot::source;
-static void			(*current_callback)();
 static const char*	current_name;
+static control*		current_control;
+
+static void callback_invoke()
+{
+	current_control->execute(current_name);
+}
 
 control::plugin::plugin(control& element) : element(element)
 {
@@ -105,9 +109,9 @@ bool control::open(rect rc)
 	}
 }
 
-static void invoke_context_menu()
+void control::mouseright(point position, int id, bool pressed)
 {
-	hot::source->contextmenu();
+	contextmenu();
 }
 
 void control::view(rect rc, bool show_toolbar)
@@ -127,16 +131,6 @@ void control::view(rect rc, bool show_toolbar)
 	focusing((int)this, flags, rc);
 	focused = isfocused(flags);
 	background(rc);
-	// Теперь мы имеем область элемента
-	if(areb(rc))
-	{
-		hot::element = rc;
-		if(!disabled)
-		{
-			if(hot::key == MouseRight && !hot::pressed)
-				execute(invoke_context_menu);
-		}
-	}
 	// Перед выводом настроим разные элементы.
 	prerender();
 	// Обновим цвет элемента, который может именился
@@ -158,14 +152,10 @@ void control::view(rect rc, bool show_toolbar)
 //	return height;
 //}
 
-static void callback_invoke()
-{
-	hot::source->execute(current_name, true);
-}
-
 void control::invoke(const char* name) const
 {
-	const_cast<control*>(this)->execute(callback_invoke);
+	draw::execute(callback_invoke);
+	current_control = const_cast<control*>(this);
 	current_name = name;
 }
 
@@ -274,13 +264,6 @@ unsigned control::execute(const char* id, bool run)
 	return 0;
 }
 
-void control::execute(void(*proc)())
-{
-	draw::execute(InputExecute);
-	hot::source = this;
-	current_callback = proc;
-}
-
 void control::keyinput(int id)
 {
 	const command* pc;
@@ -288,14 +271,6 @@ void control::keyinput(int id)
 		return;
 	switch(id & 0xFFFF)
 	{
-	case InputExecute:
-		if(current_callback)
-		{
-			auto p = current_callback;
-			current_callback = 0;
-			p();
-		}
-		break;
 	case KeyLeft: keyleft(id); break;
 	case KeyRight: keyright(id); break;
 	case KeyUp: keyup(id); break;

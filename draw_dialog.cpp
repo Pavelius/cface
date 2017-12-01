@@ -87,7 +87,7 @@ int draw::checkbox(int x, int y, int width, int id, unsigned flags, const char* 
 	if(isfocused(flags))
 	{
 		draw::rectx({rc1.x1 - 2, rc1.y1 - 1, rc1.x2 + 2, rc1.y2 + 1}, draw::fore);
-		if(!isdisabled(flags) && hot::key == KeySpace)
+		if(hot::key == KeySpace)
 			need_value = true;
 	}
 	if(need_value)

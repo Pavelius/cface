@@ -77,7 +77,6 @@ static bool editstart(const rect& rc, control* source, const char* id, unsigned 
 	{
 		//execute(callback_edit);
 		hot::element = rc;
-		hot::source = source;
 		edit_flags = flags;
 		edit_childs = childs;
 	}

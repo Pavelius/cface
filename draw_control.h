@@ -59,7 +59,6 @@ namespace draw
 		virtual void			background(rect& rc);
 		virtual void			contextmenu() {}
 		unsigned				execute(const char* id, bool run = true);
-		void					execute(void(*proc)());
 		color					getcolor(color normal) const;
 		virtual control*		getcontrol(const char* id) { return 0; }
 		virtual const command*	getcommands() const { return 0; }
@@ -91,7 +90,7 @@ namespace draw
 		virtual void			mouseleft(point position, int id, bool pressed) {}
 		virtual void			mouseleftdbl(point position, int id) {}
 		virtual void			mousemove(point position, int id) {}
-		virtual void			mouseright(point position, int id, bool pressed) {}
+		virtual void			mouseright(point position, int id, bool pressed);
 		virtual void			mousewheel(point position, int id, int step) {}
 		virtual void			nonclient(rect rc);
 		bool					open(rect rc);
@@ -118,8 +117,4 @@ namespace draw
 	void						dockbar(rect& rc);
 	unsigned					getdocked(control** output, unsigned count, dock_s type);
 	int							view(rect rc, control** pages, int count, int& current, bool show_toolbar, unsigned tab_state, int padding);
-}
-namespace hot
-{
-	extern draw::control*		source;
 }

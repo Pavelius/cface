@@ -7,22 +7,9 @@ using namespace draw;
 using namespace draw::controls;
 static control*		current_control;
 static const char*	current_id;
-
-form::control_i form::renders[] = {
-	{"", &form::renderno},
-	//
-	{"Декорация", &form::decoration},
-	{"Группа", &form::group},
-	{"Закладки", &form::tabs},
-	{"", &form::renderno},
-	{"Кнопка", &form::button},
-	{"Поле", &form::field},
-	{"Пометка", &form::check},
-	{"Выбор", &form::radio},
-	{"Изображение", &form::renderno},
-	{"", &form::renderno},
-};
-static_assert(sizeof(form::renders) / sizeof(form::renders[0]) == LineNumber + 1, "Invalid form render procs");
+static int			edit_command;
+static unsigned		edit_flags;
+const widget*		edit_childs;
 
 static void callback_setvalue(control* source, const char* id, int value)
 {
@@ -35,6 +22,10 @@ static void callback_setvalue(control* source, const char* id, int value)
 static void callback_setvalue()
 {
 	callback_setvalue(current_control, current_id, hot::param);
+}
+
+static void callback_edit()
+{
 }
 
 static char* get_text(char* result, void* object)
@@ -52,6 +43,40 @@ static const xsfield* getdatatype(const form* source, const widget& e)
 	if(!meta)
 		return 0;
 	return meta->find(e.id);
+}
+
+static bool editstart(const rect& rc, control* source, const char* id, unsigned flags, const widget* childs)
+{
+	auto result = false;
+	edit_command = 0;
+	switch(hot::key&CommandMask)
+	{
+	case MouseMove:
+	case InputIdle:
+	case InputTimer:
+		// Команды не влияющие на вход в режим редактирования
+		break;
+	case MouseLeft:
+	case MouseLeftDBL:
+	case MouseRight:
+		edit_command = hot::key;
+		result = draw::areb(rc);
+		break;
+	case InputSymbol:
+		result = true;
+		break;
+	default:
+		result = (hot::key&CommandMask) >= KeyLeft;
+		break;
+	}
+	if(result)
+	{
+		execute(callback_edit);
+		hot::element = rc;
+		edit_flags = flags;
+		edit_childs = childs;
+	}
+	return result;
 }
 
 void form::setfocus(const widget& e)
@@ -209,17 +234,17 @@ int form::field(int x, int y, int width, unsigned flags, const widget& e)
 	focusing(rc, flags, e);
 	auto a = area(rc);
 	bool enter_edit = false;
-	//if(isfocused(flags) && id)
-	//	enter_edit = editstart(rc, source, id, flags, childs);
-	//if(!enter_edit)
-	//{
+	if(isfocused(flags) && e.id)
+		enter_edit = editstart(rc, source, id, flags, childs);
+	if(!enter_edit)
+	{
 		if(isfocused(flags))
 			draw::texte(rc + metrics::edit, p, flags, 0, zlen(p));
 		else
 			draw::texte(rc + metrics::edit, p, flags, -1, -1);
 		if(e.tips && a == AreaHilited)
 			tooltips(e.tips);
-	//}
+	}
 	return rc.height() + metrics::padding * 2;
 }
 
@@ -360,8 +385,8 @@ int form::check(int x, int y, int width, unsigned flags, const widget& e)
 	if(isfocused(flags))
 	{
 		draw::rectx({rc1.x1 - 2, rc1.y1 - 1, rc1.x2 + 2, rc1.y2 + 1}, draw::fore);
-		if(!isdisabled(flags) && hot::key == KeySpace)
-			need_value;
+		if(hot::key == KeySpace)
+			need_value = true;
 	}
 	if(need_value)
 		setdata(e, ischecked(flags) ? 0 : 1);
@@ -374,7 +399,7 @@ int form::check(int x, int y, int width, unsigned flags, const widget& e)
 
 int form::button(int x, int y, int width, unsigned flags, const widget& e)
 {
-	if(!e.label || !e.label[0])
+	if(!e.label || !e.label[0] || !e.id || !e.id[0])
 		return 0;
 	setposition(x, y, width);
 	struct rect rc = {x, y, x + width, y + 4 * 2 + draw::texth()};
@@ -384,7 +409,7 @@ int form::button(int x, int y, int width, unsigned flags, const widget& e)
 		ischecked(flags), isfocused(flags), isdisabled(flags), true,
 		e.label, KeyEnter, false, e.tips))
 	{
-		draw::execute(InputExecute);
+		invoke(e.id);
 	}
 	return rc.height() + metrics::padding * 2;
 }
@@ -403,7 +428,7 @@ void form::setdata(const widget& w, int value, bool instant)
 		callback_setvalue(this, w.id, value);
 	else
 	{
-		execute(callback_setvalue);
+		draw::execute(callback_setvalue);
 		current_control = this;
 		current_id = w.id;
 		hot::param = value;
@@ -469,3 +494,19 @@ int form::view(int x, int y, int width, const widget* widgets)
 	e.childs = widgets;
 	return element(x, y, width, 0, e);
 }
+
+form::control_i form::renders[] = {
+	{"", &form::renderno},
+	//
+	{"Декорация", &decoration},
+	{"Группа", &group},
+	{"Закладки", &tabs},
+	{"", &renderno},
+	{"Кнопка", &button},
+	{"Поле", &field},
+	{"Пометка", &check},
+	{"Выбор", &radio},
+	{"Изображение", &renderno},
+	{"", &renderno},
+};
+static_assert(sizeof(form::renders) / sizeof(form::renders[0]) == LineNumber + 1, "Invalid form render procs");
