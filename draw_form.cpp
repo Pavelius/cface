@@ -235,7 +235,7 @@ int form::field(int x, int y, int width, unsigned flags, const widget& e)
 	auto a = area(rc);
 	bool enter_edit = false;
 	if(isfocused(flags) && e.id)
-		enter_edit = editstart(rc, source, id, flags, childs);
+		enter_edit = editstart(rc, this, id, flags, e.childs);
 	if(!enter_edit)
 	{
 		if(isfocused(flags))

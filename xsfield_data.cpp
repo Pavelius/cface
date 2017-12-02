@@ -26,13 +26,14 @@ const char* xsfield::getdata(char* result, const char* id, const void* object, b
 	{
 		object = (void*)requisit->get(requisit->ptr((void*)object));
 		if(!object)
-			return 0;
+			return result;
 		auto value_type = requisit->type;
-		requisit = value_type->find("name");
+		if(value_type->type == text_type)
+			requisit = value_type;
+		else
+			requisit = value_type->find("name");
 		if(!requisit)
-			requisit = value_type->find("text");
-		if(!requisit)
-			requisit = value_type->find("id");
+			return result;
 		auto value = (const char*)requisit->get(requisit->ptr(object));
 		if(value)
 		{
@@ -59,4 +60,15 @@ void xsfield::setdata(const char* result, const char* id, void* object) const
 	}
 	else if(requisit->type == number_type)
 		requisit->set(requisit->ptr(object), sz2num(result));
+	else if(requisit->reference)
+	{
+		if(result[0]==0)
+			requisit->set(requisit->ptr(object), 0);
+		else
+		{
+			auto xs = xsbase::getref(result, requisit->type);
+			if(xs)
+				requisit->set(requisit->ptr(object), (int)xs.object);
+		}
+	}
 }

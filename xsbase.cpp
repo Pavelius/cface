@@ -43,12 +43,25 @@ xsref xsbase::getref(const char* id)
 {
 	for(auto xs = first; xs; xs = xs->next)
 	{
-		if(!xs->fields->iskey())
+		if(xs->fields[0].type!=text_type)
 			continue;
-		auto xr = xs->find("id", id);
+		auto xr = xs->find(xs->fields[0].id, id);
 		if(xr)
 			return xr;
 	}
+	return{0};
+}
+
+xsref xsbase::getref(const char* id, const xsfield* fields)
+{
+	auto xs = find(fields);
+	if(!xs)
+		return{0};
+	if(xs->fields[0].type != text_type)
+		return{0};
+	auto xr = xs->find(xs->fields[0].id, id);
+	if(xr)
+		return xr;
 	return{0};
 }
 
