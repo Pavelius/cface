@@ -16,6 +16,7 @@ namespace draw
 			unsigned		align;
 			bool			readonly;
 			bool			update_records;
+			bool			show_records;
 			//
 			textedit(char* string, unsigned maxlenght, bool select_text);
 			//
@@ -29,7 +30,7 @@ namespace draw
 			int				hittest(rect rc, point pt, unsigned state) const;
 			void			inputsymbol(int id, int symbol) override;
 			void			invalidate() override;
-			bool			isshowrecords() const { return getrecordsheight() != 0; }
+			bool			isshowrecords() const;
 			void			keybackspace(int id) override;
 			void			keydelete(int id) override;
 			void			keydown(int id) override;

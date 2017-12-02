@@ -827,6 +827,7 @@ bool table::changing(void* object, const char* id, unsigned flags)
 		assert(base);
 		autocomple_xsbase aclist(base);
 		te.records = &aclist;
+		aclist.hilite_rows = true;
 		result = te.editing(hot::element);
 	}
 	else

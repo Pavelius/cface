@@ -68,7 +68,7 @@ void list::correction()
 void list::row(rect rc, int index)
 {
 	if(index==current)
-		hilight(rc, focused);
+		hilight(rc, focused ? Focused : 0);
 }
 
 int list::getroot(int row) const

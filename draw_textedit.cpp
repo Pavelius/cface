@@ -19,6 +19,7 @@ readonly(false),
 rctext(metrics::edit),
 records(0),
 update_records(true),
+show_records(true),
 cashed_width(-1),
 cashed_string(0),
 cashed_origin(0)
@@ -184,6 +185,12 @@ void textedit::cashing(rect rc)
 	}
 }
 
+bool textedit::isshowrecords() const
+{
+	return show_records
+		&& getrecordsheight() != 0;
+}
+
 void textedit::invalidate()
 {
 	cashed_width = -1;
@@ -264,7 +271,7 @@ bool textedit::editing(rect rco)
 		{
 			if(records->maximum)
 			{
-				rcv.set(rco.x1, rco.y2 + 2, imin(rco.x1 + 300, rco.x2), rco.y2 + 4 + getrecordsheight());
+				rcv.set(rco.x1, rco.y2 + 2, imin(rco.x1 + 300, rco.x2), rco.y2 + 2 + getrecordsheight());
 				records->focused = true;
 				records->view(rcv);
 			}
@@ -278,7 +285,10 @@ bool textedit::editing(rect rco)
 			return false;
 		case KeyEscape:
 			if(records && isshowrecords())
+			{
+				show_records = false;
 				break;
+			}
 			return false;
 		case KeyTab:
 		case KeyTab | Shift:
@@ -288,11 +298,12 @@ bool textedit::editing(rect rco)
 		case KeyEnter:
 			if(records && isshowrecords())
 			{
-				//auto value = records->get("current");
-				//if(value)
-				//	zcpy(string, value, maxlenght);
+				auto value = records->getname(records->current);
+				if(value)
+					zcpy(string, value, maxlenght);
 				select(0, false);
 				select(zlen(string), true);
+				show_records = false;
 				break;
 			}
 			return true;
@@ -334,7 +345,14 @@ bool textedit::editing(rect rco)
 		default:
 			keyinput(id);
 			if(id == InputSymbol)
-				updaterecords();
+			{
+				auto key = hot::param & 0xFFFF;
+				if(key == 8 || key >= 0x20)
+				{
+					show_records = true;
+					updaterecords();
+				}
+			}
 			break;
 		}
 	}

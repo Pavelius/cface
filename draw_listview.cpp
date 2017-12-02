@@ -11,6 +11,11 @@ listview::listview(const void** source, unsigned count, const xsfield* fields, c
 	setpresetation(name);
 }
 
+const char* listview::getname(int index) const
+{
+	return (const char*)requisit->get(requisit->ptr(source[index]));
+}
+
 void listview::setpresetation(const char* name)
 {
 	requisit = fields->find(name);
@@ -18,7 +23,8 @@ void listview::setpresetation(const char* name)
 
 void listview::row(rect rc, int index)
 {
-	list::row({rc.x1, rc.y1, rc.x2 - 1, rc.y2}, index);
+	list::row({rc.x1+1, rc.y1+1, rc.x2-1, rc.y2}, index);
+	draw::area(rc);
 	auto p = (const char*)requisit->get(requisit->ptr(source[index]));
 	if(p)
 	{
