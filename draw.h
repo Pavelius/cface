@@ -136,12 +136,12 @@ namespace draw
 {
 	namespace drag
 	{
-		extern const char*	id;
+		extern int			id;
 		extern drap_part_s	part;
 		extern int			value;
 		extern point		mouse;
-		bool				active(const char* id, drap_part_s part);
-		void				begin(const char* id, drap_part_s part);
+		bool				active(int id, drap_part_s part);
+		void				begin(int id, drap_part_s part);
 	}
 	namespace clipboard
 	{
@@ -271,8 +271,8 @@ namespace draw
 	void					rectf(rect rc, color c1, unsigned char alpha);
 	void					rectf(rect rc, unsigned char c1, unsigned char alpha);
 	void					rectx(rect rc, color c1);
-	void					scrollh(const char* id, const struct rect& scroll, int& origin, int count, int maximum, bool focused = false);
-	void					scrollv(const char* id, const struct rect& scroll, int& origin, int count, int maximum, bool focused = false);
+	void					scrollh(int id, const struct rect& scroll, int& origin, int count, int maximum, bool focused = false);
+	void					scrollv(int id, const struct rect& scroll, int& origin, int count, int maximum, bool focused = false);
 	void					setcaption(const char* string);
 	void					setclip(rect rc);
 	inline void				setclip() { clipping.set(0, 0, getwidth(), getheight()); }
@@ -283,8 +283,8 @@ namespace draw
 	int						sheetline(rect rc, bool background = true);
 	const char*				skiptr(const char* string);
 	void					spline(point* points, int n);
-	void					splith(int x, int y, int width, int& value, const char* id, int size, int minimum, int maximum, bool down_align = false);
-	void					splitv(int x, int y, int& value, int height, const char* id, int size, int minimum, int maximum, bool right_align = false);
+	void					splith(int x, int y, int width, int& value, int id, int size, int minimum, int maximum, bool down_align = false);
+	void					splitv(int x, int y, int& value, int height, int id, int size, int minimum, int maximum, bool right_align = false);
 	void					stroke(int x, int y, const sprite* e, int id, int flags, unsigned char thin = 1, unsigned char* koeff = 0);
 	void					syscursor(bool enable);
 	void					sysmouse(bool enable);

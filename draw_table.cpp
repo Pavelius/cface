@@ -293,7 +293,7 @@ void table::background(rect& rc)
 	// background
 	list::background(rc);
 	// drag&drop
-	if(drag::active(id, DragColumn))
+	if(drag::active((int)this, DragColumn))
 		columns.data[drag::value].width = imax(hot::mouse.x - drag::mouse.x - column_total_width, 8);
 	// calculate size
 	reposition(rc.width());
@@ -357,7 +357,7 @@ void table::header(rect client)
 			if(hot::pressed && hot::key == MouseLeft)
 			{
 				column_total_width = w - e.width;
-				drag::begin(id, DragColumn);
+				drag::begin((int)this, DragColumn);
 				drag::mouse.x = hot::mouse.x - w;
 				drag::value = columns.indexof(&e);
 			}

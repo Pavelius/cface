@@ -11,7 +11,10 @@ void draw::focusing(int id, unsigned& flags, rect rc)
 	if(getfocus() == id)
 		flags |= Focused;
 	else if(area(rc) == AreaHilitedPressed && hot::key == MouseLeft && hot::pressed)
+	{
 		setfocus(id, false);
+		hot::key = MouseLeft;
+	}
 }
 
 int	draw::button(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips)

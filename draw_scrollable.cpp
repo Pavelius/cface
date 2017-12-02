@@ -87,7 +87,7 @@ void scrollable::nonclient(rect rc)
 	if(scrollv)
 	{
 		int current = origin.y;
-		draw::scrollv(id, scrollv, current, rcheight, maximum.y, focused);
+		draw::scrollv((int)this, scrollv, current, rcheight, maximum.y, focused);
 		if(current != origin.y)
 		{
 			origin.y = current;
@@ -98,7 +98,7 @@ void scrollable::nonclient(rect rc)
 	if(scrollh)
 	{
 		int current = origin.x;
-		draw::scrollh(id, scrollh, current, rcwidth, maximum.x, focused);
+		draw::scrollh((int)this, scrollh, current, rcwidth, maximum.x, focused);
 		if(current != origin.x)
 		{
 			origin.x = current;

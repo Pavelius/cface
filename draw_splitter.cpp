@@ -1,6 +1,6 @@
 #include "draw.h"
 
-void draw::splitv(int x, int y, int& value, int height, const char* id, int size, int minimum, int maximum, bool right_align)
+void draw::splitv(int x, int y, int& value, int height, int id, int size, int minimum, int maximum, bool right_align)
 {
 	rect rc;
 	auto mode = AreaNormal;
@@ -43,7 +43,7 @@ void draw::splitv(int x, int y, int& value, int height, const char* id, int size
 	}
 }
 
-void draw::splith(int x, int y, int width, int& value, const char* id, int size, int minimum, int maximum, bool down_align)
+void draw::splith(int x, int y, int width, int& value, int id, int size, int minimum, int maximum, bool down_align)
 {
 	struct rect rc;
 	areas mode = AreaNormal;

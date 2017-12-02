@@ -1,6 +1,6 @@
 #include "draw.h"
 
-void draw::scrollv(const char* id, const rect& scroll, int& origin, int count, int maximum, bool focused)
+void draw::scrollv(int id, const rect& scroll, int& origin, int count, int maximum, bool focused)
 {
 	// count - elements per page
 	// maximum - maximum elements
@@ -56,7 +56,7 @@ void draw::scrollv(const char* id, const rect& scroll, int& origin, int count, i
 	}
 }
 
-void draw::scrollh(const char* id, const struct rect& scroll, int& origin, int count, int maximum, bool focused)
+void draw::scrollh(int id, const struct rect& scroll, int& origin, int count, int maximum, bool focused)
 {
 	if(!maximum)
 		return;

@@ -188,9 +188,9 @@ void list::redraw(rect rc)
 		}
 	}
 	if(scroll)
-		draw::scrollv(id, scroll, origin, lines_per_page, maximum, focused);
+		draw::scrollv((int)this, scroll, origin, lines_per_page, maximum, focused);
 	if(scrollh)
-		draw::scrollh(id, scrollh, origin_width, rc.width(), maximum_width, focused);
+		draw::scrollh((int)this, scrollh, origin_width, rc.width(), maximum_width, focused);
 }
 
 void list::keyup(int id)
