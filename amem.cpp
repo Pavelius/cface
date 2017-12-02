@@ -70,6 +70,11 @@ unsigned amem::getcount() const
 	return count;
 }
 
+unsigned amem::getmaxcount() const
+{
+	return count_maximum;
+}
+
 bool amem::reserve(unsigned count)
 {
 	if(!size)

@@ -99,7 +99,6 @@ static void callback_dropdown_list()
 	source_table.addcol(WidgetField | ColumnSizeAuto, "label", "Заголовок");
 	source_table.show_header = false;
 	source_table.no_change_content = true;
-	source_table.no_change_max_count = true;
 	source_table.no_change_order = true;
 	source_table.no_change_count = true;
 	source_table.hilite_rows = true;

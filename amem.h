@@ -17,6 +17,7 @@ struct amem : collection
 	char*				end() const { return begin() + count*size; }
 	void*				get(int index) const override;
 	unsigned			getcount() const override;
+	unsigned			getmaxcount() const override;
 	int					indexof(const void* element) const override;
 	void*				insert(int index, const void* object);
 	void				remove(int index, int count = 1) override;

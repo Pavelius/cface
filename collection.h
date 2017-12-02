@@ -5,6 +5,7 @@ struct collection
 	virtual void*		add(const void* element = 0) = 0; // Add new element to collection
 	virtual void		clear() = 0; // Clear all elements in collection
 	virtual void*		get(int index) const = 0; // Get content of element with index
+	virtual unsigned	getmaxcount() const = 0; // Get maxium possible elements
 	virtual unsigned	getcount() const = 0; // Get count of elements in collection
 	virtual int			indexof(const void* element) const = 0; // Get index of element (-1 if not in collection)
 	bool				read(const char* url, struct xsfield* fields);

@@ -36,7 +36,6 @@ namespace draw
 			collection&			rows;
 			struct sprite*		rowsimages;
 			int					maximum_column, current_column;
-			bool				no_change_max_count;
 			bool				no_change_count;
 			bool				no_change_order;
 			bool				no_change_content;

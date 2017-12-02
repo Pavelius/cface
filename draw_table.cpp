@@ -44,11 +44,12 @@ static void setposition(rect& rc)
 
 unsigned table::add(bool run)
 {
+	auto maximum_count = rows.getmaxcount();
 	if(no_change_count)
 		return Disabled;
-	if(no_change_max_count)// && pc->rows.count>= pc->rows.count_max)
-		return Disabled;
 	if(no_change_content)
+		return Disabled;
+	if(maximum_count && maximum_count <= rows.getcount())
 		return Disabled;
 	if(run)
 	{
@@ -61,11 +62,12 @@ unsigned table::add(bool run)
 
 unsigned table::addcopy(bool run)
 {
+	auto maximum_count = rows.getmaxcount();
 	if(no_change_count)
 		return Disabled;
-	if(no_change_max_count)// && pc->rows.count>= pc->rows.count_max)
-		return Disabled;
 	if(no_change_content)
+		return Disabled;
+	if(maximum_count && maximum_count <= rows.getcount())
 		return Disabled;
 	if(run)
 	{
@@ -274,7 +276,7 @@ unsigned table::setting(bool run)
 
 table::table(collection& rows) : rows(rows), rowsimages(metrics::tree),
 maximum_column(0), current_column(0),
-no_change_max_count(false), no_change_count(false), no_change_order(false), no_change_content(false),
+no_change_count(false), no_change_order(false), no_change_content(false),
 group_sort_up(false),
 use_setting(true),
 show_header(true), show_event_rows(false)
@@ -839,11 +841,15 @@ bool table::changing(void* object, const char* id, unsigned flags)
 	if(value_type->reference && value_type->type!=text_type && value_type->type!=number_type)
 	{
 		auto base = xsbase::find(value_type->type);
-		assert(base);
-		autocomple_xsbase aclist(base);
-		te.records = &aclist;
-		aclist.hilite_rows = true;
-		result = te.editing(hot::element);
+		if(base)
+		{
+			autocomple_xsbase aclist(base);
+			te.records = &aclist;
+			aclist.hilite_rows = true;
+			result = te.editing(hot::element);
+		}
+		else
+			result = te.editing(hot::element);
 	}
 	else
 		result = te.editing(hot::element);
