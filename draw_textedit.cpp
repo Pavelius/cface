@@ -319,6 +319,7 @@ bool textedit::editing(rect rco)
 			if(records && isshowrecords() && areb(rcv))
 			{
 				records->keyinput(id);
+				draw::execute(KeyEnter);
 				break;
 			}
 			if(!areb(rc) && hot::pressed)
