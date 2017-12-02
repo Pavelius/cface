@@ -248,7 +248,7 @@ static const char* register_class(const char* class_name)
 	return class_name;
 }
 
-static void update_main_window()
+void draw::updatewindow()
 {
 	if(!current_window)
 		return;
@@ -395,7 +395,7 @@ void draw::sysredraw()
 	MSG	msg;
 	if(!current_window)
 		return;
-	update_main_window();
+	updatewindow();
 	void* hwnd = current_window->hwnd;
 	if(!hwnd)
 		return;
@@ -412,7 +412,7 @@ int draw::rawinput()
 	MSG	msg;
 	if(!current_window)
 		return 0;
-	update_main_window();
+	updatewindow();
 	void* hwnd = current_window->hwnd;
 	if(!hwnd)
 		return 0;

@@ -17,6 +17,13 @@ static void callback_invoke()
 	current_control->execute(current_name);
 }
 
+static void callback_context_menu()
+{
+	draw::updatewindow();
+	hot::pressed = false;
+	current_control->contextmenu();
+}
+
 control::plugin::plugin(control& element) : element(element)
 {
 	seqlink(this);
@@ -111,7 +118,11 @@ bool control::open(rect rc)
 
 void control::mouseright(point position, int id, bool pressed)
 {
-	contextmenu();
+	// Делаем вызов процедуры после перерисовки,
+	// Иначе будут некрасивые артефакты
+	draw::execute(callback_context_menu);
+	current_control = this;
+	hot::key = MouseRight;
 }
 
 void control::view(rect rc, bool show_toolbar)

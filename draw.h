@@ -305,6 +305,7 @@ namespace draw
 	int						textw(rect& rc, const char* string);
 	int						textw(sprite* font);
 	bool					tool(rect rc, bool disabled, bool checked, bool press);
+	void					updatewindow();
 }
 int							isqrt(int num);
 char*						key2str(char* result, int key);
