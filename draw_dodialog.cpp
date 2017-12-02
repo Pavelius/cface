@@ -27,10 +27,10 @@ void draw::setfocus(int value, bool instant)
 
 bool draw::dodialog(int id)
 {
-	if(current_execute)
+	auto temp_execute = current_execute;
+	current_execute = 0;
+	if(temp_execute)
 	{
-		auto temp_execute = current_execute;
-		current_execute = 0;
 		temp_execute();
 		return true;
 	}
