@@ -64,7 +64,7 @@ bool control::open(const char* title, unsigned state, int width, int height)
 	draw::window dc(-1, -1, width, height, state);
 	if(title)
 		draw::setcaption(title);
-	setfocus(0, true);
+	focused = true;
 	while(true)
 	{
 		rect rc = {0, 0, draw::getwidth(), draw::getheight()};
@@ -124,12 +124,6 @@ void control::view(rect rc, bool show_toolbar)
 		rt.y2 += metrics::toolbar->get(0).sy + 4;
 		rc.y1 += rt.height() + metrics::padding;
 	}
-	// Common mouse and keyboard event
-	unsigned flags = 0;
-	if(disabled)
-		flags |= Disabled;
-	focusing((int)this, flags, rc);
-	focused = isfocused(flags);
 	background(rc);
 	// Перед выводом настроим разные элементы.
 	prerender();

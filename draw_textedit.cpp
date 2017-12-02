@@ -245,8 +245,9 @@ void textedit::updaterecords()
 {
 	if(!records)
 		return;
+	records->updaterowheight();
 	records->filter = string;
-	records->keyinput(InputUpdate);
+	records->update();
 }
 
 bool textedit::editing(rect rco)
@@ -264,6 +265,7 @@ bool textedit::editing(rect rco)
 			if(records->maximum)
 			{
 				rcv.set(rco.x1, rco.y2 + 2, imin(rco.x1 + 300, rco.x2), rco.y2 + 4 + getrecordsheight());
+				records->focused = true;
 				records->view(rcv);
 			}
 			else
@@ -331,6 +333,8 @@ bool textedit::editing(rect rco)
 			break;
 		default:
 			keyinput(id);
+			if(id == InputSymbol)
+				updaterecords();
 			break;
 		}
 	}

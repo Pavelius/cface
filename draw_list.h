@@ -42,22 +42,25 @@ namespace draw
 			void			select(int index);
 			void			toggle(int index);
 			virtual void	row(rect rc, int index); // Draw single row - part of list
-		};
-		//
-		struct listfilter : list
-		{
-			const char*		filter;
-			listfilter();
-			unsigned		update(bool run);
+			void			updaterowheight();
 		};
 		// Abstract element's collection presentation
-		struct listdata : list
+		struct listview : list
 		{
 			const void**	source; // References to objects
 			const xsfield*	fields; // Metadata of objects
-			const char*		name; // Which field used to presentation
-			listdata(const void** source, unsigned count, const xsfield* fields, const char* name);
+			const xsfield*	requisit; // Which field used to presentation
+			listview(const void** source, unsigned count, const xsfield* fields, const char* name);
 			void			row(rect rc, int id) override;
+			void			setpresetation(const char* name);
+		};
+		// Edit string collections
+		struct autocomplete : listview
+		{
+			const void*		source[50];
+			autocomplete(const xsfield* fields = 0, const char* name = "name") : listview(source, 0, fields, name), filter(0) {}
+			const char*		filter;
+			virtual void	update() = 0;
 		};
 	}
 }

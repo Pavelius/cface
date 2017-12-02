@@ -39,6 +39,7 @@ struct xsfield
 	const char*			getdata(char* result, const char* id, const void* object, bool tobuffer) const;
 	bool				issimple() const { return type == 0; }
 	bool				iskey() const { return id[0] == 'i' && id[1] == 'd' && id[2] == 0; }
+	bool				match(const void* p, const char* name) const;
 	inline const char*	ptr(const void* data) const { return (const char*)data + offset; }
 	inline const char*	ptr(const void* data, int index) const { return (const char*)data + offset + index*size; }
 	void				set(const void* p, int value) const;

@@ -1,9 +1,7 @@
 #include "crt.h"
 #include "draw.h"
 #include "draw_list.h"
-#include "xsref.h"
 
-using namespace draw;
 using namespace draw::controls;
 
 list::list() : origin(0), maximum(0), current(0),
@@ -111,11 +109,16 @@ int list::getlastchild(int i) const
 	return i;
 }
 
+void list::updaterowheight()
+{
+	if(!pixels_per_line)
+		pixels_per_line = texth() + 8;
+}
+
 void list::background(rect& rc)
 {
 	control::background(rc);
-	if(!pixels_per_line)
-		pixels_per_line = texth() + 8;
+	updaterowheight();
 }
 
 void list::redraw(rect rc)
@@ -261,25 +264,4 @@ void list::mousewheel(point position, int id, int step)
 		origin = maximum - lines_per_page;
 	if(origin<0)
 		origin = 0;
-}
-
-listfilter::listfilter() :filter(0)
-{
-}
-
-listdata::listdata(const void** source, unsigned count, const xsfield* fields, const char* name) : source(source), fields(fields), name(name)
-{
-	maximum = count;
-}
-
-void listdata::row(rect rc, int index)
-{
-	list::row({rc.x1, rc.y1, rc.x2 - 1, rc.y2}, index);
-	xsref e = {fields, (void*)source[index]};
-	auto p = (const char*)e.get(name);
-	if(p)
-	{
-		rc.offset(4);
-		text(rc.x1, rc.y1, p);
-	}
 }

@@ -12,7 +12,7 @@ namespace draw
 			unsigned		maxlenght;
 			int				p1, p2;
 			rect			rctext, rcclient;
-			struct listfilter* records;
+			struct autocomplete* records;
 			unsigned		align;
 			bool			readonly;
 			bool			update_records;

@@ -6,6 +6,7 @@
 #include "draw_textedit.h"
 #include "io.h"
 #include "xsref.h"
+#include "xsbase.h"
 
 using namespace draw;
 using namespace draw::controls;
@@ -776,6 +777,35 @@ int table::find(const char* id, const char* value, int index)
 	return -1;
 }
 
+struct autocomple_xsbase : autocomplete
+{
+
+	const xsbase* base;
+
+	autocomple_xsbase(const xsbase* base) : autocomplete(base->fields), base(base)
+	{
+	}
+
+	void update() override
+	{
+		assert(base);
+		maximum = 0;
+		auto pe = base->end();
+		for(auto p = base->begin(); p < pe; p += base->size)
+		{
+			if(maximum >= sizeof(source) / sizeof(source[0]))
+				break;
+			if(filter)
+			{
+				if(!requisit->match(p, filter))
+					continue;
+			}
+			source[maximum++] = p;
+		}
+	}
+
+};
+
 bool table::changing(void* object, const char* id, unsigned flags)
 {
 	char temp[4196]; temp[0] = 0;
@@ -789,7 +819,18 @@ bool table::changing(void* object, const char* id, unsigned flags)
 	}
 	textedit te(temp, sizeof(temp), true);
 	te.align = flags;
-	auto result = te.editing(hot::element);
+	auto value_type = fields->find(id);
+	bool result = false;
+	if(value_type->reference && value_type->type!=text_type && value_type->type!=number_type)
+	{
+		auto base = xsbase::find(value_type->type);
+		assert(base);
+		autocomple_xsbase aclist(base);
+		te.records = &aclist;
+		result = te.editing(hot::element);
+	}
+	else
+		result = te.editing(hot::element);
 	if(result)
 		fields->setdata(temp, id, object);
 	// Some keys must be handled by this control

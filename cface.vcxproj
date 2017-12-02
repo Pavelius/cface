@@ -185,6 +185,7 @@
     <ClCompile Include="draw_dialog.cpp" />
     <ClCompile Include="draw_clipart.cpp" />
     <ClCompile Include="draw_dodialog.cpp" />
+    <ClCompile Include="draw_listview.cpp" />
     <ClCompile Include="xsfield_data.cpp" />
     <ClCompile Include="draw_focusing.cpp" />
     <ClCompile Include="draw_form.cpp" />

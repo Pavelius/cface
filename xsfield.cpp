@@ -61,3 +61,16 @@ void xsfield::set(const void* p, int value) const
 	default: *((int*)p) = value; break;
 	}
 }
+
+bool xsfield::match(const void* p, const char* name) const
+{
+	auto value = (const char*)get(p);
+	if(!value || type!=text_type)
+		return false;
+	for(int i = 0; name[i]; i++)
+	{
+		if(value[i] != name[i])
+			return false;
+	}
+	return true;
+}
