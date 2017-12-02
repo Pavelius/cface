@@ -468,7 +468,8 @@ void draw::clipboard::copy(const void* string, int lenght)
 	if(!OpenClipboard(0))
 		return;
 	EmptyClipboard();
-	void* hglbCopy = GlobalAlloc(GMEM_MOVEABLE, (lenght + 1) * sizeof(char));
+	auto size = (lenght + 1) * sizeof(short);
+	void* hglbCopy = GlobalAlloc(GMEM_MOVEABLE, size);
 	if(!hglbCopy)
 	{
 		CloseClipboard();
@@ -476,37 +477,47 @@ void draw::clipboard::copy(const void* string, int lenght)
 	}
 	// Lock the handle and copy the text to the buffer.
 	auto ps = (char*)GlobalLock(hglbCopy);
-	memcpy(ps, string, lenght); ps[lenght] = 0;
+	szencode(ps, size, CPU16LE, (const char*)string, lenght, CP1251);
 	GlobalUnlock(ps);
-	SetClipboardData(CF_TEXT, hglbCopy);
+	SetClipboardData(CF_UNICODETEXT, hglbCopy);
 	CloseClipboard();
 }
 
-int draw::clipboard::paste(void* data, int maxlenght)
+char* draw::clipboard::paste()
 {
-	if(!IsClipboardFormatAvailable(CF_TEXT))
-		return 0;
+	auto format = CF_UNICODETEXT;
+	if(!IsClipboardFormatAvailable(format))
+	{
+		format = CF_TEXT;
+		if(!IsClipboardFormatAvailable(format))
+			return 0;
+	}
 	if(!OpenClipboard(0))
 		return 0;
-	int result = 0;
-	void* hglb = GetClipboardData(CF_TEXT);
+	void* hglb = GetClipboardData(format);
+	char* buffer = 0;
 	if(hglb)
 	{
-		result = GlobalSize(hglb);
-		if(maxlenght && result>maxlenght)
-			result = maxlenght;
-		if(data && result)
+		auto result = GlobalSize(hglb);
+		if(result)
 		{
+			buffer = new char[result + 1];
 			char* p = (char*)GlobalLock(hglb);
 			if(p)
 			{
-				memcpy(data, p, result);
+				memcpy(buffer, p, result);
 				GlobalUnlock(hglb);
+			}
+			if(format == CF_UNICODETEXT)
+			{
+				szencode(buffer, result, CP1251, buffer, result, CPU16LE);
+				result = result / 2;
+				buffer[result] = 0;
 			}
 		}
 	}
 	CloseClipboard();
-	return result;
+	return buffer;
 }
 
 char** szcmdargv(int& argc)

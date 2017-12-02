@@ -17,15 +17,18 @@ namespace draw
 			bool			readonly;
 			bool			update_records;
 			bool			show_records;
+			static command	commands[];
 			//
 			textedit(char* string, unsigned maxlenght, bool select_text);
 			//
 			void			clear();
 			void			background(rect& rc) override;
 			virtual void	cashing(rect rc);
+			unsigned		copy(bool run);
 			void			correct();
 			bool			editing(rect rc);
 			void			ensurevisible(int linenumber);
+			const command*	getcommands() const override { return commands; }
 			int				getrecordsheight() const;
 			int				hittest(rect rc, point pt, unsigned state) const;
 			void			inputsymbol(int id, int symbol) override;
@@ -46,6 +49,7 @@ namespace draw
 			int				getbegin() const;
 			int				getend() const;
 			point			getpos(rect rc, int index, unsigned state) const;
+			unsigned		paste(bool run);
 			void			paste(const char* string);
 			void			redraw(rect rc) override;
 			void			right(bool shift, bool ctrl);

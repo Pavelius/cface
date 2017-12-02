@@ -446,6 +446,34 @@ void textedit::keyend(int id)
 	select(linee(p1), (id&Shift) != 0);
 }
 
+unsigned textedit::copy(bool run)
+{
+	if(p2 == -1 || p1 == p2)
+		return Disabled;
+	if(run)
+	{
+		char* s1 = string + imin(p1, p2);
+		char* s2 = string + imax(p1, p2);
+		clipboard::copy(s1, s2 - s1);
+	}
+	return 0;
+}
+
+unsigned textedit::paste(bool run)
+{
+	if(p1 == -1 || readonly)
+		return Disabled;
+	if(run)
+	{
+		clear();
+		auto p = clipboard::paste();
+		if(p)
+			paste(p);
+		delete p;
+	}
+	return 0;
+}
+
 //	case Ctrl + Alpha + 'X':
 //		if(p2 != -1 && p1 != p2)
 //		{
@@ -457,12 +485,6 @@ void textedit::keyend(int id)
 //			clear();
 //		break;
 //	case Ctrl + Alpha + 'C':
-//		if(p2 != -1 && p1 != p2)
-//		{
-//			char* s1 = string + imin(p1, p2);
-//			char* s2 = string + imax(p1, p2);
-//			clipboard::copy(s1, s2 - s1);
-//		}
 //		break;
 //	case Ctrl + Alpha + 'V':
 //		if(p1 == -1 || readonly)
@@ -478,3 +500,9 @@ void textedit::keyend(int id)
 //			select(p1 + x, false);
 //		}
 //		break;
+
+control::command textedit::commands[] = {
+	CONTROL_ICN(copy, "Копировать", Ctrl + Alpha + 'C', 4),
+	CONTROL_ICN(paste, "Вставить", Ctrl + Alpha + 'V', 5),
+	{0}
+};

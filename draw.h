@@ -146,7 +146,7 @@ namespace draw
 	namespace clipboard
 	{
 		void				copy(const void* string, int lenght);
-		int					paste(void* data, int maxlenght = 0);
+		char*				paste();
 	}
 	namespace dialog
 	{

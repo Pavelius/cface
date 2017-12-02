@@ -69,7 +69,7 @@ bool control::open(const char* title, unsigned state, int width, int height)
 	{
 		rect rc = {0, 0, draw::getwidth(), draw::getheight()};
 		draw::rectf(rc, colors::form);
-		rc.offset(metrics::padding*2);
+		rc.offset(metrics::padding * 2);
 		view(rc, show_toolbar);
 		int id = draw::input();
 		if(id == KeyEscape || !id)
@@ -191,7 +191,7 @@ int	control::render(int x, int y, int width, const control::command* commands) c
 	if(!metrics::toolbar)
 		return 0;
 	int x2 = x + width - 6;
-	auto height = metrics::toolbar->get(0).getrect(0,0,0).height() + 4;
+	auto height = metrics::toolbar->get(0).getrect(0, 0, 0).height() + 4;
 	for(auto p = commands; *p; p++)
 	{
 		if(!p->type)
@@ -256,6 +256,23 @@ unsigned control::execute(const char* id, bool run)
 	if(p)
 		return (this->*p->type)(run);
 	return 0;
+}
+
+void control::contextmenu()
+{
+	menu e;
+	int elements = 0;
+	auto p = getcommands();
+	if(!p)
+		return;
+	for(; *p; p++)
+	{
+		e.add(p->id, this);
+		elements++;
+	}
+	auto result = (control::command*)e.choose(hot::mouse.x, hot::mouse.y);
+	if(result)
+		(this->*result->type)(true);
 }
 
 void control::keyinput(int id)

@@ -782,7 +782,7 @@ static const struct autocomple_xsbase* sort_list;
 struct autocomple_xsbase : autocomplete
 {
 
-	const xsbase*					base;
+	const xsbase* base;
 
 	autocomple_xsbase(const xsbase* base) : autocomplete(base->fields), base(base)
 	{

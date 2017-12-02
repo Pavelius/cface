@@ -58,7 +58,7 @@ namespace draw
 			disabled(false), focused(false) {}
 		//
 		virtual void			background(rect& rc);
-		virtual void			contextmenu() {}
+		virtual void			contextmenu();
 		unsigned				execute(const char* id, bool run = true);
 		color					getcolor(color normal) const;
 		virtual control*		getcontrol(const char* id) { return 0; }
@@ -95,8 +95,8 @@ namespace draw
 		virtual void			mousewheel(point position, int id, int step) {}
 		virtual void			nonclient(rect rc);
 		bool					open(rect rc);
-		bool					open(const char* title, unsigned state, int width, int height);
 		bool					open(const char* title);
+		bool					open(const char* title, unsigned state, int width, int height);
 		virtual void			prerender() {}
 		int						render(int x, int y, int width, unsigned flags, const command& e) const;
 		int						render(int x, int y, int width, const command* commands) const;
