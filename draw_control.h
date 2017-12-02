@@ -81,7 +81,7 @@ namespace draw
 		virtual void			keyescape(int id) {}
 		virtual void			keyhome(int id) {}
 		virtual void			keyleft(int id) {}
-		void					keyinput(int id);
+		static bool				dodialog(int id);
 		virtual void			keypagedown(int id) {}
 		virtual void			keypageup(int id) {}
 		virtual void			keyright(int id) {}

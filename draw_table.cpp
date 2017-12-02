@@ -264,9 +264,7 @@ unsigned table::setting(bool run)
 					columns.data[i] = data_columns.data[i];
 				return true;
 			default:
-				if(dodialog(id))
-					break;
-				table_columns.keyinput(id);
+				dodialog(id);
 				break;
 			}
 		}

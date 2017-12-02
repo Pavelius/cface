@@ -7,22 +7,22 @@ using namespace draw::controls;
 list::list() : origin(0), maximum(0), current(0),
 maximum_width(0), origin_width(0),
 lines_per_page(0), pixels_per_line(0),
-show_grid_lines(false),  hilite_rows(false)
+show_grid_lines(false), hilite_rows(false)
 {
 	id = "list";
 }
 
 void list::ensurevisible()
 {
-	if(current<origin)
+	if(current < origin)
 		origin = current;
-	if(current>origin + lines_per_page - 1)
+	if(current > origin + lines_per_page - 1)
 		origin = current - lines_per_page + 1;
 }
 
 bool list::isopen(int row)
 {
-	return (row<maximum - 1) ? (getlevel(row + 1)>getlevel(row)) : false;
+	return (row < maximum - 1) ? (getlevel(row + 1) > getlevel(row)) : false;
 }
 
 void list::select(int index)
@@ -43,31 +43,31 @@ void list::toggle(int index)
 	else
 		expand(index, level);
 	prerender();
-	if(cc>index)
+	if(cc > index)
 	{
-		if(mm<maximum)
-			current += maximum-mm;
+		if(mm < maximum)
+			current += maximum - mm;
 	}
 }
 
 void list::correction()
 {
-	if(current>=maximum)
-		current = maximum-1;
-	if(current<0)
+	if(current >= maximum)
+		current = maximum - 1;
+	if(current < 0)
 		current = 0;
 	if(lines_per_page)
 	{
-		if(origin>maximum-lines_per_page)
-			origin = maximum-lines_per_page;
-		if(origin<0)
+		if(origin > maximum - lines_per_page)
+			origin = maximum - lines_per_page;
+		if(origin < 0)
 			origin = 0;
 	}
 }
 
 void list::row(rect rc, int index)
 {
-	if(index==current)
+	if(index == current)
 		hilight(rc, focused ? Focused : 0);
 }
 
@@ -99,10 +99,10 @@ int list::getparent(int row) const
 int list::getlastchild(int i) const
 {
 	int level = getlevel(i);
-	int i2 = maximum-1;
-	while(i<i2)
+	int i2 = maximum - 1;
+	while(i < i2)
 	{
-		if(level!=getlevel(i+1))
+		if(level != getlevel(i + 1))
 			break;
 		i++;
 	}
@@ -127,31 +127,31 @@ void list::redraw(rect rc)
 		return;
 	rect scroll = {0};
 	rect scrollh = {0};
-	lines_per_page = rc.height()/pixels_per_line;
+	lines_per_page = rc.height() / pixels_per_line;
 	correction();
-	if(maximum>lines_per_page)
-		scroll.set(rc.x2-metrics::scroll, rc.y1, rc.x2, rc.y2);
-	if(maximum_width>rc.width())
-		scrollh.set(rc.x1, rc.y2-metrics::scroll, rc.x2, rc.y2);
+	if(maximum > lines_per_page)
+		scroll.set(rc.x2 - metrics::scroll, rc.y1, rc.x2, rc.y2);
+	if(maximum_width > rc.width())
+		scrollh.set(rc.x1, rc.y2 - metrics::scroll, rc.x2, rc.y2);
 	// mouse input handle
-	if(hilite_rows && hot::key==MouseMove)
+	if(hilite_rows && hot::key == MouseMove)
 		current = -1;
 	int rk = hot::key&CommandMask;
 	if(draw::areb(rc))
 	{
 		// Обработаем выбор мышкой
-		if(hot::pressed && (rk==MouseLeft || rk==MouseRight))
+		if(hot::pressed && (rk == MouseLeft || rk == MouseRight))
 		{
-			if(hot::mouse.y>rc.y1 && hot::mouse.y<=rc.y1+pixels_per_line*(maximum-origin))
+			if(hot::mouse.y > rc.y1 && hot::mouse.y <= rc.y1 + pixels_per_line*(maximum - origin))
 			{
-				if(!scroll.width() || hot::mouse.x<scroll.x1)
+				if(!scroll.width() || hot::mouse.x < scroll.x1)
 				{
-					int curn = origin + (hot::mouse.y - rc.y1 - 2)/pixels_per_line;
-					rect rc1 = {rc.x1, rc.y1 + 2 + (curn-origin)*pixels_per_line, rc.x2, rc.y1 + 2 + (curn-origin+1)*pixels_per_line};
+					int curn = origin + (hot::mouse.y - rc.y1 - 2) / pixels_per_line;
+					rect rc1 = {rc.x1, rc.y1 + 2 + (curn - origin)*pixels_per_line, rc.x2, rc.y1 + 2 + (curn - origin + 1)*pixels_per_line};
 					if(selecting(rc1, curn, hot::mouse))
 						current = curn;
-					if(maximum>lines_per_page)
-						scroll.set(rc.x2-metrics::scroll, rc.y1, rc.x2, rc.y2);
+					if(maximum > lines_per_page)
+						scroll.set(rc.x2 - metrics::scroll, rc.y1, rc.x2, rc.y2);
 					else
 						scroll.clear();
 				}
@@ -175,13 +175,13 @@ void list::redraw(rect rc)
 		int ix = origin;
 		while(true)
 		{
-			if(y1>=rc.y2)
+			if(y1 >= rc.y2)
 				break;
-			if(ix>=maximum)
+			if(ix >= maximum)
 				break;
-			rect rcm = {x1-origin_width, y1, rc.x1 + rw, y1+pixels_per_line};
+			rect rcm = {x1 - origin_width, y1, rc.x1 + rw, y1 + pixels_per_line};
 			if(show_grid_lines)
-				line(rcm.x1, rcm.y2-1, rcm.x2, rcm.y2-1, colors::form);
+				line(rcm.x1, rcm.y2 - 1, rcm.x2, rcm.y2 - 1, colors::form);
 			row(rcm, ix);
 			y1 += pixels_per_line;
 			ix++;
@@ -260,8 +260,8 @@ void list::keyenter(int id)
 void list::mousewheel(point position, int id, int step)
 {
 	origin += step;
-	if(origin>maximum - lines_per_page)
+	if(origin > maximum - lines_per_page)
 		origin = maximum - lines_per_page;
-	if(origin<0)
+	if(origin < 0)
 		origin = 0;
 }

@@ -1,4 +1,5 @@
 #include "crt.h"
+#include "command.h"
 #include "draw.h"
 #include "draw_control.h"
 #include "widget.h"
@@ -11,6 +12,8 @@ sprite*				metrics::tree = (sprite*)loadb("tree.pma");
 control::plugin*	control::plugin::first;
 static const char*	current_name;
 static control*		current_control;
+static control*		current_focus;
+static control*		current_mouse;
 
 static void callback_invoke()
 {
@@ -81,7 +84,7 @@ bool control::open(const char* title, unsigned state, int width, int height)
 		int id = draw::input();
 		if(id == KeyEscape || !id)
 			return false;
-		keyinput(id);
+		dodialog(id);
 	}
 }
 
@@ -112,7 +115,7 @@ bool control::open(rect rc)
 		case MouseLeftDBL:
 			return true;
 		}
-		keyinput(id);
+		dodialog(id);
 	}
 }
 
@@ -135,9 +138,16 @@ void control::view(rect rc, bool show_toolbar)
 		rt.y2 += metrics::toolbar->get(0).sy + 4;
 		rc.y1 += rt.height() + metrics::padding;
 	}
+	// Выерем фокус
+	if(focused)
+		current_focus = this;
+	// Нарисуем фон
 	background(rc);
 	// Перед выводом настроим разные элементы.
 	prerender();
+	// Определим элемент управления, на котором мышка
+	if(hot::key >= FirstMouse && hot::key <= LastMouse && hot::mouse.in(rc))
+		current_mouse = this;
 	// Обновим цвет элемента, который может именился
 	// Процедура 'background' может изменить рамку элемента.
 	// Поэтому только начиная отсюда она имеет корректное значение.
@@ -286,56 +296,76 @@ void control::contextmenu()
 		(this->*result->type)(true);
 }
 
-void control::keyinput(int id)
+bool control::dodialog(int id)
 {
 	const command* pc;
-	if(dodialog(id))
-		return;
-	switch(id & 0xFFFF)
+	auto temp_focus = current_focus;
+	auto temp_mouse = current_mouse;
+	current_focus = 0;
+	current_mouse = 0;
+	if(draw::dodialog(id))
+		return true;
+	auto key = id & 0xFFFF;
+	if(key >= FirstMouse && key <= LastMouse)
 	{
-	case KeyLeft: keyleft(id); break;
-	case KeyRight: keyright(id); break;
-	case KeyUp: keyup(id); break;
-	case KeyDown: keydown(id); break;
-	case KeyHome: keyhome(id); break;
-	case KeyEnd: keyend(id); break;
-	case KeyPageDown: keypagedown(id); break;
-	case KeyPageUp: keypageup(id); break;
-	case KeyEnter: keyenter(id); break;
-	case KeySpace: keyspace(id); break;
-	case KeyEscape: keyescape(id); break;
-	case KeyDelete: keydelete(id); break;
-	case KeyBackspace: keybackspace(id); break;
-	case KeyTab: keytab(id); break;
-	case MouseLeft:
-		mouseleft(hot::mouse, id, hot::pressed);
-		break;
-	case MouseRight:
-		mouseright(hot::mouse, id, hot::pressed);
-		break;
-	case MouseWheelDown:
-		mousewheel(hot::mouse, id, 1);
-		break;
-	case MouseWheelUp:
-		mousewheel(hot::mouse, id, -1);
-		break;
-	case MouseMove:
-		mousemove(hot::mouse, id);
-		break;
-	case MouseLeftDBL:
-		mouseleftdbl(hot::mouse, id);
-		break;
-	case InputTimer: inputtimer(); break;
-	case InputSymbol: inputsymbol(id, hot::param); break;
-	case InputUpdate: inputupdate(); break;
-	case InputIdle: inputidle(); break;
-	default:
-		pc = getcommands();
-		if(!pc)
+		if(!temp_mouse)
+			return false;
+		switch(key)
+		{
+		case MouseLeft:
+			temp_mouse->mouseleft(hot::mouse, id, hot::pressed);
 			break;
+		case MouseRight:
+			temp_mouse->mouseright(hot::mouse, id, hot::pressed);
+			break;
+		case MouseWheelDown:
+			temp_mouse->mousewheel(hot::mouse, id, 1);
+			break;
+		case MouseWheelUp:
+			temp_mouse->mousewheel(hot::mouse, id, -1);
+			break;
+		case MouseMove:
+			temp_mouse->mousemove(hot::mouse, id);
+			break;
+		case MouseLeftDBL:
+			temp_mouse->mouseleftdbl(hot::mouse, id);
+			break;
+		default:
+			return false;
+		}
+		return true;
+	}
+	if(!temp_focus)
+		return false;
+	switch(key)
+	{
+	case KeyLeft: temp_focus->keyleft(id); break;
+	case KeyRight: temp_focus->keyright(id); break;
+	case KeyUp: temp_focus->keyup(id); break;
+	case KeyDown: temp_focus->keydown(id); break;
+	case KeyHome: temp_focus->keyhome(id); break;
+	case KeyEnd: temp_focus->keyend(id); break;
+	case KeyPageDown: temp_focus->keypagedown(id); break;
+	case KeyPageUp: temp_focus->keypageup(id); break;
+	case KeyEnter: temp_focus->keyenter(id); break;
+	case KeySpace: temp_focus->keyspace(id); break;
+	case KeyEscape: temp_focus->keyescape(id); break;
+	case KeyDelete: temp_focus->keydelete(id); break;
+	case KeyBackspace: temp_focus->keybackspace(id); break;
+	case KeyTab: temp_focus->keytab(id); break;
+	case InputTimer: temp_focus->inputtimer(); break;
+	case InputSymbol: temp_focus->inputsymbol(id, hot::param); break;
+	case InputUpdate: temp_focus->inputupdate(); break;
+	case InputIdle: temp_focus->inputidle(); break;
+	default:
+		pc = temp_focus->getcommands();
+		if(!pc)
+			return false;
 		pc = pc->find(id);
-		if(pc)
-			(this->*pc->type)(true);
+		if(!pc)
+			return false;
+		(temp_focus->*pc->type)(true);
 		break;
 	}
+	return true;
 }

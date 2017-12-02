@@ -318,7 +318,7 @@ bool textedit::editing(rect rco)
 		case MouseLeftDBL + Shift:
 			if(records && isshowrecords() && areb(rcv))
 			{
-				records->keyinput(id);
+				dodialog(id);
 				draw::execute(KeyEnter);
 				break;
 			}
@@ -329,22 +329,8 @@ bool textedit::editing(rect rco)
 				return true;
 			}
 			break;
-		case MouseWheelDown:
-		case MouseWheelUp:
-			if(records && isshowrecords() && areb(rcv))
-				records->keyinput(id);
-			else
-				keyinput(id);
-			break;
-		case KeyPageUp:
-		case KeyPageDown:
-			if(records && isshowrecords())
-				records->keyinput(id);
-			else
-				keyinput(id);
-			break;
 		default:
-			keyinput(id);
+			dodialog(id);
 			if(id == InputSymbol)
 			{
 				auto key = hot::param & 0xFFFF;
@@ -362,32 +348,22 @@ bool textedit::editing(rect rco)
 
 void textedit::keydown(int id)
 {
-	if(records)
-		records->keyinput(KeyDown);
-	else
-	{
-		auto pt = getpos(rcclient, p1, align);
-		auto i = hittest(rcclient, {pt.x, (short)(pt.y + texth())}, align);
-		if(i == -3)
-			i = linee(linee(p1) + 1);
-		if(i >= 0)
-			select(i, (id & Shift)!=0);
-	}
+	auto pt = getpos(rcclient, p1, align);
+	auto i = hittest(rcclient, {pt.x, (short)(pt.y + texth())}, align);
+	if(i == -3)
+		i = linee(linee(p1) + 1);
+	if(i >= 0)
+		select(i, (id & Shift)!=0);
 }
 
 void textedit::keyup(int id)
 {
-	if(records && isshowrecords())
-		records->keyinput(KeyUp);
-	else
-	{
-		auto pt = getpos(rcclient, p1, align);
-		auto i = hittest(rcclient, {pt.x, (short)(pt.y - texth())}, align);
-		if(i == -3)
-			i = linee(lineb(p1) - 1);
-		if(i >= 0)
-			select(i, (id & Shift)!=0);
-	}
+	auto pt = getpos(rcclient, p1, align);
+	auto i = hittest(rcclient, {pt.x, (short)(pt.y - texth())}, align);
+	if(i == -3)
+		i = linee(lineb(p1) - 1);
+	if(i >= 0)
+		select(i, (id & Shift)!=0);
 }
 
 void textedit::inputsymbol(int id, int symbol)
