@@ -777,13 +777,26 @@ int table::find(const char* id, const char* value, int index)
 	return -1;
 }
 
+static const struct autocomple_xsbase* sort_list;
+
 struct autocomple_xsbase : autocomplete
 {
 
-	const xsbase* base;
+	const xsbase*					base;
 
 	autocomple_xsbase(const xsbase* base) : autocomplete(base->fields), base(base)
 	{
+	}
+
+	static int compare(const void* v1, const void* v2)
+	{
+		auto p1 = (const char*)sort_list->requisit->get(sort_list->requisit->ptr(*((void**)v1)));
+		auto p2 = (const char*)sort_list->requisit->get(sort_list->requisit->ptr(*((void**)v2)));
+		if(!p1)
+			return 1;
+		if(!p2)
+			return -1;
+		return strcmp(p1, p2);
 	}
 
 	void update() override
@@ -802,6 +815,8 @@ struct autocomple_xsbase : autocomplete
 			}
 			source[maximum++] = p;
 		}
+		sort_list = this;
+		qsort(source, maximum, sizeof(source[0]), compare);
 	}
 
 };
