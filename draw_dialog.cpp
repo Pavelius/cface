@@ -1,6 +1,17 @@
 #include "crt.h"
 #include "draw.h"
 
+static void element_event(int id, void(*callback)())
+{
+	if(callback)
+	{
+		draw::execute(callback);
+		hot::param = id;
+	}
+	else
+		draw::execute(id);
+}
+
 void draw::focusing(int id, unsigned& flags, rect rc)
 {
 	if(flags&Disabled)
@@ -17,7 +28,7 @@ void draw::focusing(int id, unsigned& flags, rect rc)
 	}
 }
 
-int	draw::button(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips)
+int	draw::button(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips, void(*callback)())
 {
 	setposition(x, y, width);
 	struct rect rc = {x, y, x + width, y + 4 * 2 + draw::texth()};
@@ -26,12 +37,12 @@ int	draw::button(int x, int y, int width, int id, unsigned flags, const char* la
 		ischecked(flags), isfocused(flags), isdisabled(flags), true,
 		label, KeyEnter, false, tips))
 	{
-		draw::execute(id);
+		element_event(id, callback);
 	}
 	return rc.height() + metrics::padding * 2;
 }
 
-int draw::radio(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips)
+int draw::radio(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips, void(*callback)())
 {
 	draw::state push;
 	setposition(x, y, width);
@@ -59,7 +70,7 @@ int draw::radio(int x, int y, int width, int id, unsigned flags, const char* lab
 			need_select = true;
 	}
 	if(need_select)
-		execute(id);
+		element_event(id, callback);
 	rc = rc1; rc.offset(2);
 	draw::text(rc, label);
 	if(tips && a == AreaHilited)
@@ -67,7 +78,7 @@ int draw::radio(int x, int y, int width, int id, unsigned flags, const char* lab
 	return rc1.height() + metrics::padding * 2;
 }
 
-int draw::checkbox(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips)
+int draw::checkbox(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips, void(*callback)())
 {
 	draw::state push;
 	setposition(x, y, width);
@@ -94,7 +105,7 @@ int draw::checkbox(int x, int y, int width, int id, unsigned flags, const char* 
 			need_value = true;
 	}
 	if(need_value)
-		execute(id);
+		element_event(id, callback);
 	draw::text(rc1, label);
 	if(tips && a == AreaHilited)
 		tooltips(tips);

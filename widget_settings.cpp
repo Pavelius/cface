@@ -84,6 +84,25 @@ static struct widget_settings_header : list
 
 } header;
 
+static void callback_button()
+{
+	auto p = (settings*)hot::param;
+	if(p->e_execute)
+		p->e_execute();
+}
+
+static void callback_bool()
+{
+	auto p = (settings*)hot::param;
+	*((bool*)p->data) = !*((bool*)p->data);
+}
+
+static void callback_radio()
+{
+	auto p = (settings*)hot::param;
+	*((int*)p->data) = p->value;
+}
+
 static struct widget_settings : control
 {
 
@@ -110,11 +129,11 @@ static struct widget_settings : control
 		{
 		case settings::Radio:
 			y += radio(x, y, width, (int)&e, flags | ((*((int*)e.data) == e.value) ? Checked : 0),
-				getname(temp, e));
+				getname(temp, e), 0, callback_radio);
 			break;
 		case settings::Bool:
 			y += checkbox(x, y, width, (int)&e, flags | (*((bool*)e.data) ? Checked : 0),
-				getname(temp, e));
+				getname(temp, e), 0, callback_bool);
 			break;
 		case settings::Int:
 			if(e.value)
@@ -127,7 +146,7 @@ static struct widget_settings : control
 		case settings::Color:
 			break;
 		case settings::Button:
-			y += button(x, y, x2 - x, (int)&e, flags, getname(temp, e));
+			y += button(x, y, x2 - x, (int)&e, flags, getname(temp, e), 0, callback_button);
 			break;
 		case settings::UrlFolder:
 			break;
@@ -151,7 +170,9 @@ static struct widget_settings : control
 
 	void redraw(rect rc)
 	{
+		draw::state push;
 		settings* tabs[128];
+		fore = colors::text;
 		splitv(rc.x1, rc.y1, header_width, rc.height(), 1, 6, 64, 282);
 		showcontrol(header, {rc.x1, rc.y1, rc.x1 + header_width, rc.y2});
 		rc.x1 += header_width + 6;

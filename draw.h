@@ -215,9 +215,9 @@ namespace draw
 	void					blit(surface& dest, int x, int y, int width, int height, unsigned flags, surface& source, int x_source, int y_source, int width_source, int height_source);
 	bool					buttonh(rect rc, bool checked, bool focused, bool disabled, bool border, const char* string, int key = 0, bool press = false, const char* tips = 0);
 	bool					buttonv(rect rc, bool checked, bool focused, bool disabled, bool border, const char* string, int key = 0, bool press = false);
-	int						button(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips = 0);
+	int						button(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips = 0, void(*callback)() = 0);
 	extern surface*			canvas;
-	int						checkbox(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips = 0);
+	int						checkbox(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips = 0, void(*callback)() = 0);
 	void					circle(int x, int y, int radius);
 	void					circle(int x, int y, int radius, const color c1);
 	void					circlef(int x, int y, int radius, const color c1, unsigned char alpha = 0xFF);
@@ -261,7 +261,7 @@ namespace draw
 	void					pixel(int x, int y);
 	void					pixel(int x, int y, unsigned char alpha);
 	unsigned char*			ptr(int x, int y);
-	int						radio(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips = 0);
+	int						radio(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips = 0, void(*callback)() = 0);
 	int						rawinput();
 	void					rectb(rect rc); // Draw rectangle border
 	void					rectb(rect rc, unsigned char c1);
