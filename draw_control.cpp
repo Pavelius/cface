@@ -34,8 +34,6 @@ control::plugin::plugin(control& element) : element(element)
 
 char* control::getname(char* result) const
 {
-	if(id)
-		zcpy(result, id);
 	return result;
 }
 

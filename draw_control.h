@@ -45,7 +45,6 @@ namespace draw
 			const command*		find(const char* id) const;
 			const command*		find(int id) const;
 		};
-		const char*				id;
 		dock_s					dock;
 		bool					disabled;
 		bool					focused;
@@ -53,7 +52,7 @@ namespace draw
 		bool					show_border;
 		bool					show_toolbar;
 		//
-		control::control() : id(0), dock(DockWorkspace),
+		control::control() : dock(DockWorkspace),
 			show_border(true), show_background(true), show_toolbar(true),
 			disabled(false), focused(false) {}
 		//

@@ -45,7 +45,7 @@ static const xsfield* getdatatype(const form* source, const widget& e)
 	return meta->find(e.id);
 }
 
-static bool editstart(const rect& rc, control* source, const char* id, unsigned flags, const widget* childs)
+static bool editstart(const rect& rc, control* source, int id, unsigned flags, const widget* childs)
 {
 	auto result = false;
 	edit_command = 0;
@@ -235,7 +235,7 @@ int form::field(int x, int y, int width, unsigned flags, const widget& e)
 	auto a = area(rc);
 	bool enter_edit = false;
 	if(isfocused(flags) && e.id)
-		enter_edit = editstart(rc, this, id, flags, e.childs);
+		enter_edit = editstart(rc, this, (int)&e, flags, e.childs);
 	if(!enter_edit)
 	{
 		if(isfocused(flags))

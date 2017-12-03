@@ -279,7 +279,6 @@ group_sort_up(false),
 use_setting(true),
 show_header(true), show_event_rows(false)
 {
-	id = "table";
 	columns.data = 0;
 	columns.count = 0;
 }

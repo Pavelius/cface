@@ -9,7 +9,6 @@ maximum_width(0), origin_width(0),
 lines_per_page(0), pixels_per_line(0),
 show_grid_lines(false), hilite_rows(false)
 {
-	id = "list";
 }
 
 void list::ensurevisible()

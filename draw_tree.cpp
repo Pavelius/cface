@@ -7,7 +7,6 @@ using namespace draw::controls;
 tree::tree(unsigned size) : amem(size), table(static_cast<collection&>(*this)),
 sort_rows_by_name(false)
 {
-	id = "tree";
 }
 
 void tree::clear()
