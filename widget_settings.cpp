@@ -4,13 +4,21 @@
 #include "draw_table.h"
 #include "settings.h"
 
-using namespace draw;
-using namespace draw::controls;
-bool			metrics::show::padding;
+using namespace	draw;
+using namespace	draw::controls;
+
+bool				metrics::show::padding;
+static int			current_tab;
+static settings*	current_header;
 
 static char* gettabname(char* temp, void* p)
 {
 	return (char*)((settings*)p)->name;
+}
+
+static void callback_settab()
+{
+	current_tab = hot::param;
 }
 
 static int compare_settings(const void* p1, const void* p2)
@@ -39,6 +47,14 @@ static void getsiblings(settings** result, unsigned maximum_count, settings* par
 	}
 	*ps = 0;
 	qsort(result, zlen(result), sizeof(result[0]), compare_settings);
+}
+
+static void showcontrol(control& e, rect rc)
+{
+	unsigned flags = 0;
+	focusing((int)&e, flags, rc);
+	e.focused = (flags & Focused) != 0;
+	e.view(rc, false);
 }
 
 static struct widget_settings_header : list
@@ -70,15 +86,74 @@ static struct widget_settings_header : list
 
 static struct widget_settings : control
 {
+
 	int header_width;
+
+	static const char* getname(char* temp, settings& e)
+	{
+		zcpy(temp, e.name);
+		szupper(temp);
+		return temp;
+	}
+
+	static int element(int x, int y, int width, unsigned flags, settings& e)
+	{
+		int cnt;
+		int x2 = x + width;
+		settings* pc;
+		char temp[512];
+		if(e.e_visible && !e.e_visible(e))
+			return 0;
+		int y1 = y;
+		temp[0] = 0;
+		switch(e.type)
+		{
+		case settings::Radio:
+			y += radio(x, y, width, (int)&e, flags | ((*((int*)e.data) == e.value) ? Checked : 0),
+				getname(temp, e));
+			break;
+		case settings::Bool:
+			y += checkbox(x, y, width, (int)&e, flags | (*((bool*)e.data) ? Checked : 0),
+				getname(temp, e));
+			break;
+		case settings::Int:
+			if(e.value)
+				cnt = (getdigitscount(e.value) + 1)*textw("0") + metrics::padding * 2 + 19;
+			else
+				cnt = x2 - x;
+			if(cnt > x2 - x)
+				cnt = x2 - x;
+			break;
+		case settings::Color:
+			break;
+		case settings::Button:
+			y += button(x, y, x2 - x, (int)&e, flags, getname(temp, e));
+			break;
+		case settings::UrlFolder:
+			break;
+		case settings::Group:
+			pc = e.child();
+			if(!pc)
+				return 0;
+			x += metrics::padding;
+			width -= metrics::padding * 4;
+			for(; pc; pc = pc->next)
+			{
+				int h = element(x, y, width, flags, *pc);
+				if(h)
+					y += h + metrics::padding;
+			}
+			y += metrics::padding * 2;
+			return y - y1;
+		}
+		return y - y1;
+	}
 
 	void redraw(rect rc)
 	{
 		settings* tabs[128];
-		static settings* current_header;
-		static int current_tab;
 		splitv(rc.x1, rc.y1, header_width, rc.height(), 1, 6, 64, 282);
-		header.view({rc.x1, rc.y1, rc.x1 + header_width, rc.y2}, false);
+		showcontrol(header, {rc.x1, rc.y1, rc.x1 + header_width, rc.y2});
 		rc.x1 += header_width + 6;
 		auto top = header.getcurrent();
 		// При изменении текущего заголовка
@@ -87,25 +162,49 @@ static struct widget_settings : control
 			current_header = top;
 			current_tab = -1;
 		}
-		if(top)
+		if(!top)
+			return;
+		getsiblings(tabs, sizeof(tabs) / sizeof(tabs[0]), top);
+		if(tabs[0])
 		{
-			getsiblings(tabs, sizeof(tabs)/ sizeof(tabs[0]), top);
-			if(tabs[0])
+			// Покажем дополнительную панель
+			if(current_tab == -1)
+				current_tab = 0;
+			int h1 = 28;
+			// Нарисуем закладки
+			auto hilited = -1;
+			if(draw::tabs({rc.x1, rc.y1, rc.x2, rc.y1 + h1 + 1}, false, false,
+				(void**)tabs, 0, zlen(tabs), current_tab, &hilited,
+				gettabname))
 			{
-				// Покажем дополнительную панель
-				if(current_tab == -1)
-					current_tab = 0;
-				int h1 = 28;
-				// Нарисуем закладки
-				draw::tabs({rc.x1, rc.y1, rc.x2, rc.y1 + h1 + 1}, false, false,
-					(void**)tabs, 0, zlen(tabs), current_tab, 0,
-					gettabname);
-				if(metrics::show::padding)
-					rectb(rc, colors::border);
-				line(rc.x1, rc.y1 + h1, rc.x2, rc.y1 + h1, colors::border);
-				rc.y1 += h1 + metrics::padding * 3;
-				rc.x1 += metrics::padding * 3;
-				rc.x2 -= metrics::padding * 3;
+				draw::execute(callback_settab);
+				hot::param = hilited;
+			}
+			if(metrics::show::padding)
+				rectb(rc, colors::border);
+			line(rc.x1, rc.y1 + h1, rc.x2, rc.y1 + h1, colors::border);
+			rc.y1 += h1 + metrics::padding * 3;
+			rc.x1 += metrics::padding * 3;
+			rc.x2 -= metrics::padding * 3;
+			// Нариуем текущую закладку
+			if(current_tab != -1)
+			{
+				int w4 = rc.width();
+				int w3 = imin(w4, 640);
+				auto p1 = tabs[current_tab];
+				switch(p1->type)
+				{
+				case settings::Control:
+					break;
+				default:
+					for(auto p = p1->child(); p; p = p->next)
+					{
+						int h = element(rc.x1, rc.y1, w3, 0, *p);
+						if(h)
+							rc.y1 += h + metrics::padding;
+					}
+					break;
+				}
 			}
 		}
 	}
