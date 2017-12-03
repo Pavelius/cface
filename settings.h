@@ -21,17 +21,12 @@ struct settings
 	void(*e_execute)();
 	bool(*e_visible)(settings& e);
 	//
-	void*			operator new(unsigned size);
-	void			operator delete(void* p);
-	//
 	settings&		add(const char* name_ru, bool& value);
 	settings&		add(const char* name_ru, int& value);
 	settings&		add(const char* name_ru, int& value, int current);
 	settings&		add(const char* name_ru, char* value, types type = Text);
-	settings&		add(const char* name_ru, char** value, types type = Text);
 	settings&		add(const char* name_ru, color& value);
 	settings&		add(const char* name_ru, void(*fn)());
-	void			clear();
 	settings*		child();
 	settings&		execute(void(*fn)());
 	settings*		find(const char* identifier); // Find setting by identifier

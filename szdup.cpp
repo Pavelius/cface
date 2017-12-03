@@ -104,6 +104,14 @@ const char* szdup(const char* text)
 		return big.add(text, lenght);
 }
 
+static bool ischa(unsigned char u)
+{
+	return (u >= 'A' && u <= 'Z')
+	|| (u >= 'a' && u <= 'z')
+	|| (u >= ((unsigned char)'À') && u <= ((unsigned char)'ß'))
+	|| (u >= ((unsigned char)'à') && u <= ((unsigned char)'ÿ'));
+}
+
 // Work only with english symbols
 const char* sztag(const char* p)
 {
@@ -112,7 +120,7 @@ const char* sztag(const char* p)
 	bool upper = true;
 	while(*p)
 	{
-		if(*p!='_' && !ischa((unsigned char)*p) && !isnum((unsigned char)*p))
+		if(*p!='_' && !ischa((unsigned char)*p) && !isnum(*p))
 		{
 			upper = true;
 			p++;
@@ -120,7 +128,7 @@ const char* sztag(const char* p)
 		}
 		if(upper)
 		{
-			*s++ = szupper((unsigned char)*p++);
+			szput(&s, szupper(szget(&p)));
 			upper = false;
 		}
 		else

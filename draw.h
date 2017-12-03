@@ -206,6 +206,7 @@ namespace draw
 	void					addelement(int id, const rect& rc);
 	int						aligned(int x, int width, unsigned state, int string_width);
 	int						alignedh(const rect& rc, const char* string, unsigned state);
+	int						application(const char* name);
 	areas					area(rect rc);
 	bool					areb(rect rc);
 	void					bezier(int x0, int y0, int x1, int y1, int x2, int y2);
