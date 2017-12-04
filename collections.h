@@ -25,8 +25,9 @@ struct arefc : aref<T>, collection
 	~arefc() { aref<T>::clear(); }
 	void*					add(const void* object) override { auto& m = addr(); if(object) m = *static_cast<const T*>(object); return &m; }
 	void					clear() { aref<T>::clear(); }
-	unsigned				getcount() const override { return count; }
 	void*					get(int index) const override { return data + index; }
+	unsigned				getcount() const override { return count; }
+	unsigned				getmaxcount() const override { return 0; }
 	int						indexof(const void* object) const override { return aref<T>::indexof(static_cast<const T*>(object)); }
 	void					remove(int index, int elements_count) override { aref<T>::remove(index, elements_count); }
 	void					swap(int i1, int i2) override { T a = data[i1]; data[i1] = data[i2]; data[i2] = a; }

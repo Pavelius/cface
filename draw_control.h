@@ -25,10 +25,12 @@ namespace draw
 	{
 		struct plugin
 		{
+			const char*			id;
+			const char*			name;
 			control&			element;
 			plugin*				next;
 			static plugin*		first;
-			plugin(control& value);
+			plugin(control& value, const char* id, const char* name);
 		};
 		struct command
 		{

@@ -112,9 +112,14 @@ settings& settings::add(const char* name_ru, color& value)
 
 settings& settings::add(const char* name_ru, void(*fn)())
 {
-	settings& e = add_element(this, name_ru, Button, 0);
+	auto& e = add_element(this, name_ru, Button, 0);
 	e.e_execute = fn;
 	return e;
+}
+
+settings& settings::add(const char* name_ru, draw::control& value)
+{
+	return add_element(this, name_ru, Control, &value);
 }
 
 settings& settings::visible(bool(*fn)(settings& e))

@@ -1,9 +1,11 @@
 #include "command.h"
+#include "collections.h"
 #include "crt.h"
 #include "draw.h"
 #include "draw_table.h"
 #include "draw_textedit.h"
 #include "settings.h"
+#include "xsfield.h"
 
 using namespace	draw;
 using namespace	draw::controls;
@@ -171,6 +173,28 @@ static struct widget_settings_header : list
 	}
 
 } header;
+
+static struct widget_control_viewer : table
+{
+	arefc<plugin*>		source;
+
+	void initialize()
+	{
+		static xsfield plugin_type[] = {
+			BSREQ(plugin, id, text_type),
+			BSREQ(plugin, name, text_type),
+			{0}
+		};
+		addcol(WidgetField, "name", "Наименование");
+		for(auto p = plugin::first; p; p = p->next)
+			source.add(p);
+	}
+
+	widget_control_viewer() : table(source)
+	{
+	}
+
+} control_viewer;
 
 static struct widget_settings : control
 {
@@ -377,11 +401,18 @@ static void setting_appearance_general_view()
 	//e1.add("Использовать оптимизацию при движении мишки", sys_optimize_mouse_move);
 }
 
+static void setting_appearance_controls()
+{
+	settings& e1 = settings::root.gr("Рабочий стол").add("Формы", control_viewer);
+	control_viewer.initialize();
+}
+
 static void initialize_settings()
 {
 	setting_appearance_general_metrics();
 	setting_appearance_forms();
 	setting_appearance_general_view();
+	setting_appearance_controls();
 	header.initialize();
 }
 
