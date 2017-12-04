@@ -145,6 +145,7 @@ static struct widget_settings : control
 
 	static int element(int x, int y, int width, unsigned flags, settings& e)
 	{
+		const auto title = 160;
 		settings* pc;
 		char temp[512]; temp[0] = 0;
 		if(e.e_visible && !e.e_visible(e))
@@ -163,13 +164,13 @@ static struct widget_settings : control
 		case settings::Int:
 			if(e.value) // Есть максимум
 			{
-				auto title = 160;
 				auto w = (getdigitscount(e.value) + 1)*textw("0") + metrics::padding * 2 + 19;
 				if(title + w < width)
 					width = title + w;
 			}
 			sznum(temp, *((int*)e.data));
-			y += field(x, y, width, (int)&e, flags, temp, e.name, 160, 0, 0, 0, 0, callback_up, callback_down);
+			titletext(x, y, width, flags, e.name, title);
+			y += field(x, y, width, (int)&e, flags, temp, 0, 0, 0, 0, callback_up, callback_down);
 			break;
 		case settings::Color:
 			break;
@@ -177,10 +178,12 @@ static struct widget_settings : control
 			y += button(x, y, width, (int)&e, flags, getname(temp, e), 0, callback_button);
 			break;
 		case settings::TextPtr:
-			y += field(x, y, width, (int)&e, flags, *((const char**)e.data), e.name, 160);
+			titletext(x, y, width, flags, e.name, title);
+			y += field(x, y, width, (int)&e, flags, *((const char**)e.data));
 			break;
 		case settings::UrlFolderPtr:
-			y += field(x, y, width, (int)&e, flags, *((const char**)e.data), e.name, 160, 0, 0, 0, callback_choose_folder);
+			titletext(x, y, width, flags, e.name, title);
+			y += field(x, y, width, (int)&e, flags, *((const char**)e.data), 0, 0, 0, callback_choose_folder);
 			break;
 		case settings::Group:
 			pc = e.child();

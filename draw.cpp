@@ -320,6 +320,23 @@ void draw::setposition(int& x, int& y, int& width)
 	width -= metrics::padding * 2;
 }
 
+int draw::titletext(int& x, int y, int& width, unsigned flags, const char* label, int title)
+{
+	if(!label || label[0]==0)
+		return 0;
+	if(!title)
+		title = 100;
+	char temp[1024];
+	draw::state push;
+	zcpy(temp, label, sizeof(temp) - 2);
+	zcat(temp, ":");
+	decortext(flags);
+	text(x + metrics::padding, y + metrics::padding + 4, temp);
+	x += title;
+	width -= title;
+	return draw::texth();
+}
+
 void draw::hilight(rect rc, unsigned flags)
 {
 	auto focused = isfocused(flags);
