@@ -57,33 +57,6 @@ static void showcontrol(control& e, rect rc)
 	e.view(rc, false);
 }
 
-static struct widget_settings_header : list
-{
-	settings* rows[128];
-
-	void initialize()
-	{
-		getsiblings(rows, sizeof(rows) / sizeof(rows[0]), &settings::root);
-		maximum = zlen(rows);
-		if(current >= maximum - 1)
-			current = maximum;
-		if(current < 0)
-			current = 0;
-	}
-
-	void row(rect rc, int index) override
-	{
-		list::row({rc.x1 + 1, rc.y1 + 1, rc.x2 - 1, rc.y2}, index);
-		textc(rc.x1 + 4, rc.y1 + 4, rc.width() - 8, rows[index]->name);
-	}
-
-	settings* getcurrent()
-	{
-		return rows[current];
-	}
-
-} header;
-
 static void callback_button()
 {
 	auto p = (settings*)hot::param;
@@ -136,6 +109,33 @@ static void callback_choose_color()
 	auto p = (settings*)hot::param;
 	draw::dialog::color(*((color*)p->data));
 }
+
+static struct widget_settings_header : list
+{
+	settings* rows[128];
+
+	void initialize()
+	{
+		getsiblings(rows, sizeof(rows) / sizeof(rows[0]), &settings::root);
+		maximum = zlen(rows);
+		if(current >= maximum - 1)
+			current = maximum;
+		if(current < 0)
+			current = 0;
+	}
+
+	void row(rect rc, int index) override
+	{
+		list::row({rc.x1 + 1, rc.y1 + 1, rc.x2 - 1, rc.y2}, index);
+		textc(rc.x1 + 4, rc.y1 + 4, rc.width() - 8, rows[index]->name);
+	}
+
+	settings* getcurrent()
+	{
+		return rows[current];
+	}
+
+} header;
 
 static struct widget_settings : control
 {
@@ -208,6 +208,8 @@ static struct widget_settings : control
 		case settings::UrlFolderPtr:
 			titletext(x, y, width, flags, e.name, title);
 			y += field(x, y, width, (int)&e, flags, *((const char**)e.data), 0, 0, 0, callback_choose_folder);
+			break;
+		case settings::Control:
 			break;
 		case settings::Group:
 			pc = e.child();
@@ -284,6 +286,7 @@ static struct widget_settings : control
 				switch(p1->type)
 				{
 				case settings::Control:
+					((control*)p1->data)->view(rc, true);
 					break;
 				default:
 					for(auto p = p1->child(); p; p = p->next)
