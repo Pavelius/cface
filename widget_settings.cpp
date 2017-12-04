@@ -174,23 +174,40 @@ static struct widget_settings_header : list
 
 } header;
 
-static struct widget_control_viewer : table
+static struct widget_control_viewer : tableref
 {
-	arefc<plugin*>		source;
 
 	void initialize()
 	{
-		static xsfield plugin_type[] = {
-			BSREQ(plugin, id, text_type),
-			BSREQ(plugin, name, text_type),
-			{0}
+		static xsfield control_type[] = {
+			BSREQ(control, dock, number_type),
+			BSREQ(control, disabled, number_type),
+			BSREQ(control, focused, number_type),
+			BSREQ(control, show_toolbar, number_type),
+			BSREQ(control, show_background, number_type),
+			{0},
 		};
-		addcol(WidgetField, "name", "Наименование");
+		show_toolbar = false;
+		no_change_order = true;
+		no_change_count = true;
+		fields = control_type;
+		addcol(WidgetLabel, "name", "Наименование");
+		addcol(WidgetField, "dock", "Расположение");
 		for(auto p = plugin::first; p; p = p->next)
-			source.add(p);
+			addelement(&p->element);
 	}
 
-	widget_control_viewer() : table(source)
+	const char*	gettext(char* result, void* data, const char* id) const override
+	{
+		auto p = (control*)data;
+		if(strcmp(id, "name") == 0)
+			return p->getname(result);
+		else if(strcmp(id, "description") == 0)
+			return p->getdescription(result);
+		return table::gettext(result, data, id);
+	}
+
+	widget_control_viewer()
 	{
 	}
 
@@ -403,9 +420,13 @@ static void setting_appearance_general_view()
 
 static void setting_appearance_controls()
 {
-	settings& e1 = settings::root.gr("Рабочий стол").add("Формы", control_viewer);
 	control_viewer.initialize();
+	if(!control_viewer.rows.getcount())
+		return;
+	settings& e1 = settings::root.gr("Рабочий стол").add("Элементы управления", control_viewer);
 }
+
+command* command_settings_initialize;
 
 static void initialize_settings()
 {
@@ -414,6 +435,7 @@ static void initialize_settings()
 	setting_appearance_general_view();
 	setting_appearance_controls();
 	header.initialize();
+	command_settings_initialize->execute();
 }
 
 int draw::application(const char* title)

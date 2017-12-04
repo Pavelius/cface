@@ -119,7 +119,9 @@ settings& settings::add(const char* name_ru, void(*fn)())
 
 settings& settings::add(const char* name_ru, draw::control& value)
 {
-	return add_element(this, name_ru, Control, &value);
+	auto& e = add_element(this, name_ru, Control, &value);
+	e.priority = 10;
+	return e;
 }
 
 settings& settings::visible(bool(*fn)(settings& e))

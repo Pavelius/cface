@@ -28,7 +28,7 @@ bool				table_sort_by_mouse;
 
 table::renderproc table::renders[] = {
 	&renderno,
-	&renderno, &renderno, &renderno, &renderno,
+	&renderlabel, &renderno, &renderno, &renderno,
 	&renderfield, &renderfield, &rendercheck, &renderfield, &renderimage,
 	&linenumber,
 };
@@ -71,7 +71,7 @@ unsigned table::addcopy(bool run)
 		return Disabled;
 	if(run)
 	{
-		auto p = rows.add(rows.get(current));
+		auto p = rows.add(rows.get(current)); // При копировании получим экземпляр рядка
 		select(rows.indexof(p));
 		invoke("change");
 	}
@@ -83,7 +83,7 @@ unsigned table::copy(bool run)
 	if(run)
 	{
 		char temp[4096]; temp[0] = 0;
-		auto p = gettext(temp, rows.get(current), columns[current_column].id);
+		auto p = gettext(temp, getrow(current), columns[current_column].id);
 		if(p)
 			clipboard::copy(p, zlen(p));
 	}
@@ -117,7 +117,7 @@ unsigned table::change(bool run)
 	if(!canedit(current, columns.data[current_column]))
 		return Disabled;
 	if(run)
-		changing((void*)rows.get(current),
+		changing((void*)getrow(current),
 			columns.data[current_column].id,
 			columns.data[current_column].flags);
 	return 0;
@@ -503,6 +503,14 @@ void table::linenumber(rect rc, int index, unsigned flags, void* data, const wid
 	showtext(rc, temp, flags);
 }
 
+void table::renderlabel(rect rc, int index, unsigned flags, void* data, const widget& e) const
+{
+	char temp[1024]; temp[0] = 0;
+	auto p = gettext(temp, data, e.id);
+	if(p)
+		showtext(rc, p, flags);
+}
+
 void table::renderfield(rect rc, int index, unsigned flags, void* data, const widget& e) const
 {
 	auto requisit = fields->find(e.id);
@@ -551,7 +559,7 @@ void table::row(rect rc, int index)
 	bool first_row = true;
 	if(!columns.data)
 		return;
-	void* data = rows.get(index);
+	void* data = getrow(index);
 	for(auto& e : columns)
 	{
 		if(e.flags&ColumnHide)
@@ -767,7 +775,7 @@ int table::find(const char* id, const char* value, int index)
 	for(; i1 < i2; i1++)
 	{
 		char temp[4096];
-		auto pv = fields->getdata(temp, id, rows.get(i1), false);
+		auto pv = fields->getdata(temp, id, getrow(i1), false);
 		if(!pv)
 			continue;
 		if(szcmpi(pv, value, sz) == 0)

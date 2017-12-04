@@ -27,7 +27,7 @@ static void callback_context_menu()
 	current_control->contextmenu();
 }
 
-control::plugin::plugin(control& element, const char* id, const char* name) : element(element), id(id), name(name)
+control::plugin::plugin(control& element) : element(element)
 {
 	seqlink(this);
 }

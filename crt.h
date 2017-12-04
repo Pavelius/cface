@@ -53,6 +53,8 @@ bool								issignature(const char name[4], const char* s); // Is name equal to 
 inline bool							isnum(unsigned u) { return u>='0' && u<='9'; } // is numeric character?
 void*								loadb(const char* url, int* size = 0, int additional_bytes_alloated = 0); // Load binary file.
 char*								loadt(const char* url, int* size = 0); // Load text file and decode it to system codepage.
+void								logmsg(const char* format, ...);
+void								logmsgv(const char* format, const char* arguments);
 bool								matchuc(const char* name, const char* filter);
 unsigned							mkdate(int year, int month, int day, int hour = 0, int minute = 0); // Get date from parameters
 unsigned							monthb(unsigned d); // Return start of month

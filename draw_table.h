@@ -1,5 +1,6 @@
 #include "aref.h"
 #include "collection.h"
+#include "collections.h"
 #include "draw_list.h"
 #include "widget.h"
 
@@ -63,12 +64,14 @@ namespace draw
 			int					find(const char* id, const char* text, int start);
 			widget*				findcol(const char* id);
 			command*			getcommands() const override { return commands; }
+			virtual void*		getrow(int index) { return rows.get(index); }
 			virtual const char*	gettext(char* result, void* data, const char* id) const;
 			void				header(rect rc);
 			unsigned			importdata(bool run);
 			void				inputsymbol(int id, int symbol) override;
 			void				keyleft(int id) override;
 			void				keyright(int id) override;
+			void				renderlabel(rect rc, int index, unsigned flags, void* data, const widget & e) const;
 			void				rendercheck(rect rc, int index, unsigned flags, void* data, const widget & e) const;
 			void				renderfield(rect rc, int index, unsigned flags, void* data, const widget & e) const;
 			void				renderimage(rect rc, int index, unsigned flags, void* data, const widget& e) const;
@@ -92,6 +95,14 @@ namespace draw
 			virtual void		treemark(rect rc, int index, int level) const;
 			virtual void		tuning(control** controls);
 			void				validate(int direction = 1, bool editable = true);
+		};
+		struct tableref : table
+		{
+			arefc<void*>		source;
+			tableref() : table(source) { source.initialize(); }
+			~tableref() { source.clear(); }
+			void				addelement(void* element) { source.add(&element); }
+			void*				getrow(int index) override { return *((void**)rows.get(index)); }
 		};
 	}
 }

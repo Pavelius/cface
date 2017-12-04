@@ -24,7 +24,7 @@ struct arefc : aref<T>, collection
 	arefc() { initialize(); }
 	~arefc() { aref<T>::clear(); }
 	void*					add(const void* object) override { auto& m = addr(); if(object) m = *static_cast<const T*>(object); return &m; }
-	void					clear() { aref<T>::clear(); }
+	void					clear() override { aref<T>::clear(); }
 	void*					get(int index) const override { return data + index; }
 	unsigned				getcount() const override { return count; }
 	unsigned				getmaxcount() const override { return 0; }
