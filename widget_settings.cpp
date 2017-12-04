@@ -131,6 +131,12 @@ static void callback_choose_folder()
 	}
 }
 
+static void callback_choose_color()
+{
+	auto p = (settings*)hot::param;
+	draw::dialog::color(*((color*)p->data));
+}
+
 static struct widget_settings : control
 {
 
@@ -153,7 +159,8 @@ static struct widget_settings : control
 			ischecked(flags), isfocused(flags), isdisabled(flags), true, value,
 			temp, KeyEnter, false, tips))
 		{
-			//element_event(id, callback);
+			draw::execute(callback);
+			hot::param = id;
 		}
 		return rc.height() + metrics::padding * 2;
 	}
@@ -189,7 +196,7 @@ static struct widget_settings : control
 			break;
 		case settings::Color:
 			titletext(x, y, width, flags, e.name, title);
-			y += buttonc(x, y, width, (int)&e, flags, *((color*)e.data), 0, callback_button);
+			y += buttonc(x, y, width, (int)&e, flags, *((color*)e.data), 0, callback_choose_color);
 			break;
 		case settings::Button:
 			y += button(x, y, width, (int)&e, flags, getname(temp, e), 0, callback_button);

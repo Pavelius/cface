@@ -119,7 +119,7 @@ bool draw::buttonh(rect rc, bool checked, bool focused, bool disabled, bool bord
 
 bool draw::buttonh(rect rc, bool checked, bool focused, bool disabled, bool border, const char* string, int key, bool press, const char* tips)
 {
-	return buttonh(rc, checked, focused, disabled, border, colors::button, string, press, tips);
+	return buttonh(rc, checked, focused, disabled, border, colors::button, string, key, press, tips);
 }
 
 bool draw::addbutton(rect& rc, bool focused, const char* t1, int k1, const char* tt1)
