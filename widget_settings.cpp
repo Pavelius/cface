@@ -143,6 +143,21 @@ static struct widget_settings : control
 		return temp;
 	}
 
+	static int buttonc(int x, int y, int width, int id, unsigned flags, color value, const char* tips, void(*callback)())
+	{
+		char temp[128]; szprint(temp, "%1i, %2i, %3i", value.r, value.g, value.b);
+		setposition(x, y, width);
+		struct rect rc = {x, y, x + width, y + 4 * 2 + draw::texth()};
+		focusing(id, flags, rc);
+		if(buttonh({x, y, x + width, rc.y2},
+			ischecked(flags), isfocused(flags), isdisabled(flags), true, value,
+			temp, KeyEnter, false, tips))
+		{
+			//element_event(id, callback);
+		}
+		return rc.height() + metrics::padding * 2;
+	}
+
 	static int element(int x, int y, int width, unsigned flags, settings& e)
 	{
 		const auto title = 160;
@@ -173,6 +188,8 @@ static struct widget_settings : control
 			y += field(x, y, width, (int)&e, flags, temp, 0, 0, 0, 0, callback_up, callback_down);
 			break;
 		case settings::Color:
+			titletext(x, y, width, flags, e.name, title);
+			y += buttonc(x, y, width, (int)&e, flags, *((color*)e.data), 0, callback_button);
 			break;
 		case settings::Button:
 			y += button(x, y, width, (int)&e, flags, getname(temp, e), 0, callback_button);
@@ -205,6 +222,7 @@ static struct widget_settings : control
 					text(x + (width - textw(e.name)) / 2, y2 + metrics::padding, e.name);
 					rectb({x, y2, x + width, y + metrics::padding}, colors::border);
 				}
+				y += metrics::padding;
 			}
 			break;
 		}
@@ -262,11 +280,7 @@ static struct widget_settings : control
 					break;
 				default:
 					for(auto p = p1->child(); p; p = p->next)
-					{
-						int h = element(rc.x1, rc.y1, w3, 0, *p);
-						if(h)
-							rc.y1 += h + metrics::padding;
-					}
+						rc.y1 += element(rc.x1, rc.y1, w3, 0, *p);
 					break;
 				}
 			}

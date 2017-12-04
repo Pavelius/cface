@@ -50,18 +50,19 @@ bool draw::buttonv(rect rc, bool checked, bool focused, bool disabled, bool bord
 	return result;
 }
 
-bool draw::buttonh(rect rc, bool checked, bool focused, bool disabled, bool border, const char* string, int key, bool press, const char* tips)
+bool draw::buttonh(rect rc, bool checked, bool focused, bool disabled, bool border, color value, const char* string, int key, bool press, const char* tips)
 {
-	state push;
+	draw::state push;
 	bool result = false;
 	struct rect rcb = {rc.x1 + 1, rc.y1 + 1, rc.x2, rc.y2};
 	areas a = area(rc);
+	//fore = (value.gray().r > 32) ? colors::white : colors::black;
 	if(disabled)
 	{
-		gradv(rcb, colors::button.lighten(), colors::button.darken());
+		gradv(rcb, value.lighten(), value.darken());
 		if(border)
 			rectb(rc, colors::border.mix(colors::window));
-		fore = fore.mix(colors::button, 64);
+		fore = fore.mix(value, 64);
 	}
 	else
 	{
@@ -71,11 +72,11 @@ bool draw::buttonh(rect rc, bool checked, bool focused, bool disabled, bool bord
 			result = true;
 		if(checked)
 			a = AreaHilitedPressed;
-		color active = colors::button.mix(colors::edit, 128);
+		color active = value.mix(colors::edit, 128);
 		color a1 = active.lighten();
 		color a2 = active.darken();
-		color b1 = colors::button.lighten();
-		color b2 = colors::button.darken();
+		color b1 = value.lighten();
+		color b2 = value.darken();
 		switch(a)
 		{
 		case AreaHilited:
@@ -114,6 +115,11 @@ bool draw::buttonh(rect rc, bool checked, bool focused, bool disabled, bool bord
 			tooltips(tips);
 	}
 	return result;
+}
+
+bool draw::buttonh(rect rc, bool checked, bool focused, bool disabled, bool border, const char* string, int key, bool press, const char* tips)
+{
+	return buttonh(rc, checked, focused, disabled, border, colors::button, string, press, tips);
 }
 
 bool draw::addbutton(rect& rc, bool focused, const char* t1, int k1, const char* tt1)

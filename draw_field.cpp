@@ -47,7 +47,10 @@ void callback_edit_old()
 
 static bool editstart(const rect& rc, int id, unsigned flags, void(*callback_edit)())
 {
+	if(!id || !callback_edit)
+		return false;
 	auto result = false;
+	auto edit_command = 0;
 	switch(hot::key&CommandMask)
 	{
 	case MouseMove:
@@ -58,7 +61,7 @@ static bool editstart(const rect& rc, int id, unsigned flags, void(*callback_edi
 	case MouseLeft:
 	case MouseLeftDBL:
 	case MouseRight:
-		//edit_command = hot::key;
+		edit_command = hot::key;
 		result = draw::areb(rc);
 		break;
 	case InputSymbol:
@@ -71,6 +74,7 @@ static bool editstart(const rect& rc, int id, unsigned flags, void(*callback_edi
 	if(result)
 	{
 		execute(callback_edit);
+		hot::key = edit_command;
 		hot::param = id;
 		hot::element = rc;
 	}
@@ -169,7 +173,7 @@ int draw::field(int x, int y, int width, int id, unsigned flags, const char* lab
 	}
 	auto a = area(rc);
 	bool enter_edit = false;
-	if(focused && id && callback_edit)
+	if(focused)
 		enter_edit = editstart(rc, id, flags, callback_edit);
 	if(!enter_edit)
 	{
