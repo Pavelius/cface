@@ -126,6 +126,18 @@ void control::mouseright(point position, int id, bool pressed)
 	hot::key = MouseRight;
 }
 
+void control::enablefocus()
+{
+	if(focused)
+		current_focus = this;
+}
+
+void control::enablemouse(const rect& rc)
+{
+	if(hot::key >= FirstMouse && hot::key <= LastMouse && hot::mouse.in(rc))
+		current_mouse = this;
+}
+
 void control::view(rect rc, bool show_toolbar)
 {
 	draw::state push;
@@ -136,16 +148,10 @@ void control::view(rect rc, bool show_toolbar)
 		rt.y2 += metrics::toolbar->get(0).sy + 4;
 		rc.y1 += rt.height() + metrics::padding;
 	}
-	// Выерем фокус
-	if(focused)
-		current_focus = this;
-	// Нарисуем фон
+	enablefocus();
 	background(rc);
-	// Перед выводом настроим разные элементы.
 	prerender();
-	// Определим элемент управления, на котором мышка
-	if(hot::key >= FirstMouse && hot::key <= LastMouse && hot::mouse.in(rc))
-		current_mouse = this;
+	enablemouse(rc);
 	// Обновим цвет элемента, который может именился
 	// Процедура 'background' может изменить рамку элемента.
 	// Поэтому только начиная отсюда она имеет корректное значение.

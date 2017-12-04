@@ -266,6 +266,8 @@ bool textedit::editing(rect rco)
 	while(true)
 	{
 		push.restore();
+		enablefocus();
+		enablemouse(rc);
 		nonclient(rc);
 		if(isshowrecords())
 		{

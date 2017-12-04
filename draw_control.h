@@ -59,6 +59,8 @@ namespace draw
 		virtual void			background(rect& rc);
 		virtual void			contextmenu();
 		unsigned				execute(const char* id, bool run = true);
+		void					enablefocus();
+		void					enablemouse(const rect& rc);
 		color					getcolor(color normal) const;
 		virtual control*		getcontrol(const char* id) { return 0; }
 		virtual const command*	getcommands() const { return 0; }
