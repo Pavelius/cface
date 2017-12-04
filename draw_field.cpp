@@ -7,42 +7,14 @@
 
 using namespace draw;
 
-void callback_edit_old()
-{
-	//auto id = hot::name;
-	//auto source = hot::source;
-	//auto childs = edit_childs;
-	//char temp[8192]; temp[0] = 0;
-	//if(!getdata(temp, source, id, edit_childs, true, type))
-	//	return;
-	//auto old_fore = draw::fore;
-	//draw::fore = colors::text;
-	//draw::controls::textedit te(temp, sizeof(temp));
-	//te.align = edit_flags;
-	//te.p1 = 0;
-	//te.p2 = zlen(temp);
-	//if(edit_command)
-	//	hot::key = edit_command;
-	//if(te.editing(hot::element))
-	//{
-	//	switch(type)
-	//	{
-	//	case FieldText:
-	//		setdata(source, id, (int)szdup(temp), true);
-	//		break;
-	//	case FieldNumber:
-	//		if(childs)
-	//		{
+static int		edit_command;
+static void		(*callback_field_next)();
 
-	//		}
-	//		else
-	//			setdata(source, id, sz2num(temp), true);
-	//		break;
-	//	default:
-	//		break;
-	//	}
-	//}
-	//draw::fore = old_fore;
+static void callback_field()
+{
+	if(edit_command)
+		hot::key = edit_command;
+	callback_field_next();
 }
 
 static bool editstart(const rect& rc, int id, unsigned flags, void(*callback_edit)())
@@ -50,12 +22,13 @@ static bool editstart(const rect& rc, int id, unsigned flags, void(*callback_edi
 	if(!id || !callback_edit)
 		return false;
 	auto result = false;
-	auto edit_command = 0;
+	edit_command = 0;
 	switch(hot::key&CommandMask)
 	{
 	case MouseMove:
 	case InputIdle:
 	case InputTimer:
+	case KeyTab:
 		// Команды не влияющие на вход в режим редактирования
 		break;
 	case MouseLeft:
@@ -73,8 +46,8 @@ static bool editstart(const rect& rc, int id, unsigned flags, void(*callback_edi
 	}
 	if(result)
 	{
-		execute(callback_edit);
-		hot::key = edit_command;
+		execute(callback_field);
+		callback_field_next = callback_edit;
 		hot::param = id;
 		hot::element = rc;
 	}

@@ -2,6 +2,7 @@
 #include "crt.h"
 #include "draw.h"
 #include "draw_table.h"
+#include "draw_textedit.h"
 #include "settings.h"
 
 using namespace	draw;
@@ -110,6 +111,40 @@ static void callback_choose_color()
 	draw::dialog::color(*((color*)p->data));
 }
 
+static void callback_edit()
+{
+	char temp[4196]; temp[0] = 0;
+	auto p = (settings*)hot::param;
+	switch(p->type)
+	{
+	case settings::TextPtr:
+	case settings::UrlFolderPtr:
+		if(*((const char**)p->data))
+			zcpy(temp, *((const char**)p->data), sizeof(temp) - 1);
+		break;
+	case settings::Int:
+		sznum(temp, *((int*)p->data));
+		break;
+	}
+	textedit te(temp, sizeof(temp), true);
+	if(te.editing(hot::element))
+	{
+		switch(p->type)
+		{
+		case settings::TextPtr:
+		case settings::UrlFolderPtr:
+			if(temp[0])
+				*((const char**)p->data) = szdup(temp);
+			else
+				*((const char**)p->data) = 0;
+			break;
+		case settings::Int:
+			*((int*)p->data) = sz2num(temp);
+			break;
+		}
+	}
+}
+
 static struct widget_settings_header : list
 {
 	settings* rows[128];
@@ -192,7 +227,7 @@ static struct widget_settings : control
 			}
 			sznum(temp, *((int*)e.data));
 			titletext(x, y, width, flags, e.name, title);
-			y += field(x, y, width, (int)&e, flags, temp, 0, 0, 0, 0, callback_up, callback_down);
+			y += field(x, y, width, (int)&e, flags, temp, 0, callback_edit, 0, 0, callback_up, callback_down);
 			break;
 		case settings::Color:
 			titletext(x, y, width, flags, e.name, title);
@@ -203,11 +238,11 @@ static struct widget_settings : control
 			break;
 		case settings::TextPtr:
 			titletext(x, y, width, flags, e.name, title);
-			y += field(x, y, width, (int)&e, flags, *((const char**)e.data));
+			y += field(x, y, width, (int)&e, flags, *((const char**)e.data), 0, callback_edit);
 			break;
 		case settings::UrlFolderPtr:
 			titletext(x, y, width, flags, e.name, title);
-			y += field(x, y, width, (int)&e, flags, *((const char**)e.data), 0, 0, 0, callback_choose_folder);
+			y += field(x, y, width, (int)&e, flags, *((const char**)e.data), 0, callback_edit, 0, callback_choose_folder);
 			break;
 		case settings::Control:
 			break;
