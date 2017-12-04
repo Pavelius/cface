@@ -362,7 +362,7 @@ static struct widget_settings : control
 				switch(p1->type)
 				{
 				case settings::Control:
-					((control*)p1->data)->view(rc, true);
+					showcontrol(*((control*)p1->data), rc);
 					break;
 				default:
 					for(auto p = p1->child(); p; p = p->next)

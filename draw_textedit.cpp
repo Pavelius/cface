@@ -274,7 +274,6 @@ bool textedit::editing(rect rco)
 			if(records->maximum)
 			{
 				rcv.set(rco.x1, rco.y2 + 2, imin(rco.x1 + 300, rco.x2), rco.y2 + 2 + getrecordsheight());
-				records->focused = true;
 				records->view(rcv);
 			}
 			else
@@ -350,6 +349,11 @@ bool textedit::editing(rect rco)
 
 void textedit::keydown(int id)
 {
+	if(isshowrecords())
+	{
+		records->keydown(id);
+		return;
+	}
 	auto pt = getpos(rcclient, p1, align);
 	auto i = hittest(rcclient, {pt.x, (short)(pt.y + texth())}, align);
 	if(i == -3)

@@ -576,12 +576,13 @@ void table::row(rect rc, int index)
 		unsigned flags = e.flags;
 		if(focused)
 			flags |= Focused;
+		rect r2 = {r1.x1 + 1, r1.y1, r1.x2, r1.y2};
 		if(index == current && i == current_column)
 		{
 			flags |= Checked;
-			hot::element = r1;
+			hot::element = r2;
 		}
-		(this->*renders[e.gettype()])(r1, index, flags, data, e);
+		(this->*renders[e.gettype()])(r2, index, flags, data, e);
 		if(show_grid_lines)
 			line(r1.x2, r1.y1, r1.x2, r1.y2 - 1, colors::form);
 		r1.x1 = r1.x2;
