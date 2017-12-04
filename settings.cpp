@@ -91,9 +91,9 @@ settings& settings::add(const char* name_ru, int& value)
 	return e;
 }
 
-settings& settings::add(const char* name_ru, char* value, types type)
+settings& settings::add(const char* name_ru, const char* &value, types type)
 {
-	settings& e = add_element(this, name_ru, type, value);
+	settings& e = add_element(this, name_ru, type, &value);
 	e.value = 260;
 	return e;
 }
@@ -128,9 +128,7 @@ settings& settings::maximum(int value)
 	switch(type)
 	{
 	case Int:
-	case Text:
 	case TextPtr:
-	case UrlFolder:
 	case UrlFolderPtr:
 		this->value = value;
 		break;

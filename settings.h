@@ -8,7 +8,8 @@ struct settings
 		Group,
 		Bool, Int, Radio,
 		Button, Color,
-		Text, TextPtr, UrlFolder, UrlFolderPtr,
+		TextPtr,
+		UrlFolderPtr,
 		Control,
 	};
 	const char*		identifier;
@@ -24,7 +25,7 @@ struct settings
 	settings&		add(const char* name_ru, bool& value);
 	settings&		add(const char* name_ru, int& value);
 	settings&		add(const char* name_ru, int& value, int current);
-	settings&		add(const char* name_ru, char* value, types type = Text);
+	settings&		add(const char* name_ru, const char* &value, types type = TextPtr);
 	settings&		add(const char* name_ru, color& value);
 	settings&		add(const char* name_ru, void(*fn)());
 	settings*		child();

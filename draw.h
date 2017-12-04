@@ -226,6 +226,7 @@ namespace draw
 	bool					dodialog(int id);
 	void					execute(void(*callback)());
 	void					execute(int id, int value = 0);
+	int						field(int x, int y, int width, int id, unsigned falgs, const char* label, const char* title_text, int title, const char* tips = 0, void(*callback_edit)() = 0, void(*callback_list)() = 0, void(*callback_choose)() = 0, void(*callback_up)() = 0, void(*callback_down)() = 0, void(*callback_open)() = 0);
 	void					focusing(int id, unsigned& flags, rect rc);
 	int						getbpp();
 	color					getcolor(color normal, unsigned flags);
@@ -238,6 +239,7 @@ namespace draw
 	void					glyph(int x, int y, int sym, unsigned flags);
 	void					gradv(rect rc, const color c1, const color c2, int skip = 0);
 	void					gradh(rect rc, const color c1, const color c2, int skip = 0);
+	int						titletext(int& x, int y, int& width, unsigned flags, const char* label, int title);
 	void					hilight(rect rc, unsigned flags);
 	int						hittest(int x, int test_x, const char* string, int lenght);
 	int						hittest(rect rc, const char* string, unsigned state, point mouse);

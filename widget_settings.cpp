@@ -103,6 +103,34 @@ static void callback_radio()
 	*((int*)p->data) = p->value;
 }
 
+static void callback_up()
+{
+	auto p = (settings*)hot::param;
+	(*((int*)p->data))--;
+}
+
+static void callback_down()
+{
+	auto p = (settings*)hot::param;
+	(*((int*)p->data))++;
+}
+
+static void callback_choose_folder()
+{
+	char temp[260]; temp[0] = 0;
+	auto p = (settings*)hot::param;
+	auto v = *((const char**)p->data);
+	if(v)
+		zcpy(temp, v);
+	if(draw::dialog::folder("Укажите папку", temp))
+	{
+		if(temp[0])
+			*((const char**)p->data) = szdup(temp);
+		else
+			*((const char**)p->data) = 0;
+	}
+}
+
 static struct widget_settings : control
 {
 
@@ -117,14 +145,11 @@ static struct widget_settings : control
 
 	static int element(int x, int y, int width, unsigned flags, settings& e)
 	{
-		int cnt;
-		int x2 = x + width;
 		settings* pc;
-		char temp[512];
+		char temp[512]; temp[0] = 0;
 		if(e.e_visible && !e.e_visible(e))
 			return 0;
 		int y1 = y;
-		temp[0] = 0;
 		switch(e.type)
 		{
 		case settings::Radio:
@@ -136,34 +161,49 @@ static struct widget_settings : control
 				getname(temp, e), 0, callback_bool);
 			break;
 		case settings::Int:
-			if(e.value)
-				cnt = (getdigitscount(e.value) + 1)*textw("0") + metrics::padding * 2 + 19;
-			else
-				cnt = x2 - x;
-			if(cnt > x2 - x)
-				cnt = x2 - x;
+			if(e.value) // Есть максимум
+			{
+				auto title = 160;
+				auto w = (getdigitscount(e.value) + 1)*textw("0") + metrics::padding * 2 + 19;
+				if(title + w < width)
+					width = title + w;
+			}
+			sznum(temp, *((int*)e.data));
+			y += field(x, y, width, (int)&e, flags, temp, e.name, 160, 0, 0, 0, 0, callback_up, callback_down);
 			break;
 		case settings::Color:
 			break;
 		case settings::Button:
-			y += button(x, y, x2 - x, (int)&e, flags, getname(temp, e), 0, callback_button);
+			y += button(x, y, width, (int)&e, flags, getname(temp, e), 0, callback_button);
 			break;
-		case settings::UrlFolder:
+		case settings::TextPtr:
+			y += field(x, y, width, (int)&e, flags, *((const char**)e.data), e.name, 160);
+			break;
+		case settings::UrlFolderPtr:
+			y += field(x, y, width, (int)&e, flags, *((const char**)e.data), e.name, 160, 0, 0, 0, callback_choose_folder);
 			break;
 		case settings::Group:
 			pc = e.child();
 			if(!pc)
 				return 0;
-			x += metrics::padding;
-			width -= metrics::padding * 4;
-			for(; pc; pc = pc->next)
+			if(true)
 			{
-				int h = element(x, y, width, flags, *pc);
-				if(h)
-					y += h + metrics::padding;
+				setposition(x, y, width); auto y2 = y;
+				auto height = draw::texth() + metrics::padding * 2;
+				y += height;
+				for(; pc; pc = pc->next)
+					y += element(x, y, width, flags, *pc);
+				if(e.name)
+				{
+					color c1 = colors::border.mix(colors::window, 128);
+					color c2 = c1.darken();
+					gradv({x, y2, x + width, y2 + height}, c1, c2);
+					fore = colors::text.mix(c1, 96);
+					text(x + (width - textw(e.name)) / 2, y2 + metrics::padding, e.name);
+					rectb({x, y2, x + width, y + metrics::padding}, colors::border);
+				}
 			}
-			y += metrics::padding * 2;
-			return y - y1;
+			break;
 		}
 		return y - y1;
 	}
@@ -204,9 +244,9 @@ static struct widget_settings : control
 			if(metrics::show::padding)
 				rectb(rc, colors::border);
 			line(rc.x1, rc.y1 + h1, rc.x2, rc.y1 + h1, colors::border);
-			rc.y1 += h1 + metrics::padding * 3;
-			rc.x1 += metrics::padding * 3;
-			rc.x2 -= metrics::padding * 3;
+			rc.y1 += h1 + metrics::padding * 2;
+			rc.x1 += metrics::padding;
+			rc.x2 -= metrics::padding;
 			// Нариуем текущую закладку
 			if(current_tab != -1)
 			{
