@@ -105,35 +105,6 @@ static bool editstart(const rect& rc, int id, unsigned flags, void(*callback_edi
 //	//data.set(result.value);
 //}
 
-static bool addbutton(rect& rc, bool focused, const char* t1, int k1, const char* tt1)
-{
-	const int width = 18;
-	rc.x2 -= width;
-	auto result = draw::buttonh({rc.x2, rc.y1, rc.x2 + width, rc.y2},
-		false, focused, false, false,
-		t1, k1, true, tt1);
-	draw::line(rc.x2, rc.y1, rc.x2, rc.y2, colors::border);
-	return result;
-}
-
-static int addbutton(rect& rc, bool focused, const char* t1, int k1, const char* tt1, const char* t2, int k2, const char* tt2)
-{
-	const int width = 20;
-	rc.x2 -= width;
-	auto height = rc.height() / 2;
-	auto result = 0;
-	if(draw::buttonh({rc.x2, rc.y1, rc.x2 + width, rc.y1 + height},
-		false, focused, false, false,
-		t1, k1, true, tt1))
-		result = 1;
-	if(draw::buttonh({rc.x2, rc.y1 + height, rc.x2 + width, rc.y1 + height * 2},
-		false, focused, false, false,
-		t2, k2, true, tt2))
-		result = 2;
-	draw::line(rc.x2, rc.y1, rc.x2, rc.y2, colors::border);
-	return result;
-}
-
 int draw::field(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips,
 	void(*callback_edit)(),
 	void(*callback_list)(),
@@ -147,22 +118,13 @@ int draw::field(int x, int y, int width, int id, unsigned flags, const char* lab
 	rect rc = {x, y, x + width, y + draw::texth() + 8};
 	decortext(flags);
 	if(!isdisabled(flags))
-	{
 		draw::rectf(rc, colors::window);
-		if(!getfocus())
-			setfocus(id, true);
-		if(getfocus() == id)
-			flags |= Focused;
-		else if(area(rc) == AreaHilitedPressed && hot::key == MouseLeft && hot::pressed)
-		{
-			setfocus(id, false);
-			hot::key = MouseLeft;
-		}
-	}
+	focusing(id, flags, rc);
+	bool focused = isfocused(flags);
 	draw::rectb(rc, colors::border);
 	if(callback_list)
 	{
-		if(addbutton(rc, (flags&Focused) != 0, ":dropdown", F4, "Показать список"))
+		if(addbutton(rc, focused, ":dropdown", F4, "Показать список"))
 		{
 			draw::execute(callback_list);
 			hot::param = id;
@@ -170,7 +132,7 @@ int draw::field(int x, int y, int width, int id, unsigned flags, const char* lab
 	}
 	if(callback_choose)
 	{
-		if(addbutton(rc, (flags&Focused) != 0, "...", F4, "Выбрать значение"))
+		if(addbutton(rc, focused, "...", F4, "Выбрать значение"))
 		{
 			draw::execute(callback_choose);
 			hot::param = id;
@@ -178,7 +140,7 @@ int draw::field(int x, int y, int width, int id, unsigned flags, const char* lab
 	}
 	if(callback_down || callback_up)
 	{
-		auto result = addbutton(rc, (flags&Focused) != 0, "+", KeyUp, "Увеличить", "-", KeyDown, "Уменьшить");
+		auto result = addbutton(rc, focused, "+", KeyUp, "Увеличить", "-", KeyDown, "Уменьшить");
 		switch(result)
 		{
 		case 1:
@@ -199,16 +161,15 @@ int draw::field(int x, int y, int width, int id, unsigned flags, const char* lab
 	}
 	if(callback_open)
 	{
-		if(addbutton(rc, (flags&Focused) != 0, "...", F4, "Выбрать"))
+		if(addbutton(rc, focused, "...", F4, "Выбрать"))
 		{
 			execute(callback_open);
 			hot::param = id;
 		}
 	}
-	addelement(id, rc);
 	auto a = area(rc);
 	bool enter_edit = false;
-	if(isfocused(flags) && id && callback_edit)
+	if(focused && id && callback_edit)
 		enter_edit = editstart(rc, id, flags, callback_edit);
 	if(!enter_edit)
 	{

@@ -203,6 +203,8 @@ namespace draw
 	extern color			fore; // Foreground color (curently selected color)
 	extern const sprite*	font; // Currently selected font
 	//
+	bool					addbutton(rect& rc, bool focused, const char* t1, int k1, const char* tt1);
+	int						addbutton(rect& rc, bool focused, const char* t1, int k1, const char* tt1, const char* t2, int k2, const char* tt2);
 	void					addelement(int id, const rect& rc);
 	int						aligned(int x, int width, unsigned state, int string_width);
 	int						alignedh(const rect& rc, const char* string, unsigned state);
