@@ -5,6 +5,7 @@
 #include "draw_table.h"
 #include "draw_textedit.h"
 #include "settings.h"
+#include "xsbase.h"
 #include "xsfield.h"
 
 using namespace	draw;
@@ -13,6 +14,25 @@ using namespace	draw::controls;
 bool				metrics::show::padding;
 static int			current_tab;
 static settings*	current_header;
+
+static struct dock
+{
+	const char*	name;
+	const char*	id;
+} dock_data[DockWorkspace + 1] = {
+	{"Присоединить слева", "dock_left"},
+	{"Присоединить слева и снизу", "dock_left_bottom"},
+	{"Присоединить справа", "dock_right"},
+	{"Присоединить справа и снизу", "dock_right_bottom"},
+	{"Присоединить снизу", "dock_bottom"},
+	{"На рабочем столе", "dock_workspace"}
+};
+xsfield dock_type[] = {
+	BSREQ(dock, name, text_type),
+	BSREQ(dock, id, text_type),
+	{0}
+};
+BSMETA(dock)
 
 static char* gettabname(char* temp, void* p)
 {
@@ -180,7 +200,7 @@ static struct widget_control_viewer : tableref
 	void initialize()
 	{
 		static xsfield control_type[] = {
-			BSREQ(control, dock, number_type),
+			BSREQ(control, dock, dock_type),
 			BSREQ(control, disabled, number_type),
 			BSREQ(control, focused, number_type),
 			BSREQ(control, show_toolbar, number_type),

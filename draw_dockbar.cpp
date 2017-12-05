@@ -1,21 +1,18 @@
 #include "crt.h"
 #include "draw.h"
 #include "draw_control.h"
+#include "xsbase.h"
+#include "xsfield.h"
 #include "widget.h"
 
 using namespace draw;
 
 static struct dock_info
 {
-	int		current;
-	int		size;
-	bool	visible;
+	int			current;
+	int			size;
+	bool		visible;
 } dock_data[DockWorkspace + 1];
-static const char* dock_ids[] = {
-	"dock_left", "dock_left_bottom",
-	"dock_right", "dock_right_bottom",
-	"dock_bottom", "dock_workspace"
-};
 
 static char* get_control_name(char* result, void* p)
 {
@@ -86,17 +83,17 @@ static bool dock_paint(dock_s id, rect& client, draw::control** p1, int c1, draw
 	switch(id)
 	{
 	case DockLeft:
-		draw::splitv(rc.x1, rc.y1, e1.size, rc.height(), (int)dock_ids[id], sx, 64, 400, false);
+		draw::splitv(rc.x1, rc.y1, e1.size, rc.height(), (int)&dock_data[id], sx, 64, 400, false);
 		client.x1 += e1.size + sx;
 		rc.x2 = rc.x1 + e1.size;
 		break;
 	case DockRight:
-		draw::splitv(rc.x2, rc.y1, e1.size, rc.height(), (int)dock_ids[id], sx, 64, 400, true);
+		draw::splitv(rc.x2, rc.y1, e1.size, rc.height(), (int)&dock_data[id], sx, 64, 400, true);
 		client.x2 -= e1.size + sx;
 		rc.x1 = rc.x2 - e1.size;
 		break;
 	case DockBottom:
-		draw::splith(rc.x1, rc.y2, rc.width(), e1.size, (int)dock_ids[id], sx + 1, 64, 400, true);
+		draw::splith(rc.x1, rc.y2, rc.width(), e1.size, (int)&dock_data[id], sx + 1, 64, 400, true);
 		client.y2 -= e1.size + sx + 1;
 		rc.y1 = rc.y2 - e1.size;
 		break;
@@ -110,7 +107,7 @@ static bool dock_paint(dock_s id, rect& client, draw::control** p1, int c1, draw
 		draw::view(rc, p2, c2, e2.current, show_toolbar, tab_state, 0);
 	else if(id == DockLeft || id == DockRight)
 	{
-		draw::splith(rc.x1, rc.y1, rc.width(), e2.size, (int)dock_ids[id + 1], sx, 64, 400, false);
+		draw::splith(rc.x1, rc.y1, rc.width(), e2.size, (int)&dock_data[id], sx, 64, 400, false);
 		draw::view({rc.x1, rc.y1, rc.x2, rc.y1 + e2.size}, p1, c1, e1.current,
 			show_toolbar, tab_state, 0);
 		draw::view({rc.x1, rc.y1 + e2.size + sx, rc.x2, rc.y2}, p2, c2, e2.current,

@@ -844,7 +844,9 @@ bool table::changing(void* object, const char* id, unsigned flags)
 	te.align = flags;
 	auto value_type = fields->find(id);
 	bool result = false;
-	if(value_type->reference && value_type->type!=text_type && value_type->type!=number_type)
+	bool need_dropdown = (value_type->type != text_type && value_type->type != number_type)
+		&& (value_type->reference || (!value_type->reference && value_type->size<=sizeof(int)));
+	if(need_dropdown)
 	{
 		auto base = xsbase::find(value_type->type);
 		if(base)

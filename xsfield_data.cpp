@@ -22,9 +22,18 @@ const char* xsfield::getdata(char* result, const char* id, const void* object, b
 		auto value = requisit->get(requisit->ptr(object));
 		sznum(result, value);
 	}
-	else if(requisit->reference)
+	else
 	{
-		object = (void*)requisit->get(requisit->ptr((void*)object));
+		if(requisit->reference)
+			object = (void*)requisit->get(requisit->ptr((void*)object));
+		else if(requisit->size <= sizeof(int))
+		{
+			auto xs = xsbase::find(requisit->type);
+			if(!xs)
+				return result;
+			auto index = requisit->get(requisit->ptr(object));
+			object = xs->get(index);
+		}
 		if(!object)
 			return result;
 		auto value_type = requisit->type;
@@ -60,15 +69,21 @@ void xsfield::setdata(const char* result, const char* id, void* object) const
 	}
 	else if(requisit->type == number_type)
 		requisit->set(requisit->ptr(object), sz2num(result));
-	else if(requisit->reference)
+	else if(result[0]==0)
+		requisit->set(requisit->ptr(object), 0);
+	else
 	{
-		if(result[0]==0)
-			requisit->set(requisit->ptr(object), 0);
-		else
+		auto xs = xsbase::getref(result, requisit->type);
+		if(xs)
 		{
-			auto xs = xsbase::getref(result, requisit->type);
-			if(xs)
+			if(requisit->reference)
 				requisit->set(requisit->ptr(object), (int)xs.object);
+			else
+			{
+				auto xb = xsbase::find(requisit->type);
+				if(xb)
+					requisit->set(requisit->ptr(object), xb->indexof(xs.object));
+			}
 		}
 	}
 }
