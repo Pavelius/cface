@@ -10,8 +10,7 @@ using namespace	draw::controls;
 
 static bool serialize_logs;
 
-struct log_message
-{
+struct log_message {
 	unsigned		stamp;
 	const char*		text;
 };
@@ -22,8 +21,7 @@ xsfield log_message_type[] = {
 	{0}
 };
 
-void logmsgv(const char* format, const char* arguments)
-{
+void logmsgv(const char* format, const char* arguments) {
 	log_message e = {0};
 	char temp[4096];
 	szprintv(temp, format, arguments);
@@ -31,36 +29,30 @@ void logmsgv(const char* format, const char* arguments)
 	e.text = szdup(temp);
 }
 
-void logmsg(const char* format, ...)
-{
+void logmsg(const char* format, ...) {
 	logmsgv(format, xva_start(format));
 }
 
-static struct widget_logging : table
-{
-	
-	void initialize()
-	{
+static struct widget_logging : table {
+
+	void initialize() {
 		addcol(WidgetField, "stamp", "Дата");
 		addcol(WidgetField, "text", "Сообщение");
 		fields = log_message_type;
 	}
 
-	char* getname(char* result) const override
-	{
+	char* getname(char* result) const override {
 		zcpy(result, "Список сообщений");
 		return result;
 	}
 
-	widget_logging() : table(messages)
-	{
+	widget_logging() : table(messages) {
 		messages.initialize();
 	}
 
 } logging_control;
 
-COMMAND(settings_initialize)
-{
+COMMAND(settings_initialize) {
 	settings& e1 = settings::root.gr("Сообщения").gr("Логирование").gr("Настройки");
 	e1.add("Хранить историю сообщений", serialize_logs);
 	logging_control.initialize();

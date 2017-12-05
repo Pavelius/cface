@@ -15,8 +15,7 @@ bool				metrics::show::padding;
 static int			current_tab;
 static settings*	current_header;
 
-static struct dock
-{
+static struct dock {
 	const char*	name;
 	const char*	id;
 } dock_data[DockWorkspace + 1] = {
@@ -34,18 +33,15 @@ xsfield dock_type[] = {
 };
 BSMETA(dock)
 
-static char* gettabname(char* temp, void* p)
-{
+static char* gettabname(char* temp, void* p) {
 	return (char*)((settings*)p)->name;
 }
 
-static void callback_settab()
-{
+static void callback_settab() {
 	current_tab = hot::param;
 }
 
-static int compare_settings(const void* p1, const void* p2)
-{
+static int compare_settings(const void* p1, const void* p2) {
 	const settings* e1 = *((settings**)p1);
 	const settings* e2 = *((settings**)p2);
 	if(e1->priority != e2->priority)
@@ -53,15 +49,12 @@ static int compare_settings(const void* p1, const void* p2)
 	return strcmp(e1->name, e2->name);
 }
 
-static void getsiblings(settings** result, unsigned maximum_count, settings* parent)
-{
+static void getsiblings(settings** result, unsigned maximum_count, settings* parent) {
 	settings** ps = result;
 	settings** pe = result + maximum_count - 1;
 	settings* tabs = parent->child();
-	if(tabs)
-	{
-		for(settings* p = tabs; p; p = p->next)
-		{
+	if(tabs) {
+		for(settings* p = tabs; p; p = p->next) {
 			if(p->e_visible && !p->e_visible(*p))
 				continue;
 			if(ps < pe)
@@ -72,54 +65,46 @@ static void getsiblings(settings** result, unsigned maximum_count, settings* par
 	qsort(result, zlen(result), sizeof(result[0]), compare_settings);
 }
 
-static void showcontrol(control& e, rect rc)
-{
+static void showcontrol(control& e, rect rc) {
 	unsigned flags = 0;
 	focusing((int)&e, flags, rc);
 	e.focused = (flags & Focused) != 0;
 	e.view(rc, false);
 }
 
-static void callback_button()
-{
+static void callback_button() {
 	auto p = (settings*)hot::param;
 	if(p->e_execute)
 		p->e_execute();
 }
 
-static void callback_bool()
-{
+static void callback_bool() {
 	auto p = (settings*)hot::param;
 	*((bool*)p->data) = !*((bool*)p->data);
 }
 
-static void callback_radio()
-{
+static void callback_radio() {
 	auto p = (settings*)hot::param;
 	*((int*)p->data) = p->value;
 }
 
-static void callback_up()
-{
+static void callback_up() {
 	auto p = (settings*)hot::param;
 	(*((int*)p->data))--;
 }
 
-static void callback_down()
-{
+static void callback_down() {
 	auto p = (settings*)hot::param;
 	(*((int*)p->data))++;
 }
 
-static void callback_choose_folder()
-{
+static void callback_choose_folder() {
 	char temp[260]; temp[0] = 0;
 	auto p = (settings*)hot::param;
 	auto v = *((const char**)p->data);
 	if(v)
 		zcpy(temp, v);
-	if(draw::dialog::folder("Укажите папку", temp))
-	{
+	if(draw::dialog::folder("Укажите папку", temp)) {
 		if(temp[0])
 			*((const char**)p->data) = szdup(temp);
 		else
@@ -127,18 +112,15 @@ static void callback_choose_folder()
 	}
 }
 
-static void callback_choose_color()
-{
+static void callback_choose_color() {
 	auto p = (settings*)hot::param;
 	draw::dialog::color(*((color*)p->data));
 }
 
-static void callback_edit()
-{
+static void callback_edit() {
 	char temp[4196]; temp[0] = 0;
 	auto p = (settings*)hot::param;
-	switch(p->type)
-	{
+	switch(p->type) {
 	case settings::TextPtr:
 	case settings::UrlFolderPtr:
 		if(*((const char**)p->data))
@@ -149,10 +131,8 @@ static void callback_edit()
 		break;
 	}
 	textedit te(temp, sizeof(temp), true);
-	if(te.editing(hot::element))
-	{
-		switch(p->type)
-		{
+	if(te.editing(hot::element)) {
+		switch(p->type) {
 		case settings::TextPtr:
 		case settings::UrlFolderPtr:
 			if(temp[0])
@@ -167,12 +147,10 @@ static void callback_edit()
 	}
 }
 
-static struct widget_settings_header : list
-{
+static struct widget_settings_header : list {
 	settings* rows[128];
 
-	void initialize()
-	{
+	void initialize() {
 		getsiblings(rows, sizeof(rows) / sizeof(rows[0]), &settings::root);
 		maximum = zlen(rows);
 		if(current >= maximum - 1)
@@ -181,24 +159,20 @@ static struct widget_settings_header : list
 			current = 0;
 	}
 
-	void row(rect rc, int index) override
-	{
+	void row(rect rc, int index) override {
 		list::row({rc.x1 + 1, rc.y1 + 1, rc.x2 - 1, rc.y2}, index);
 		textc(rc.x1 + 4, rc.y1 + 4, rc.width() - 8, rows[index]->name);
 	}
 
-	settings* getcurrent()
-	{
+	settings* getcurrent() {
 		return rows[current];
 	}
 
 } header;
 
-static struct widget_control_viewer : tableref
-{
+static struct widget_control_viewer : tableref {
 
-	void initialize()
-	{
+	void initialize() {
 		static xsfield control_type[] = {
 			BSREQ(control, dock, dock_type),
 			BSREQ(control, disabled, number_type),
@@ -217,8 +191,7 @@ static struct widget_control_viewer : tableref
 			addelement(&p->element);
 	}
 
-	const char*	gettext(char* result, void* data, const char* id) const override
-	{
+	const char*	gettext(char* result, void* data, const char* id) const override {
 		auto p = (control*)data;
 		if(strcmp(id, "name") == 0)
 			return p->getname(result);
@@ -227,50 +200,43 @@ static struct widget_control_viewer : tableref
 		return table::gettext(result, data, id);
 	}
 
-	widget_control_viewer()
-	{
+	widget_control_viewer() {
 	}
 
 } control_viewer;
 
-static struct widget_settings : control
-{
+static struct widget_settings : control {
 
 	int header_width;
 
-	static const char* getname(char* temp, settings& e)
-	{
+	static const char* getname(char* temp, settings& e) {
 		zcpy(temp, e.name);
 		szupper(temp);
 		return temp;
 	}
 
-	static int buttonc(int x, int y, int width, int id, unsigned flags, color value, const char* tips, void(*callback)())
-	{
+	static int buttonc(int x, int y, int width, int id, unsigned flags, color value, const char* tips, void(*callback)()) {
 		char temp[128]; szprint(temp, "%1i, %2i, %3i", value.r, value.g, value.b);
 		setposition(x, y, width);
 		struct rect rc = {x, y, x + width, y + 4 * 2 + draw::texth()};
 		focusing(id, flags, rc);
 		if(buttonh({x, y, x + width, rc.y2},
 			ischecked(flags), isfocused(flags), isdisabled(flags), true, value,
-			temp, KeyEnter, false, tips))
-		{
+			temp, KeyEnter, false, tips)) {
 			draw::execute(callback);
 			hot::param = id;
 		}
 		return rc.height() + metrics::padding * 2;
 	}
 
-	static int element(int x, int y, int width, unsigned flags, settings& e)
-	{
+	static int element(int x, int y, int width, unsigned flags, settings& e) {
 		const auto title = 160;
 		settings* pc;
 		char temp[512]; temp[0] = 0;
 		if(e.e_visible && !e.e_visible(e))
 			return 0;
 		int y1 = y;
-		switch(e.type)
-		{
+		switch(e.type) {
 		case settings::Radio:
 			y += radio(x, y, width, (int)&e, flags | ((*((int*)e.data) == e.value) ? Checked : 0),
 				getname(temp, e), 0, callback_radio);
@@ -311,15 +277,13 @@ static struct widget_settings : control
 			pc = e.child();
 			if(!pc)
 				return 0;
-			if(true)
-			{
+			if(true) {
 				setposition(x, y, width); auto y2 = y;
 				auto height = draw::texth() + metrics::padding * 2;
 				y += height;
 				for(; pc; pc = pc->next)
 					y += element(x, y, width, flags, *pc);
-				if(e.name)
-				{
+				if(e.name) {
 					color c1 = colors::border.mix(colors::window, 128);
 					color c2 = c1.darken();
 					gradv({x, y2, x + width, y2 + height}, c1, c2);
@@ -334,8 +298,7 @@ static struct widget_settings : control
 		return y - y1;
 	}
 
-	void redraw(rect rc)
-	{
+	void redraw(rect rc) {
 		draw::state push;
 		settings* tabs[128];
 		fore = colors::text;
@@ -344,16 +307,14 @@ static struct widget_settings : control
 		rc.x1 += header_width + 6;
 		auto top = header.getcurrent();
 		// При изменении текущего заголовка
-		if(top != current_header)
-		{
+		if(top != current_header) {
 			current_header = top;
 			current_tab = -1;
 		}
 		if(!top)
 			return;
 		getsiblings(tabs, sizeof(tabs) / sizeof(tabs[0]), top);
-		if(tabs[0])
-		{
+		if(tabs[0]) {
 			// Покажем дополнительную панель
 			if(current_tab == -1)
 				current_tab = 0;
@@ -362,8 +323,7 @@ static struct widget_settings : control
 			auto hilited = -1;
 			if(draw::tabs({rc.x1, rc.y1, rc.x2, rc.y1 + h1 + 1}, false, false,
 				(void**)tabs, 0, zlen(tabs), current_tab, &hilited,
-				gettabname))
-			{
+				gettabname)) {
 				draw::execute(callback_settab);
 				hot::param = hilited;
 			}
@@ -374,13 +334,11 @@ static struct widget_settings : control
 			rc.x1 += metrics::padding;
 			rc.x2 -= metrics::padding;
 			// Нариуем текущую закладку
-			if(current_tab != -1)
-			{
+			if(current_tab != -1) {
 				int w4 = rc.width();
 				int w3 = imin(w4, 640);
 				auto p1 = tabs[current_tab];
-				switch(p1->type)
-				{
+				switch(p1->type) {
 				case settings::Control:
 					showcontrol(*((control*)p1->data), rc);
 					break;
@@ -393,23 +351,20 @@ static struct widget_settings : control
 		}
 	}
 
-	widget_settings() : header_width(160)
-	{
+	widget_settings() : header_width(160) {
 		show_background = false;
 		show_border = false;
 	}
 
 } widget_settings_control;
 
-static void setting_appearance_general_metrics()
-{
+static void setting_appearance_general_metrics() {
 	settings& e1 = settings::root.gr("Рабочий стол").gr("Общие").gr("Метрика");
 	e1.add("Отступы", metrics::padding);
 	e1.add("Ширина скролла", metrics::scroll);
 }
 
-static void setting_appearance_forms()
-{
+static void setting_appearance_forms() {
 	settings& e2 = settings::root.gr("Цвета").gr("Общие");
 	e2.add("Установить светлую тему", set_light_theme);
 	e2.add("Установить темную тему", set_dark_theme);
@@ -427,8 +382,7 @@ static void setting_appearance_forms()
 	e3.add("Цвет текста подсказки", colors::tips::text);
 }
 
-static void setting_appearance_general_view()
-{
+static void setting_appearance_general_view() {
 	settings& e1 = settings::root.gr("Рабочий стол").gr("Общие").gr("Вид");
 	e1.add("Показывать панель статуса", metrics::show::statusbar);
 	e1.add("Показывать левую панель элементов", metrics::show::left);
@@ -438,8 +392,7 @@ static void setting_appearance_general_view()
 	//e1.add("Использовать оптимизацию при движении мишки", sys_optimize_mouse_move);
 }
 
-static void setting_appearance_controls()
-{
+static void setting_appearance_controls() {
 	control_viewer.initialize();
 	if(!control_viewer.rows.getcount())
 		return;
@@ -448,24 +401,21 @@ static void setting_appearance_controls()
 
 command* command_settings_initialize;
 
-static void initialize_settings()
-{
+static void initialize_settings() {
 	setting_appearance_general_metrics();
 	setting_appearance_forms();
 	setting_appearance_general_view();
 	setting_appearance_controls();
-	header.initialize();
 	command_settings_initialize->execute();
+	header.initialize();
 }
 
-int draw::application(const char* title)
-{
+int draw::application(const char* title) {
 	initialize_settings();
 	draw::window dc(-1, -1, 600, 400, WFResize | WFMinmax);
 	if(title)
 		draw::setcaption(title);
-	while(true)
-	{
+	while(true) {
 		rect rc = {0, 0, draw::getwidth(), draw::getheight()};
 		draw::rectf(rc, colors::form); rc.offset(metrics::padding);
 		widget_settings_control.view(rc, true);
