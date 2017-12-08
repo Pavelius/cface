@@ -215,6 +215,11 @@ static struct widget_settings : control {
 		return temp;
 	}
 
+	char* getname(char* temp) const override {
+		zcpy(temp, "Настройки");
+		return temp;
+	}
+
 	static int buttonc(int x, int y, int width, int id, unsigned flags, color value, const char* tips, void(*callback)()) {
 		char temp[128]; szprint(temp, "%1i, %2i, %3i", value.r, value.g, value.b);
 		setposition(x, y, width);
@@ -278,7 +283,7 @@ static struct widget_settings : control {
 			if(!pc)
 				return 0;
 			if(true) {
-				setposition(x, y, width); auto y2 = y;
+				auto y2 = y;
 				auto height = draw::texth() + metrics::padding * 2;
 				y += height;
 				for(; pc; pc = pc->next)
@@ -291,7 +296,7 @@ static struct widget_settings : control {
 					text(x + (width - textw(e.name)) / 2, y2 + metrics::padding, e.name);
 					rectb({x, y2, x + width, y + metrics::padding}, colors::border);
 				}
-				y += metrics::padding;
+				y += metrics::padding * 2;
 			}
 			break;
 		}
@@ -358,6 +363,20 @@ static struct widget_settings : control {
 
 } widget_settings_control;
 
+static struct widget_application : control {
+
+	char* getname(char* temp) const override {
+		zcpy(temp, "База");
+		return temp;
+	}
+
+	widget_application() {
+		show_background = false;
+		show_border = false;
+	}
+
+} widget_application_control;
+
 static void setting_appearance_general_metrics() {
 	settings& e1 = settings::root.gr("Рабочий стол").gr("Общие").gr("Метрика");
 	e1.add("Отступы", metrics::padding);
@@ -410,15 +429,37 @@ static void initialize_settings() {
 	header.initialize();
 }
 
+static control* layouts[] = {&widget_application_control, &widget_settings_control};
+
+char* get_control_name(char* result, void* object){
+	return ((control*)object)->getname(result);
+}
+
 int draw::application(const char* title) {
 	initialize_settings();
 	draw::window dc(-1, -1, 600, 400, WFResize | WFMinmax);
 	if(title)
 		draw::setcaption(title);
 	while(true) {
+		auto pc = layouts[0];
 		rect rc = {0, 0, draw::getwidth(), draw::getheight()};
 		draw::rectf(rc, colors::form); rc.offset(metrics::padding);
-		widget_settings_control.view(rc, true);
+		struct rect rt = {rc.x1, rc.y1, rc.x2, rc.y1};
+		auto commands = pc->getcommands();
+		rt.y2 += metrics::toolbar->get(0).sy + 4;
+		rc.y1 += rt.height() + metrics::padding;
+		pc->enablefocus();
+		pc->background(rc);
+		pc->prerender();
+		pc->enablemouse(rc);
+		// Обновим цвет элемента, который может именился
+		// Процедура 'background' может изменить рамку элемента.
+		// Поэтому только начиная отсюда она имеет корректное значение.
+		pc->nonclient(rc);
+		pc->render(rt.x1, rt.y1, rt.width(), commands);
+		draw::tabs(rt, false, true, (void**)layouts, 0,
+			sizeof(layouts) / sizeof(layouts[0]), 0, 0, get_control_name, 0,
+			{0, metrics::padding, 0, metrics::padding});
 		auto id = draw::input();
 		if(!id)
 			return 0;

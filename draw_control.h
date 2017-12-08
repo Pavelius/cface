@@ -99,8 +99,8 @@ namespace draw
 		bool					open(const char* title);
 		bool					open(const char* title, unsigned state, int width, int height);
 		virtual void			prerender() {}
-		int						render(int x, int y, int width, unsigned flags, const command& e) const;
-		int						render(int x, int y, int width, const command* commands) const;
+		virtual int				render(int x, int y, int width, unsigned flags, const command& e) const;
+		virtual int				render(int x, int y, int width, const command* commands) const;
 		virtual void			redraw(rect rc) {}
 		void					view(rect rc, bool show_toolbar = false);
 	};

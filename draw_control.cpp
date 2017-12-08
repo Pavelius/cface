@@ -15,66 +15,55 @@ static control*		current_control;
 static control*		current_focus;
 static control*		current_mouse;
 
-static void callback_invoke()
-{
+static void callback_invoke() {
 	current_control->execute(current_name);
 }
 
-static void callback_context_menu()
-{
+static void callback_context_menu() {
 	draw::updatewindow();
 	hot::pressed = false;
 	current_control->contextmenu();
 }
 
-control::plugin::plugin(control& element) : element(element)
-{
+control::plugin::plugin(control& element) : element(element) {
 	seqlink(this);
 }
 
-char* control::getname(char* result) const
-{
+char* control::getname(char* result) const {
 	return result;
 }
 
-char* control::getdescription(char* result) const
-{
+char* control::getdescription(char* result) const {
 	return result;
 }
 
-color control::getcolor(color normal) const
-{
+color control::getcolor(color normal) const {
 	if(disabled)
 		return normal.mix(colors::window);
 	return normal;
 }
 
-void control::background(rect& rc)
-{
+void control::background(rect& rc) {
 	if(!disabled && show_background)
 		draw::rectf(rc, colors::window);
 	if(show_border)
 		draw::rectb(rc, getcolor(colors::border));
 }
 
-void control::nonclient(rect rc)
-{
+void control::nonclient(rect rc) {
 	redraw(rc);
 }
 
-bool control::open(const char* title)
-{
+bool control::open(const char* title) {
 	return open(title, WFMinmax | WFResize, 640, 480);
 }
 
-bool control::open(const char* title, unsigned state, int width, int height)
-{
+bool control::open(const char* title, unsigned state, int width, int height) {
 	draw::window dc(-1, -1, width, height, state);
 	if(title)
 		draw::setcaption(title);
 	focused = true;
-	while(true)
-	{
+	while(true) {
 		rect rc = {0, 0, draw::getwidth(), draw::getheight()};
 		draw::rectf(rc, colors::form);
 		rc.offset(metrics::padding * 2);
@@ -86,23 +75,19 @@ bool control::open(const char* title, unsigned state, int width, int height)
 	}
 }
 
-bool control::open(rect rc)
-{
+bool control::open(rect rc) {
 	sys_static_area.set(0, 0, draw::getwidth(), draw::getheight());
 	focused = true;
-	while(true)
-	{
+	while(true) {
 		view(rc);
 		int id = draw::input();
-		switch(id)
-		{
+		switch(id) {
 		case KeyEscape:
 		case InputUpdate:
 		case 0:
 			return false;
 		case MouseLeft:
-			if(hot::pressed)
-			{
+			if(hot::pressed) {
 				if(!area(rc))
 					return false;
 				draw::execute(MouseLeftDBL);
@@ -117,8 +102,7 @@ bool control::open(rect rc)
 	}
 }
 
-void control::mouseright(point position, int id, bool pressed)
-{
+void control::mouseright(point position, int id, bool pressed) {
 	// Делаем вызов процедуры после перерисовки,
 	// Иначе будут некрасивые артефакты
 	draw::execute(callback_context_menu);
@@ -126,25 +110,21 @@ void control::mouseright(point position, int id, bool pressed)
 	hot::key = MouseRight;
 }
 
-void control::enablefocus()
-{
+void control::enablefocus() {
 	if(focused)
 		current_focus = this;
 }
 
-void control::enablemouse(const rect& rc)
-{
+void control::enablemouse(const rect& rc) {
 	if(hot::key >= FirstMouse && hot::key <= LastMouse && hot::mouse.in(rc))
 		current_mouse = this;
 }
 
-void control::view(rect rc, bool show_toolbar)
-{
+void control::view(rect rc, bool show_toolbar) {
 	draw::state push;
 	struct rect rt = {rc.x1, rc.y1, rc.x2, rc.y1};
 	auto commands = getcommands();
-	if(show_toolbar && metrics::toolbar && commands && this->show_toolbar)
-	{
+	if(show_toolbar && metrics::toolbar && commands && this->show_toolbar) {
 		rt.y2 += metrics::toolbar->get(0).sy + 4;
 		rc.y1 += rt.height() + metrics::padding;
 	}
@@ -171,37 +151,30 @@ void control::view(rect rc, bool show_toolbar)
 //	return height;
 //}
 
-void control::invoke(const char* name) const
-{
+void control::invoke(const char* name) const {
 	draw::execute(callback_invoke);
 	current_control = const_cast<control*>(this);
 	current_name = name;
 }
 
-int control::render(int x, int y, int width, unsigned flags, const control::command& e) const
-{
+int control::render(int x, int y, int width, unsigned flags, const control::command& e) const {
 	rect rc = {x, y, x + width, y + width};
 	if(tool(rc, isdisabled(flags), false, true))
 		invoke(e.id);
-	switch(e.view)
-	{
+	switch(e.view) {
 	case ViewIcon:
 		image(rc.x1 + rc.width() / 2, rc.y1 + rc.height() / 2,
 			metrics::toolbar, e.icon, 0,
 			(isdisabled(flags)) ? 0x80 : 0xFF);
 		break;
 	}
-	if(areb(rc))
-	{
+	if(areb(rc)) {
 		auto name = e.label;
-		if(name)
-		{
-			if(e.key[0])
-			{
+		if(name) {
+			if(e.key[0]) {
 				char temp[128];
 				tooltips("%1 (%2)", name, key2str(temp, e.key[0]));
-			}
-			else
+			} else
 				tooltips(name);
 		}
 		statusbar("Выполнить команду '%1'", name);
@@ -209,23 +182,20 @@ int control::render(int x, int y, int width, unsigned flags, const control::comm
 	return width;
 }
 
-int	control::render(int x, int y, int width, const control::command* commands) const
-{
+int	control::render(int x, int y, int width, const control::command* commands) const {
 	if(!commands)
 		return 0;
 	if(!metrics::toolbar)
 		return 0;
 	int x2 = x + width - 6;
 	auto height = metrics::toolbar->get(0).getrect(0, 0, 0).height() + 4;
-	for(auto p = commands; *p; p++)
-	{
+	for(auto p = commands; *p; p++) {
 		if(!p->type)
 			continue;
 		if(p->view == HideCommand)
 			continue;
 		auto width = height;
-		if(x + width > x2)
-		{
+		if(x + width > x2) {
 			// wdt_dropdown(x, y, 6, "toolbar_dropdown", 0, 0, 0, 0, source, 0, p, 0);
 			break;
 		}
@@ -235,63 +205,52 @@ int	control::render(int x, int y, int width, const control::command* commands) c
 	return height + metrics::padding * 2;
 }
 
-const control::command* control::command::find(const char* id) const
-{
+const control::command* control::command::find(const char* id) const {
 	auto p = this;
 	if(!p)
 		return 0;
-	while(*p)
-	{
-		if(p->child)
-		{
+	while(*p) {
+		if(p->child) {
 			auto v = p->child->find(id);
 			if(v)
 				return v;
-		}
-		else if(strcmp(p->id, id) == 0)
+		} else if(strcmp(p->id, id) == 0)
 			return p;
 		p++;
 	}
 	return 0;
 }
 
-const control::command* control::command::find(int id) const
-{
+const control::command* control::command::find(int id) const {
 	auto p = this;
 	if(!p)
 		return 0;
-	while(*p)
-	{
-		if(p->child)
-		{
+	while(*p) {
+		if(p->child) {
 			auto v = p->child->find(id);
 			if(v)
 				return v;
-		}
-		else if(p->key[0] == id || p->key[1] == id)
+		} else if(p->key[0] == id || p->key[1] == id)
 			return p;
 		p++;
 	}
 	return 0;
 }
 
-unsigned control::execute(const char* id, bool run)
-{
+unsigned control::execute(const char* id, bool run) {
 	auto p = getcommands()->find(id);
 	if(p)
 		return (this->*p->type)(run);
 	return 0;
 }
 
-void control::contextmenu()
-{
+void control::contextmenu() {
 	menu e;
 	int elements = 0;
 	auto p = getcommands();
 	if(!p)
 		return;
-	for(; *p; p++)
-	{
+	for(; *p; p++) {
 		e.add(p->id, this);
 		elements++;
 	}
@@ -300,8 +259,7 @@ void control::contextmenu()
 		(this->*result->type)(true);
 }
 
-bool control::dodialog(int id)
-{
+bool control::dodialog(int id) {
 	const command* pc;
 	auto temp_focus = current_focus;
 	auto temp_mouse = current_mouse;
@@ -310,12 +268,10 @@ bool control::dodialog(int id)
 	if(draw::dodialog(id))
 		return true;
 	auto key = id & 0xFFFF;
-	if(key >= FirstMouse && key <= LastMouse)
-	{
+	if(key >= FirstMouse && key <= LastMouse) {
 		if(!temp_mouse)
 			return false;
-		switch(key)
-		{
+		switch(key) {
 		case MouseLeft:
 			temp_mouse->mouseleft(hot::mouse, id, hot::pressed);
 			break;
@@ -341,8 +297,7 @@ bool control::dodialog(int id)
 	}
 	if(!temp_focus)
 		return false;
-	switch(key)
-	{
+	switch(key) {
 	case KeyLeft: temp_focus->keyleft(id); break;
 	case KeyRight: temp_focus->keyright(id); break;
 	case KeyUp: temp_focus->keyup(id); break;

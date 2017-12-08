@@ -64,7 +64,7 @@ int draw::tabs(rect rc, bool show_close, bool right_side, void** data, int start
 	{
 		if(rc.x1 >= rc.x2 || rc.x2 <= rc.x1)
 			break;
-		auto object = data[i];
+		auto object = data[i]; temp[0] = 0;
 		auto s = gtext(temp, object);
 		if(i == current)
 			fore = colors::tabs::text;
