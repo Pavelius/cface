@@ -7,31 +7,26 @@ using namespace draw::controls;
 list::list() : origin(0), maximum(0), current(0),
 maximum_width(0), origin_width(0),
 lines_per_page(0), pixels_per_line(0),
-show_grid_lines(false), hilite_rows(false)
-{
+show_grid_lines(false), hilite_rows(false) {
 }
 
-void list::ensurevisible()
-{
+void list::ensurevisible() {
 	if(current < origin)
 		origin = current;
 	if(current > origin + lines_per_page - 1)
 		origin = current - lines_per_page + 1;
 }
 
-bool list::isopen(int row)
-{
+bool list::isopen(int row) {
 	return (row < maximum - 1) ? (getlevel(row + 1) > getlevel(row)) : false;
 }
 
-void list::select(int index)
-{
+void list::select(int index) {
 	current = index;
 	ensurevisible();
 }
 
-void list::toggle(int index)
-{
+void list::toggle(int index) {
 	if(!isgroup(index))
 		return;
 	int level = getlevel(index);
@@ -42,21 +37,18 @@ void list::toggle(int index)
 	else
 		expand(index, level);
 	prerender();
-	if(cc > index)
-	{
+	if(cc > index) {
 		if(mm < maximum)
 			current += maximum - mm;
 	}
 }
 
-void list::correction()
-{
+void list::correction() {
 	if(current >= maximum)
 		current = maximum - 1;
 	if(current < 0)
 		current = 0;
-	if(lines_per_page)
-	{
+	if(lines_per_page) {
 		if(origin > maximum - lines_per_page)
 			origin = maximum - lines_per_page;
 		if(origin < 0)
@@ -64,16 +56,13 @@ void list::correction()
 	}
 }
 
-void list::row(rect rc, int index)
-{
+void list::row(rect rc, int index) {
 	if(index == current)
 		hilight(rc, focused ? Focused : 0);
 }
 
-int list::getroot(int row) const
-{
-	while(true)
-	{
+int list::getroot(int row) const {
+	while(true) {
 		auto parent = getparent(row);
 		if(parent == -1)
 			return row;
@@ -81,11 +70,9 @@ int list::getroot(int row) const
 	}
 }
 
-int list::getparent(int row) const
-{
+int list::getparent(int row) const {
 	int level = getlevel(row);
-	while(row)
-	{
+	while(row) {
 		if(level > getlevel(row))
 			return row;
 		row--;
@@ -95,12 +82,10 @@ int list::getparent(int row) const
 	return -1;
 }
 
-int list::getlastchild(int i) const
-{
+int list::getlastchild(int i) const {
 	int level = getlevel(i);
 	int i2 = maximum - 1;
-	while(i < i2)
-	{
+	while(i < i2) {
 		if(level != getlevel(i + 1))
 			break;
 		i++;
@@ -108,20 +93,17 @@ int list::getlastchild(int i) const
 	return i;
 }
 
-void list::updaterowheight()
-{
+void list::updaterowheight() {
 	if(!pixels_per_line)
 		pixels_per_line = texth() + 8;
 }
 
-void list::background(rect& rc)
-{
+void list::background(rect& rc) {
 	control::background(rc);
 	updaterowheight();
 }
 
-void list::redraw(rect rc)
-{
+void list::redraw(rect rc) {
 	if(!pixels_per_line)
 		return;
 	rect scroll = {0};
@@ -136,15 +118,11 @@ void list::redraw(rect rc)
 	if(hilite_rows && hot::key == MouseMove)
 		current = -1;
 	int rk = hot::key&CommandMask;
-	if(draw::areb(rc))
-	{
+	if(draw::areb(rc)) {
 		// Обработаем выбор мышкой
-		if(hot::pressed && (rk == MouseLeft || rk == MouseRight))
-		{
-			if(hot::mouse.y > rc.y1 && hot::mouse.y <= rc.y1 + pixels_per_line*(maximum - origin))
-			{
-				if(!scroll.width() || hot::mouse.x < scroll.x1)
-				{
+		if(hot::pressed && (rk == MouseLeft || rk == MouseRight)) {
+			if(hot::mouse.y > rc.y1 && hot::mouse.y <= rc.y1 + pixels_per_line*(maximum - origin)) {
+				if(!scroll.width() || hot::mouse.x < scroll.x1) {
 					int curn = origin + (hot::mouse.y - rc.y1 - 2) / pixels_per_line;
 					rect rc1 = {rc.x1, rc.y1 + 2 + (curn - origin)*pixels_per_line, rc.x2, rc.y1 + 2 + (curn - origin + 1)*pixels_per_line};
 					if(selecting(rc1, curn, hot::mouse))
@@ -158,22 +136,19 @@ void list::redraw(rect rc)
 		}
 		// Если надо подсвечивать
 		if(hilite_rows
-			&& (rk == MouseMove || rk == MouseWheelDown || rk == MouseWheelUp || rk == MouseLeft || rk == MouseRight || rk == MouseLeftDBL))
-		{
+			&& (rk == MouseMove || rk == MouseWheelDown || rk == MouseWheelUp || rk == MouseLeft || rk == MouseRight || rk == MouseLeftDBL)) {
 			if(!scroll.width() || hot::mouse.x < scroll.x1)
 				current = origin + (hot::mouse.y - rc.y1) / pixels_per_line;
 		}
 	}
-	if(true)
-	{
+	if(true) {
 		draw::state push;
 		setclip(rc);
 		int x1 = rc.x1;
 		int y1 = rc.y1;
 		int rw = rc.x2 - x1 + 1;
 		int ix = origin;
-		while(true)
-		{
+		while(true) {
 			if(y1 >= rc.y2)
 				break;
 			if(ix >= maximum)
@@ -192,22 +167,19 @@ void list::redraw(rect rc)
 		draw::scrollh((int)this, scrollh, origin_width, rc.width(), maximum_width, focused);
 }
 
-void list::keyup(int id)
-{
+void list::keyup(int id) {
 	current--;
 	correction();
 	ensurevisible();
 }
 
-void list::keydown(int id)
-{
+void list::keydown(int id) {
 	current++;
 	correction();
 	ensurevisible();
 }
 
-void list::keyhome(int id)
-{
+void list::keyhome(int id) {
 	if(current == 0)
 		return;
 	current = 0;
@@ -215,8 +187,7 @@ void list::keyhome(int id)
 	ensurevisible();
 }
 
-void list::keyend(int id)
-{
+void list::keyend(int id) {
 	if(current == maximum - 1)
 		return;
 	current = maximum - 1;
@@ -224,8 +195,7 @@ void list::keyend(int id)
 	ensurevisible();
 }
 
-void list::keypageup(int id)
-{
+void list::keypageup(int id) {
 	if(current != origin)
 		current = origin;
 	else
@@ -234,8 +204,7 @@ void list::keypageup(int id)
 	ensurevisible();
 }
 
-void list::keypagedown(int id)
-{
+void list::keypagedown(int id) {
 	if(current != (origin + lines_per_page - 1))
 		current = (origin + lines_per_page - 1);
 	else
@@ -244,20 +213,17 @@ void list::keypagedown(int id)
 	ensurevisible();
 }
 
-void list::mouseleftdbl(point position, int id)
-{
+void list::mouseleftdbl(point position, int id) {
 	if(!position.in(hot::element))
 		return;
 	invoke("change");
 }
 
-void list::keyenter(int id)
-{
+void list::keyenter(int id) {
 	invoke("change");
 }
 
-void list::mousewheel(point position, int id, int step)
-{
+void list::mousewheel(point position, int id, int step) {
 	origin += step;
 	if(origin > maximum - lines_per_page)
 		origin = maximum - lines_per_page;

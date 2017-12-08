@@ -7,8 +7,7 @@
 using namespace draw;
 using namespace draw::controls;
 
-static bool isspace(char sym)
-{
+static bool isspace(char sym) {
 	return sym == ' ' || sym == 10 || sym == 13 || sym == 9;
 }
 
@@ -22,31 +21,26 @@ update_records(true),
 show_records(true),
 cashed_width(-1),
 cashed_string(0),
-cashed_origin(0)
-{
+cashed_origin(0) {
 	wheels.y = 8;
 	if(select_text)
 		select(zlen(string), true);
 }
 
-int	textedit::getbegin() const
-{
+int	textedit::getbegin() const {
 	if(p2 == -1)
 		return p1;
 	return imin(p1, p2);
 }
 
-int	textedit::getend() const
-{
+int	textedit::getend() const {
 	if(p2 == -1)
 		return p1;
 	return imax(p1, p2);
 }
 
-void textedit::clear()
-{
-	if(p2 != -1 && p1 != p2)
-	{
+void textedit::clear() {
+	if(p2 != -1 && p1 != p2) {
 		char* s1 = string + getbegin();
 		char* s2 = string + getend();
 		while(*s2)
@@ -60,8 +54,7 @@ void textedit::clear()
 	p2 = -1;
 }
 
-void textedit::paste(const char* input)
-{
+void textedit::paste(const char* input) {
 	clear();
 	int i1 = zlen(string);
 	int i2 = zlen(input);
@@ -72,8 +65,7 @@ void textedit::paste(const char* input)
 		update_records = true;
 }
 
-void textedit::correct()
-{
+void textedit::correct() {
 	int lenght = zlen(string);
 	if(p2 != -1 && p2 > lenght)
 		p2 = lenght;
@@ -83,60 +75,50 @@ void textedit::correct()
 		p1 = 0;
 }
 
-void textedit::ensurevisible(int linenumber)
-{
+void textedit::ensurevisible(int linenumber) {
 }
 
-void textedit::select(int index, bool shift)
-{
+void textedit::select(int index, bool shift) {
 	int lenght = zlen(string);
 	if(index < 0)
 		index = 0;
 	else if(index > lenght)
 		index = lenght;
-	if(shift)
-	{
+	if(shift) {
 		if(p2 == -1)
 			p2 = p1;
-	}
-	else
+	} else
 		p2 = -1;
 	p1 = index;
 }
 
-void textedit::left(bool shift, bool ctrl)
-{
+void textedit::left(bool shift, bool ctrl) {
 	int n = p1;
 	if(!ctrl)
 		n -= 1;
-	else
-	{
+	else {
 		for(; n > 0 && isspace(string[n - 1]); n--);
 		for(; n > 0 && !isspace(string[n - 1]); n--);
 	}
 	select(n, shift);
 }
 
-void textedit::right(bool shift, bool ctrl)
-{
+void textedit::right(bool shift, bool ctrl) {
 	int n = p1;
 	if(!ctrl)
 		n += 1;
-	else
-	{
+	else {
 		for(; string[n] && !isspace(string[n]); n++);
 		for(; string[n] && isspace(string[n]); n++);
 	}
 	select(n, shift);
 }
 
-int	textedit::lineb(int index) const
-{
+int	textedit::lineb(int index) const {
 	return draw::textlb(string, index, cashed_width);
 }
 
-int	textedit::linee(int index) const
-{
+int	textedit::linee(int index) const {
 	auto line_count = 0;
 	auto line_start = draw::textlb(string, index, cashed_width, 0, &line_count);
 	auto n = line_start + line_count;
@@ -147,15 +129,13 @@ int	textedit::linee(int index) const
 	return 0;
 }
 
-int	textedit::linen(int index) const
-{
+int	textedit::linen(int index) const {
 	int result = 0;
 	draw::textlb(string, index, cashed_width, &result);
 	return result;
 }
 
-point textedit::getpos(rect rc, int index, unsigned state) const
-{
+point textedit::getpos(rect rc, int index, unsigned state) const {
 	auto line_number = 0;
 	auto line_count = 0;
 	auto line_start = draw::textlb(string, index, rc.width(), &line_number, &line_count);
@@ -168,16 +148,13 @@ point textedit::getpos(rect rc, int index, unsigned state) const
 	};
 }
 
-int	textedit::hittest(rect rc, point pt, unsigned state) const
-{
+int	textedit::hittest(rect rc, point pt, unsigned state) const {
 	return draw::hittest({rc.x1, rc.y1 - origin.y, rc.x2, rc.y2}, string, state, pt);
 }
 
-void textedit::cashing(rect rc)
-{
+void textedit::cashing(rect rc) {
 	rcclient = rc;
-	if(rc.width() != cashed_width)
-	{
+	if(rc.width() != cashed_width) {
 		cashed_width = rc.width();
 		draw::state push;
 		draw::setclip({0, 0, 0, 0});
@@ -185,41 +162,33 @@ void textedit::cashing(rect rc)
 	}
 }
 
-bool textedit::isshowrecords() const
-{
+bool textedit::isshowrecords() const {
 	return show_records
 		&& getrecordsheight() != 0;
 }
 
-void textedit::invalidate()
-{
+void textedit::invalidate() {
 	cashed_width = -1;
 }
 
-void textedit::background(rect& rc)
-{
+void textedit::background(rect& rc) {
 	scrollable::background(rc);
 	rc = rc + rctext;
 }
 
-void textedit::redraw(rect rc)
-{
+void textedit::redraw(rect rc) {
 	cashing(rc);
-	if(focused)
-	{
+	if(focused) {
 		auto ev = hot::key&CommandMask;
-		if((ev == MouseMove || ev == MouseLeft || ev == MouseLeftDBL || ev == MouseRight) && draw::mouseinput && hot::pressed)
-		{
+		if((ev == MouseMove || ev == MouseLeft || ev == MouseLeftDBL || ev == MouseRight) && draw::mouseinput && hot::pressed) {
 			int lenght = zlen(string);
 			int index = hittest(rc, hot::mouse, align);
 			if(index == -3)
 				index = lenght;
 			else if(index == -2)
 				index = 0;
-			if(index >= 0)
-			{
-				switch(hot::key&CommandMask)
-				{
+			if(index >= 0) {
+				switch(hot::key&CommandMask) {
 				case MouseMove:
 					select(index, true);
 					break;
@@ -239,8 +208,7 @@ void textedit::redraw(rect rc)
 	}
 }
 
-int textedit::getrecordsheight() const
-{
+int textedit::getrecordsheight() const {
 	if(!records)
 		return 0;
 	auto line_count = records->maximum;
@@ -248,45 +216,48 @@ int textedit::getrecordsheight() const
 	return line_height*imin(10, line_count);
 }
 
-void textedit::updaterecords()
-{
+void textedit::setrecordlist(const char* string) {
+	auto index = records->find(string);
+	if(index != -1) {
+		records->current = index;
+		ensurevisible(records->current);
+	}
+}
+
+void textedit::updaterecords(bool setfilter) {
 	if(!records)
 		return;
 	records->updaterowheight();
-	records->filter = string;
+	if(setfilter)
+		records->filter = string;
 	records->update();
+	if(!setfilter)
+		setrecordlist(string);
 }
 
-bool textedit::editing(rect rco)
-{
+bool textedit::editing(rect rco) {
 	draw::screenshoot push;
 	rect rcv, rc = rco + rctext;
 	focused = true;
-	updaterecords();
-	while(true)
-	{
+	updaterecords(false);
+	while(true) {
 		push.restore();
 		enablefocus();
 		enablemouse(rc);
 		nonclient(rc);
-		if(isshowrecords())
-		{
-			if(records->maximum)
-			{
+		if(isshowrecords()) {
+			if(records->maximum) {
 				rcv.set(rco.x1, rco.y2 + 2, imin(rco.x1 + 300, rco.x2), rco.y2 + 2 + getrecordsheight());
 				records->view(rcv);
-			}
-			else
+			} else
 				rcv.clear();
 		}
 		int id = input();
-		switch(id)
-		{
+		switch(id) {
 		case 0:
 			return false;
 		case KeyEscape:
-			if(records && isshowrecords())
-			{
+			if(records && isshowrecords()) {
 				show_records = false;
 				break;
 			}
@@ -297,8 +268,7 @@ bool textedit::editing(rect rco)
 			hot::key = id;
 			return true;
 		case KeyEnter:
-			if(records && isshowrecords())
-			{
+			if(records && isshowrecords()) {
 				auto value = records->getname(records->current);
 				if(value)
 					zcpy(string, value, maxlenght);
@@ -317,14 +287,12 @@ bool textedit::editing(rect rco)
 		case MouseLeftDBL:
 		case MouseLeftDBL + Ctrl:
 		case MouseLeftDBL + Shift:
-			if(records && isshowrecords() && areb(rcv))
-			{
+			if(records && isshowrecords() && areb(rcv)) {
 				dodialog(id);
 				draw::execute(KeyEnter);
 				break;
 			}
-			if(!areb(rc) && hot::pressed)
-			{
+			if(!areb(rc) && hot::pressed) {
 				draw::execute(id);
 				hot::key = id;
 				return true;
@@ -332,13 +300,11 @@ bool textedit::editing(rect rco)
 			break;
 		default:
 			dodialog(id);
-			if(id == InputSymbol)
-			{
+			if(id == InputSymbol) {
 				auto key = hot::param & 0xFFFF;
-				if(key == 8 || key >= 0x20)
-				{
+				if(key == 8 || key >= 0x20) {
 					show_records = true;
-					updaterecords();
+					updaterecords(true);
 				}
 			}
 			break;
@@ -347,10 +313,8 @@ bool textedit::editing(rect rco)
 	return false;
 }
 
-void textedit::keydown(int id)
-{
-	if(isshowrecords())
-	{
+void textedit::keydown(int id) {
+	if(isshowrecords()) {
 		records->keydown(id);
 		return;
 	}
@@ -359,29 +323,26 @@ void textedit::keydown(int id)
 	if(i == -3)
 		i = linee(linee(p1) + 1);
 	if(i >= 0)
-		select(i, (id & Shift)!=0);
+		select(i, (id & Shift) != 0);
 }
 
-void textedit::keyup(int id)
-{
+void textedit::keyup(int id) {
 	auto pt = getpos(rcclient, p1, align);
 	auto i = hittest(rcclient, {pt.x, (short)(pt.y - texth())}, align);
 	if(i == -3)
 		i = linee(lineb(p1) - 1);
 	if(i >= 0)
-		select(i, (id & Shift)!=0);
+		select(i, (id & Shift) != 0);
 }
 
-void textedit::inputsymbol(int id, int symbol)
-{
+void textedit::inputsymbol(int id, int symbol) {
 	char temp[8];
 	if(hot::param < 0x20 || readonly)
 		return;
 	paste(szput(temp, hot::param));
 }
 
-void textedit::keybackspace(int id)
-{
+void textedit::keybackspace(int id) {
 	if(readonly)
 		return;
 	if((p2 == -1 || p1 == p2) && p1 > 0)
@@ -389,8 +350,7 @@ void textedit::keybackspace(int id)
 	clear();
 }
 
-void textedit::keydelete(int id)
-{
+void textedit::keydelete(int id) {
 	if(readonly)
 		return;
 	if(p2 == -1 || p1 == p2)
@@ -398,42 +358,34 @@ void textedit::keydelete(int id)
 	clear();
 }
 
-unsigned textedit::select_all(bool run)
-{
-	if(run)
-	{
+unsigned textedit::select_all(bool run) {
+	if(run) {
 		select(0, false);
 		select(zlen(string), true);
 	}
 	return 0;
 }
 
-void textedit::keyright(int id)
-{
+void textedit::keyright(int id) {
 	right((id&Shift) != 0, (id&Ctrl) != 0);
 }
 
-void textedit::keyleft(int id)
-{
+void textedit::keyleft(int id) {
 	left((id&Shift) != 0, (id&Ctrl) != 0);
 }
 
-void textedit::keyhome(int id)
-{
-	select(lineb(p1), (id&Shift)!=0);
+void textedit::keyhome(int id) {
+	select(lineb(p1), (id&Shift) != 0);
 }
 
-void textedit::keyend(int id)
-{
+void textedit::keyend(int id) {
 	select(linee(p1), (id&Shift) != 0);
 }
 
-unsigned textedit::copy(bool run)
-{
+unsigned textedit::copy(bool run) {
 	if(p2 == -1 || p1 == p2)
 		return Disabled;
-	if(run)
-	{
+	if(run) {
 		char* s1 = string + imin(p1, p2);
 		char* s2 = string + imax(p1, p2);
 		clipboard::copy(s1, s2 - s1);
@@ -441,12 +393,10 @@ unsigned textedit::copy(bool run)
 	return 0;
 }
 
-unsigned textedit::paste(bool run)
-{
+unsigned textedit::paste(bool run) {
 	if(p1 == -1 || readonly)
 		return Disabled;
-	if(run)
-	{
+	if(run) {
 		clear();
 		auto p = clipboard::paste();
 		if(p)

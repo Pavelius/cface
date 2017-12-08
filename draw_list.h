@@ -51,6 +51,7 @@ namespace draw
 			const xsfield*	fields; // Metadata of objects
 			const xsfield*	requisit; // Which field used to presentation
 			listview(const void** source, unsigned count, const xsfield* fields, const char* name);
+			int				find(const char* name) const;
 			const char*		getname(int index) const;
 			void			row(rect rc, int id) override;
 			void			setpresetation(const char* name);

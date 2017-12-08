@@ -1,3 +1,4 @@
+#include "crt.h"
 #include "draw.h"
 #include "draw_list.h"
 #include "xsfield.h"
@@ -14,6 +15,15 @@ listview::listview(const void** source, unsigned count, const xsfield* fields, c
 const char* listview::getname(int index) const
 {
 	return (const char*)requisit->get(requisit->ptr(source[index]));
+}
+
+int	listview::find(const char* name) const {
+	for(auto i = 0; i < maximum; i++) {
+		auto p = getname(i);
+		if(p && strcmp(p, name) == 0)
+			return i;
+	}
+	return -1;
 }
 
 void listview::setpresetation(const char* name)

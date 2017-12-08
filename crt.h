@@ -123,7 +123,7 @@ template<class T> inline T*			seqlast(T* p) { while(p->next) p = p->next; return
 template<class T> inline void		seqlink(T* p) { p->next = 0; if(!T::first) T::first = p; else seqlast(T::first)->next = p; }
 // Inline strings functions
 template<class T> inline const T*	zchr(const T* p, T e) { while(*p) { if(*p==e) return p; p++; } return 0; }
-template<class T> inline bool		zcmp(const T* p1, const T* p2) { while(*p2 == *p1) { if(!*p1) return true; p1++; p2++ } return false; }
+template<class T> inline bool		zcmp(const T* p1, const T* p2) { while(*p2 == *p1) { if(!*p1) return true; p1++; p2++; } return false; }
 template<class T> inline void		zcpy(T* p1, const T* p2) { while(*p2) *p1++ = *p2++; *p1 = 0; }
 template<class T> inline void		zcpy(T* p1, const T* p2, int max_count) { while(*p2 && max_count-->0) *p1++ = *p2++; *p1 = 0;}
 template<class T> inline T*			zend(T* p) { while(*p) p++; return p; }

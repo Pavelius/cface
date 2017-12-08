@@ -55,7 +55,8 @@ namespace draw
 			void			right(bool shift, bool ctrl);
 			void			select(int index, bool shift);
 			unsigned		select_all(bool run);
-			void			updaterecords();
+			void			setrecordlist(const char* string);
+			void			updaterecords(bool setfilter);
 		protected:
 			int				cashed_width;
 			int				cashed_string;
