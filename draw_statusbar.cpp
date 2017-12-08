@@ -14,7 +14,7 @@ void statusbar(const char* format, ...)
 	szprintv(statusbar_text, format, xva_start(format));
 }
 
-int wdt_statusbar()
+int draw::statusbardraw()
 {
 	if(!metrics::show::statusbar || !font)
 		return 0;

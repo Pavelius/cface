@@ -290,6 +290,7 @@ namespace draw
 	void					spline(point* points, int n);
 	void					splith(int x, int y, int width, int& value, int id, int size, int minimum, int maximum, bool down_align = false);
 	void					splitv(int x, int y, int& value, int height, int id, int size, int minimum, int maximum, bool right_align = false);
+	int						statusbardraw();
 	void					stroke(int x, int y, const sprite* e, int id, int flags, unsigned char thin = 1, unsigned char* koeff = 0);
 	void					syscursor(bool enable);
 	void					sysmouse(bool enable);

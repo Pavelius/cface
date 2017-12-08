@@ -60,7 +60,7 @@ int						metrics::scroll = 16;
 bool					metrics::show::left;
 bool					metrics::show::right;
 bool					metrics::show::bottom;
-bool					metrics::show::statusbar;
+bool					metrics::show::statusbar = true;
 
 float sqrt(const float x)
 {

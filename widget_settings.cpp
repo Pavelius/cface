@@ -366,7 +366,7 @@ static struct widget_settings : control {
 static struct widget_application : control {
 
 	char* getname(char* temp) const override {
-		zcpy(temp, "База");
+		zcpy(temp, "Главный");
 		return temp;
 	}
 
@@ -431,8 +431,14 @@ static void initialize_settings() {
 
 static control* layouts[] = {&widget_application_control, &widget_settings_control};
 
-char* get_control_name(char* result, void* object){
+static char* get_control_name(char* result, void* object){
 	return ((control*)object)->getname(result);
+}
+
+static char* get_control_status(char* result, void* object) {
+	char temp[260];
+	szprint(result, "Переключить вид на '%1'", ((control*)object)->getname(temp));
+	return result;
 }
 
 int draw::application(const char* title) {
@@ -440,10 +446,13 @@ int draw::application(const char* title) {
 	draw::window dc(-1, -1, 600, 400, WFResize | WFMinmax);
 	if(title)
 		draw::setcaption(title);
+	auto current_tab = 0;
 	while(true) {
-		auto pc = layouts[0];
+		auto pc = layouts[current_tab];
 		rect rc = {0, 0, draw::getwidth(), draw::getheight()};
-		draw::rectf(rc, colors::form); rc.offset(metrics::padding);
+		draw::rectf(rc, colors::form);
+		rc.y2 -= draw::statusbardraw();
+		rc.offset(metrics::padding);
 		struct rect rt = {rc.x1, rc.y1, rc.x2, rc.y1};
 		auto commands = pc->getcommands();
 		rt.y2 += metrics::toolbar->get(0).sy + 4;
@@ -452,14 +461,14 @@ int draw::application(const char* title) {
 		pc->background(rc);
 		pc->prerender();
 		pc->enablemouse(rc);
-		// Обновим цвет элемента, который может именился
-		// Процедура 'background' может изменить рамку элемента.
-		// Поэтому только начиная отсюда она имеет корректное значение.
 		pc->nonclient(rc);
 		pc->render(rt.x1, rt.y1, rt.width(), commands);
-		draw::tabs(rt, false, true, (void**)layouts, 0,
-			sizeof(layouts) / sizeof(layouts[0]), 0, 0, get_control_name, 0,
+		auto hilite_tab = 0;
+		auto reaction = draw::tabs(rt, false, true, (void**)layouts, 0,
+			sizeof(layouts) / sizeof(layouts[0]), current_tab, &hilite_tab, get_control_name, get_control_status,
 			{0, metrics::padding, 0, metrics::padding});
+		if(reaction == 1)
+			current_tab = hilite_tab;
 		auto id = draw::input();
 		if(!id)
 			return 0;
