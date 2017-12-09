@@ -308,6 +308,7 @@ static struct widget_settings : control {
 		settings* tabs[128];
 		fore = colors::text;
 		splitv(rc.x1, rc.y1, header_width, rc.height(), 1, 6, 64, 282);
+		header.show_border = metrics::show::padding;
 		showcontrol(header, {rc.x1, rc.y1, rc.x1 + header_width, rc.y2});
 		rc.x1 += header_width + 6;
 		auto top = header.getcurrent();
@@ -332,8 +333,6 @@ static struct widget_settings : control {
 				draw::execute(callback_settab);
 				hot::param = hilited;
 			}
-			if(metrics::show::padding)
-				rectb(rc, colors::border);
 			line(rc.x1, rc.y1 + h1, rc.x2, rc.y1 + h1, colors::border);
 			rc.y1 += h1 + metrics::padding * 2;
 			rc.x1 += metrics::padding;
@@ -449,14 +448,16 @@ int draw::application(const char* title) {
 	auto current_tab = 0;
 	while(true) {
 		auto pc = layouts[current_tab];
+		auto commands = pc->getcommands();
 		rect rc = {0, 0, draw::getwidth(), draw::getheight()};
 		draw::rectf(rc, colors::form);
 		rc.y2 -= draw::statusbardraw();
-		rc.offset(metrics::padding);
-		struct rect rt = {rc.x1, rc.y1, rc.x2, rc.y1};
-		auto commands = pc->getcommands();
-		rt.y2 += metrics::toolbar->get(0).sy + 4;
-		rc.y1 += rt.height() + metrics::padding;
+		rect rt = rc;
+		rt.y2 = rt.y1 + (metrics::toolbar ? metrics::toolbar->get(0).sy + 4 : 24);
+		sheetline(rt, true);
+		rc.y1 += rt.height();
+		if(metrics::show::padding)
+			rc.offset(metrics::padding);
 		pc->enablefocus();
 		pc->background(rc);
 		pc->prerender();
@@ -467,7 +468,7 @@ int draw::application(const char* title) {
 		auto reaction = draw::tabs(rt, false, true, (void**)layouts, 0,
 			sizeof(layouts) / sizeof(layouts[0]), current_tab, &hilite_tab, get_control_name, get_control_status,
 			{0, metrics::padding, 0, metrics::padding});
-		if(reaction == 1)
+		if(reaction == 1 && hilite_tab != current_tab)
 			current_tab = hilite_tab;
 		auto id = draw::input();
 		if(!id)
