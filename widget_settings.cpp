@@ -369,6 +369,10 @@ static struct widget_application : control {
 		return temp;
 	}
 
+	void redraw(rect rc) {
+		draw::dockbar(rc);
+	}
+
 	widget_application() {
 		show_background = false;
 		show_border = false;
