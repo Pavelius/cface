@@ -574,20 +574,28 @@ static struct settings_settings_strategy : io::strategy {
 		return result->find(szdup(n.name));
 	}
 
-	void set(io::node& n, int value) {
+	int getnum(const char* value) const {
+		return sz2num(value);
+	}
+
+	void set(io::node& n, const char* value) {
 		auto e = find(n);
 		if(!e)
 			return;
 		switch(e->type) {
 		case settings::Int:
 		case settings::Color:
-			*((int*)e->data) = value;
+			*((int*)e->data) = getnum(value);
 			break;
 		case settings::Bool:
-			*((bool*)e->data) = (value ? true : false);
+			*((bool*)e->data) = (getnum(value) ? true : false);
 			break;
 		case settings::Radio:
 			*((int*)e->data) = e->value;
+			break;
+		case settings::TextPtr:
+		case settings::UrlFolderPtr:
+			*((const char**)e->data) = szdup(value);
 			break;
 		}
 	}
@@ -622,16 +630,6 @@ static struct controls_settings_strategy : io::strategy {
 			result = (settings*)result->data;
 		}
 		return result->find(szdup(n.name));
-	}
-
-	void set(io::node& n, int value) override {
-		if(!n.parent || !n.parent->parent)
-			return;
-		auto e = control::plugin::find(n.parent->name);
-		if(!e)
-			return;
-		if(strcmp(n.name, "Disabled") == 0)
-			e->element.disabled = value != 0;
 	}
 
 	bool istrue(const char* value) const {

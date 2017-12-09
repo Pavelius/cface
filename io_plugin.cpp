@@ -44,6 +44,11 @@ char* io::plugin::getfilter(char* result)
 	return result;
 }
 
+void io::writer::set(const char* name, int value, int type) {
+	char temp[32]; sznum(temp, value);
+	set(name, temp, type);
+}
+
 io::strategy* io::strategy::first;
 
 io::strategy::strategy(const char* id, const char* type) : id(id), type(type)
@@ -125,14 +130,6 @@ bool io::read(const char* url, const char* root_name, void* param)
 					st->open(e);
 				break;
 			}
-		}
-
-		void set(node& e, int value)
-		{
-			if(!st)
-				e.skip = true;
-			else
-				st->set(e, value);
 		}
 
 		void set(node& e, const char* value)

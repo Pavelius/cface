@@ -26,7 +26,7 @@ static struct windows_persistent_strategy : public io::strategy
 		}
 	}
 
-	void set(io::node& n, int value)
+	void set(io::node& n, const char* value)
 	{
 		if(!n.parent)
 			return;
@@ -39,13 +39,13 @@ static struct windows_persistent_strategy : public io::strategy
 			e->id = szdup(n.parent->name);
 		}
 		if(strcmp(n.name, "x1") == 0)
-			e->position.x1 = value;
+			e->position.x1 = sz2num(value);
 		else if(strcmp(n.name, "y1") == 0)
-			e->position.y1 = value;
+			e->position.y1 = sz2num(value);
 		else if(strcmp(n.name, "x2") == 0)
-			e->position.x2 = value;
+			e->position.x2 = sz2num(value);
 		else if(strcmp(n.name, "y2") == 0)
-			e->position.y2 = value;
+			e->position.y2 = sz2num(value);
 	}
 
 	windows_persistent_strategy() : strategy("windows", "settings") {}

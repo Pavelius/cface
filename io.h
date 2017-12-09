@@ -106,8 +106,7 @@ namespace io
 	struct reader
 	{
 		virtual void		open(node& e) {}
-		virtual void		set(node& e, int value) {};
-		virtual void		set(node& e, const char* value) {};
+		virtual void		set(node& e, const char* value) = 0;
 		virtual void		close(node& e) {}
 	};
 	// Application create instance of this object.
@@ -118,7 +117,7 @@ namespace io
 		writer(stream& e) : e(e) {}
 		virtual ~writer() {}
 		virtual void		open(const char* name, int type = 0) {}
-		virtual void		set(const char* name, int value, int type = 0) {};
+		virtual void		set(const char* name, int value, int type = 0);
 		virtual void		set(const char* name, const char* value, int type = 0) {};
 		virtual void		close(const char* name, int type = 0) {}
 	};
