@@ -6,6 +6,7 @@
 #else
 #define assert(e)
 #endif
+#define getstr_enum(e) template<> const char* getstr<e##_s>(e##_s value) { return e##_data[value].name; }
 
 extern "C" void						abort();
 extern "C" int						atexit(void(*func)(void));

@@ -4,6 +4,7 @@
 #include "draw.h"
 #include "draw_table.h"
 #include "draw_textedit.h"
+#include "io.h"
 #include "settings.h"
 #include "xsbase.h"
 #include "xsfield.h"
@@ -14,6 +15,7 @@ using namespace	draw::controls;
 bool				metrics::show::padding;
 static int			current_tab;
 static settings*	current_header;
+static control*		active_workspace_tab;
 
 static struct dock {
 	const char*	name;
@@ -32,6 +34,7 @@ xsfield dock_type[] = {
 	{0}
 };
 BSMETA(dock)
+getstr_enum(dock)
 
 static char* gettabname(char* temp, void* p) {
 	return (char*)((settings*)p)->name;
@@ -369,8 +372,56 @@ static struct widget_application : control {
 		return temp;
 	}
 
+	static char* getcontrolname(char* temp, void* p) {
+		return ((control*)p)->getname(temp);
+	}
+
+	static void workspace(rect rc, bool allow_multiply_window) {
+		control* p1[64];
+		int c1 = getdocked(p1, sizeof(p1) / sizeof(p1[0]), DockWorkspace);
+		//int c2 = c1 + dialog::select(p1 + c1);
+		if(c1 == 1 && !allow_multiply_window) {
+			active_workspace_tab = p1[0];
+			active_workspace_tab->view(rc, false);
+		} else if(c1) {
+			auto last_active_workspace_tab = active_workspace_tab;
+			auto current_select = zfind(p1, active_workspace_tab);
+			if(current_select == -1)
+				current_select = 0;
+			active_workspace_tab = p1[current_select];
+			auto ec = active_workspace_tab;
+			const int dy = draw::texth() + 8;
+			rect rct = {rc.x1, rc.y1, rc.x2, rc.y1 + dy};
+			auto result = draw::tabs(rct, true, false, (void**)p1, 0, c1,
+				current_select, &current_select, getcontrolname, 0, {2, 0, 2, 0});
+			//		if(c2 > c1)
+			//		{
+			//			rct.x1 += draw::tabs(rct, TabsControl, HideBackground, (void**)p1, c1, c2,
+			//				current_select, &current_select, get_control_name, get_control_info, 2);
+			//		}
+			//		if(getcommand() == TabsControl)
+			//		{
+			//			if(current_select != -1)
+			//				active_workspace_tab = p1[current_select];
+			//		}
+			//		else if(getcommand() == TabsCloseControl)
+			//		{
+			//			if(current_select != -1)
+			//				close_workspace_tab = p1[current_select];
+			//		}
+			//		if(active_workspace_tab != last_active_workspace_tab)
+			//		{
+			//			if(active_workspace_tab)
+			//				active_workspace_tab->execute(Update, true);
+			//		}
+			rc.y1 += dy;
+			ec->view(rc, false);
+		}
+	}
+
 	void redraw(rect rc) {
 		draw::dockbar(rc);
+		workspace(rc, true);
 	}
 
 	widget_application() {
@@ -434,7 +485,7 @@ static void initialize_settings() {
 
 static control* layouts[] = {&widget_application_control, &widget_settings_control};
 
-static char* get_control_name(char* result, void* object){
+static char* get_control_name(char* result, void* object) {
 	return ((control*)object)->getname(result);
 }
 
@@ -475,8 +526,132 @@ int draw::application(const char* title) {
 		if(reaction == 1 && hilite_tab != current_tab)
 			current_tab = hilite_tab;
 		auto id = draw::input();
-		if(!id)
+		if(!id) {
 			return 0;
+		}
 		control::dodialog(id);
 	}
 }
+
+static struct settings_settings_strategy : io::strategy {
+
+	void write(io::writer& file, settings& e) {
+		switch(e.type) {
+		case settings::Group:
+			file.open(e.identifier);
+			for(settings* p = (settings*)e.data; p; p = p->next)
+				write(file, *p);
+			file.close(e.identifier);
+			break;
+		case settings::Bool:
+			file.set(e.identifier, *((bool*)e.data));
+			break;
+		case settings::Int:
+		case settings::Color:
+			file.set(e.identifier, *((int*)e.data));
+			break;
+		case settings::Radio:
+			if(*((int*)e.data) == e.value)
+				file.set(e.identifier, 1);
+			break;
+		}
+	}
+
+	void write(io::writer& file, void* param) override {
+		write(file, settings::root);
+	}
+
+	settings* find(io::node& n) {
+		settings* result = (settings*)settings::root.data;
+		if(n.parent && szcmpi(n.parent->name, "Root") != 0) {
+			result = find(*n.parent);
+			if(!result)
+				return 0;
+			if(result->type != settings::Group)
+				return 0;
+			result = (settings*)result->data;
+		}
+		return result->find(szdup(n.name));
+	}
+
+	void set(io::node& n, int value) {
+		auto e = find(n);
+		if(!e)
+			return;
+		switch(e->type) {
+		case settings::Int:
+		case settings::Color:
+			*((int*)e->data) = value;
+			break;
+		case settings::Bool:
+			*((bool*)e->data) = (value ? true : false);
+			break;
+		case settings::Radio:
+			*((int*)e->data) = e->value;
+			break;
+		}
+	}
+
+	settings_settings_strategy() : strategy("settings", "settings") {}
+
+} settings_settings_strategy_instance;
+
+static struct controls_settings_strategy : io::strategy {
+
+	void write(io::writer& file, void* param) override {
+		for(auto pp = control::plugin::first; pp; pp = pp->next) {
+			auto& e = pp->element;
+			auto id = e.getid();
+			if(!id || id[0] == 0)
+				continue;
+			file.open(id);
+			file.set("Docking", e.dock);
+			file.set("Disabled", e.disabled ? "true" : "false");
+			file.close(id);
+		}
+	}
+
+	settings* find(io::node& n) {
+		settings* result = (settings*)settings::root.data;
+		if(n.parent && szcmpi(n.parent->name, "Root") != 0) {
+			result = find(*n.parent);
+			if(!result)
+				return 0;
+			if(result->type != settings::Group)
+				return 0;
+			result = (settings*)result->data;
+		}
+		return result->find(szdup(n.name));
+	}
+
+	void set(io::node& n, int value) override {
+		if(!n.parent || !n.parent->parent)
+			return;
+		auto e = control::plugin::find(n.parent->name);
+		if(!e)
+			return;
+		if(strcmp(n.name, "Disabled") == 0)
+			e->element.disabled = value != 0;
+	}
+
+	bool istrue(const char* value) const {
+		return value[0] == 't'
+			&& value[1] == 'r'
+			&& value[2] == 'u'
+			&& value[3] == 'e'
+			&& value[4] == 0;
+	}
+
+	void set(io::node& n, const char* value) override {
+		if(!n.parent || !n.parent->parent)
+			return;
+		auto e = control::plugin::find(n.parent->name);
+		if(!e)
+			return;
+		if(szcmpi(n.name, "Disabled") == 0)
+			e->element.disabled = istrue(value);
+	}
+
+	controls_settings_strategy() : strategy("controls", "settings") {}
+
+} controls_settings_strategy_instance;

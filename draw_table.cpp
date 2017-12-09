@@ -80,6 +80,8 @@ unsigned table::addcopy(bool run)
 
 unsigned table::copy(bool run)
 {
+	if(rows.getcount() == 0)
+		return Disabled;
 	if(run)
 	{
 		char temp[4096]; temp[0] = 0;

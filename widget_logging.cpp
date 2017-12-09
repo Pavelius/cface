@@ -41,6 +41,10 @@ static struct widget_logging : table {
 		fields = log_message_type;
 	}
 
+	const char* getid() const override {
+		return "logging";
+	}
+
 	char* getname(char* result) const override {
 		zcpy(result, "Список сообщений");
 		return result;
@@ -48,6 +52,9 @@ static struct widget_logging : table {
 
 	widget_logging() : table(messages) {
 		messages.initialize();
+		show_toolbar = false;
+		no_change_content = true;
+		no_change_count = true;
 	}
 
 } logging_control;

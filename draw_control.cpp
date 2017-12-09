@@ -29,6 +29,17 @@ control::plugin::plugin(control& element) : element(element) {
 	seqlink(this);
 }
 
+const control::plugin* control::plugin::find(const char* id) {
+	for(auto p = first; p; p = p->next) {
+		auto eid = p->element.getid();
+		if(!eid)
+			continue;
+		if(strcmp(eid, id) == 0)
+			return p;
+	}
+	return 0;
+}
+
 char* control::getname(char* result) const {
 	return result;
 }

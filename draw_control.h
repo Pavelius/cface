@@ -29,6 +29,7 @@ namespace draw
 			plugin*				next;
 			static plugin*		first;
 			plugin(control& value);
+			static const plugin* find(const char* id);
 		};
 		struct command
 		{
@@ -65,6 +66,7 @@ namespace draw
 		virtual control*		getcontrol(const char* id) { return 0; }
 		virtual const command*	getcommands() const { return 0; }
 		virtual int				geticon(const command& e) const { return e.icon; }
+		virtual const char*		getid() const { return 0; }
 		virtual char*			getdescription(char* result) const;
 		virtual const xsfield*	getmeta() const { return 0; }
 		virtual char*			getname(char* result) const;
