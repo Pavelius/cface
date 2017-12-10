@@ -2,7 +2,7 @@
 #include "crt.h"
 #include "collections.h"
 #include "draw_table.h"
-#include "io.h"
+#include "io_plugin.h"
 #include "settings.h"
 #include "xsfield.h"
 
@@ -38,5 +38,5 @@ COMMAND(settings_initialize) {
 	control_viewer.initialize();
 	if(!control_viewer.rows.getcount())
 		return;
-	settings& e1 = settings::root.gr("Дополнения").add("Экспорт/Импорт", control_viewer);
+	settings& e1 = settings::root.gr("Расширения").add("Экспорт/Импорт", control_viewer);
 }

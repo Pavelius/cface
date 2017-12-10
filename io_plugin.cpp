@@ -1,5 +1,5 @@
 #include "crt.h"
-#include "io.h"
+#include "io_plugin.h"
 
 static char* add_filter(char* result, const char* name, const char* filter)
 {
@@ -44,7 +44,7 @@ char* io::plugin::getfilter(char* result)
 	return result;
 }
 
-void io::writer::set(const char* name, int value, int type) {
+void io::writer::set(const char* name, int value, node_s type) {
 	char temp[32]; sznum(temp, value);
 	set(name, temp, type);
 }
@@ -66,12 +66,12 @@ io::strategy* io::strategy::find(const char* name)
 	return 0;
 }
 
-bool io::node::operator==(const char* name) const
+bool io::reader::node::operator==(const char* name) const
 {
 	return strcmp(this->name, name) == 0;
 }
 
-int io::node::getlevel() const
+int io::reader::node::getlevel() const
 {
 	int result = 0;
 	for(auto p = parent; p; p = p->parent)
@@ -79,11 +79,11 @@ int io::node::getlevel() const
 	return result;
 }
 
-io::node::node(int type) : parent(0), name(""), type(type), index(0), skip(false)
+io::reader::node::node(node_s type) : parent(0), name(""), type(type), index(0), skip(false)
 {
 }
 
-io::node::node(node& parent, const char* name, int type) : parent(&parent), name(name), type(type), index(0), skip(parent.skip)
+io::reader::node::node(node& parent, const char* name, node_s type) : parent(&parent), name(name), type(type), index(0), skip(parent.skip)
 {
 	memset(params, 0, sizeof(params));
 }

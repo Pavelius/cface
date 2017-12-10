@@ -269,6 +269,7 @@
     <ClInclude Include="draw_list.h" />
     <ClInclude Include="draw_scrollable.h" />
     <ClInclude Include="draw_control.h" />
+    <ClInclude Include="io_plugin.h" />
     <ClInclude Include="widget.h" />
     <ClInclude Include="settings.h" />
     <ClInclude Include="draw_table.h" />

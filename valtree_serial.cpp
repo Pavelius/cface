@@ -12,7 +12,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 #include "crt.h"
-#include "io.h"
+#include "io_plugin.h"
 #include "valtree.h"
 
 static void write_object(io::writer& file, valtree* object)
@@ -53,7 +53,7 @@ bool valtree::read(const char* url)
 	{
 		valtree* root;
 
-		void open(io::node& e)
+		void open(io::reader::node& e)
 		{
 			if(e.parent)
 			{
@@ -68,13 +68,13 @@ bool valtree::read(const char* url)
 			}
 		}
 
-		void set(io::node& e, int value)
+		void set(io::reader::node& e, int value)
 		{
 			auto pp = (valtree*)e.parent->params[0];
 			pp->set(e.name, value);
 		}
 
-		void set(io::node& e, const char* value)
+		void set(io::reader::node& e, const char* value)
 		{
 			auto pp = (valtree*)e.parent->params[0];
 			pp->set(e.name, value);

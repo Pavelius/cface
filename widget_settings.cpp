@@ -4,7 +4,7 @@
 #include "draw.h"
 #include "draw_table.h"
 #include "draw_textedit.h"
-#include "io.h"
+#include "io_plugin.h"
 #include "settings.h"
 #include "xsbase.h"
 #include "xsfield.h"
@@ -469,7 +469,7 @@ static void setting_appearance_controls() {
 	control_viewer.initialize();
 	if(!control_viewer.rows.getcount())
 		return;
-	settings& e1 = settings::root.gr("Рабочий стол").add("Элементы управления", control_viewer);
+	settings& e1 = settings::root.gr("Расширения").add("Элементы", control_viewer);
 }
 
 command* command_settings_initialize;
@@ -495,9 +495,12 @@ static char* get_control_status(char* result, void* object) {
 	return result;
 }
 
-int draw::application(const char* title) {
+COMMAND(app_initialize) {
 	initialize_settings();
-	draw::window dc(-1, -1, 600, 400, WFResize | WFMinmax);
+}
+
+int draw::application(const char* title) {
+	draw::window dc(-1, -1, 600, 400, WFResize | WFMinmax, 32, "application");
 	if(title)
 		draw::setcaption(title);
 	auto current_tab = 0;
@@ -561,9 +564,9 @@ static struct settings_settings_strategy : io::strategy {
 		write(file, settings::root);
 	}
 
-	settings* find(io::node& n) {
+	settings* find(io::reader::node& n) {
 		settings* result = (settings*)settings::root.data;
-		if(n.parent && szcmpi(n.parent->name, "Root") != 0) {
+		if(n.parent && *n.parent=="Root") {
 			result = find(*n.parent);
 			if(!result)
 				return 0;
@@ -578,7 +581,7 @@ static struct settings_settings_strategy : io::strategy {
 		return sz2num(value);
 	}
 
-	void set(io::node& n, const char* value) {
+	void set(io::reader::node& n, const char* value) override {
 		auto e = find(n);
 		if(!e)
 			return;
@@ -619,7 +622,7 @@ static struct controls_settings_strategy : io::strategy {
 		}
 	}
 
-	settings* find(io::node& n) {
+	settings* find(io::reader::node& n) {
 		settings* result = (settings*)settings::root.data;
 		if(n.parent && szcmpi(n.parent->name, "Root") != 0) {
 			result = find(*n.parent);
@@ -640,7 +643,7 @@ static struct controls_settings_strategy : io::strategy {
 			&& value[4] == 0;
 	}
 
-	void set(io::node& n, const char* value) override {
+	void set(io::reader::node& n, const char* value) override {
 		if(!n.parent || !n.parent->parent)
 			return;
 		auto e = control::plugin::find(n.parent->name);

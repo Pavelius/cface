@@ -468,6 +468,9 @@
     <ClInclude Include="settings.h">
       <Filter>Графика\Элементы Управления</Filter>
     </ClInclude>
+    <ClInclude Include="io_plugin.h">
+      <Filter>Системные</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Коллекции">

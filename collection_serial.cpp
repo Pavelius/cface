@@ -1,6 +1,6 @@
 #include "collection.h"
 #include "crt.h"
-#include "io.h"
+#include "io_plugin.h"
 #include "xsref.h"
 
 bool xsref_read(io::stream& stream, xsref& e, char* temp);
@@ -28,21 +28,21 @@ struct collection_reader : public io::reader {
 	collection&		tb;
 	xsref			row;
 
-	void open(io::node& e) override {
-		if(e.parent && e.parent->parent == 0)
-			row.object = tb.add(0);
-	}
-
 	bool isnumeric(const char* value) const {
 		return value[0] == '-' || isnum(value[0]);
 	}
 
-	void set(io::node& e, const char* value) override {
+	void open(io::reader::node& e) override {
+		if(e.parent && e.parent->parent == 0)
+			row.object = tb.add(0);
+	}
+
+	void set(io::reader::node& e, const char* value) override {
 		if(!row)
 			return;
 		if(!e.parent)
 			return;
-		if(strcmp(e.parent->name, "element") == 0) {
+		if(*e.parent=="element") {
 			if(isnumeric(value))
 				row.set(e.name, sz2num(value));
 			else
@@ -90,22 +90,22 @@ bool collection::write(const char* url, xsfield* fields) {
 		io::writer* pw = pp->write(file);
 		if(!pw)
 			return false;
-		pw->open("rows", NodeArray);
+		pw->open("rows", io::Array);
 		for(int i = 0; i < count; i++) {
-			pw->open("element", NodeStruct);
+			pw->open("element", io::Struct);
 			xsref xr = {fields, get(i)};
 			for(auto p = fields; *p; p++) {
 				auto v = xr.get(p->id);
 				if(!v)
 					continue;
 				if(p->type == number_type)
-					pw->set(p->id, v, NodeNumber);
+					pw->set(p->id, v, io::Number);
 				else if(p->type == text_type)
-					pw->set(p->id, (const char*)v, NodeText);
+					pw->set(p->id, (const char*)v, io::Text);
 			}
-			pw->close("element", NodeStruct);
+			pw->close("element", io::Struct);
 		}
-		pw->close("rows", NodeArray);
+		pw->close("rows", io::Array);
 		delete pw;
 	} else if(strcmp(ex, "dat") == 0 || strcmp(ex, "bin") == 0) {
 		io::file file(url, StreamWrite);

@@ -4,7 +4,7 @@
 #include "draw.h"
 #include "draw_table.h"
 #include "draw_textedit.h"
-#include "io.h"
+#include "io_plugin.h"
 #include "xsref.h"
 #include "xsbase.h"
 

@@ -1,6 +1,6 @@
 #include "aref.h"
 #include "crt.h"
-#include "io.h"
+#include "io_plugin.h"
 #include "draw.h"
 
 struct window_persistent
@@ -26,7 +26,7 @@ static struct windows_persistent_strategy : public io::strategy
 		}
 	}
 
-	void set(io::node& n, const char* value)
+	void set(io::reader::node& n, const char* value)
 	{
 		if(!n.parent)
 			return;
