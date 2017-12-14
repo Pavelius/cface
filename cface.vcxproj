@@ -264,6 +264,7 @@
   <ItemGroup>
     <ClInclude Include="adat.h" />
     <ClInclude Include="amem.h" />
+    <ClInclude Include="archive.h" />
     <ClInclude Include="collections.h" />
     <ClInclude Include="draw_form.h" />
     <ClInclude Include="draw_list.h" />
