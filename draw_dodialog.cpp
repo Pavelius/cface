@@ -1,7 +1,6 @@
 #include "draw.h"
 
-static void(*current_execute)();
-
+static void(*current_execute)(); // Current executed command
 static int current_focus; // Current focus element
 
 static void callback_setfocus()

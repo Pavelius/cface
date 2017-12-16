@@ -1,10 +1,10 @@
 #include "command.h"
 #include "draw.h"
 
-command*		command_after_render;
-command*		command_clear_render;
-static int		current_command;
-extern rect		sys_static_area;
+command*	command_after_render;
+command*	command_clear_render;
+static int	current_command;
+extern rect	sys_static_area;
 
 void draw::execute(int id, int param)
 {
