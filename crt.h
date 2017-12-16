@@ -93,8 +93,8 @@ const char*							szlinee(const char* position);
 unsigned							szlower(unsigned u); // to lower reg
 void								szlower(char* p, int count=1); // to lower reg
 bool								szmatch(const char* text, const char* name); //
-char*								sznum(char* result, int num, int precision = 0, const char* empthy = 0, int radix = 10);
-char*								sznum(char* result, float f, int precision = 0, const char* empthy = "0.00");
+char*								sznum(char* result, int num, int precision = 0, const char* empthy = 0, int radix = 10, const char* result_maximum = 0);
+char*								sznum(char* result, float f, int precision = 0, const char* empthy = "0.00", const char* result_maximum = 0);
 bool								szpmatch(const char* text, const char* pattern);
 char*					            szprint(char* result, const char* format, ...);
 char*								szprintv(char* result, const char* format, const char* vl);

@@ -127,18 +127,21 @@ int szcmpi(const char* p1, const char* p2, int max_count)
 	return s1 - s2;
 }
 
-char* sznum(char* result, int num, int precision, const char* empthy, int radix)
+char* sznum(char* result, int num, int precision, const char* empthy, int radix, const char* result_maximum)
 {
 	char* p1 = result;
+	if(!result_maximum)
+		result_maximum = p1 + 32;
 	if(num == 0)
 	{
 		if(empthy)
-			zcpy(p1, empthy);
+			zcpy(p1, empthy, result_maximum - p1);
 		else
 		{
-			zcpy(p1, "0");
-			while(--precision > 0)
+			zcpy(p1, "0", result_maximum - p1);
+			while(--precision > 0) {
 				zcat(p1, "0");
+			}
 		}
 		p1 = zend(p1);
 	}
@@ -148,7 +151,8 @@ char* sznum(char* result, int num, int precision, const char* empthy, int radix)
 		int p = 0;
 		if(num < 0)
 		{
-			*p1++ = '-';
+			if(p1<result_maximum)
+				*p1++ = '-';
 			num = -num;
 		}
 		switch(radix)
@@ -172,16 +176,20 @@ char* sznum(char* result, int num, int precision, const char* empthy, int radix)
 			}
 			break;
 		}
-		while(precision-- > p)
-			*p1++ = '0';
-		while(p)
-			*p1++ = temp[--p];
+		while(precision-- > p) {
+			if(p1<result_maximum)
+				*p1++ = '0';
+		}
+		while(p) {
+			if(p1<result_maximum)
+				*p1++ = temp[--p];
+		}
 		p1[0] = 0;
 	}
 	return result;
 }
 
-char* sznum(char* outbuf, float f, int precision, const char* empthy)
+char* sznum(char* outbuf, float f, int precision, const char* empthy, const char* result_maximum)
 {
 	typedef union {
 		long	L;
