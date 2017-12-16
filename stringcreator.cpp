@@ -83,6 +83,15 @@ char* stringcreator::parsenumber(char* dst, const char* result_max, unsigned val
 	return dst;
 }
 
+char* stringcreator::parseint(char* dst, const char* result_max, int value, int precision, const int radix) {
+	if(value < 0) {
+		if(dst<result_max)
+			*dst++ = '-';
+		value = -value;
+	}
+	return parsenumber(dst, result_max, value, precision, radix);
+}
+
 const char* stringcreator::parseformat(char* dst, const char* result_max, const char* src, const char* vl) {
 	if(*src == '%') {
 		auto sym = *src++;
@@ -114,12 +123,7 @@ const char* stringcreator::parseformat(char* dst, const char* result_max, const 
 				if(dst<result_max)
 					*dst++ = '+';
 			}
-			if(value < 0) {
-				if(dst<result_max)
-					*dst++ = '-';
-				value = -value;
-			}
-			dst = parsenumber(dst, result_max, value, pnp, 10);
+			dst = parseint(dst, result_max, value, pnp, 10);
 		} else if(*src == 'h') {
 			src++;
 			dst = parsenumber(dst, result_max, (unsigned)(((int*)vl)[pn - 1]), pnp, 16);
