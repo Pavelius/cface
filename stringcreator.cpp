@@ -52,6 +52,7 @@ void stringcreator::parsevariable(char* result, const char* result_max, const ch
 		}
 		s = src - *format;
 	}
+	temp[0] = 0;
 	if(s != 0 && s<int(sizeof(temp) - 1)) {
 		memcpy(temp, *format, s);
 		temp[s] = 0;
