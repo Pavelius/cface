@@ -63,6 +63,8 @@ void stringcreator::parsevariable(char* result, const char* result_max, const ch
 
 char* stringcreator::parsenumber(char* dst, const char* result_max, unsigned value, int precision, const int radix) {
 	char temp[32]; int i = 0;
+	if(!result_max)
+		result_max = dst + 32;
 	while(value) {
 		temp[i++] = (value % radix);
 		value /= radix;
@@ -80,6 +82,7 @@ char* stringcreator::parsenumber(char* dst, const char* result_max, unsigned val
 				*dst++ = 'A' + (v-10);
 		}
 	}
+	dst[0] = 0;
 	return dst;
 }
 
