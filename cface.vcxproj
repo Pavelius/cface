@@ -22,13 +22,13 @@
     <ProjectGuid>{0A1C9AD6-05D3-49AB-85C2-466017CEE49A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>cface</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -264,6 +264,7 @@
   <ItemGroup>
     <ClInclude Include="adat.h" />
     <ClInclude Include="amem.h" />
+    <ClInclude Include="archive.h" />
     <ClInclude Include="collections.h" />
     <ClInclude Include="draw_form.h" />
     <ClInclude Include="draw_list.h" />

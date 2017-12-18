@@ -471,6 +471,9 @@
     <ClInclude Include="io_plugin.h">
       <Filter>Системные</Filter>
     </ClInclude>
+    <ClInclude Include="archive.h">
+      <Filter>Обработка данных</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Коллекции">

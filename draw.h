@@ -50,8 +50,7 @@ enum areas {
 	AreaHilited, // Area have mouse
 	AreaHilitedPressed, // Area have mouse and mouse button is pressed
 };
-enum iflags
-{
+enum iflags {
 	ImageMirrorV = 0x0001,
 	ImageMirrorH = 0x0002,
 	ImageGrayscale = 0x0004,
@@ -80,9 +79,8 @@ enum drap_part_s : unsigned char {
 	DragElement, DragScrollH, DragScrollV, DragSplitH, DragSplitV, DragColumn,
 };
 typedef char* (*proctext)(char* result, void* object);
-namespace hot
-{
-	typedef void			(*proc)(); // Hot callback reaction
+namespace hot {
+	typedef void(*proc)(); // Hot callback reaction
 	extern int				animate; // Frame tick count
 	extern cursors			cursor; // set this mouse cursor
 	extern int				key; // [in] if pressed key or mouse this field has key
@@ -91,27 +89,23 @@ namespace hot
 	extern int				param; // Draw command context. Application can extend this structure
 	extern rect				element; // Element coordinates
 }
-namespace colors
-{
+namespace colors {
 	extern color			active;
 	extern color			button;
 	extern color			form;
 	extern color			window;
 	extern color			border;
 	extern color			text, edit, h1, h2, h3, special;
-	namespace tips
-	{
+	namespace tips {
 		extern color		back;
 		extern color		text;
 	}
-	namespace tabs
-	{
+	namespace tabs {
 		extern color		back;
 		extern color		text;
 	}
 }
-namespace metrics
-{
+namespace metrics {
 	extern rect				edit;
 	extern sprite*			font;
 	extern sprite*			h1;
@@ -123,8 +117,7 @@ namespace metrics
 	extern int				h3s;
 	extern int				padding;
 	extern int				scroll;
-	namespace show
-	{
+	namespace show {
 		extern bool			left;
 		extern bool			right;
 		extern bool			bottom;
@@ -132,10 +125,8 @@ namespace metrics
 		extern bool			statusbar;
 	}
 }
-namespace draw
-{
-	namespace drag
-	{
+namespace draw {
+	namespace drag {
 		extern int			id;
 		extern drap_part_s	part;
 		extern int			value;
@@ -143,13 +134,11 @@ namespace draw
 		bool				active(int id, drap_part_s part);
 		void				begin(int id, drap_part_s part);
 	}
-	namespace clipboard
-	{
+	namespace clipboard {
 		void				copy(const void* string, int lenght);
 		char*				paste();
 	}
-	namespace dialog
-	{
+	namespace dialog {
 		bool				color(struct color& result, struct color* custom = 0);
 		bool				folder(const char* title, char* path);
 		bool				open(const char* title, char* path, const char* filter, int filter_index = 0, const char* ext = 0);
@@ -170,8 +159,7 @@ namespace draw
 		bool				mouseinput;
 	};
 	// Output system window
-	struct window : surface, state
-	{
+	struct window : surface, state {
 		window*				parent;
 		unsigned			flags;
 		const char*			identifier; // Identifier for storing and restoring positions
@@ -188,8 +176,7 @@ namespace draw
 		void				opening();
 		void				resizing(const rect& rc);
 	};
-	struct textplugin
-	{
+	struct textplugin {
 		typedef int(*proc)(int x, int y, int width, const char* id, int value, const char* label, const char* tips);
 		const char*			name;
 		proc				render;
@@ -203,24 +190,16 @@ namespace draw
 	extern color			fore; // Foreground color (curently selected color)
 	extern const sprite*	font; // Currently selected font
 	//
-	bool					addbutton(rect& rc, bool focused, const char* t1, int k1, const char* tt1);
-	int						addbutton(rect& rc, bool focused, const char* t1, int k1, const char* tt1, const char* t2, int k2, const char* tt2);
 	void					addelement(int id, const rect& rc);
 	int						aligned(int x, int width, unsigned state, int string_width);
 	int						alignedh(const rect& rc, const char* string, unsigned state);
-	int						application(const char* name);
 	areas					area(rect rc);
 	bool					areb(rect rc);
 	void					bezier(int x0, int y0, int x1, int y1, int x2, int y2);
 	void					bezierseg(int x0, int y0, int x1, int y1, int x2, int y2);
 	void					blit(surface& dest, int x, int y, int width, int height, unsigned flags, surface& dc, int xs, int ys);
 	void					blit(surface& dest, int x, int y, int width, int height, unsigned flags, surface& source, int x_source, int y_source, int width_source, int height_source);
-	bool					buttonh(rect rc, bool checked, bool focused, bool disabled, bool border, color value, const char* string, int key, bool press, const char* tips = 0);
-	bool					buttonh(rect rc, bool checked, bool focused, bool disabled, bool border, const char* string, int key = 0, bool press = false, const char* tips = 0);
-	bool					buttonv(rect rc, bool checked, bool focused, bool disabled, bool border, const char* string, int key = 0, bool press = false);
-	int						button(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips = 0, void(*callback)() = 0);
 	extern surface*			canvas;
-	int						checkbox(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips = 0, void(*callback)() = 0);
 	void					circle(int x, int y, int radius);
 	void					circle(int x, int y, int radius, const color c1);
 	void					circlef(int x, int y, int radius, const color c1, unsigned char alpha = 0xFF);
@@ -229,7 +208,6 @@ namespace draw
 	bool					dodialog(int id);
 	void					execute(void(*callback)());
 	void					execute(int id, int value = 0);
-	int						field(int x, int y, int width, int id, unsigned falgs, const char* label, const char* tips = 0, void(*callback_edit)() = 0, void(*callback_list)() = 0, void(*callback_choose)() = 0, void(*callback_up)() = 0, void(*callback_down)() = 0, void(*callback_open)() = 0);
 	void					focusing(int id, unsigned& flags, rect rc);
 	int						getbpp();
 	color					getcolor(color normal, unsigned flags);
@@ -265,7 +243,6 @@ namespace draw
 	void					pixel(int x, int y);
 	void					pixel(int x, int y, unsigned char alpha);
 	unsigned char*			ptr(int x, int y);
-	int						radio(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips = 0, void(*callback)() = 0);
 	int						rawinput();
 	void					rectb(rect rc); // Draw rectangle border
 	void					rectb(rect rc, unsigned char c1);
@@ -276,8 +253,6 @@ namespace draw
 	void					rectf(rect rc, color c1, unsigned char alpha);
 	void					rectf(rect rc, unsigned char c1, unsigned char alpha);
 	void					rectx(rect rc, color c1);
-	void					scrollh(int id, const struct rect& scroll, int& origin, int count, int maximum, bool focused = false);
-	void					scrollv(int id, const struct rect& scroll, int& origin, int count, int maximum, bool focused = false);
 	void					setcaption(const char* string);
 	void					setclip(rect rc);
 	inline void				setclip() { clipping.set(0, 0, getwidth(), getheight()); }
@@ -285,12 +260,8 @@ namespace draw
 	void					setfocus(int id, bool intant);
 	void					setposition(int& x, int& y, int& width);
 	void					settimer(unsigned milleseconds);
-	int						sheetline(rect rc, bool background = true);
 	const char*				skiptr(const char* string);
 	void					spline(point* points, int n);
-	void					splith(int x, int y, int width, int& value, int id, int size, int minimum, int maximum, bool down_align = false);
-	void					splitv(int x, int y, int& value, int height, int id, int size, int minimum, int maximum, bool right_align = false);
-	int						statusbardraw();
 	void					stroke(int x, int y, const sprite* e, int id, int flags, unsigned char thin = 1, unsigned char* koeff = 0);
 	void					syscursor(bool enable);
 	void					sysmouse(bool enable);
@@ -310,10 +281,30 @@ namespace draw
 	int						textw(const char* string, int count = -1);
 	int						textw(rect& rc, const char* string);
 	int						textw(sprite* font);
-	int						titletext(int& x, int y, int& width, unsigned flags, const char* label, int title);
-	bool					tool(rect rc, bool disabled, bool checked, bool press);
 	void					updatewindow();
 }
+// Control drawing interface (part of draw interface)
+namespace draw {
+	int						application(const char* name);
+	bool					addbutton(rect& rc, bool focused, const char* t1, int k1, const char* tt1);
+	int						addbutton(rect& rc, bool focused, const char* t1, int k1, const char* tt1, const char* t2, int k2, const char* tt2);
+	int						button(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips = 0, void(*callback)() = 0);
+	bool					buttonh(rect rc, bool checked, bool focused, bool disabled, bool border, color value, const char* string, int key, bool press, const char* tips = 0);
+	bool					buttonh(rect rc, bool checked, bool focused, bool disabled, bool border, const char* string, int key = 0, bool press = false, const char* tips = 0);
+	bool					buttonv(rect rc, bool checked, bool focused, bool disabled, bool border, const char* string, int key = 0, bool press = false);
+	int						checkbox(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips = 0, void(*callback)() = 0);
+	int						field(int x, int y, int width, int id, unsigned falgs, const char* label, const char* tips = 0, void(*callback_edit)() = 0, void(*callback_list)() = 0, void(*callback_choose)() = 0, void(*callback_up)() = 0, void(*callback_down)() = 0, void(*callback_open)() = 0);
+	int						radio(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips = 0, void(*callback)() = 0);
+	void					scrollh(int id, const struct rect& scroll, int& origin, int count, int maximum, bool focused = false);
+	void					scrollv(int id, const struct rect& scroll, int& origin, int count, int maximum, bool focused = false);
+	int						sheetline(rect rc, bool background = true);
+	void					splith(int x, int y, int width, int& value, int id, int size, int minimum, int maximum, bool down_align = false);
+	void					splitv(int x, int y, int& value, int height, int id, int size, int minimum, int maximum, bool right_align = false);
+	int						statusbardraw();
+	int						titletext(int& x, int y, int& width, unsigned flags, const char* label, int title);
+	bool					tool(rect rc, bool disabled, bool checked, bool press);
+}
+int							distance(point p1, point p2);
 int							isqrt(int num);
 char*						key2str(char* result, int key);
 void						statusbar(const char* format, ...);
