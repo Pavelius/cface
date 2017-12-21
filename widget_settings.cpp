@@ -415,6 +415,11 @@ static struct widget_application : control {
 			//				active_workspace_tab->execute(Update, true);
 			//		}
 			rc.y1 += dy;
+			unsigned flags = ec->focused ? Focused : 0;
+			if(ec->disabled)
+				flags |= Disabled;
+			draw::focusing((int)ec, flags, rc);
+			ec->focused = isfocused(flags);
 			ec->view(rc, false);
 		}
 	}
