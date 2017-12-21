@@ -90,10 +90,12 @@ struct aref {
 		return -1;
 	}
 
+	// Allocate memory for count records
 	void reserve(int count) {
 		data = (T*)rmreserve(data, sizeof(T)*optimal(count, 256 * 256 * 256));
 	}
 
+	// Allocate memory for one record
 	void reserve() {
 		reserve(count + 1);
 	}
@@ -102,10 +104,11 @@ struct aref {
 	void remove(int index, int elements_count = 1) {
 		if(index < 0 || index >= count)
 			return;
-		count--;
+		count -= elements_count;
 		if(index >= count)
 			return;
-		memmove(data + index, data + index + elements_count, sizeof(data[0])*(count - index + elements_count - 1));
+		memmove(data + index, data + index + elements_count, sizeof(data[0])*(count - index));
 	}
 
 };
+#define AREF(t) {t, sizeof(t)/sizeof(t[0])}
