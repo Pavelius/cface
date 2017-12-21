@@ -271,6 +271,8 @@ void control::contextmenu() {
 }
 
 bool control::dodialog(int id) {
+	if(!id)
+		return false;
 	const command* pc;
 	auto temp_focus = current_focus;
 	auto temp_mouse = current_mouse;

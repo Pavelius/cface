@@ -526,7 +526,7 @@ void table::renderfield(rect rc, int index, unsigned flags, void* data, const wi
 
 void table::renderimage(rect rc, int index, unsigned flags, void* data, const widget& e) const
 {
-	if(rowsimages)
+	if(!rowsimages)
 		return;
 	auto requisit = fields->find(e.id);
 	if(!requisit)

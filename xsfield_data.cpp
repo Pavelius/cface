@@ -9,7 +9,11 @@ const char* xsfield::getdata(char* result, const char* id, const void* object, b
 		return 0;
 	if(requisit->type == text_type)
 	{
-		auto value = (const char*)requisit->get(requisit->ptr(object));
+		const char* value = 0;
+		if(requisit->size==sizeof(char) && requisit->count>1)
+			value = (const char*)requisit->ptr(object);
+		else
+			value = (const char*)requisit->get(requisit->ptr(object));
 		if(value)
 		{
 			if(!tobuffer)
