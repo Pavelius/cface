@@ -279,7 +279,7 @@
     <ClInclude Include="draw_textedit.h" />
     <ClInclude Include="draw_tree.h" />
     <ClInclude Include="aref.h" />
-    <ClInclude Include="autogrow.h" />
+    <ClInclude Include="agrw.h" />
     <ClInclude Include="base.h" />
     <ClInclude Include="bitops.h" />
     <ClInclude Include="bstream.h" />

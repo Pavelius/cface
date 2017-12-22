@@ -1,9 +1,9 @@
-#include "autogrow.h"
+#include "agrw.h"
 #include "crt.h"
 #include "settings.h"
 
 settings settings::root;
-static autogrow<settings, 128>	globals;
+static agrw<settings, 128>	globals;
 
 settings* settings::child()
 {

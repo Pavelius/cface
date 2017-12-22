@@ -303,9 +303,6 @@
     <ClInclude Include="aref.h">
       <Filter>Коллекции</Filter>
     </ClInclude>
-    <ClInclude Include="autogrow.h">
-      <Filter>Коллекции</Filter>
-    </ClInclude>
     <ClInclude Include="bstream.h">
       <Filter>Коллекции</Filter>
     </ClInclude>
@@ -479,6 +476,9 @@
     </ClInclude>
     <ClInclude Include="archive.h">
       <Filter>Обработка данных</Filter>
+    </ClInclude>
+    <ClInclude Include="agrw.h">
+      <Filter>Коллекции</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

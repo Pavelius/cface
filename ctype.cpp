@@ -1,4 +1,4 @@
-#include "autogrow.h"
+#include "agrw.h"
 #include "ctype.h"
 
 ctype ctype::root;
@@ -14,7 +14,7 @@ ctype ctype::voidx;
 ctype ctype::voidp;
 ctype ctype::boolx;
 
-static autogrow<ctype> globals;
+static agrw<ctype> globals;
 
 void* ctype::operator new(unsigned size)
 {

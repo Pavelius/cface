@@ -1,7 +1,7 @@
-#include "autogrow.h"
+#include "agrw.h"
 #include "valtree.h"
 
-static autogrow<valtree> objects;
+static agrw<valtree> objects;
 
 static void cleanup(valtree* p)
 {
