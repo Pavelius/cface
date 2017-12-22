@@ -62,6 +62,7 @@ namespace draw
 		unsigned				execute(const char* id, bool run = true);
 		void					enablefocus();
 		void					enablemouse(const rect& rc);
+		void					focusing(const rect& rc);
 		color					getcolor(color normal) const;
 		virtual control*		getcontrol(const char* id) { return 0; }
 		virtual const command*	getcommands() const { return 0; }
@@ -105,6 +106,7 @@ namespace draw
 		virtual int				render(int x, int y, int width, const command* commands) const;
 		virtual void			redraw(rect rc) {}
 		void					view(rect rc, bool show_toolbar = false);
+		void					viewf(rect rc, bool show_toolbar = false);
 	};
 	struct menu
 	{

@@ -286,6 +286,9 @@
     <ClCompile Include="widget_navigator.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
+    <ClCompile Include="draw_control_focusing.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="acol.h">

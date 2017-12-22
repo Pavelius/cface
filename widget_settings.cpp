@@ -68,13 +68,6 @@ static void getsiblings(settings** result, unsigned maximum_count, settings* par
 	qsort(result, zlen(result), sizeof(result[0]), compare_settings);
 }
 
-static void showcontrol(control& e, rect rc) {
-	unsigned flags = 0;
-	focusing((int)&e, flags, rc);
-	e.focused = (flags & Focused) != 0;
-	e.view(rc, false);
-}
-
 static void callback_button() {
 	auto p = (settings*)hot::param;
 	if(p->e_execute)
@@ -227,7 +220,7 @@ static struct widget_settings : control {
 		char temp[128]; szprint(temp, "%1i, %2i, %3i", value.r, value.g, value.b);
 		setposition(x, y, width);
 		struct rect rc = {x, y, x + width, y + 4 * 2 + draw::texth()};
-		focusing(id, flags, rc);
+		draw::focusing(id, flags, rc);
 		if(buttonh({x, y, x + width, rc.y2},
 			ischecked(flags), isfocused(flags), isdisabled(flags), true, value,
 			temp, KeyEnter, false, tips)) {
@@ -312,7 +305,7 @@ static struct widget_settings : control {
 		fore = colors::text;
 		splitv(rc.x1, rc.y1, header_width, rc.height(), 1, 6, 64, 282);
 		header.show_border = metrics::show::padding;
-		showcontrol(header, {rc.x1, rc.y1, rc.x1 + header_width, rc.y2});
+		header.viewf({rc.x1, rc.y1, rc.x1 + header_width, rc.y2}, false);
 		rc.x1 += header_width + 6;
 		auto top = header.getcurrent();
 		// При изменении текущего заголовка
@@ -347,7 +340,7 @@ static struct widget_settings : control {
 				auto p1 = tabs[current_tab];
 				switch(p1->type) {
 				case settings::Control:
-					showcontrol(*((control*)p1->data), rc);
+					((control*)p1->data)->viewf(rc, false);
 					break;
 				default:
 					for(auto p = p1->child(); p; p = p->next)

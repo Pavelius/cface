@@ -63,12 +63,7 @@ int	draw::view(rect rc, control** pages, int count, int& current, bool show_tool
 		}
 		rc.y1 += dy;
 	}
-	unsigned flags = ec.focused ? Focused : 0;
-	if(ec.disabled)
-		flags |= Disabled;
-	draw::focusing((int)&ec, flags, rc);
-	ec.focused = isfocused(flags);
-	ec.view(rc, show_toolbar);
+	ec.viewf(rc, show_toolbar);
 	return rc.y1 - y1;
 }
 
