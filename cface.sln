@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2006
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cface", "cface.vcxproj", "{0A1C9AD6-05D3-49AB-85C2-466017CEE49A}"
 EndProject
@@ -11,7 +11,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xmlimg", "..\xmlimg\xmlimg.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "view", "..\view\view.vcxproj", "{6E6850BC-2D46-4AE1-AD9C-C64B8FC5C899}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xcreator", "..\xcreator\xcreator\xcreator.vcxproj", "{E4B17A3C-6FD8-499B-9DF6-3937D62A705D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xcreator", "..\scriptor\xcreator\xcreator.vcxproj", "{E4B17A3C-6FD8-499B-9DF6-3937D62A705D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

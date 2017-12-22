@@ -277,9 +277,6 @@
     <ClCompile Include="draw_control_focusing.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
-    <ClCompile Include="widget_dialog.cpp">
-      <Filter>Графика\Виджеты</Filter>
-    </ClCompile>
     <ClCompile Include="widget_logging.cpp">
       <Filter>Графика\Виджеты</Filter>
     </ClCompile>

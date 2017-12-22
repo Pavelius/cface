@@ -531,7 +531,13 @@ int draw::application(const char* title) {
 		auto id = draw::input();
 		if(!id)
 			return 0;
-		control::dodialog(id);
+		if(control::dodialog(id))
+			continue;
+		switch(id) {
+		case F2: metrics::show::bottom = !metrics::show::bottom; break;
+		case Alt + F2: metrics::show::left = !metrics::show::left; break;
+		case Ctrl + F2: metrics::show::right = !metrics::show::right; break;
+		}
 	}
 }
 

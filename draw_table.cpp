@@ -515,10 +515,7 @@ void table::renderlabel(rect rc, int index, unsigned flags, void* data, const wi
 
 void table::renderfield(rect rc, int index, unsigned flags, void* data, const widget& e) const
 {
-	auto requisit = fields->find(e.id);
-	if(!requisit)
-		return;
-	char temp[1024];
+	char temp[1024]; temp[0] = 0;
 	auto p = gettext(temp, data, e.id);
 	if(p)
 		showtext(rc, p, flags);

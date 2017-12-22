@@ -22,13 +22,13 @@
     <ProjectGuid>{0A1C9AD6-05D3-49AB-85C2-466017CEE49A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>cface</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -227,10 +227,6 @@
     <ClCompile Include="valtree_serial.cpp" />
     <ClCompile Include="draw_button.cpp" />
     <ClCompile Include="draw_control.cpp" />
-    <ClCompile Include="widget_dialog.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="draw_dockbar.cpp" />
     <ClCompile Include="draw_field.cpp" />
     <ClCompile Include="draw_list.cpp" />
