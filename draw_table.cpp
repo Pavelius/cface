@@ -531,7 +531,7 @@ void table::renderimage(rect rc, int index, unsigned flags, void* data, const wi
 	auto requisit = fields->find(e.id);
 	if(!requisit)
 		return;
-	auto value = requisit->get(data);
+	auto value = requisit->get(requisit->ptr(data));
 	if(value == -1)
 		return;
 	setposition(rc);

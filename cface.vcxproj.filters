@@ -283,11 +283,11 @@
     <ClCompile Include="widget_logging.cpp">
       <Filter>Графика\Виджеты</Filter>
     </ClCompile>
-    <ClCompile Include="widget_navigator.cpp">
-      <Filter>Графика\Виджеты</Filter>
-    </ClCompile>
     <ClCompile Include="widget_settings.cpp">
       <Filter>Графика\Виджеты</Filter>
+    </ClCompile>
+    <ClCompile Include="hotproc.cpp">
+      <Filter>Поддержка</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -479,6 +479,9 @@
     </ClInclude>
     <ClInclude Include="agrw.h">
       <Filter>Коллекции</Filter>
+    </ClInclude>
+    <ClInclude Include="hotproc.h">
+      <Filter>Поддержка</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

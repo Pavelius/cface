@@ -2,6 +2,7 @@
 #include "command.h"
 #include "draw.h"
 #include "draw_control.h"
+#include "hotproc.h"
 #include "widget.h"
 
 using namespace		draw;
@@ -331,13 +332,21 @@ bool control::dodialog(int id) {
 	case InputIdle: temp_focus->inputidle(); break;
 	default:
 		pc = temp_focus->getcommands();
-		if(!pc)
-			return false;
-		pc = pc->find(id);
-		if(!pc)
-			return false;
-		(temp_focus->*pc->type)(true);
-		break;
+		if(pc) {
+			pc = pc->find(id);
+			if(pc) {
+				(temp_focus->*pc->type)(true);
+				break;
+			}
+		}
+		if(true) {
+			auto pc = hotproc::plugin::find(id);
+			if(pc) {
+				pc->proc();
+				break;
+			}
+		}
+		return false;
 	}
 	return true;
 }
