@@ -654,6 +654,8 @@ static struct controls_settings_strategy : io::strategy {
 			return;
 		if(szcmpi(n.name, "Disabled") == 0)
 			e->element.disabled = istrue(value);
+		else if(szcmpi(n.name, "Docking") == 0)
+			e->element.dock = (dock_s)sz2num(value);
 	}
 
 	controls_settings_strategy() : strategy("controls", "settings") {}
