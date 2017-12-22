@@ -477,7 +477,9 @@ static void initialize_settings() {
 	setting_appearance_forms();
 	setting_appearance_general_view();
 	setting_appearance_controls();
+	// Initialize other plugin settings
 	command_settings_initialize->execute();
+	// Make header
 	header.initialize();
 }
 
@@ -527,9 +529,8 @@ int draw::application(const char* title) {
 		if(reaction == 1 && hilite_tab != current_tab)
 			current_tab = hilite_tab;
 		auto id = draw::input();
-		if(!id) {
+		if(!id)
 			return 0;
-		}
 		control::dodialog(id);
 	}
 }
@@ -554,6 +555,10 @@ static struct settings_settings_strategy : io::strategy {
 		case settings::Radio:
 			if(*((int*)e.data) == e.value)
 				file.set(e.identifier, 1);
+			break;
+		case settings::TextPtr:
+		case settings::UrlFolderPtr:
+			file.set(e.identifier, *((const char**)e.data));
 			break;
 		}
 	}
