@@ -235,9 +235,6 @@
     <ClCompile Include="selector.cpp">
       <Filter>Обработка данных</Filter>
     </ClCompile>
-    <ClCompile Include="widget_dialog.cpp">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClCompile>
     <ClCompile Include="draw_textedit.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
@@ -277,17 +274,20 @@
     <ClCompile Include="settings.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
-    <ClCompile Include="widget_settings.cpp">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClCompile>
-    <ClCompile Include="widget_logging.cpp">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClCompile>
-    <ClCompile Include="widget_navigator.cpp">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClCompile>
     <ClCompile Include="draw_control_focusing.cpp">
       <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="widget_dialog.cpp">
+      <Filter>Графика\Виджеты</Filter>
+    </ClCompile>
+    <ClCompile Include="widget_logging.cpp">
+      <Filter>Графика\Виджеты</Filter>
+    </ClCompile>
+    <ClCompile Include="widget_navigator.cpp">
+      <Filter>Графика\Виджеты</Filter>
+    </ClCompile>
+    <ClCompile Include="widget_settings.cpp">
+      <Filter>Графика\Виджеты</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -511,6 +511,9 @@
     </Filter>
     <Filter Include="Системные">
       <UniqueIdentifier>{4ac80e6a-0388-486f-8e0f-0e6c8aa027bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Графика\Виджеты">
+      <UniqueIdentifier>{19b6a6d8-1163-45f8-a86d-6bd4e6c2601d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

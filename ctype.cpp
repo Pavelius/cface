@@ -1,4 +1,5 @@
 #include "agrw.h"
+#include "crt.h"
 #include "ctype.h"
 
 ctype ctype::root;

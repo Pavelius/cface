@@ -563,8 +563,8 @@ static struct settings_settings_strategy : io::strategy {
 	}
 
 	settings* find(io::reader::node& n) {
-		settings* result = (settings*)settings::root.data;
-		if(n.parent && *n.parent=="Root") {
+		auto result = (settings*)settings::root.data;
+		if(n.parent && strcmp(n.parent->name, "Root")!=0) {
 			result = find(*n.parent);
 			if(!result)
 				return 0;

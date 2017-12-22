@@ -1,10 +1,6 @@
-#include "crt.h"
-
 #pragma once
 
-// Auto grow simple class. Primary use for custom allocators.
-// No destructor!! When program exit atexit() may destroy allocator object
-// before any static instance of this class.
+// Auto grow array for custom allocators.
 template<typename T, int max_count = 4096>
 struct agrw
 {
