@@ -5,20 +5,10 @@
 #include "draw_table.h"
 #include "draw_textedit.h"
 #include "io_plugin.h"
-#include "xsref.h"
-#include "xsbase.h"
+#include "bsdata.h"
 
 using namespace draw;
 using namespace draw::controls;
-
-xsfield widget_type[] = {
-	BSREQ(widget, id, text_type),
-	BSREQ(widget, flags, number_type),
-	BSREQ(widget, label, text_type),
-	BSREQ(widget, width, number_type),
-	BSREQ(widget, childs, widget_type),
-	{0}
-};
 
 static const int	table_padding = 4;
 static char			search_text[32];
@@ -462,12 +452,14 @@ void table::rendercheck(rect rc, int index, unsigned flags, void* data, const wi
 {
 	if(ischecked(flags))
 		draw::hilight(rc, flags);
-	xsref r = {fields, data};
 	auto ischecked = false;
-	if(e.value)
-		ischecked = (r.get(e.id) & e.value) != 0;
-	else
-		ischecked = r.get(e.id) != 0;
+	auto f = fields->find(e.id);
+	if(f) {
+		if(e.value)
+			ischecked = (f->get(f->ptr(data)) & e.value) != 0;
+		else
+			ischecked = f->get(f->ptr(data)) != 0;
+	}
 	setposition(rc);
 	auto executed = false;
 	if(areb(rc))
@@ -479,21 +471,21 @@ void table::rendercheck(rect rc, int index, unsigned flags, void* data, const wi
 		executed = true;
 	if(executed)
 	{
-		if(ischecked)
-		{
-			if(e.value)
-				r.set(e.id, r.get(e.id) & (~e.value));
-			else
-				r.set(e.id, 0);
-			ischecked = false;
-		}
-		else
-		{
-			ischecked = true;
-			if(e.value)
-				r.set(e.id, e.value);
-			else
-				r.set(e.id, 1);
+		if(f) {
+			auto p = f->ptr(data);
+			if(ischecked) {
+				if(e.value)
+					f->set(p, f->get(p) & (~e.value));
+				else
+					f->set(p, 0);
+				ischecked = false;
+			} else {
+				ischecked = true;
+				if(e.value)
+					f->set(p, e.value);
+				else
+					f->set(p, 1);
+			}
 		}
 	}
 	clipart(rc.x1, rc.y1, rc.width(), ischecked ? Checked : 0, ":check");
@@ -789,9 +781,9 @@ static const struct autocomple_xsbase* sort_list;
 struct autocomple_xsbase : autocomplete
 {
 
-	const xsbase* base;
+	const bsdata* base;
 
-	autocomple_xsbase(const xsbase* base) : autocomplete(base->fields), base(base)
+	autocomple_xsbase(const bsdata* base) : autocomplete(base->fields), base(base)
 	{
 	}
 
@@ -847,7 +839,7 @@ bool table::changing(void* object, const char* id, unsigned flags)
 		&& (value_type->reference || (!value_type->reference && value_type->size<=sizeof(int)));
 	if(need_dropdown)
 	{
-		auto base = xsbase::find(value_type->type);
+		auto base = bsdata::find(value_type->type);
 		if(base)
 		{
 			autocomple_xsbase aclist(base);

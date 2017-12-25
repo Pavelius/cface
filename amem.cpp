@@ -1,12 +1,10 @@
 #include "crt.h"
 #include "amem.h"
 
-static int optimal(unsigned need_count)
-{
+static int optimal(unsigned need_count) {
 	const unsigned mc = 256 * 256 * 256;
 	unsigned m = 64;
-	while(m < mc)
-	{
+	while(m < mc) {
 		if(need_count < m)
 			return m;
 		m = m << 1;
@@ -15,17 +13,14 @@ static int optimal(unsigned need_count)
 }
 
 amem::amem(unsigned size)
-	: data(0), count(0), size(size), count_maximum(0)
-{
+	: data(0), count(0), size(size), count_maximum(0) {
 }
 
 amem::amem(void* data, unsigned size, unsigned count)
-	: data(data), count(count), size(size), count_maximum(count)
-{
+	: data(data), count(count), size(size), count_maximum(count) {
 }
 
-amem::~amem()
-{
+amem::~amem() {
 	if(data)
 		delete data;
 	data = 0;
@@ -33,13 +28,11 @@ amem::~amem()
 	count_maximum = 0;
 }
 
-char* amem::begin() const
-{
+char* amem::begin() const {
 	return (char*)data;
 }
 
-void* amem::add(const void* element)
-{
+void* amem::add(const void* element) {
 	if(!reserve(count + 1))
 		return 0;
 	void* p = (char*)data + size*count;
@@ -51,8 +44,7 @@ void* amem::add(const void* element)
 	return p;
 }
 
-void amem::clear()
-{
+void amem::clear() {
 	if(data)
 		delete data;
 	data = 0;
@@ -60,27 +52,22 @@ void amem::clear()
 	count_maximum = 0;
 }
 
-void* amem::get(int index) const
-{
+void* amem::get(int index) const {
 	return begin() + index*size;
 }
 
-unsigned amem::getcount() const
-{
+unsigned amem::getcount() const {
 	return count;
 }
 
-unsigned amem::getmaxcount() const
-{
+unsigned amem::getmaxcount() const {
 	return count_maximum;
 }
 
-bool amem::reserve(unsigned count)
-{
+bool amem::reserve(unsigned count) {
 	if(!size)
 		return false;
-	if(data)
-	{
+	if(data) {
 		if(count_maximum >= count)
 			return true;
 		if(!rmblock(data))
@@ -91,14 +78,12 @@ bool amem::reserve(unsigned count)
 	return true;
 }
 
-void amem::setup(unsigned size)
-{
+void amem::setup(unsigned size) {
 	clear();
 	this->size = size;
 }
 
-void* amem::insert(int index, const void* object)
-{
+void* amem::insert(int index, const void* object) {
 	if(!reserve(count + 1))
 		return 0;
 	memmove(begin() + (index + 1)*size, begin() + index*size, (count - index)*size);
@@ -111,24 +96,21 @@ void* amem::insert(int index, const void* object)
 	return p;
 }
 
-int amem::indexof(const void* element) const
-{
+int amem::indexof(const void* element) const {
 	if(size && element >= begin() && element < (char*)data + count*size)
 		return ((char*)element - (char*)data) / size;
 	return -1;
 }
 
-void amem::swap(int i1, int i2)
-{
+void amem::swap(int i1, int i2) {
 	auto p1 = (char*)data + i1*size;
 	auto p2 = (char*)data + i2*size;
 	auto pz = p1 + size;
-	while(p1<pz)
+	while(p1 < pz)
 		iswap(*p1++, *p2++);
 }
 
-void amem::remove(int index, int elements_count)
-{
+void amem::remove(int index, int elements_count) {
 	if(((unsigned)index) >= count)
 		return;
 	if((unsigned)index < count - 1)

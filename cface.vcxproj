@@ -166,6 +166,9 @@
     <ClCompile Include="amem.cpp" />
     <ClCompile Include="base.cpp" />
     <ClCompile Include="bitops.cpp" />
+    <ClCompile Include="bsdata.cpp" />
+    <ClCompile Include="bsdata_serialize.cpp" />
+    <ClCompile Include="bsreq.cpp" />
     <ClCompile Include="bstream.cpp" />
     <ClCompile Include="calculator.cpp" />
     <ClCompile Include="calculator_override.cpp" />
@@ -190,7 +193,10 @@
     <ClCompile Include="hotproc.cpp" />
     <ClCompile Include="widget_logging.cpp" />
     <ClCompile Include="widget_settings.cpp" />
-    <ClCompile Include="xsfield_data.cpp" />
+    <ClCompile Include="widget_type.cpp" />
+    <ClCompile Include="xsfield_data.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="draw_focusing.cpp" />
     <ClCompile Include="draw_form.cpp" />
     <ClCompile Include="draw_input.cpp" />
@@ -250,19 +256,25 @@
     <ClCompile Include="win_menu.cpp" />
     <ClCompile Include="win_thread.cpp" />
     <ClCompile Include="win_util.cpp" />
-    <ClCompile Include="xsbase.cpp" />
-    <ClCompile Include="xsdoc.cpp" />
-    <ClCompile Include="xsfield.cpp" />
-    <ClCompile Include="xsparse.cpp" />
-    <ClCompile Include="xsref.cpp" />
-    <ClCompile Include="xsbase_serial.cpp" />
-    <ClCompile Include="xsglobal.cpp" />
-    <ClCompile Include="xsvalue.cpp" />
+    <ClCompile Include="xsdoc.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="xsbase_serial.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="xsglobal.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="xsvalue.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="adat.h" />
     <ClInclude Include="amem.h" />
     <ClInclude Include="archive.h" />
+    <ClInclude Include="bsdata.h" />
+    <ClInclude Include="bsreq.h" />
     <ClInclude Include="collections.h" />
     <ClInclude Include="draw_form.h" />
     <ClInclude Include="draw_list.h" />
@@ -317,13 +329,15 @@
     <ClInclude Include="valtree.h" />
     <ClInclude Include="acol.h" />
     <ClInclude Include="win.h" />
-    <ClInclude Include="xsbase.h" />
-    <ClInclude Include="xsdoc.h" />
-    <ClInclude Include="xsfield.h" />
-    <ClInclude Include="xsparse.h" />
-    <ClInclude Include="xsref.h" />
-    <ClInclude Include="xsglobal.h" />
-    <ClInclude Include="xsvalue.h" />
+    <ClInclude Include="xsdoc.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="xsglobal.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="xsvalue.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

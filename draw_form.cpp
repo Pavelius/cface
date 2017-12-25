@@ -1,7 +1,7 @@
 #include "crt.h"
+#include "bsreq.h"
 #include "draw.h"
 #include "draw_form.h"
-#include "xsref.h"
 
 using namespace draw;
 using namespace draw::controls;
@@ -15,8 +15,10 @@ static void callback_setvalue(control* source, const char* id, int value)
 {
 	if(!source || !id)
 		return;
-	xsref e = {source->getmeta(), source->getobject()};
-	e.set(id, value);
+	auto f = source->getmeta()->find(id);
+	auto p = source->getobject();
+	if(f && p)
+		f->set(f->ptr(p), value);
 }
 
 static void callback_setvalue()
@@ -35,7 +37,7 @@ static char* get_text(char* result, void* object)
 	return result;
 }
 
-static const xsfield* getdatatype(const form* source, const widget& e)
+static const bsreq* getdatatype(const form* source, const widget& e)
 {
 	if(!e.id)
 		return 0;
@@ -418,8 +420,11 @@ int form::getdata(const widget& w)
 {
 	if(!w.id)
 		return 0;
-	xsref e = {getmeta(), getobject()};
-	return e.get(w.id);
+	auto f = getmeta()->find(w.id);
+	auto p = getobject();
+	if(f && p)
+		return f->get(f->ptr(p));
+	return 0;
 }
 
 void form::setdata(const widget& w, int value, bool instant)
@@ -471,8 +476,10 @@ char* form::getdata(char* result, const widget& e, bool to_buffer)
 	}
 	else
 	{
-		xsref xr = {field->type, (void*)value};
-		auto pv = xr.get("name");
+		auto f = field->type->find("name");
+		if(!f)
+			return "";
+		auto pv = (const char*)f->get(f->ptr((void*)value));
 		if(!pv)
 			return "";
 		if(!to_buffer)

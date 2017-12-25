@@ -1,7 +1,7 @@
 #include "point.h"
-#include "xsfield.h"
+#include "bsreq.h"
 
-xsfield point_type[] = {
+bsreq point_type[] = {
 	BSREQ(point, x, number_type),
 	BSREQ(point, y, number_type),
 	{0}

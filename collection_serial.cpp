@@ -1,12 +1,14 @@
 #include "collection.h"
 #include "crt.h"
 #include "io_plugin.h"
-#include "xsref.h"
+#include "bsdata.h"
+
+const int xsfield_max_text = 8192;
 
 bool xsref_read(io::stream& stream, xsref& e, char* temp);
 void xsref_write(io::stream& stream, const xsref& e);
 
-void collection_read(io::stream& stream, collection& col, const xsfield* fields) {
+void collection_read(io::stream& stream, collection& col, const bsreq* fields) {
 	char temp[xsfield_max_text];
 	int count = 0;
 	col.clear();
@@ -17,7 +19,7 @@ void collection_read(io::stream& stream, collection& col, const xsfield* fields)
 	}
 }
 
-void collection_write(io::stream& stream, collection& col, const xsfield* fields) {
+void collection_write(io::stream& stream, collection& col, const bsreq* fields) {
 	int count = col.getcount();
 	stream.write(count);
 	for(int i = 0; i < count; i++)
@@ -57,7 +59,7 @@ struct collection_reader : public io::reader {
 
 };
 
-bool collection::read(const char* url, xsfield* fields) {
+bool collection::read(const char* url, bsreq* fields) {
 	auto ex = szext(url);
 	auto pp = io::plugin::find(ex);
 	if(pp) {
@@ -77,7 +79,7 @@ bool collection::read(const char* url, xsfield* fields) {
 	return true;
 }
 
-bool collection::write(const char* url, xsfield* fields) {
+bool collection::write(const char* url, bsreq* fields) {
 	auto ex = szext(url);
 	if(!ex)
 		return false;

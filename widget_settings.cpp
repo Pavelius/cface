@@ -6,8 +6,7 @@
 #include "draw_textedit.h"
 #include "io_plugin.h"
 #include "settings.h"
-#include "xsbase.h"
-#include "xsfield.h"
+#include "bsdata.h"
 
 using namespace	draw;
 using namespace	draw::controls;
@@ -28,13 +27,13 @@ static struct dock {
 	{"Присоединить снизу", "dock_bottom"},
 	{"На рабочем столе", "dock_workspace"}
 };
-xsfield dock_type[] = {
+getstr_enum(dock)
+bsreq dock_type[] = {
 	BSREQ(dock, name, text_type),
 	BSREQ(dock, id, text_type),
 	{0}
 };
 BSMETA(dock)
-getstr_enum(dock)
 
 static char* gettabname(char* temp, void* p) {
 	return (char*)((settings*)p)->name;
@@ -169,7 +168,7 @@ static struct widget_settings_header : list {
 static struct widget_control_viewer : tableref {
 
 	void initialize() {
-		static xsfield control_type[] = {
+		static bsreq control_type[] = {
 			BSREQ(control, dock, dock_type),
 			BSREQ(control, disabled, number_type),
 			BSREQ(control, focused, number_type),

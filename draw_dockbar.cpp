@@ -1,8 +1,7 @@
 #include "crt.h"
 #include "draw.h"
 #include "draw_control.h"
-#include "xsbase.h"
-#include "xsfield.h"
+#include "bsdata.h"
 #include "widget.h"
 
 using namespace draw;

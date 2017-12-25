@@ -32,7 +32,7 @@ namespace draw
 				int				direction;
 				operator bool() const { return id != 0; }
 			};
-			xsfield*			fields;
+			bsreq*				fields;
 			aref<widget>		columns;
 			collection&			rows;
 			struct sprite*		rowsimages;

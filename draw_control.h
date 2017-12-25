@@ -14,7 +14,7 @@ enum command_view_s {
 	HideCommand,
 };
 
-struct xsfield;
+struct bsreq;
 
 #define CONTROL_PAR(name) {"", "", 0, name::commands}
 #define CONTROL_ICN(cpr, text, key, icon) {#cpr, text, (command::proc)&cpr, 0, {key}, icon, ViewIcon}
@@ -69,7 +69,7 @@ namespace draw
 		virtual int				geticon(const command& e) const { return e.icon; }
 		virtual const char*		getid() const { return 0; }
 		virtual char*			getdescription(char* result) const;
-		virtual const xsfield*	getmeta() const { return 0; }
+		virtual const bsreq*	getmeta() const { return 0; }
 		virtual char*			getname(char* result) const;
 		virtual void*			getobject() { return this; }
 		void					invoke(const char* name) const;

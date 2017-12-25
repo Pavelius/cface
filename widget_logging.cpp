@@ -3,7 +3,7 @@
 #include "collections.h"
 #include "draw_table.h"
 #include "settings.h"
-#include "xsfield.h"
+#include "bsreq.h"
 
 using namespace	draw;
 using namespace	draw::controls;
@@ -15,7 +15,7 @@ struct log_message {
 	const char*		text;
 };
 static arefc<log_message> messages;
-xsfield log_message_type[] = {
+bsreq log_message_type[] = {
 	BSREQ(log_message, stamp, number_type),
 	BSREQ(log_message, text, text_type),
 	{0}

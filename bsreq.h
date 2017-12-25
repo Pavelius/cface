@@ -1,14 +1,15 @@
 #pragma once
 
-const int xsfield_max_text = 8192 * 2; // Maximum text for field (for serialization)
-
 // Metadata field descriptor
-struct xsfield
+struct bsreq
 {
 	template<class T> struct refi { static constexpr int count = 0; };
 	template<class T> struct refi<T*> { static constexpr int count = 1 + refi<T>::count; };
 	template<class T, int N> struct refi<T[N]> { static constexpr int count = refi<T>::count; };
 	template<class T> struct refi<T[]> { static constexpr int count = refi<T>::count; };
+	template<class T> struct enmi { static constexpr bool value = __is_enum(T); };
+	template<class T> struct enmi<T*> { static constexpr bool value = __is_enum(T); };
+	template<class T, int N> struct enmi<T[N]> { static constexpr bool value = __is_enum(T); };
 	template<class T> struct info
 	{
 		static constexpr int size = sizeof(T);
@@ -29,16 +30,16 @@ struct xsfield
 	unsigned			size; // size of single element
 	unsigned			lenght; // total size in bytes of all field (array has size*count)
 	unsigned			count; // count of elements
+	const bsreq*		type; // metadata of element
 	unsigned char		reference; // 1+ is reference
-	const xsfield*		type; // metadata of element
+	unsigned char		isenum;
 	//
 	operator bool() const { return id != 0; }
 	//
-	const xsfield*		find(const char* name) const;
+	const bsreq*		find(const char* name) const;
 	int					get(const void* p) const;
 	const char*			getdata(char* result, const char* id, const void* object, bool tobuffer) const;
 	bool				issimple() const { return type == 0; }
-	bool				iskey() const { return id[0] == 'i' && id[1] == 'd' && id[2] == 0; }
 	bool				match(const void* p, const char* name) const;
 	inline const char*	ptr(const void* data) const { return (const char*)data + offset; }
 	inline const char*	ptr(const void* data, int index) const { return (const char*)data + offset + index*size; }
@@ -46,11 +47,16 @@ struct xsfield
 	void				setdata(const char* result, const char* id, void* object) const;
 };
 
-extern xsfield			number_type[2]; // standart integer value
-extern xsfield			reference_type[2]; // any reference (depends on value)
-extern xsfield			text_type[2]; // stantart zero ending string
-extern xsfield			xsfield_type[]; // metadata type
+extern bsreq			number_type[2]; // standart integer value
+extern bsreq			reference_type[2]; // any reference (depends on value)
+extern bsreq			text_type[2]; // stantart zero ending string
+extern bsreq			bsreq_type[]; // requisit metadata
 
 #define FO(c,f) (const int)&((c*)0)->f
-#define	BSREQ(cls, field, type) {#field, FO(cls,field), xsfield::info<decltype(cls::field)>::size, sizeof(cls::field), xsfield::info<decltype(cls::field)>::count, xsfield::refi<decltype(cls::field)>::count, type}
-#define	BSVAR(field, type) {#field, (unsigned)&field, xsfield::info<decltype(field)>::size, sizeof(field), xsfield::info<decltype(field)>::count, xsfield::refi<decltype(field)>::count, type}
+#define	BSREQ(cls, field, type) {#field, FO(cls,field),\
+bsreq::info<decltype(cls::field)>::size,\
+sizeof(cls::field),\
+bsreq::info<decltype(cls::field)>::count,\
+type,\
+bsreq::refi<decltype(cls::field)>::count,\
+bsreq::enmi<decltype(cls::field)>::value}

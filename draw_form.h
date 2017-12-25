@@ -15,11 +15,11 @@ namespace draw
 				const char*	name;
 				form::proc	proc;
 			};
-			const xsfield*	fields;
+			const bsreq*	fields;
 			void*			source;
 			static control_i renders[];
 			//
-			form(const xsfield*	fields, void* source) : fields(fields), source(source) {}
+			form(const bsreq* fields, void* source) : fields(fields), source(source) {}
 			//
 			bool			addbutton(rect& rc, const char* t1, int k1, const char* tt1);
 			int				addbutton(rect& rc, const char* t1, int k1, const char* tt1, const char* t2, int k2, const char* tt2);
@@ -33,7 +33,7 @@ namespace draw
 			unsigned		getflags(const widget& e, unsigned flags) const;
 			int				getdata(const widget& e);
 			char*			getdata(char* result, const widget& e, bool to_buffer = false);
-			const xsfield*	getmeta() const override { return fields; }
+			const bsreq*	getmeta() const override { return fields; }
 			void*			getobject() override { return source; }
 			int				group(int x, int y, int width, unsigned flags, const widget& e);
 			int				header(int& x, int y, int& width, unsigned flags, const char* label, int title);

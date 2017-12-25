@@ -26,3 +26,4 @@ namespace draw
 		widget&				setvalue(int v) { value = v; return *this; }
 	};
 }
+extern struct bsreq widget_type[];

@@ -48,9 +48,9 @@ namespace draw
 		struct listview : list
 		{
 			const void**	source; // References to objects
-			const xsfield*	fields; // Metadata of objects
-			const xsfield*	requisit; // Which field used to presentation
-			listview(const void** source, unsigned count, const xsfield* fields, const char* name);
+			const bsreq*	fields; // Metadata of objects
+			const bsreq*	requisit; // Which field used to presentation
+			listview(const void** source, unsigned count, const bsreq* fields, const char* name);
 			int				find(const char* name) const;
 			const char*		getname(int index) const;
 			void			row(rect rc, int id) override;
@@ -60,7 +60,7 @@ namespace draw
 		struct autocomplete : listview
 		{
 			const void*		source[50];
-			autocomplete(const xsfield* fields = 0, const char* name = "name") : listview(source, 0, fields, name), filter(0) {}
+			autocomplete(const bsreq* fields = 0, const char* name = "name") : listview(source, 0, fields, name), filter(0) {}
 			const char*		filter;
 			virtual void	update() = 0;
 		};

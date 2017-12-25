@@ -97,25 +97,13 @@
     <ClCompile Include="sprite_store.cpp">
       <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
-    <ClCompile Include="xsbase.cpp">
-      <Filter>Обработка данных</Filter>
-    </ClCompile>
     <ClCompile Include="xsbase_serial.cpp">
       <Filter>Обработка данных</Filter>
     </ClCompile>
     <ClCompile Include="xsdoc.cpp">
       <Filter>Обработка данных</Filter>
     </ClCompile>
-    <ClCompile Include="xsfield.cpp">
-      <Filter>Обработка данных</Filter>
-    </ClCompile>
     <ClCompile Include="xsglobal.cpp">
-      <Filter>Обработка данных</Filter>
-    </ClCompile>
-    <ClCompile Include="xsparse.cpp">
-      <Filter>Обработка данных</Filter>
-    </ClCompile>
-    <ClCompile Include="xsref.cpp">
       <Filter>Обработка данных</Filter>
     </ClCompile>
     <ClCompile Include="xsvalue.cpp">
@@ -286,6 +274,18 @@
     <ClCompile Include="hotproc.cpp">
       <Filter>Поддержка</Filter>
     </ClCompile>
+    <ClCompile Include="bsdata.cpp">
+      <Filter>Обработка данных</Filter>
+    </ClCompile>
+    <ClCompile Include="bsdata_serialize.cpp">
+      <Filter>Обработка данных</Filter>
+    </ClCompile>
+    <ClCompile Include="bsreq.cpp">
+      <Filter>Обработка данных</Filter>
+    </ClCompile>
+    <ClCompile Include="widget_type.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="acol.h">
@@ -342,22 +342,10 @@
     <ClInclude Include="sprite.h">
       <Filter>Графика\Базовые элементы</Filter>
     </ClInclude>
-    <ClInclude Include="xsbase.h">
-      <Filter>Обработка данных</Filter>
-    </ClInclude>
     <ClInclude Include="xsdoc.h">
       <Filter>Обработка данных</Filter>
     </ClInclude>
-    <ClInclude Include="xsfield.h">
-      <Filter>Обработка данных</Filter>
-    </ClInclude>
     <ClInclude Include="xsglobal.h">
-      <Filter>Обработка данных</Filter>
-    </ClInclude>
-    <ClInclude Include="xsparse.h">
-      <Filter>Обработка данных</Filter>
-    </ClInclude>
-    <ClInclude Include="xsref.h">
       <Filter>Обработка данных</Filter>
     </ClInclude>
     <ClInclude Include="xsvalue.h">
@@ -479,6 +467,12 @@
     </ClInclude>
     <ClInclude Include="hotproc.h">
       <Filter>Поддержка</Filter>
+    </ClInclude>
+    <ClInclude Include="bsdata.h">
+      <Filter>Обработка данных</Filter>
+    </ClInclude>
+    <ClInclude Include="bsreq.h">
+      <Filter>Обработка данных</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

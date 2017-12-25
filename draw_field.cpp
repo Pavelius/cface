@@ -3,7 +3,7 @@
 #include "draw.h"
 #include "draw_textedit.h"
 #include "draw_table.h"
-#include "xsfield.h"
+#include "bsreq.h"
 
 using namespace draw;
 
