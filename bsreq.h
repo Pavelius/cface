@@ -1,5 +1,7 @@
 #pragma once
 
+const int bsreq_max_text = 8192;
+
 // Metadata field descriptor
 struct bsreq
 {

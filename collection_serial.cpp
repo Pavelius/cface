@@ -3,25 +3,22 @@
 #include "io_plugin.h"
 #include "bsdata.h"
 
-const int xsfield_max_text = 8192;
-
-bool xsref_read(io::stream& stream, void* object, const bsreq* e, char* temp);
-void xsref_write(io::stream& stream, const void* object, const bsreq* e);
+//bool bsfield_bin_read(io::stream& stream, void* object, const bsreq* e, char* temp);
+void write_fields(io::stream& e, const void* object, const bsreq* req, const bsreq* skip);
 
 void collection_read(io::stream& stream, collection& col, const bsreq* fields) {
-	char temp[xsfield_max_text];
 	int count = 0;
 	col.clear();
 	stream.read(count);
 	//for(int i = 0; i < count; i++)
-	//	xsref_read(stream, col.add(0), fields, temp);
+	//	bsfield_bin_read(stream, col.add(0), fields, temp);
 }
 
 void collection_write(io::stream& stream, collection& col, const bsreq* fields) {
 	int count = col.getcount();
 	stream.write(count);
-	//for(int i = 0; i < count; i++)
-	//	xsref_write(stream, col.get(i), fields);
+	for(int i = 0; i < count; i++)
+		write_fields(stream, col.get(i), fields, 0);
 }
 
 struct collection_reader : public io::reader {

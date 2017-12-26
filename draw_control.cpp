@@ -12,18 +12,31 @@ sprite*				metrics::toolbar = (sprite*)loadb("toolbar.pma");
 sprite*				metrics::tree = (sprite*)loadb("tree.pma");
 control::plugin*	control::plugin::first;
 static const char*	current_name;
-static control*		current_control;
-static control*		current_focus;
-static control*		current_mouse;
+
+struct control_state {
+	control*		activity;
+	control*		focus;
+	control*		mouse;
+	control_state();
+	~control_state();
+} cstate;
+
+control_state::control_state() {
+	memcpy(this, &cstate, sizeof(*this));
+}
+
+control_state::~control_state() {
+	memcpy(&cstate, this, sizeof(*this));
+}
 
 static void callback_invoke() {
-	current_control->execute(current_name);
+	cstate.activity->execute(current_name);
 }
 
 static void callback_context_menu() {
 	draw::updatewindow();
 	hot::pressed = false;
-	current_control->contextmenu();
+	cstate.activity->contextmenu();
 }
 
 control::plugin::plugin(control& element) : element(element) {
@@ -71,10 +84,12 @@ bool control::open(const char* title) {
 }
 
 bool control::open(const char* title, unsigned state, int width, int height) {
+	control_state push;
 	draw::window dc(-1, -1, width, height, state);
 	if(title)
 		draw::setcaption(title);
 	focused = true;
+	auto result = false;
 	while(true) {
 		rect rc = {0, 0, draw::getwidth(), draw::getheight()};
 		draw::rectf(rc, colors::form);
@@ -82,12 +97,14 @@ bool control::open(const char* title, unsigned state, int width, int height) {
 		view(rc, show_toolbar);
 		int id = draw::input();
 		if(id == KeyEscape || !id)
-			return false;
+			break;
 		dodialog(id);
 	}
+	return result;
 }
 
 bool control::open(rect rc) {
+	control_state push;
 	sys_static_area.set(0, 0, draw::getwidth(), draw::getheight());
 	focused = true;
 	while(true) {
@@ -118,18 +135,18 @@ void control::mouseright(point position, int id, bool pressed) {
 	// Делаем вызов процедуры после перерисовки,
 	// Иначе будут некрасивые артефакты
 	draw::execute(callback_context_menu);
-	current_control = this;
+	cstate.activity = this;
 	hot::key = MouseRight;
 }
 
 void control::enablefocus() {
 	if(focused)
-		current_focus = this;
+		cstate.focus = this;
 }
 
 void control::enablemouse(const rect& rc) {
 	if(hot::key >= FirstMouse && hot::key <= LastMouse && hot::mouse.in(rc))
-		current_mouse = this;
+		cstate.mouse = this;
 }
 
 void control::view(rect rc, bool show_toolbar) {
@@ -165,7 +182,7 @@ void control::view(rect rc, bool show_toolbar) {
 
 void control::invoke(const char* name) const {
 	draw::execute(callback_invoke);
-	current_control = const_cast<control*>(this);
+	cstate.activity = const_cast<control*>(this);
 	current_name = name;
 }
 
@@ -275,10 +292,10 @@ bool control::dodialog(int id) {
 	if(!id)
 		return false;
 	const command* pc;
-	auto temp_focus = current_focus;
-	auto temp_mouse = current_mouse;
-	current_focus = 0;
-	current_mouse = 0;
+	auto temp_focus = cstate.focus;
+	auto temp_mouse = cstate.mouse;
+	cstate.focus = 0;
+	cstate.mouse = 0;
 	if(draw::dodialog(id))
 		return true;
 	auto key = id & 0xFFFF;

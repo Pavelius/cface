@@ -426,12 +426,13 @@ static void write_field(io::stream& e, const void* object, const bsreq* req) {
 	e << ")";
 }
 
-static void write_fields(io::stream& e, const void* object, const bsreq* req, const bsreq* skip = 0) {
+void write_fields(io::stream& e, const void* object, const bsreq* req, const bsreq* skip = 0) {
 	for(auto f = req; *f; f++) {
 		if(skip && skip == f)
 			continue;
 		write_field(e, object, f);
 	}
+	e << "\r\n";
 }
 
 static void write_object(io::stream& e, const void* object) {
@@ -440,7 +441,6 @@ static void write_object(io::stream& e, const void* object) {
 		return;
 	e << "#" << pd->id << " ";
 	write_fields(e, object, pd->fields, write_key(e, object, pd->fields));
-	e << "\r\n";
 }
 
 static void write_data(io::stream& e, bsdata* pd) {

@@ -97,9 +97,6 @@
     <ClCompile Include="sprite_store.cpp">
       <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
-    <ClCompile Include="xsbase_serial.cpp">
-      <Filter>Обработка данных</Filter>
-    </ClCompile>
     <ClCompile Include="xsdoc.cpp">
       <Filter>Обработка данных</Filter>
     </ClCompile>
@@ -284,6 +281,9 @@
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
     <ClCompile Include="bsreq_data.cpp">
+      <Filter>Обработка данных</Filter>
+    </ClCompile>
+    <ClCompile Include="bsdata_serialize_bin.cpp">
       <Filter>Обработка данных</Filter>
     </ClCompile>
   </ItemGroup>
