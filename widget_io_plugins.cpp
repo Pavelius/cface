@@ -4,7 +4,7 @@
 #include "draw_table.h"
 #include "io_plugin.h"
 #include "settings.h"
-#include "xsfield.h"
+#include "bsreq.h"
 
 using namespace draw;
 using namespace draw::controls;
@@ -12,7 +12,7 @@ using namespace draw::controls;
 static struct widget_io_plugin_viever : tableref {
 
 	void initialize() {
-		static xsfield control_type[] = {
+		static bsreq control_type[] = {
 			BSREQ(io::plugin, name, text_type),
 			BSREQ(io::plugin, fullname, text_type),
 			BSREQ(io::plugin, filter, text_type),

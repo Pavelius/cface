@@ -30,11 +30,15 @@ namespace io
 	};
 	struct sequence : public stream
 	{
-		int					read(void* result, int count) override;
-		int					write(const void* result, int count) override;
-		int					seek(int count, int rel = SeekCur) override;
+		bool				left(const char* value);
 		bool				match(const char* value);
+		bool				oneof(const char* value);
+		int					read(void* result, int count) override;
+		void				skip(int count);
+		int					seek(int count, int rel = SeekCur) override;
+		int					write(const void* result, int count) override;
 		sequence(io::stream& parent);
+		operator bool() const { return false; }
 	private:
 		char				cashed[64];
 		int					cashed_count;

@@ -29,6 +29,31 @@ int io::sequence::seek(int count, int rel) {
 	return parent.seek(count, rel);
 }
 
+bool io::sequence::left(const char* value) {
+	int count = zlen(value);
+	makecashe(count + 1);
+	if(cashed_count < count)
+		return false;
+	if(memcmp(cashed, value, count) != 0)
+		return false;
+	cashed_count += count;
+	return true;
+}
+
+void io::sequence::skip(int count) {
+
+}
+
+bool io::sequence::oneof(const char* value) {
+	const int count = 1;
+	makecashe(count);
+	if(cashed_count < count)
+		return false;
+	if(!zchr(value, cashed[0]))
+		return false;
+	return true;
+}
+
 bool io::sequence::match(const char* value) {
 	int count = zlen(value);
 	makecashe(count + 1);

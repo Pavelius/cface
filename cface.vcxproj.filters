@@ -100,12 +100,6 @@
     <ClCompile Include="xsdoc.cpp">
       <Filter>Обработка данных</Filter>
     </ClCompile>
-    <ClCompile Include="xsglobal.cpp">
-      <Filter>Обработка данных</Filter>
-    </ClCompile>
-    <ClCompile Include="xsvalue.cpp">
-      <Filter>Обработка данных</Filter>
-    </ClCompile>
     <ClCompile Include="resources.cpp">
       <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
@@ -343,12 +337,6 @@
       <Filter>Графика\Базовые элементы</Filter>
     </ClInclude>
     <ClInclude Include="xsdoc.h">
-      <Filter>Обработка данных</Filter>
-    </ClInclude>
-    <ClInclude Include="xsglobal.h">
-      <Filter>Обработка данных</Filter>
-    </ClInclude>
-    <ClInclude Include="xsvalue.h">
       <Filter>Обработка данных</Filter>
     </ClInclude>
     <ClInclude Include="resources.h">

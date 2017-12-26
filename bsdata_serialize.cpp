@@ -311,6 +311,28 @@ struct bsparse {
 
 };
 
+static void skipws(io::sequence& e) {
+	while(e) {
+		if(e.match("\t") || e.match(" ")) {
+			p++;
+			continue;
+		} else if(p[0] == '\\') {
+			p++;
+			if(p[0] == 10 || p[0] == 13)
+				p = szskipcr(p);
+			else
+				p++;
+			continue;
+		} else if(p[0] == '/' && p[1] == '/') {
+			// Comments
+			p += 2;
+			skipline();
+			continue;
+		}
+		break;
+	}
+}
+
 static bool isidentifier(const char* p) {
 	if((p[0] >= 'a' && p[0] <= 'z') || (p[0] >= 'A' && p[0] <= 'Z')) {
 		while(*p) {
@@ -329,8 +351,7 @@ static bool isempthy(const void* object, const bsreq* req, bool check_array = tr
 		for(auto i = 0; i < (int)req->count; i++)
 			if(!isempthy((void*)req->ptr(object, i), req, false))
 				return false;
-	}
-	else {
+	} else {
 		for(unsigned i = 0; i < req->size; i++) {
 			if(ps[i])
 				return false;
@@ -417,20 +438,20 @@ static void write_value(io::stream& e, const void* object, const bsreq* req, int
 	}
 }
 
-static void write_field(io::stream& e, const void* object, const bsreq* req) {
-	if(isempthy(object, req))
-		return;
-	e << " " << req->id;
-	e << "(";
-	write_array(e, object, req, 0);
-	e << ")";
-}
-
 void write_fields(io::stream& e, const void* object, const bsreq* req, const bsreq* skip = 0) {
+	auto count = 0;
 	for(auto f = req; *f; f++) {
 		if(skip && skip == f)
 			continue;
-		write_field(e, object, f);
+		if(isempthy(object, req))
+			continue;
+		if(count > 0)
+			e << " ";
+		e << req->id;
+		e << "(";
+		write_array(e, object, req, 0);
+		e << ")";
+		count++;
 	}
 	e << "\r\n";
 }
@@ -440,7 +461,9 @@ static void write_object(io::stream& e, const void* object) {
 	if(!pd)
 		return;
 	e << "#" << pd->id << " ";
-	write_fields(e, object, pd->fields, write_key(e, object, pd->fields));
+	auto skip = write_key(e, object, pd->fields);
+	e << " ";
+	write_fields(e, object, pd->fields, skip);
 }
 
 static void write_data(io::stream& e, bsdata* pd) {

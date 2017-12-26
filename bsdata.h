@@ -41,5 +41,7 @@ private:
 };
 #define BSMETA(c) \
 bsdata c##_manager(#c, c##_data, sizeof(c##_data[0]), sizeof(c##_data)/sizeof(c##_data[0]), c##_type);
+#define BSGLOB(c) \
+bsdata c##_manager(#c, &c##_data, sizeof(c##_data), 1, c##_type);
 #define BSDATA(c, c_type) \
 bsdata c##_manager(#c, c##s.data, c##s.count, sizeof(c##s.data[0]), sizeof(c##s.data)/sizeof(c##s.data[0]), c_type);
