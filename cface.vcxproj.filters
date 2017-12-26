@@ -244,9 +244,6 @@
     <ClCompile Include="draw_form.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
-    <ClCompile Include="xsfield_data.cpp">
-      <Filter>Обработка данных</Filter>
-    </ClCompile>
     <ClCompile Include="draw_focusing.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
@@ -285,6 +282,9 @@
     </ClCompile>
     <ClCompile Include="widget_type.cpp">
       <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="bsreq_data.cpp">
+      <Filter>Обработка данных</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

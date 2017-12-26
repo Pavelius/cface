@@ -194,9 +194,7 @@
     <ClCompile Include="widget_logging.cpp" />
     <ClCompile Include="widget_settings.cpp" />
     <ClCompile Include="widget_type.cpp" />
-    <ClCompile Include="xsfield_data.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="bsreq_data.cpp" />
     <ClCompile Include="draw_focusing.cpp" />
     <ClCompile Include="draw_form.cpp" />
     <ClCompile Include="draw_input.cpp" />

@@ -5,30 +5,30 @@
 
 const int xsfield_max_text = 8192;
 
-bool xsref_read(io::stream& stream, xsref& e, char* temp);
-void xsref_write(io::stream& stream, const xsref& e);
+bool xsref_read(io::stream& stream, void* object, const bsreq* e, char* temp);
+void xsref_write(io::stream& stream, const void* object, const bsreq* e);
 
 void collection_read(io::stream& stream, collection& col, const bsreq* fields) {
 	char temp[xsfield_max_text];
 	int count = 0;
 	col.clear();
 	stream.read(count);
-	for(int i = 0; i < count; i++) {
-		xsref e = {fields, col.add(0)};
-		xsref_read(stream, e, temp);
-	}
+	//for(int i = 0; i < count; i++)
+	//	xsref_read(stream, col.add(0), fields, temp);
 }
 
 void collection_write(io::stream& stream, collection& col, const bsreq* fields) {
 	int count = col.getcount();
 	stream.write(count);
-	for(int i = 0; i < count; i++)
-		xsref_write(stream, {fields, col.get(i)});
+	//for(int i = 0; i < count; i++)
+	//	xsref_write(stream, col.get(i), fields);
 }
 
 struct collection_reader : public io::reader {
+	
 	collection&		tb;
-	xsref			row;
+	void*			object;
+	const bsreq*	fields;
 
 	bool isnumeric(const char* value) const {
 		return value[0] == '-' || isnum(value[0]);
@@ -36,30 +36,31 @@ struct collection_reader : public io::reader {
 
 	void open(io::reader::node& e) override {
 		if(e.parent && e.parent->parent == 0)
-			row.object = tb.add(0);
+			object = tb.add(0);
 	}
 
 	void set(io::reader::node& e, const char* value) override {
-		if(!row)
+		if(!object)
 			return;
 		if(!e.parent)
 			return;
-		if(*e.parent=="element") {
-			if(isnumeric(value))
-				row.set(e.name, sz2num(value));
-			else
-				row.set(e.name, (int)szdup(value));
+		auto f = fields->find(e.name);
+		if(f) {
+			if(*e.parent == "element") {
+				if(isnumeric(value))
+					f->set(f->ptr(object), sz2num(value));
+				else
+					f->set(f->ptr(object), (int)szdup(value));
+			}
 		}
 	}
 
-	collection_reader(collection& tb, const xsfield* fields) :tb(tb) {
-		row.fields = fields;
-		row.object = 0;
+	collection_reader(collection& tb, const bsreq* fields) :tb(tb), object(0), fields(fields) {
 	}
 
 };
 
-bool collection::read(const char* url, bsreq* fields) {
+bool collection::read(const char* url, const bsreq* fields) {
 	auto ex = szext(url);
 	auto pp = io::plugin::find(ex);
 	if(pp) {
@@ -79,7 +80,7 @@ bool collection::read(const char* url, bsreq* fields) {
 	return true;
 }
 
-bool collection::write(const char* url, bsreq* fields) {
+bool collection::write(const char* url, const bsreq* fields) {
 	auto ex = szext(url);
 	if(!ex)
 		return false;
@@ -95,9 +96,9 @@ bool collection::write(const char* url, bsreq* fields) {
 		pw->open("rows", io::Array);
 		for(int i = 0; i < count; i++) {
 			pw->open("element", io::Struct);
-			xsref xr = {fields, get(i)};
+			void* object = get(i);
 			for(auto p = fields; *p; p++) {
-				auto v = xr.get(p->id);
+				auto v = p->get(p->ptr(object));
 				if(!v)
 					continue;
 				if(p->type == number_type)
