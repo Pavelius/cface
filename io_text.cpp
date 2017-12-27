@@ -83,7 +83,7 @@ int text::seek(int count, int rel) {
 	return parent.seek(count, rel);
 }
 
-bool text::oneof(const char* value) {
+bool text::is(const char* value) {
 	if(!makecashe(1))
 		return false;
 	if(zchr(value, cashed[cashed_pos]))
@@ -92,7 +92,7 @@ bool text::oneof(const char* value) {
 }
 
 bool text::skipws() {
-	if(oneof(" \t")) {
+	if(is(" \t")) {
 		next(1);
 		return true;
 	}
@@ -138,15 +138,11 @@ bool text::left(const char* value) {
 }
 
 bool text::identifier(char* result, unsigned max_count) {
-	if(!is("AZazÀßàÿ", makecashe(1))
+	if(!ispair("AZazÀßàÿ") && !is('_'))
 		return false;
 	auto pb = result;
 	auto pe = result + max_count;
-	while((cashed[cashed_pos]>='A' && cashed[cashed_pos] <= 'Z')
-		|| (cashed[cashed_pos] >= 'a' && cashed[cashed_pos] <= 'z')
-		|| (cashed[cashed_pos] >= '0' && cashed[cashed_pos] <= '9')
-		|| (cashed[cashed_pos] >= 'À' && cashed[cashed_pos] <= 'ß')
-		|| cashed[cashed_pos] == '_') {
+	while(ispair("AZaz09Àßàÿ") || is('_')) {
 		if(pb < pe)
 			*pb++ = cashed[cashed_pos];
 		cashed_pos++;

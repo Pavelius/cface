@@ -8,10 +8,10 @@ namespace io {
 		bool				identifier(char* result, unsigned max_count);
 		bool				is(const char symbol);
 		bool				is(const char symbol, unsigned index);
+		bool				is(const char* one_of_symbols);
 		bool				ispair(const char* pairs);
 		bool				left(const char* value);
 		void				next(unsigned count);
-		bool				oneof(const char* value);
 		int					read(void* result, int count) override;
 		int					seek(int count, int rel = SeekCur) override;
 		bool				skipcr(); // Skip one \n or \r or any pair of this.  Return true if one of this case have place.
