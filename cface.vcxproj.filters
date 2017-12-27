@@ -73,9 +73,6 @@
     <ClCompile Include="io_plugin.cpp">
       <Filter>Системные</Filter>
     </ClCompile>
-    <ClCompile Include="io_sequence.cpp">
-      <Filter>Системные</Filter>
-    </ClCompile>
     <ClCompile Include="io_socket.cpp">
       <Filter>Системные</Filter>
     </ClCompile>

@@ -191,7 +191,6 @@
     <ClCompile Include="draw_dodialog.cpp" />
     <ClCompile Include="draw_listview.cpp" />
     <ClCompile Include="hotproc.cpp" />
-    <ClCompile Include="io_text.cpp" />
     <ClCompile Include="widget_logging.cpp" />
     <ClCompile Include="widget_settings.cpp" />
     <ClCompile Include="widget_type.cpp" />
@@ -209,7 +208,7 @@
     <ClCompile Include="hotkey.cpp" />
     <ClCompile Include="io.cpp" />
     <ClCompile Include="io_memory.cpp" />
-    <ClCompile Include="io_sequence.cpp" />
+    <ClCompile Include="io_text.cpp" />
     <ClCompile Include="io_socket.cpp" />
     <ClCompile Include="pathfind.cpp" />
     <ClCompile Include="pma.cpp" />
