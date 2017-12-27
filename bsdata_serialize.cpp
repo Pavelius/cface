@@ -311,28 +311,6 @@ struct bsparse {
 
 };
 
-static void skipws(io::sequence& e) {
-	while(e) {
-		if(e.match("\t") || e.match(" ")) {
-			p++;
-			continue;
-		} else if(p[0] == '\\') {
-			p++;
-			if(p[0] == 10 || p[0] == 13)
-				p = szskipcr(p);
-			else
-				p++;
-			continue;
-		} else if(p[0] == '/' && p[1] == '/') {
-			// Comments
-			p += 2;
-			skipline();
-			continue;
-		}
-		break;
-	}
-}
-
 static bool isidentifier(const char* p) {
 	if((p[0] >= 'a' && p[0] <= 'z') || (p[0] >= 'A' && p[0] <= 'Z')) {
 		while(*p) {

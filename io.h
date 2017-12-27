@@ -1,19 +1,16 @@
 #pragma once
 
 enum seek_flags { SeekSet, SeekCur, SeekEnd };
-enum stream_flags
-{
+enum stream_flags {
 	StreamRead = 1,
 	StreamWrite = 2,
 	StreamText = 4,
 };
-namespace io
-{
+namespace io {
 	// Network protocols
 	enum protocols { NoProtocol, TCP, UDP };
 	// Abstract bi-stream interface
-	struct stream
-	{
+	struct stream {
 		stream&				operator<<(const char* t); // Post text string into stream data in correct coding.
 		stream&				operator<<(const int n); // Post number as string into stream data in correct coding.
 		unsigned			getsize();
@@ -28,34 +25,14 @@ namespace io
 		virtual void		write(bool value);
 		template<class T> void write(const T& value);
 	};
-	struct sequence : public stream
-	{
-		bool				left(const char* value);
-		bool				match(const char* value);
-		bool				oneof(const char* value);
-		int					read(void* result, int count) override;
-		void				skip(int count);
-		int					seek(int count, int rel = SeekCur) override;
-		int					write(const void* result, int count) override;
-		sequence(io::stream& parent);
-		operator bool() const { return false; }
-	private:
-		char				cashed[64];
-		int					cashed_count;
-		io::stream&			parent;
-		//
-		void				makecashe(int count);
-	};
-	struct file : public stream
-	{
-		struct find
-		{
+	struct file : public stream {
+		struct find {
 			find(const char* url);
 			~find();
 			const char*		name();
 			const char*		fullname(char* result);
 			void			next();
-			operator bool() const { return handle!=0; }
+			operator bool() const { return handle != 0; }
 		private:
 			char			path[261];
 			char			reserved[512];
@@ -64,7 +41,7 @@ namespace io
 		file();
 		file(const char* url, unsigned flags = StreamRead);
 		~file();
-		operator bool() const { return handle!=0; }
+		operator bool() const { return handle != 0; }
 		void				close();
 		bool				create(const char* url, unsigned flags);
 		static bool			exist(const char* url);
@@ -79,8 +56,7 @@ namespace io
 	private:
 		int					handle;
 	};
-	struct memory : public stream
-	{
+	struct memory : public stream {
 		memory(void* data, int size);
 		int					read(void* result, int count) override;
 		int					seek(int count, int rel) override;
@@ -90,8 +66,7 @@ namespace io
 		int					pos;
 		int					size;
 	};
-	struct address
-	{
+	struct address {
 		unsigned short		family;
 		unsigned short		port;
 		unsigned			ip;
@@ -101,8 +76,7 @@ namespace io
 		bool				parse(const char* url, const char* service_name);
 		bool				tostring(char* node, int node_len, char* service, int service_len);
 	};
-	struct socket : public stream, public address
-	{
+	struct socket : public stream, public address {
 		socket();
 		~socket();
 		//

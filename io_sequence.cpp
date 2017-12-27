@@ -1,17 +1,61 @@
-#include "crt.h"
-#include "io.h"
+#include "io_text.h"
 
-io::sequence::sequence(io::stream& parent) :parent(parent), cashed_count(0) {
+using namespace io;
+
+io::sequence::sequence(io::stream& parent, codepages cp_src) : cp_src(cp_src),
+parent(parent), cashed_pos(0), cashed_count(0) {
+}
+
+void sequence::shift() {
+	auto c = cashed_count - cashed_pos;
+	memcpy(cashed, cashed + cashed_pos, c);
+	cashed_count = c;
+	cashed_pos = 0;
+}
+
+bool sequence::makecashe(unsigned count) {
+	if(cashed_count - cashed_pos >= count)
+		return true;
+	if(cp_src == CPNONE) {
+		cashed_count += parent.read(cashed, 3);
+		if(cashed_count >= 3 && ((unsigned char)cashed[0]) == 0xEF && ((unsigned char)cashed[1]) == 0xBB && ((unsigned char)cashed[2]) == 0xBF) {
+			cp_src = CPUTF8;
+			cashed_pos += 3;
+			shift();
+			return makecashe(count);
+		}
+		else
+			cp_src = CP1251;
+	}
+	if(cashed_pos)
+		shift();
+	auto size = sizeof(cashed) / sizeof(cashed[0]) - cashed_count;
+	if(cp_src==CPUTF8) {
+		while(size != 0) {
+			auto value = getu();
+			if(value >= 0x410 && value <= 0x44F)
+				value = value - 0x410 + 0xC0;
+			else switch(value) {
+			case 0x406: value = 0xB2; break; // I
+			case 0x407: value = 0xAF; break; // ¯
+			case 0x456: value = 0xB3; break;
+			case 0x457: value = 0xBF; break;
+			}
+			cashed[cashed_count++] = (unsigned char)value;
+			size--;
+		}
+	}
+	else
+		cashed_count += parent.read(cashed + cashed_count, size);
+	return count <= cashed_count;
 }
 
 int	io::sequence::read(void* result, int count) {
 	auto r = 0;
-	auto c = imin(cashed_count, count);
+	auto c = imin(cashed_count - cashed_pos, (unsigned)count);
 	if(c) {
-		memcpy(result, cashed, c);
-		cashed_count -= c;
-		if(cashed_count)
-			memcpy(cashed, cashed + c, cashed_count);
+		memcpy(result, cashed + cashed_pos, c);
+		cashed_pos += c;
 		r += c;
 	}
 	count -= c;
@@ -26,52 +70,59 @@ int	io::sequence::write(const void* result, int count) {
 
 int io::sequence::seek(int count, int rel) {
 	cashed_count = 0;
+	cashed_pos = 0;
 	return parent.seek(count, rel);
 }
 
 bool io::sequence::left(const char* value) {
-	int count = zlen(value);
-	makecashe(count + 1);
-	if(cashed_count < count)
+	unsigned count = zlen(value);
+	if(!makecashe(count))
 		return false;
-	if(memcmp(cashed, value, count) != 0)
+	if(memcmp(cashed + cashed_pos, value, count) != 0)
 		return false;
-	cashed_count += count;
+	cashed_pos += count;
 	return true;
 }
 
-void io::sequence::skip(int count) {
-
+unsigned char sequence::get() {
+	if(!makecashe(1))
+		return 0;
+	return cashed[cashed_pos];
 }
 
-bool io::sequence::oneof(const char* value) {
-	const int count = 1;
-	makecashe(count);
-	if(cashed_count < count)
-		return false;
-	if(!zchr(value, cashed[0]))
-		return false;
-	return true;
+unsigned char sequence::getb() {
+	unsigned char sym;
+	if(!parent.read(&sym, 1))
+		return 0;
+	return sym;
 }
 
-bool io::sequence::match(const char* value) {
-	int count = zlen(value);
-	makecashe(count + 1);
-	if(cashed_count < count)
-		return false;
-	if(memcmp(cashed, value, count) != 0)
-		return false;
-	char sym = cashed[count];
-	if(ischa(sym) || sym == '_')
-		return false;
-	cashed_count += count;
-	return true;
-}
-
-void io::sequence::makecashe(int count) {
-	if(count > sizeof(cashed) / sizeof(cashed[0]))
-		count = sizeof(cashed) / sizeof(cashed[0]);
-	if(cashed_count > count)
-		return;
-	cashed_count += parent.read(cashed + cashed_count, count - cashed_count);
+unsigned sequence::getu() {
+	unsigned result = getb();
+	switch(cp_src) {
+	case CPUTF8:
+		if(result >= 192 && result <= 223)
+			result = (result - 192) * 64 + (getb() - 128);
+		else if(result >= 224 && result <= 239) {
+			auto p0 = getb();
+			auto p1 = getb();
+			result = (result - 224) * 4096 + (p0 - 128) * 64 + (p1 - 128);
+		}
+		return result;
+	case CPU16LE:
+		result |= getb() << 8;
+		return result;
+	case CP1251:
+		if(((unsigned char)result >= 0xC0))
+			return result - 0xC0 + 0x410;
+		else switch(result) {
+		case 0xB2: return 0x406;
+		case 0xAF: return 0x407;
+		case 0xB3: return 0x456;
+		case 0xBF: return 0x457;
+		}
+		return result;
+	default:
+		return result;
+	}
 }

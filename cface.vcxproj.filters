@@ -280,6 +280,9 @@
     <ClCompile Include="bsdata_serialize_bin.cpp">
       <Filter>Обработка данных</Filter>
     </ClCompile>
+    <ClCompile Include="io_text.cpp">
+      <Filter>Системные</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="acol.h">
@@ -461,6 +464,9 @@
     </ClInclude>
     <ClInclude Include="bsreq.h">
       <Filter>Обработка данных</Filter>
+    </ClInclude>
+    <ClInclude Include="io_text.h">
+      <Filter>Системные</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -191,6 +191,7 @@
     <ClCompile Include="draw_dodialog.cpp" />
     <ClCompile Include="draw_listview.cpp" />
     <ClCompile Include="hotproc.cpp" />
+    <ClCompile Include="io_text.cpp" />
     <ClCompile Include="widget_logging.cpp" />
     <ClCompile Include="widget_settings.cpp" />
     <ClCompile Include="widget_type.cpp" />
@@ -274,6 +275,7 @@
     <ClInclude Include="draw_control.h" />
     <ClInclude Include="hotproc.h" />
     <ClInclude Include="io_plugin.h" />
+    <ClInclude Include="io_text.h" />
     <ClInclude Include="widget.h" />
     <ClInclude Include="settings.h" />
     <ClInclude Include="draw_table.h" />
