@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cface", "cface.vcxproj", "{0A1C9AD6-05D3-49AB-85C2-466017CEE49A}"
 EndProject
@@ -10,8 +10,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xmlimg", "..\xmlimg\xmlimg.vcxproj", "{547B3A93-B75E-4A96-8DEA-76904AFAC59F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "view", "..\view\view.vcxproj", "{6E6850BC-2D46-4AE1-AD9C-C64B8FC5C899}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xcreator", "..\scriptor\xcreator\xcreator.vcxproj", "{E4B17A3C-6FD8-499B-9DF6-3937D62A705D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,14 +51,6 @@ Global
 		{6E6850BC-2D46-4AE1-AD9C-C64B8FC5C899}.Release|x64.Build.0 = Release|x64
 		{6E6850BC-2D46-4AE1-AD9C-C64B8FC5C899}.Release|x86.ActiveCfg = Release|Win32
 		{6E6850BC-2D46-4AE1-AD9C-C64B8FC5C899}.Release|x86.Build.0 = Release|Win32
-		{E4B17A3C-6FD8-499B-9DF6-3937D62A705D}.Debug|x64.ActiveCfg = Debug|x64
-		{E4B17A3C-6FD8-499B-9DF6-3937D62A705D}.Debug|x64.Build.0 = Debug|x64
-		{E4B17A3C-6FD8-499B-9DF6-3937D62A705D}.Debug|x86.ActiveCfg = Debug|Win32
-		{E4B17A3C-6FD8-499B-9DF6-3937D62A705D}.Debug|x86.Build.0 = Debug|Win32
-		{E4B17A3C-6FD8-499B-9DF6-3937D62A705D}.Release|x64.ActiveCfg = Release|x64
-		{E4B17A3C-6FD8-499B-9DF6-3937D62A705D}.Release|x64.Build.0 = Release|x64
-		{E4B17A3C-6FD8-499B-9DF6-3937D62A705D}.Release|x86.ActiveCfg = Release|Win32
-		{E4B17A3C-6FD8-499B-9DF6-3937D62A705D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

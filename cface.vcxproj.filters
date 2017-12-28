@@ -199,9 +199,6 @@
     <ClCompile Include="stringcreator.cpp">
       <Filter>Поддержка</Filter>
     </ClCompile>
-    <ClCompile Include="stringlib.cpp">
-      <Filter>Поддержка</Filter>
-    </ClCompile>
     <ClCompile Include="stringtree.cpp">
       <Filter>Поддержка</Filter>
     </ClCompile>
@@ -409,9 +406,6 @@
       <Filter>Поддержка</Filter>
     </ClInclude>
     <ClInclude Include="stringid.h">
-      <Filter>Поддержка</Filter>
-    </ClInclude>
-    <ClInclude Include="stringlib.h">
       <Filter>Поддержка</Filter>
     </ClInclude>
     <ClInclude Include="stringtree.h">
