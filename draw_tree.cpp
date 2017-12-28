@@ -5,21 +5,17 @@
 using namespace draw::controls;
 
 tree::tree(unsigned size) : amem(size), table(static_cast<collection&>(*this)),
-sort_rows_by_name(false)
-{
+sort_rows_by_name(false) {
 }
 
-void tree::clear()
-{
+void tree::clear() {
 	amem::clear();
 	current = 0;
 }
 
-int	tree::getparamindex(int value) const
-{
+int	tree::getparamindex(int value) const {
 	int count = getcount();
-	for(int i = 0; i < count; i++)
-	{
+	for(int i = 0; i < count; i++) {
 		auto p = (tree::element*)amem::get(i);
 		if(p->param == value)
 			return i;
@@ -27,16 +23,14 @@ int	tree::getparamindex(int value) const
 	return -1;
 }
 
-int tree::getlevel(int row) const
-{
-    auto t = static_cast<const element*>(amem::get(row));
+int tree::getlevel(int row) const {
+	auto t = static_cast<const element*>(amem::get(row));
 	if(!t)
 		return 0;
 	return t->level;
 }
 
-int	tree::getparam(int row) const
-{
+int	tree::getparam(int row) const {
 	if(row == -1)
 		row = current;
 	auto t = static_cast<const element*>(amem::get(row));
@@ -45,8 +39,7 @@ int	tree::getparam(int row) const
 	return t->param;
 }
 
-int	tree::gettype(int row) const
-{
+int	tree::gettype(int row) const {
 	if(row == -1)
 		row = current;
 	auto t = static_cast<const element*>(amem::get(row));
@@ -55,12 +48,11 @@ int	tree::gettype(int row) const
 	return t->type;
 }
 
-bool tree::isgroup(int row) const
-{
+bool tree::isgroup(int row) const {
 	auto t = static_cast<const element*>(amem::get(row));
 	if(!t)
 		return false;
-	return (t->flags&TIGroup)!=0;
+	return (t->flags&TIGroup) != 0;
 }
 
 //int tree::execute(int id, bool run)
@@ -123,8 +115,7 @@ bool tree::isgroup(int row) const
 //	table::set(object, e, value);
 //}
 
-static int compare_by_name(const void* p1, const void* p2, void* param)
-{
+static int compare_by_name(const void* p1, const void* p2, void* param) {
 	auto pc = static_cast<tree*>(param);
 	auto pe = pc->columns.find("name");
 	if(!pe)
@@ -137,8 +128,7 @@ static int compare_by_name(const void* p1, const void* p2, void* param)
 	return 0;
 }
 
-static int compare_by_name_group_up(const void* p1, const void* p2, void* param)
-{
+static int compare_by_name_group_up(const void* p1, const void* p2, void* param) {
 	auto pc = static_cast<tree*>(param);
 	int g1 = (((draw::controls::tree::element*)p1)->flags&TIGroup) != 0 ? 1 : 0;
 	int g2 = (((draw::controls::tree::element*)p2)->flags&TIGroup) != 0 ? 1 : 0;
@@ -147,13 +137,11 @@ static int compare_by_name_group_up(const void* p1, const void* p2, void* param)
 	return g2 - g1;
 }
 
-bool tree::haselement(int param) const
-{
+bool tree::haselement(int param) const {
 	auto level = this->level + 1;
 	auto first = (const element*)((char*)amem::data);
 	for(auto p = (const element*)((char*)amem::data + amem::size*index); p > first;
-		p = (const element*)((char*)p - amem::size))
-	{
+		p = (const element*)((char*)p - amem::size)) {
 		if(p->level != level)
 			break;
 		if(p->param == param)
@@ -162,54 +150,44 @@ bool tree::haselement(int param) const
 	return false;
 }
 
-void tree::collapse(int i)
-{
+void tree::collapse(int i) {
 	// если выбранный элемент входит в сворачиваемю область
 	// переместим его наверх
 	int w = current;
-	while(w != -1)
-	{
+	while(w != -1) {
 		if(w == i)
 			break;
 		w = getparent(w);
 	}
 	int m = getlevel(i);
 	int c = maximum;
-	while((int)i < c)
-	{
+	while((int)i < c) {
 		if(i + 1 >= c || getlevel(i + 1) <= m)
 			break;
 		amem::remove(i + 1);
-		if(current>(int)i)
+		if(current > (int)i)
 			current--;
 		c--;
 	}
 }
 
-void tree::open(int max_level)
-{
-	for(int level = 1; level <= max_level; level++)
-	{
+void tree::open(int max_level) {
+	for(int level = 1; level <= max_level; level++) {
 		bool need_test = true;
-		while(need_test)
-		{
+		while(need_test) {
 			need_test = false;
 			int c = rows.getcount();
-			for(int i = 0; i < c; i++)
-			{
+			for(int i = 0; i < c; i++) {
 				if(level != getlevel(i))
 					continue;
-				if(i < c - 1)
-				{
+				if(i < c - 1) {
 					if(getlevel(i + 1) > level)
 						continue;
 				}
-				if(isgroup(i))
-				{
+				if(isgroup(i)) {
 					unsigned i1 = rows.getcount();
 					expand(i, level);
-					if(i1 < rows.getcount())
-					{
+					if(i1 < rows.getcount()) {
 						need_test = true;
 						break;
 					}
@@ -219,31 +197,48 @@ void tree::open(int max_level)
 	}
 }
 
-void tree::expand(int index, int level)
-{
+void tree::expand(int index, int level) {
 	this->index = index;
 	this->level = level;
 	expanding();
-	if(sort_rows_by_name)
-	{
-		if(level==0)
-			amem::sort(0, amem::count-1, group_sort_up ? compare_by_name_group_up : compare_by_name, this);
+	if(this->index) {
+		unsigned i1 = this->index + 1;
+		unsigned i2 = i1;
+		while(i2<rows.getcount()) {
+			auto p2 = (element*)rows.get(i2);
+			if(p2->level >= (level+1))
+				i2++;
+			else
+				break;
+		}
+		if(i1 != i2)
+			rows.remove(i1, i2 - i1);
+	}
+	if(sort_rows_by_name) {
+		if(level == 0)
+			amem::sort(0, amem::count - 1, group_sort_up ? compare_by_name_group_up : compare_by_name, this);
 		else
 			amem::sort(index + 1, this->index, group_sort_up ? compare_by_name_group_up : compare_by_name, this);
 	}
 }
 
-void tree::addrow(tree::element& e)
-{
+void tree::addrow(tree::element& e) {
 	e.level = level + 1;
-	if(level==0)
+	if((unsigned)(index + 1) < rows.getcount()) {
+		auto p = (element*)rows.get(index + 1);
+		if(p->level >= e.level) {
+			memcpy(p, &e, amem::size);
+			index++;
+			return;
+		}
+	}
+	if(level == 0)
 		amem::add(&e);
 	else
 		amem::insert(++index, &e);
 }
 
-void tree::addrow(unsigned param, unsigned char flags, unsigned char type, unsigned char image)
-{
+void tree::addrow(unsigned param, unsigned char flags, unsigned char type, unsigned char image) {
 	element e;
 	e.param = param;
 	e.image = image;
@@ -252,9 +247,8 @@ void tree::addrow(unsigned param, unsigned char flags, unsigned char type, unsig
 	addrow(e);
 }
 
-void tree::addrow(void* object)
-{
-	if(size!=sizeof(element))
+void tree::addrow(void* object) {
+	if(size != sizeof(element))
 		return;
 	element e = {0};
 	e.param = (int)object;

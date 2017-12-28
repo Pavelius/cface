@@ -32,4 +32,11 @@ struct agrw
 		next = 0;
 	}
 
+	unsigned getcount() const {
+		unsigned result = 0;
+		for(auto p = this; p; p = p->next)
+			result += p->count;
+		return result;
+	}
+
 };
