@@ -3,7 +3,7 @@
 using namespace io;
 
 text::text(io::stream& parent, codepages cp) : cp(cp),
-parent(parent), cashed_pos(0), cashed_count(0) {
+parent(parent), cashed_pos(0), cashed_count(0), end_of_file(false) {
 }
 
 void text::shift() {
@@ -58,6 +58,10 @@ void text::next(unsigned count) {
 		}
 		count -= cashed_count;
 	}
+}
+
+bool text::islinefeed() {
+	return is("\n\r");
 }
 
 int	text::read(void* result, int count) {
@@ -128,7 +132,7 @@ bool text::skipcr() {
 	return false;
 }
 
-bool text::left(const char* value) {
+bool text::next(const char* value) {
 	unsigned count = zlen(value);
 	if(!makecashe(count))
 		return false;
@@ -175,6 +179,13 @@ char text::get() {
 	makecashe(1);
 	if(cashed_pos < cashed_count)
 		return cashed[cashed_pos++];
+	return 0;
+}
+
+char text::getnr() {
+	makecashe(1);
+	if(cashed_pos < cashed_count)
+		return cashed[cashed_pos];
 	return 0;
 }
 
