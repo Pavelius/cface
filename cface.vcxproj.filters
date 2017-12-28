@@ -94,9 +94,6 @@
     <ClCompile Include="sprite_store.cpp">
       <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
-    <ClCompile Include="xsdoc.cpp">
-      <Filter>Обработка данных</Filter>
-    </ClCompile>
     <ClCompile Include="resources.cpp">
       <Filter>Графика\Базовые элементы</Filter>
     </ClCompile>
@@ -277,6 +274,9 @@
     <ClCompile Include="io_text.cpp">
       <Filter>Системные</Filter>
     </ClCompile>
+    <ClCompile Include="bsdoc.cpp">
+      <Filter>Обработка данных</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="acol.h">
@@ -332,9 +332,6 @@
     </ClInclude>
     <ClInclude Include="sprite.h">
       <Filter>Графика\Базовые элементы</Filter>
-    </ClInclude>
-    <ClInclude Include="xsdoc.h">
-      <Filter>Обработка данных</Filter>
     </ClInclude>
     <ClInclude Include="resources.h">
       <Filter>Графика\Базовые элементы</Filter>
@@ -458,6 +455,9 @@
     </ClInclude>
     <ClInclude Include="io_text.h">
       <Filter>Системные</Filter>
+    </ClInclude>
+    <ClInclude Include="bsdoc.h">
+      <Filter>Обработка данных</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

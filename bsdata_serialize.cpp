@@ -1,6 +1,6 @@
 #include "bsdata.h"
 #include "crt.h"
-#include "io_text.h"
+#include "io.h"
 
 static const bsreq* getkeyreq(const bsreq* type) {
 	auto f = type->find("id");
@@ -310,51 +310,6 @@ struct bsparse {
 	}
 
 };
-
-void readstring(io::text& e, char* buffer, unsigned max_count, const char end) {
-	auto ps = buffer;
-	auto pe = ps + max_count - 1;
-	while(e && !e.is(end)) {
-		if(e.is('\\')) {
-			if(e.skipcr())
-				continue;
-			e.next(1);
-			continue;
-		}
-		if(ps < pe)
-			*ps++ = e.getnr();
-		e.next(1);
-	}
-	ps[0] = 0;
-	if(e.is(end))
-		e.next(1);
-}
-
-static void skipline(io::text& e) {
-	while(e && !e.is("\n\r"))
-		e.next(1);
-	e.skipcr();
-	e.skipws();
-}
-
-static void skipws(io::text& e) {
-	while(true) {
-		if(e.skipws())
-			continue;
-		else if(e.next("\\")) {
-			if(e.skipcr())
-				continue;
-			else
-				e.next(1);
-			continue;
-		} else if(e.next("//")) {
-			// Comments
-			skipline(e);
-			continue;
-		}
-		break;
-	}
-}
 
 static bool isidentifier(const char* p) {
 	if((p[0] >= 'a' && p[0] <= 'z') || (p[0] >= 'A' && p[0] <= 'Z')) {
