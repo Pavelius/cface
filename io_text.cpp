@@ -8,7 +8,8 @@ parent(parent), cashed_pos(0), cashed_count(0) {
 
 void text::shift() {
 	auto c = cashed_count - cashed_pos;
-	memcpy(cashed, cashed + cashed_pos, c);
+	if(c)
+		memcpy(cashed, cashed + cashed_pos, c);
 	cashed_count = c;
 	cashed_pos = 0;
 }
@@ -117,7 +118,7 @@ bool text::skipcr() {
 		else
 			next(1);
 		return true;
-	} else if('\r') {
+	} else if(is('\r')) {
 		if(is('\n'))
 			next(2);
 		else
@@ -146,7 +147,6 @@ bool text::identifier(char* result, unsigned max_count) {
 		if(pb < pe)
 			*pb++ = cashed[cashed_pos];
 		cashed_pos++;
-		makecashe(1);
 	}
 	*pb = 0;
 	return true;
@@ -164,11 +164,18 @@ bool text::is(const char symbol, unsigned index) {
 	return cashed[cashed_pos + index] == symbol;
 }
 
-unsigned char text::get() {
+unsigned char text::getone() {
 	unsigned char sym;
 	if(!parent.read(&sym, 1))
 		return 0;
 	return sym;
+}
+
+char text::get() {
+	makecashe(1);
+	if(cashed_pos < cashed_count)
+		return cashed[cashed_pos++];
+	return 0;
 }
 
 void text::putu(unsigned value) {
@@ -211,19 +218,19 @@ void text::putu(unsigned value) {
 }
 
 unsigned text::getu() {
-	unsigned result = get();
+	unsigned result = getone();
 	switch(cp) {
 	case CPUTF8:
 		if(result >= 192 && result <= 223)
-			result = (result - 192) * 64 + (get() - 128);
+			result = (result - 192) * 64 + (getone() - 128);
 		else if(result >= 224 && result <= 239) {
-			auto p0 = get();
-			auto p1 = get();
+			auto p0 = getone();
+			auto p1 = getone();
 			result = (result - 224) * 4096 + (p0 - 128) * 64 + (p1 - 128);
 		}
 		return result;
 	case CPU16LE:
-		result |= get() << 8;
+		result |= getone() << 8;
 		return result;
 	case CP1251:
 		if(((unsigned char)result >= 0xC0))
