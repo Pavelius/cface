@@ -39,6 +39,16 @@ int	tree::getparam(int row) const {
 	return t->param;
 }
 
+int	tree::findbyparam(int param) const {
+	unsigned i2 = rows.getcount();
+	for(unsigned i = 0; i < i2; i++) {
+		auto p = (element*)rows.get(i);
+		if(p->param == param)
+			return i;
+	}
+	return -1;
+}
+
 int	tree::gettype(int row) const {
 	if(row == -1)
 		row = current;
@@ -201,6 +211,10 @@ void tree::expand(int index, int level) {
 	this->index = index;
 	this->level = level;
 	expanding();
+	if(this->index != index) {
+		auto p = (element*)rows.get(index);
+		p->flags |= TIGroup;
+	}
 	if(this->index) {
 		unsigned i1 = this->index + 1;
 		unsigned i2 = i1;

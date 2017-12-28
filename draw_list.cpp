@@ -83,10 +83,10 @@ int list::getparent(int row) const {
 }
 
 int list::getlastchild(int i) const {
-	int level = getlevel(i);
-	int i2 = maximum - 1;
+	int level = getlevel(i++) + 1;
+	int i2 = maximum;
 	while(i < i2) {
-		if(level != getlevel(i + 1))
+		if(level != getlevel(i))
 			break;
 		i++;
 	}
