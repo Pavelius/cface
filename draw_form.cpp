@@ -1,12 +1,14 @@
-#include "bsreq.h"
+#include "bsdata.h"
 #include "crt.h"
 #include "draw.h"
+#include "draw_textedit.h"
+#include "draw_table.h"
 #include "widget.h"
 
 using namespace draw;
 
-static void*		hot_object;
-static const bsreq*	hot_type;
+static void*			hot_object;
+static const bsreq*		hot_type;
 
 static char* get_text(char* result, void* object) {
 	if(((widget*)object)->label)
@@ -43,6 +45,63 @@ static void callback_check() {
 		else
 			f->set(po, 1);
 	}
+}
+
+static void callback_edit() {
+	auto p = (widget*)hot::param;
+	auto f = hot_type->find(p->id);
+	auto current_object = hot_object;
+	auto current_type = hot_type;
+	if(!f) {
+		hot::key = 0;
+		return;
+	}
+	char temp[4196]; temp[0] = 0;
+	if(!current_type->getdata(temp, p->id, hot_object, true)) {
+		hot::key = 0;
+		return;
+	}
+	controls::textedit te(temp, sizeof(temp), true);
+	te.align = p->flags;
+	auto b = bsdata::find(f->type);
+	bool result = false;
+	bool need_dropdown = (f->type != text_type && f->type != number_type)
+		&& (f->reference || f->isenum)
+		&& b;
+	if(need_dropdown) {
+		controls::autocompletebs aclist(b);
+		te.records = &aclist;
+		aclist.hilite_rows = true;
+		result = te.editing(hot::element);
+	} else
+		result = te.editing(hot::element);
+	if(result)
+		hot_type->setdata(temp, p->id, hot_object);
+	// Some keys must be handled by this control
+	switch(hot::key) {
+	case KeyDown:
+	case KeyUp:
+		draw::execute(hot::key, 0);
+		break;
+	}
+}
+
+static void callback_up() {
+	auto p = (widget*)hot::param;
+	auto f = hot_type->find(p->id);
+	if(!f)
+		return;
+	auto po = (void*)f->get(hot_object);
+	f->set(po, f->get(po) - 1);
+}
+
+static void callback_down() {
+	auto p = (widget*)hot::param;
+	auto f = hot_type->find(p->id);
+	if(!f)
+		return;
+	auto po = (void*)f->get(hot_object);
+	f->set(po, f->get(po) + 1);
 }
 
 struct dlgform {
@@ -145,18 +204,24 @@ struct dlgform {
 	int field(int x, int y, int width, const widget& e) {
 		if(!e.id || !e.id[0])
 			return 0;
+		auto f = type->find(e.id);
+		if(!f)
+			return 0;
+		f = f->type;
 		char temp[260];
-		auto f = this->type->find(e.id);
-		auto p = f->getdata(temp, e.id, object, false);
+		auto p = type->getdata(temp, e.id, object, false);
 		if(!p)
 			return 0;
 		auto flags = getflags(e);
 		if(f == number_type)
-			return draw::field(x, y, width, (int)&e, getflags(e), p, e.tips, e.label, e.title);
+			return draw::field(x, y, width, (int)&e, getflags(e), p, e.tips, e.label, e.title,
+				callback_edit, 0, 0, callback_up, callback_down, 0, setparam, this);
 		else if(f != text_type)
-			return draw::field(x, y, width, (int)&e, getflags(e), p, e.tips, e.label, e.title);
+			return draw::field(x, y, width, (int)&e, getflags(e), p, e.tips, e.label, e.title,
+				callback_edit, 0, 0, 0, 0, 0, setparam, this);
 		else
-			return draw::field(x, y, width, (int)&e, getflags(e), p, e.tips, e.label, e.title);
+			return draw::field(x, y, width, (int)&e, getflags(e), p, e.tips, e.label, e.title,
+				callback_edit, 0, 0, 0, 0, 0, setparam, this);
 	}
 
 	int tabs(int x, int y, int width, const widget& e) {

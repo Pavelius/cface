@@ -776,50 +776,6 @@ int table::find(const char* id, const char* value, int index)
 	return -1;
 }
 
-static const struct autocomple_xsbase* sort_list;
-
-struct autocomple_xsbase : autocomplete
-{
-
-	const bsdata* base;
-
-	autocomple_xsbase(const bsdata* base) : autocomplete(base->fields), base(base)
-	{
-	}
-
-	static int compare(const void* v1, const void* v2)
-	{
-		auto p1 = (const char*)sort_list->requisit->get(sort_list->requisit->ptr(*((void**)v1)));
-		auto p2 = (const char*)sort_list->requisit->get(sort_list->requisit->ptr(*((void**)v2)));
-		if(!p1)
-			return 1;
-		if(!p2)
-			return -1;
-		return strcmp(p1, p2);
-	}
-
-	void update() override
-	{
-		assert(base);
-		maximum = 0;
-		auto pe = base->end();
-		for(auto p = base->begin(); p < pe; p += base->size)
-		{
-			if(maximum >= sizeof(source) / sizeof(source[0]))
-				break;
-			if(filter)
-			{
-				if(!requisit->match(p, filter))
-					continue;
-			}
-			source[maximum++] = p;
-		}
-		sort_list = this;
-		qsort(source, maximum, sizeof(source[0]), compare);
-	}
-
-};
-
 bool table::changing(void* object, const char* id, unsigned flags)
 {
 	char temp[4196]; temp[0] = 0;
@@ -842,7 +798,7 @@ bool table::changing(void* object, const char* id, unsigned flags)
 		auto base = bsdata::find(value_type->type);
 		if(base)
 		{
-			autocomple_xsbase aclist(base);
+			autocompletebs aclist(base);
 			te.records = &aclist;
 			aclist.hilite_rows = true;
 			result = te.editing(hot::element);

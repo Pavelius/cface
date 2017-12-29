@@ -277,6 +277,9 @@
     <ClCompile Include="draw_form.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
+    <ClCompile Include="draw_autocompletebs.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="acol.h">

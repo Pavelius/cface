@@ -2,7 +2,7 @@
 
 #pragma once
 
-struct xsfield;
+struct bsdata;
 
 namespace draw
 {
@@ -63,6 +63,11 @@ namespace draw
 			autocomplete(const bsreq* fields = 0, const char* name = "name") : listview(source, 0, fields, name), filter(0) {}
 			const char*		filter;
 			virtual void	update() = 0;
+		};
+		struct autocompletebs : autocomplete {
+			const bsdata*	base;
+			autocompletebs(const bsdata* base);
+			void			update() override;
 		};
 	}
 }

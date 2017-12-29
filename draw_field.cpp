@@ -16,7 +16,7 @@ static void callback_field() {
 	callback_field_next();
 }
 
-static bool editstart(const rect& rc, int id, unsigned flags, void(*callback_edit)()) {
+static bool editstart(const rect& rc, int id, unsigned flags, void(*callback_edit)(), void(*callback_setparam)(void*), void* param) {
 	if(!id || !callback_edit)
 		return false;
 	auto result = false;
@@ -43,6 +43,8 @@ static bool editstart(const rect& rc, int id, unsigned flags, void(*callback_edi
 	}
 	if(result) {
 		execute(callback_field);
+		if(callback_setparam)
+			callback_setparam(param);
 		callback_field_next = callback_edit;
 		hot::param = id;
 		hot::element = rc;
@@ -136,7 +138,7 @@ int draw::field(int x, int y, int width, int id, unsigned flags, const char* lab
 	auto a = area(rc);
 	bool enter_edit = false;
 	if(focused)
-		enter_edit = editstart(rc, id, flags, callback_edit);
+		enter_edit = editstart(rc, id, flags, callback_edit, callback_setparam, param);
 	if(!enter_edit) {
 		if(label) {
 			if(isfocused(flags))
