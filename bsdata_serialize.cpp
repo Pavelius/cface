@@ -168,7 +168,7 @@ struct bsparse {
 			if(value_data)
 				value_type = value_data->fields;
 			else
-				value_type = reference_type;
+				value_type = number_type;
 			if(value_object && value_data)
 				value = value_data->indexof(value_object);
 		} else if(create && hint_type && value_type == number_type) {

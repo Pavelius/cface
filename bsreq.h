@@ -50,7 +50,6 @@ struct bsreq
 };
 
 extern bsreq			number_type[2]; // standart integer value
-extern bsreq			reference_type[2]; // any reference (depends on value)
 extern bsreq			text_type[2]; // stantart zero ending string
 extern bsreq			bsreq_type[]; // requisit metadata
 

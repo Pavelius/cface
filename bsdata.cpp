@@ -76,11 +76,11 @@ bsdata* bsdata::findbyptr(const void* object) {
 }
 
 void* bsdata::find(const bsreq* id, const char* value) {
-	if(!id || id->type!=text_type)
+	if(!id || id->type != text_type)
 		return 0;
 	auto ps = (char*)id->ptr(data);
 	auto pe = ps + size*getcount();
-	for(; ps<pe; ps += size) {
+	for(; ps < pe; ps += size) {
 		auto ps_value = (const char*)id->get(ps);
 		if(!ps_value)
 			continue;

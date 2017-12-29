@@ -4,7 +4,6 @@ extern "C" int strcmp(const char* s1, const char* s2);
 
 bsreq number_type[2] = {{"number"}};
 bsreq text_type[2] = {{"text"}};
-bsreq reference_type[2] = {{"reference"}};
 bsreq bsreq_type[] = {
 	BSREQ(bsreq, id, text_type),
 	BSREQ(bsreq, offset, number_type),
