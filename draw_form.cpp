@@ -91,7 +91,7 @@ static void callback_up() {
 	auto f = hot_type->find(p->id);
 	if(!f)
 		return;
-	auto po = (void*)f->get(hot_object);
+	auto po = (void*)f->ptr(hot_object);
 	f->set(po, f->get(po) - 1);
 }
 
@@ -100,7 +100,7 @@ static void callback_down() {
 	auto f = hot_type->find(p->id);
 	if(!f)
 		return;
-	auto po = (void*)f->get(hot_object);
+	auto po = (void*)f->ptr(hot_object);
 	f->set(po, f->get(po) + 1);
 }
 
