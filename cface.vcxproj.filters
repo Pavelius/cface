@@ -223,9 +223,6 @@
     <ClCompile Include="draw_clipart.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
-    <ClCompile Include="draw_form.cpp">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClCompile>
     <ClCompile Include="draw_focusing.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
@@ -277,7 +274,7 @@
     <ClCompile Include="bsdoc.cpp">
       <Filter>Обработка данных</Filter>
     </ClCompile>
-    <ClCompile Include="draw_form_dialog.cpp">
+    <ClCompile Include="draw_form.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
   </ItemGroup>
@@ -427,9 +424,6 @@
       <Filter>Графика\Элементы Управления</Filter>
     </ClInclude>
     <ClInclude Include="draw_list.h">
-      <Filter>Графика\Элементы Управления</Filter>
-    </ClInclude>
-    <ClInclude Include="draw_form.h">
       <Filter>Графика\Элементы Управления</Filter>
     </ClInclude>
     <ClInclude Include="widget.h">

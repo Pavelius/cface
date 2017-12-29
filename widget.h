@@ -1,5 +1,6 @@
 #pragma once
 
+struct bsreq;
 namespace draw {
 	enum control_s : unsigned char {
 		NoWidget,
@@ -24,5 +25,6 @@ namespace draw {
 		widget&				settips(const char* v) { tips = v; return *this; }
 		widget&				setvalue(int v) { value = v; return *this; }
 	};
+	int						render(int x, int y, int width, const widget* e, void* object, bsreq* type);
 }
-extern struct bsreq widget_type[];
+extern bsreq				widget_type[];
