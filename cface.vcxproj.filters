@@ -277,6 +277,9 @@
     <ClCompile Include="bsdoc.cpp">
       <Filter>Обработка данных</Filter>
     </ClCompile>
+    <ClCompile Include="draw_form_dialog.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="acol.h">

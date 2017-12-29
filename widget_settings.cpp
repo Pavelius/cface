@@ -253,8 +253,7 @@ static struct widget_settings : control {
 					width = title + w;
 			}
 			sznum(temp, *((int*)e.data));
-			titletext(x, y, width, flags, e.name, title);
-			y += field(x, y, width, (int)&e, flags, temp, 0, callback_edit, 0, 0, callback_up, callback_down);
+			y += field(x, y, width, (int)&e, flags, temp, 0, e.name, title, callback_edit, 0, 0, callback_up, callback_down);
 			break;
 		case settings::Color:
 			titletext(x, y, width, flags, e.name, title);
@@ -265,11 +264,11 @@ static struct widget_settings : control {
 			break;
 		case settings::TextPtr:
 			titletext(x, y, width, flags, e.name, title);
-			y += field(x, y, width, (int)&e, flags, *((const char**)e.data), 0, callback_edit);
+			y += field(x, y, width, (int)&e, flags, *((const char**)e.data), 0, e.name, title, callback_edit);
 			break;
 		case settings::UrlFolderPtr:
 			titletext(x, y, width, flags, e.name, title);
-			y += field(x, y, width, (int)&e, flags, *((const char**)e.data), 0, callback_edit, 0, callback_choose_folder);
+			y += field(x, y, width, (int)&e, flags, *((const char**)e.data), 0, e.name, title, callback_edit, 0, callback_choose_folder);
 			break;
 		case settings::Control:
 			break;

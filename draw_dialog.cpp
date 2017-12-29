@@ -1,19 +1,7 @@
 #include "crt.h"
 #include "draw.h"
 
-static void element_event(int id, void(*callback)())
-{
-	if(callback)
-	{
-		draw::execute(callback);
-		hot::param = id;
-	}
-	else
-		draw::execute(id);
-}
-
-void draw::focusing(int id, unsigned& flags, rect rc)
-{
+void draw::focusing(int id, unsigned& flags, rect rc) {
 	if(flags&Disabled)
 		return;
 	addelement(id, rc);
@@ -21,29 +9,25 @@ void draw::focusing(int id, unsigned& flags, rect rc)
 		setfocus(id, true);
 	if(getfocus() == id)
 		flags |= Focused;
-	else if(area(rc) == AreaHilitedPressed && hot::key == MouseLeft && hot::pressed)
-	{
+	else if(area(rc) == AreaHilitedPressed && hot::key == MouseLeft && hot::pressed) {
 		setfocus(id, false);
 		hot::key = MouseLeft;
 	}
 }
 
-int	draw::button(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips, void(*callback)())
-{
+int	draw::button(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips, void(*callback)(), void(*callback_setparam)(void*), void* param) {
 	setposition(x, y, width);
 	struct rect rc = {x, y, x + width, y + 4 * 2 + draw::texth()};
 	focusing(id, flags, rc);
 	if(buttonh({x, y, x + width, rc.y2},
 		ischecked(flags), isfocused(flags), isdisabled(flags), true,
-		label, KeyEnter, false, tips))
-	{
-		element_event(id, callback);
+		label, KeyEnter, false, tips)) {
+		doevent(id, callback, callback_setparam, param);
 	}
 	return rc.height() + metrics::padding * 2;
 }
 
-int draw::radio(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips, void(*callback)())
-{
+int draw::radio(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips, void(*callback)(), void(*callback_setparam)(void*), void* param) {
 	draw::state push;
 	setposition(x, y, width);
 	rect rc = {x, y, x + width, y};
@@ -58,19 +42,17 @@ int draw::radio(int x, int y, int width, int id, unsigned flags, const char* lab
 	clipart(x + 2, y + imax((rc1.height() - 14) / 2, 0), width, flags, ":radio");
 	bool need_select = false;
 	auto a = draw::area(rc);
-	if((a == AreaHilited || a == AreaHilitedPressed) && !isdisabled(flags) && hot::key == MouseLeft)
-	{
+	if((a == AreaHilited || a == AreaHilitedPressed) && !isdisabled(flags) && hot::key == MouseLeft) {
 		if(!hot::pressed)
 			need_select = true;
 	}
-	if(isfocused(flags))
-	{
+	if(isfocused(flags)) {
 		draw::rectx({rc1.x1, rc1.y1, rc1.x2, rc1.y2}, draw::fore);
 		if(!isdisabled(flags) && hot::key == KeySpace)
 			need_select = true;
 	}
 	if(need_select)
-		element_event(id, callback);
+		doevent(id, callback, callback_setparam, param);
 	rc = rc1; rc.offset(2);
 	draw::text(rc, label);
 	if(tips && a == AreaHilited)
@@ -78,8 +60,7 @@ int draw::radio(int x, int y, int width, int id, unsigned flags, const char* lab
 	return rc1.height() + metrics::padding * 2;
 }
 
-int draw::checkbox(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips, void(*callback)())
-{
+int draw::checkbox(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips, void(*callback)(), void(*callback_setparam)(void*), void* param) {
 	draw::state push;
 	setposition(x, y, width);
 	rect rc = {x, y, x + width, y};
@@ -93,19 +74,17 @@ int draw::checkbox(int x, int y, int width, int id, unsigned flags, const char* 
 	decortext(flags);
 	auto a = draw::area(rc);
 	auto need_value = false;
-	if((a == AreaHilited || a == AreaHilitedPressed) && !isdisabled(flags) && hot::key == MouseLeft)
-	{
+	if((a == AreaHilited || a == AreaHilitedPressed) && !isdisabled(flags) && hot::key == MouseLeft) {
 		if(!hot::pressed)
 			need_value = true;
 	}
-	if(isfocused(flags))
-	{
+	if(isfocused(flags)) {
 		draw::rectx({rc1.x1 - 2, rc1.y1 - 1, rc1.x2 + 2, rc1.y2 + 1}, draw::fore);
 		if(hot::key == KeySpace)
 			need_value = true;
 	}
 	if(need_value)
-		element_event(id, callback);
+		doevent(id, callback, callback_setparam, param);
 	draw::text(rc1, label);
 	if(tips && a == AreaHilited)
 		tooltips(tips);

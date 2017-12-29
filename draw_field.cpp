@@ -8,23 +8,20 @@
 using namespace draw;
 
 static int		edit_command;
-static void		(*callback_field_next)();
+static void(*callback_field_next)();
 
-static void callback_field()
-{
+static void callback_field() {
 	if(edit_command)
 		hot::key = edit_command;
 	callback_field_next();
 }
 
-static bool editstart(const rect& rc, int id, unsigned flags, void(*callback_edit)())
-{
+static bool editstart(const rect& rc, int id, unsigned flags, void(*callback_edit)()) {
 	if(!id || !callback_edit)
 		return false;
 	auto result = false;
 	edit_command = 0;
-	switch(hot::key&CommandMask)
-	{
+	switch(hot::key&CommandMask) {
 	case MouseMove:
 	case InputIdle:
 	case InputTimer:
@@ -44,8 +41,7 @@ static bool editstart(const rect& rc, int id, unsigned flags, void(*callback_edi
 		result = (hot::key&CommandMask) >= KeyLeft;
 		break;
 	}
-	if(result)
-	{
+	if(result) {
 		execute(callback_field);
 		callback_field_next = callback_edit;
 		hot::param = id;
@@ -82,76 +78,67 @@ static bool editstart(const rect& rc, int id, unsigned flags, void(*callback_edi
 //	//data.set(result.value);
 //}
 
-int draw::field(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips,
+static void header(int& x, int y, int& width, unsigned flags, const char* label, int title) {
+	if(!title)
+		title = 100;
+	char temp[1024];
+	zcpy(temp, label, sizeof(temp) - 2);
+	zcat(temp, ":");
+	text(x, y + 4, temp);
+	x += title;
+	width -= title;
+}
+
+int draw::field(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips, const char* header_label, int header_width,
 	void(*callback_edit)(),
 	void(*callback_list)(),
 	void(*callback_choose)(),
 	void(*callback_up)(),
 	void(*callback_down)(),
-	void(*callback_open)())
-{
+	void(*callback_open)(),
+	void(*callback_setparam)(void*), void* param) {
 	draw::state push;
 	setposition(x, y, width);
-	rect rc = {x, y, x + width, y + draw::texth() + 8};
 	decortext(flags);
+	if(header_label && header_label[0])
+		header(x, y, width, flags, header_label, header_width);
+	rect rc = {x, y, x + width, y + draw::texth() + 8};
 	if(!isdisabled(flags))
 		draw::rectf(rc, colors::window);
 	focusing(id, flags, rc);
 	bool focused = isfocused(flags);
 	draw::rectb(rc, colors::border);
-	if(callback_list)
-	{
+	if(callback_list) {
 		if(addbutton(rc, focused, ":dropdown", F4, "Показать список"))
-		{
-			draw::execute(callback_list);
-			hot::param = id;
-		}
+			doevent(id, callback_list, callback_setparam, param);
 	}
-	if(callback_choose)
-	{
+	if(callback_choose) {
 		if(addbutton(rc, focused, "...", F4, "Выбрать значение"))
-		{
-			draw::execute(callback_choose);
-			hot::param = id;
-		}
+			doevent(id, callback_choose, callback_setparam, param);
 	}
-	if(callback_down || callback_up)
-	{
+	if(callback_down || callback_up) {
 		auto result = addbutton(rc, focused, "+", KeyUp, "Увеличить", "-", KeyDown, "Уменьшить");
-		switch(result)
-		{
+		switch(result) {
 		case 1:
 			if(callback_down)
-			{
-				execute(callback_down);
-				hot::param = id;
-			}
+				doevent(id, callback_down, callback_setparam, param);
 			break;
 		case 2:
 			if(callback_up)
-			{
-				execute(callback_up);
-				hot::param = id;
-			}
+				doevent(id, callback_up, callback_setparam, param);
 			break;
 		}
 	}
-	if(callback_open)
-	{
+	if(callback_open) {
 		if(addbutton(rc, focused, "...", F4, "Выбрать"))
-		{
-			execute(callback_open);
-			hot::param = id;
-		}
+			doevent(id, callback_open, callback_setparam, param);
 	}
 	auto a = area(rc);
 	bool enter_edit = false;
 	if(focused)
 		enter_edit = editstart(rc, id, flags, callback_edit);
-	if(!enter_edit)
-	{
-		if(label)
-		{
+	if(!enter_edit) {
+		if(label) {
 			if(isfocused(flags))
 				draw::texte(rc + metrics::edit, label, flags, 0, zlen(label));
 			else

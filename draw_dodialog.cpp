@@ -52,3 +52,13 @@ void draw::execute(void(*proc)())
 	draw::execute(InputExecute);
 	current_execute = proc;
 }
+
+void draw::doevent(int id, void(*callback)(), void(*callback_setparam)(void*), void* param) {
+	if(callback) {
+		draw::execute(callback);
+		hot::param = id;
+		if(callback_setparam)
+			callback_setparam(param);
+	} else
+		draw::execute(id);
+}
