@@ -87,24 +87,28 @@ static void opentable(io::stream& e, int columns)
 	e << ">";
 }
 
-//static void write_xsref(io::stream& e, xsref& xr, const xsfield* f)
-//{
-//	for(unsigned i = 0; i < f->count; i++)
-//	{
-//		if(f->type == number_type)
-//		{
-//			if(i > 0)
-//				e << ", ";
-//			e << xr.get(f->id, i);
-//		}
-//		else if(f->type == text_type)
-//		{
-//			if(i > 0)
-//				e << ", ";
-//			e << "\"" << (const char*)xr.get(f->id, i) << "\"";
-//		}
-//		else if(f->reference)
-//		{
+static void write_req(io::stream& e, void* object, const bsreq* f)
+{
+	for(unsigned i = 0; i < f->count; i++)
+	{
+		if(f->type == number_type)
+		{
+			if(i > 0)
+				e << ", ";
+			e << f->get(f->ptr(object, i));
+		}
+		else if(f->type == text_type)
+		{
+			if(i > 0)
+				e << ", ";
+			auto value = (const char*)f->get(f->ptr(object, i));
+			if(value && value[0])
+				e << "\"" << value << "\"";
+			else
+				e << "\"\"";
+		}
+		else if(f->reference)
+		{
 //			auto pid = (const char*)xr.getr(f->id, i).get("id");
 //			if(pid)
 //			{
@@ -114,9 +118,9 @@ static void opentable(io::stream& e, int columns)
 //			}
 //			else
 //				break;
-//		}
-//		else
-//		{
+		}
+		else
+		{
 //			auto xp = xr.getr(f->id, i);
 //			for(auto pf = xp.fields; *pf; pf++)
 //			{
@@ -124,34 +128,36 @@ static void opentable(io::stream& e, int columns)
 //					e << ", ";
 //				write_xsref(e, xp, pf);
 //			}
-//		}
-//	}
-//}
-//
-//static void write_xsref(io::stream& e, xsref& xr)
-//{
-//	auto m = xsbase::find(xr.fields);
-//	if(!m)
-//		return;
-//	e << "#" << m->id;
-//	if(xr.fields->find("id"))
-//		e << " " << (const char*)xr.get("id");
-//	else
-//		e << " " << m->indexof(xr.object);
-//	for(auto f = xr.fields; *f; f++)
-//	{
-//		if(strcmp(f->id, "id") == 0)
-//			continue;
-//		if(strcmp(f->id, "text") == 0)
-//			continue;
-//		if(!xr.get(f->id))
-//			continue;
-//		e << " " << f->id << "(";
-//		write_xsref(e, xr, f);
-//		e << ")";
-//	}
-//	e << "\n\r";
-//}
+		}
+	}
+}
+
+static void write_ref(io::stream& e, void* object, const bsreq* type)
+{
+	auto m = bsdata::find(type);
+	if(!m)
+		return;
+	e << "#" << m->id;
+	auto f = type->find("id");
+	if(f)
+		e << " " << (const char*)f->get(f->ptr(object));
+	else
+		e << " " << m->indexof(object);
+	for(auto f = type; *f; f++)
+	{
+		if(strcmp(f->id, "id") == 0)
+			continue;
+		if(strcmp(f->id, "text") == 0)
+			continue;
+		auto value = f->get(f->ptr(object));
+		if(!value)
+			continue;
+		e << " " << f->id << "(";
+		write_req(e, object, f);
+		e << ")";
+	}
+	e << "\n\r";
+}
 
 static void write_examples(io::stream& e, bsdata& m)
 {
@@ -166,11 +172,11 @@ static void write_examples(io::stream& e, bsdata& m)
 		start++;
 	for(int i = start; i < 4; i++)
 	{
-		//auto xr = m.getref(i);
-		//if(!xr.object)
-		//	break;
+		auto object = m.get(i);
+		if(!object)
+			break;
 		opentag(e, "code");
-		//write_xsref(e, xr);
+		write_ref(e, object, m.fields);
 		closetag(e, "code");
 		opentag(e, "br");
 	}
