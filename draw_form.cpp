@@ -7,6 +7,7 @@
 
 using namespace draw;
 
+static bool				break_modal;
 static void*			hot_object;
 static const bsreq*		hot_type;
 
@@ -110,10 +111,7 @@ struct dlgform {
 	const bsreq*	type;
 
 	unsigned getflags(const widget& e) const {
-		unsigned result = e.flags;
-		if(getfocus() == (int)&e)
-			result |= Focused;
-		return result;
+		return e.flags;
 	}
 
 	int getdata(const widget& e) const {
@@ -277,7 +275,8 @@ struct dlgform {
 	}
 
 	int button(int x, int y, int width, const widget& e) {
-		return draw::button(x, y, width, (int)&e, getflags(e), e.label, e.tips, 0);
+		return draw::button(x, y, width, (int)&e, getflags(e), e.label, e.tips,
+			e.callback, setparam, this);
 	}
 
 	int renderno(int x, int y, int width, const widget& e) {
@@ -305,7 +304,45 @@ static void setparam(void* param) {
 	hot_type = ((dlgform*)param)->type;
 }
 
-int	draw::render(int x, int y, int width, const widget* p, void* object, bsreq* type) {
+int	draw::render(int x, int y, int width, const widget* p, void* object, const bsreq* type) {
 	dlgform e(object, type);
+	if(p->width)
+		return e.horizontal(x, y, width, p);
 	return e.vertical(x, y, width, p);
+}
+
+bool draw::ismodal() {
+	if(!break_modal)
+		return true;
+	break_modal = false;
+	return false;
+}
+
+void draw::breakmodal() {
+	break_modal = true;
+}
+
+void draw::buttoncancel() {
+	breakmodal();
+}
+
+void draw::open(const char* title, int width, int height, const widget* widgets, void* object, const bsreq* type) {
+	window dc(-1, -1, width, height, WFMinmax | WFResize);
+	setcaption(title);
+	while(ismodal()) {
+		rect rc = {0, 0, getwidth(), getheight()};
+		rectf(rc, colors::form);
+		fore = colors::text;
+		rc.y1 += render(rc.x1, rc.y1, rc.width(), widgets, object, type);
+		int id = input();
+		if(!dodialog(id)) {
+			switch(id) {
+			case 0:
+			case KeyEscape:
+				return;
+			default:
+				break;
+			}
+		}
+	}
 }
