@@ -21,7 +21,8 @@ int	draw::button(int x, int y, int width, int id, unsigned flags, const char* la
 	focusing(id, flags, rc);
 	if(buttonh({x, y, x + width, rc.y2},
 		ischecked(flags), isfocused(flags), isdisabled(flags), true,
-		label, KeyEnter, false, tips)) {
+		label, 0, false, tips)
+		|| (isfocused(flags) && hot::key==KeyEnter)) {
 		doevent(id, callback, callback_setparam, param);
 	}
 	return rc.height() + metrics::padding * 2;

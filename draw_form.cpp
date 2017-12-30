@@ -275,6 +275,9 @@ struct dlgform {
 	}
 
 	int button(int x, int y, int width, const widget& e) {
+		// Hot keys must work, if we want this
+		if(e.value && hot::key == e.value)
+			doevent((int)&e, e.callback, setparam, this);
 		return draw::button(x, y, width, (int)&e, getflags(e), e.label, e.tips,
 			e.callback, setparam, this);
 	}

@@ -6,6 +6,10 @@ void dlgmsg(const char* title, const char* text)
 	MessageBoxA(GetActiveWindow(), text, title, 0);
 }
 
+void dlginf(const char* title, const char* text) {
+	MessageBoxA(GetActiveWindow(), text, title, MB_OK|MB_ICONINFORMATION);
+}
+
 void dlgerr(const char* title, const char* format, ...)
 {
 	char temp[4096];

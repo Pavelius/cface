@@ -64,6 +64,7 @@ void								printc(const char* format, ...); // Analog prinf() but use format of
 void								printcnf(const char* text); // Write to console this text
 bool								dlgask(const char* title, const char* text); // Yes/No system dialog
 void								dlgerr(const char* title, const char* format, ...); // Show error.
+void								dlginf(const char* title, const char* text); // System message dialog
 void								dlgmsg(const char* title, const char* text); // System message dialog
 const char*							psidn(const char* p, char* result, char* result_end); // safe parse identifier name from string
 inline const char*					psidn(const char* p, char* result) { return psidn(p, result, result + 128); }
