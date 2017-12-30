@@ -178,9 +178,6 @@
     <ClCompile Include="dice.cpp">
       <Filter>Поддержка</Filter>
     </ClCompile>
-    <ClCompile Include="getsid.cpp">
-      <Filter>Поддержка</Filter>
-    </ClCompile>
     <ClCompile Include="grammar.cpp">
       <Filter>Поддержка</Filter>
     </ClCompile>
@@ -263,9 +260,6 @@
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
     <ClCompile Include="bsreq_data.cpp">
-      <Filter>Обработка данных</Filter>
-    </ClCompile>
-    <ClCompile Include="bsdata_serialize_bin.cpp">
       <Filter>Обработка данных</Filter>
     </ClCompile>
     <ClCompile Include="io_text.cpp">

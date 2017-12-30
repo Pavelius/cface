@@ -7,7 +7,7 @@
 
 using namespace draw;
 
-static int		edit_command;
+static int edit_command;
 static void(*callback_field_next)();
 
 static void callback_field() {
@@ -51,34 +51,6 @@ static bool editstart(const rect& rc, int id, unsigned flags, void(*callback_edi
 	}
 	return result;
 }
-
-//static void callback_dropdown_list()
-//{
-//	static xsfield widget_type[] = {
-//		BSREQ(widget, label, text_type),
-//		{0}
-//	};
-//	auto childs = edit_childs;
-//	if(!childs)
-//		return;
-//	amem source((void*)childs, sizeof(childs[0]), zlen(childs));
-//	draw::controls::table source_table(source);
-//	source_table.fields = widget_type;
-//	source_table.pixels_per_line = texth() + 8;
-//	source_table.addcol(WidgetField | ColumnSizeAuto, "label", "Заголовок");
-//	source_table.show_header = false;
-//	source_table.no_change_content = true;
-//	source_table.no_change_order = true;
-//	source_table.no_change_count = true;
-//	source_table.hilite_rows = true;
-//	source_table.focused = true;
-//	if(!source_table.open({hot::element.x1, hot::element.y2 + 1,
-//		hot::element.x2,
-//		hot::element.y2 + (int)source.getcount()*source_table.pixels_per_line + 2}))
-//		return;
-//	auto& result = childs[source_table.current];
-//	//data.set(result.value);
-//}
 
 static void header(int& x, int y, int& width, unsigned flags, const char* label, int title) {
 	if(!title)
