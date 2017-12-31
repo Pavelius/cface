@@ -8,6 +8,7 @@
 using namespace draw;
 
 static bool				break_modal;
+static int				break_result;
 static void*			hot_object;
 static const bsreq*		hot_type;
 
@@ -321,15 +322,16 @@ bool draw::ismodal() {
 	return false;
 }
 
-void draw::breakmodal() {
+void draw::breakmodal(int result) {
 	break_modal = true;
+	break_result = result;
 }
 
 void draw::buttoncancel() {
-	breakmodal();
+	breakmodal(0);
 }
 
-void draw::open(const char* title, int width, int height, const widget* widgets, void* object, const bsreq* type) {
+int draw::open(const char* title, int width, int height, const widget* widgets, void* object, const bsreq* type) {
 	window dc(-1, -1, width, height, WFMinmax | WFResize);
 	setcaption(title);
 	while(ismodal()) {
@@ -342,10 +344,12 @@ void draw::open(const char* title, int width, int height, const widget* widgets,
 			switch(id) {
 			case 0:
 			case KeyEscape:
-				return;
+				buttoncancel();
+				break;
 			default:
 				break;
 			}
 		}
 	}
+	return break_result;
 }

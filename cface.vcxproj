@@ -164,7 +164,7 @@
     <ClCompile Include="base.cpp" />
     <ClCompile Include="bitops.cpp" />
     <ClCompile Include="bsdata.cpp" />
-    <ClCompile Include="bsdata_serialize.cpp" />
+    <ClCompile Include="bsparse.cpp" />
     <ClCompile Include="bsreq.cpp" />
     <ClCompile Include="bstream.cpp" />
     <ClCompile Include="calculator.cpp" />
@@ -257,6 +257,7 @@
     <ClInclude Include="amem.h" />
     <ClInclude Include="archive.h" />
     <ClInclude Include="bsdata.h" />
+    <ClInclude Include="bsparse.h" />
     <ClInclude Include="bsreq.h" />
     <ClInclude Include="collections.h" />
     <ClInclude Include="draw_list.h" />

@@ -250,9 +250,6 @@
     <ClCompile Include="bsdata.cpp">
       <Filter>Обработка данных</Filter>
     </ClCompile>
-    <ClCompile Include="bsdata_serialize.cpp">
-      <Filter>Обработка данных</Filter>
-    </ClCompile>
     <ClCompile Include="bsreq.cpp">
       <Filter>Обработка данных</Filter>
     </ClCompile>
@@ -273,6 +270,9 @@
     </ClCompile>
     <ClCompile Include="draw_autocompletebs.cpp">
       <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="bsparse.cpp">
+      <Filter>Обработка данных</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -451,6 +451,9 @@
       <Filter>Системные</Filter>
     </ClInclude>
     <ClInclude Include="bsdoc.h">
+      <Filter>Обработка данных</Filter>
+    </ClInclude>
+    <ClInclude Include="bsparse.h">
       <Filter>Обработка данных</Filter>
     </ClInclude>
   </ItemGroup>

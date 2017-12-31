@@ -263,11 +263,9 @@ static struct widget_settings : control {
 			y += button(x, y, width, (int)&e, flags, getname(temp, e), 0, callback_button);
 			break;
 		case settings::TextPtr:
-			titletext(x, y, width, flags, e.name, title);
 			y += field(x, y, width, (int)&e, flags, *((const char**)e.data), 0, e.name, title, callback_edit);
 			break;
 		case settings::UrlFolderPtr:
-			titletext(x, y, width, flags, e.name, title);
 			y += field(x, y, width, (int)&e, flags, *((const char**)e.data), 0, e.name, title, callback_edit, 0, callback_choose_folder);
 			break;
 		case settings::Control:

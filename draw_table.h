@@ -49,18 +49,18 @@ namespace draw
 			//
 			table(collection& e);
 			//
-			unsigned			add(bool run);
-			unsigned			addcopy(bool run);
+			virtual unsigned	add(bool run);
+			virtual unsigned	addcopy(bool run);
 			widget&				addcol(unsigned flags, const char* id, const char* label = 0, int width = -1);
 			virtual void*		addrow(const void* copy) { return rows.add(copy); }
 			virtual void		background(rect& rc) override;
 			virtual bool		canedit(int index, const widget& e) const;
-			unsigned			change(bool run);
+			virtual unsigned	change(bool run);
 			virtual bool		changing(void* object, const char* id, unsigned flags);
 			void				clear();
 			virtual void		contextmenu() override;
-			unsigned			copy(bool run);
-			unsigned			exportdata(bool run);
+			virtual unsigned	copy(bool run);
+			virtual unsigned	exportdata(bool run);
 			int					find(const char* id, const char* text, int start);
 			widget*				findcol(const char* id);
 			command*			getcommands() const override { return commands; }
@@ -77,10 +77,10 @@ namespace draw
 			void				renderimage(rect rc, int index, unsigned flags, void* data, const widget& e) const;
 			void				renderno(rect rc, int index, unsigned flags, void* data, const widget & e) const;
 			void				linenumber(rect rc, int index, unsigned flags, void * data, const widget & e) const;
-			unsigned			movedown(bool run);
-			unsigned			moveup(bool run);
+			virtual unsigned	movedown(bool run);
+			virtual unsigned	moveup(bool run);
 			virtual void		prerender() override;
-			unsigned			remove(bool run);
+			virtual unsigned	remove(bool run);
 			void				reposition(int width);
 			virtual void		row(rect rc, int index) override;
 			virtual bool		selecting(rect rc, int index, point mouse) override;

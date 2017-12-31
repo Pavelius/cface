@@ -39,4 +39,13 @@ struct agrw
 		return result;
 	}
 
+	int indexof(const T* value) const {
+		auto result = 0;
+		for(auto p = this; *p; p = p->next) {
+			if(value >= p->data && value <= p->data[p->count - 1])
+				return result + (value - p->data);
+		}
+		return -1;
+	}
+
 };

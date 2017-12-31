@@ -27,12 +27,11 @@ struct bsdata : collection
 	static bsdata*		find(const bsreq* id);
 	void*				find(const bsreq* id, const char* value);
 	static bsdata*		findbyptr(const void* object);
-	static void			parse(const char* value);
 	static void			read(const char* url);
 	void				remove(int index, int count = 1) override;
 	void				setcount(unsigned value) { count = value; }
 	void				swap(int i1, int i2) override;
-	static void			write(const char* url, const char** baseids);
+	static void			write(const char* url, const char** baseids, bool(*comparer)(void* object, const bsreq* type) = 0);
 	static void			write(const char* url, const char* baseid);
 private:
 	unsigned			maximum_count;

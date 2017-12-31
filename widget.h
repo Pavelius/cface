@@ -28,7 +28,7 @@ namespace draw {
 	void					buttoncancel();
 	bool					ismodal();
 	int						render(int x, int y, int width, const widget* e, void* object, const bsreq* type);
-	void					open(const char* title, int width, int height, const struct widget* widgets, void* object, const bsreq* type);
-	void					breakmodal();
+	int						open(const char* title, int width, int height, const struct widget* widgets, void* object, const bsreq* type);
+	void					breakmodal(int result);
 }
 extern bsreq				widget_type[];

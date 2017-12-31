@@ -39,8 +39,10 @@ struct bsreq
 	operator bool() const { return id != 0; }
 	//
 	const bsreq*		find(const char* name) const;
+	const bsreq*		find(const char* name, const bsreq* type) const;
 	int					get(const void* p) const;
 	const char*			getdata(char* result, const char* id, const void* object, bool tobuffer) const;
+	const bsreq*		getkey() const;
 	bool				issimple() const { return type == 0; }
 	bool				match(const void* p, const char* name) const;
 	inline const char*	ptr(const void* data) const { return (const char*)data + offset; }

@@ -15,12 +15,33 @@ bsreq bsreq_type[] = {
 	{0}
 };
 
+const bsreq* bsreq::getkey() const {
+	auto f = find("id", text_type);
+	if(!f)
+		f = find("name", text_type);
+	if(!f)
+		f = find("text", text_type);
+	return f;
+}
+
 const bsreq* bsreq::find(const char* name) const
 {
 	if(!this)
 		return 0;
 	for(auto p = this; p->id; p++)
 	{
+		if(strcmp(p->id, name) == 0)
+			return p;
+	}
+	return 0;
+}
+
+const bsreq* bsreq::find(const char* name, const bsreq* type) const {
+	if(!this)
+		return 0;
+	for(auto p = this; p->id; p++) {
+		if(p->type != type)
+			continue;
 		if(strcmp(p->id, name) == 0)
 			return p;
 	}
