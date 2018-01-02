@@ -9,8 +9,7 @@ struct archive {
 	io::stream&		source;
 	bool			writemode;
 
-	archive(io::stream& source, bool writemode) : source(source), writemode(writemode) {
-	}
+	archive(io::stream& source, bool writemode) : source(source), writemode(writemode) {}
 
 	// All simple types and requisites
 	template<class T> void set(T& value) {
@@ -32,7 +31,14 @@ struct archive {
 		for(auto& e : value)
 			set(e);
 	}
-	
+
+	// Dynamic data collection
+	template<typename T> void set(aref<T>& value) {
+		set(value.count);
+		for(auto& e : value)
+			set(e);
+	}
+
 	// Strings
 	template<> void set<const char*>(const char*& e) {
 		if(writemode) {
@@ -41,8 +47,8 @@ struct archive {
 			if(len)
 				source.write(e, len);
 		} else {
-			unsigned len;
 			char temp[128 * 128];
+			unsigned len;
 			source.read(&len, sizeof(len));
 			e = 0;
 			if(len) {
