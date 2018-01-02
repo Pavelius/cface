@@ -71,15 +71,9 @@ void menu::add(const char* id, draw::control* object)
 		char temp[512];
 		zcpy(temp, pe->label, sizeof(temp) - 1);
 		auto ps = zend(temp);
-		for(auto key : pe->key)
-		{
-			if(!key)
-				break;
-			if(ps[0]==0)
-				zcat(ps, "\t");
-			else
-				zcat(ps, ", ");
-			key2str(zend(ps), key);
+		if(pe->key) {
+			zcat(ps, "\t");
+			key2str(zend(ps), pe->key);
 		}
 		add(temp, (unsigned)pe, (object->*pe->type)(false) == Disabled, false);
 	}

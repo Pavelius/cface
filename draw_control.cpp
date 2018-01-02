@@ -200,9 +200,9 @@ int control::render(int x, int y, int width, unsigned flags, const control::comm
 	if(areb(rc)) {
 		auto name = e.label;
 		if(name) {
-			if(e.key[0]) {
+			if(e.key) {
 				char temp[128];
-				tooltips("%1 (%2)", name, key2str(temp, e.key[0]));
+				tooltips("%1 (%2)", name, key2str(temp, e.key));
 			} else
 				tooltips(name);
 		}
@@ -259,7 +259,7 @@ const control::command* control::command::find(int id) const {
 			auto v = p->child->find(id);
 			if(v)
 				return v;
-		} else if(p->key[0] == id || p->key[1] == id)
+		} else if(p->key == id)
 			return p;
 		p++;
 	}

@@ -10,8 +10,8 @@ enum dock_s {
 	DockBottom, DockWorkspace,
 };
 enum command_view_s {
-	ViewIcon, ViewIconAndText, ViewText, HideToolbar,
-	HideCommand,
+	ViewIcon, ViewIconAndText, ViewText,
+	HideToolbar, HideCommand,
 };
 
 struct bsreq;
@@ -38,7 +38,7 @@ namespace draw
 			const char*			label;
 			proc				type;
 			command*			child;
-			unsigned			key[2];
+			unsigned			key;
 			int					icon;
 			command_view_s		view;
 			//
