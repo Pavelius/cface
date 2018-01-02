@@ -54,14 +54,6 @@ const control::plugin* control::plugin::find(const char* id) {
 	return 0;
 }
 
-char* control::getname(char* result) const {
-	return result;
-}
-
-char* control::getdescription(char* result) const {
-	return result;
-}
-
 color control::getcolor(color normal) const {
 	if(disabled)
 		return normal.mix(colors::window);
@@ -166,7 +158,7 @@ void control::view(rect rc, bool show_toolbar) {
 	// Поэтому только начиная отсюда она имеет корректное значение.
 	nonclient(rc);
 	if(rt.height())
-		render(rt.x1, rt.y1, rt.width(), commands);
+		toolbar(rt.x1, rt.y1, rt.width(), commands);
 }
 
 //int wdt_separator(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
@@ -186,9 +178,9 @@ void control::invoke(const char* name) const {
 	current_name = name;
 }
 
-int control::render(int x, int y, int width, unsigned flags, const control::command& e) const {
+int control::tool(int x, int y, int width, unsigned flags, const control::command& e) const {
 	rect rc = {x, y, x + width, y + width};
-	if(tool(rc, isdisabled(flags), false, true))
+	if(draw::tool(rc, isdisabled(flags), false, true))
 		invoke(e.id);
 	switch(e.view) {
 	case ViewIcon:
@@ -211,7 +203,7 @@ int control::render(int x, int y, int width, unsigned flags, const control::comm
 	return width;
 }
 
-int	control::render(int x, int y, int width, const control::command* commands) const {
+int	control::toolbar(int x, int y, int width, const control::command* commands) const {
 	if(!commands)
 		return 0;
 	if(!metrics::toolbar)
@@ -228,8 +220,7 @@ int	control::render(int x, int y, int width, const control::command* commands) c
 			// wdt_dropdown(x, y, 6, "toolbar_dropdown", 0, 0, 0, 0, source, 0, p, 0);
 			break;
 		}
-		render(x, y, width, (((control*)this)->*p->type)(false), *p);
-		x += width;
+		x += tool(x, y, width, (((control*)this)->*p->type)(false), *p);
 	}
 	return height + metrics::padding * 2;
 }

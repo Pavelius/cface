@@ -29,5 +29,5 @@ void control::viewf(rect rc, bool show_toolbar) {
 	// Поэтому только начиная отсюда она имеет корректное значение.
 	nonclient(rc);
 	if(rt.height())
-		render(rt.x1, rt.y1, rt.width(), commands);
+		toolbar(rt.x1, rt.y1, rt.width(), commands);
 }
