@@ -73,6 +73,7 @@ namespace draw
 		virtual const bsreq*	getmeta() const { return 0; }
 		virtual char*			getname(char* result) const { return result; }
 		virtual void*			getobject() { return this; }
+		virtual void			icon(int x, int y, bool disabled, const command& e) const;
 		void					invoke(const char* name) const;
 		virtual void			inputidle() {}
 		virtual void			inputsymbol(int id, int symbol) {}
@@ -104,7 +105,6 @@ namespace draw
 		bool					open(const char* title, unsigned state, int width, int height);
 		virtual void			prerender() {}
 		virtual void			redraw(rect rc) {}
-		virtual int				tool(int x, int y, int width, unsigned flags, const command& e) const;
 		int						toolbar(int x, int y, int width, const command* commands) const;
 		void					view(rect rc, bool show_toolbar = false);
 		void					viewf(rect rc, bool show_toolbar = false);

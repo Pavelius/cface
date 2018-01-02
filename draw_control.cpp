@@ -178,29 +178,8 @@ void control::invoke(const char* name) const {
 	current_name = name;
 }
 
-int control::tool(int x, int y, int width, unsigned flags, const control::command& e) const {
-	rect rc = {x, y, x + width, y + width};
-	if(draw::tool(rc, isdisabled(flags), false, true))
-		invoke(e.id);
-	switch(e.view) {
-	case ViewIcon:
-		image(rc.x1 + rc.width() / 2, rc.y1 + rc.height() / 2,
-			metrics::toolbar, e.icon, 0,
-			(isdisabled(flags)) ? 0x80 : 0xFF);
-		break;
-	}
-	if(areb(rc)) {
-		auto name = e.label;
-		if(name) {
-			if(e.key) {
-				char temp[128];
-				tooltips("%1 (%2)", name, key2str(temp, e.key));
-			} else
-				tooltips(name);
-		}
-		statusbar("Выполнить команду '%1'", name);
-	}
-	return width;
+void control::icon(int x, int y, bool disabled, const control::command& e) const {
+	image(x, y, metrics::toolbar, e.icon, 0, disabled ? 0x80 : 0xFF);
 }
 
 int	control::toolbar(int x, int y, int width, const control::command* commands) const {
@@ -215,12 +194,38 @@ int	control::toolbar(int x, int y, int width, const control::command* commands) 
 			continue;
 		if(p->view == HideCommand)
 			continue;
-		auto width = height;
+		auto width = 0;
+		if(p->view == ViewIcon || p->view == ViewIconAndText)
+			width += height;
+		if(p->view == ViewIconAndText || p->view == ViewText) {
+			auto w = draw::textw(p->label);
+			width += metrics::padding * 2 + w;
+		}
 		if(x + width > x2) {
 			// wdt_dropdown(x, y, 6, "toolbar_dropdown", 0, 0, 0, 0, source, 0, p, 0);
 			break;
 		}
-		x += tool(x, y, width, (((control*)this)->*p->type)(false), *p);
+		bool disabled = isdisabled((((control*)this)->*p->type)(false));
+		rect rc = {x, y, x + width, y + height};
+		if(areb(rc)) {
+			auto name = p->label;
+			if(name) {
+				if(p->key) {
+					char temp[128];
+					tooltips("%1 (%2)", name, key2str(temp, p->key));
+				} else
+					tooltips(name);
+			}
+			statusbar("Выполнить команду '%1'", name);
+		}
+		if(draw::tool(rc, disabled, false, true))
+			invoke(p->id);
+		if(p->view == ViewIcon || p->view == ViewIconAndText) {
+			icon(x + height / 2, y + height / 2, disabled, *p);
+			x += height;
+		}
+		if(p->view == ViewText || p->view == ViewIconAndText)
+			draw::textc(x, y + (height-draw::texth())/2, rc.x2 - x, p->label);
 	}
 	return height + metrics::padding * 2;
 }
