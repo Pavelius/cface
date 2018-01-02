@@ -199,6 +199,9 @@ namespace draw {
 	void					bezierseg(int x0, int y0, int x1, int y1, int x2, int y2);
 	void					blit(surface& dest, int x, int y, int width, int height, unsigned flags, surface& dc, int xs, int ys);
 	void					blit(surface& dest, int x, int y, int width, int height, unsigned flags, surface& source, int x_source, int y_source, int width_source, int height_source);
+	void					breakmodal(int result);
+	void					buttoncancel();
+	void					buttonok();
 	extern surface*			canvas;
 	void					circle(int x, int y, int radius);
 	void					circle(int x, int y, int radius, const color c1);
@@ -216,6 +219,7 @@ namespace draw {
 	int						getfocus();
 	int						getheight();
 	int						getnext(int id, int key);
+	int						getresult();
 	int						getwidth();
 	window*					getwindow();
 	void					glyph(int x, int y, int sym, unsigned flags);
@@ -228,6 +232,7 @@ namespace draw {
 	inline bool				ischecked(unsigned flags) { return (flags&Checked) != 0; }
 	inline bool				isdisabled(unsigned flags) { return (flags&Disabled) != 0; }
 	inline bool				isfocused(unsigned flags) { return (flags&Focused) != 0; }
+	bool					ismodal();
 	void					image(int x, int y, const sprite* e, int id, int flags, unsigned char alpha = 0xFF);
 	void					image(int x, int y, const sprite* e, int id, int flags, unsigned char alpha, color* pal);
 	void					initialize();
@@ -240,6 +245,7 @@ namespace draw {
 	extern float			linw;
 	extern char				link[2048];
 	extern bool				mouseinput;
+	int						open(const char* title, int width, int height, int (rendering)(int x, int y, int width, void* param), void* param);
 	extern color*			palt;
 	void					pixel(int x, int y);
 	void					pixel(int x, int y, unsigned char alpha);

@@ -47,6 +47,8 @@ rect					sys_static_area;
 // Locale draw variables
 draw::surface*			draw::canvas;
 static bool				line_antialiasing = true;
+static bool				break_modal;
+static int				break_result;
 // Metrics
 rect					metrics::edit = {4, 4, -4, -4};
 sprite*					metrics::font = (sprite*)loadb("font.pma");
@@ -1625,4 +1627,28 @@ void draw::blit(surface& dest, int x, int y, int width, int height, unsigned fla
 void draw::initialize() {
 	set_light_theme();
 	command_app_initialize->execute();
+}
+
+bool draw::ismodal() {
+	if(!break_modal)
+		return true;
+	break_modal = false;
+	return false;
+}
+
+void draw::breakmodal(int result) {
+	break_modal = true;
+	break_result = result;
+}
+
+void draw::buttoncancel() {
+	breakmodal(0);
+}
+
+void draw::buttonok() {
+	breakmodal(1);
+}
+
+int draw::getresult() {
+	return break_result;
 }

@@ -25,10 +25,9 @@ namespace draw {
 		widget&				settips(const char* v) { tips = v; return *this; }
 		widget&				setvalue(int v) { value = v; return *this; }
 	};
-	void					buttoncancel();
-	bool					ismodal();
 	int						render(int x, int y, int width, const widget* e, void* object, const bsreq* type);
 	int						open(const char* title, int width, int height, const struct widget* widgets, void* object, const bsreq* type);
+	int						open(const char* title, int width, int height, const struct widget* widgets, void* object, const bsreq* type, bool (validate)(void* object, const bsreq* type));
 	void					breakmodal(int result);
 }
 extern bsreq				widget_type[];

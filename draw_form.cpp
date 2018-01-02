@@ -7,8 +7,6 @@
 
 using namespace draw;
 
-static bool				break_modal;
-static int				break_result;
 static void*			hot_object;
 static const bsreq*		hot_type;
 
@@ -315,41 +313,27 @@ int	draw::render(int x, int y, int width, const widget* p, void* object, const b
 	return e.vertical(x, y, width, p);
 }
 
-bool draw::ismodal() {
-	if(!break_modal)
-		return true;
-	break_modal = false;
-	return false;
-}
-
-void draw::breakmodal(int result) {
-	break_modal = true;
-	break_result = result;
-}
-
-void draw::buttoncancel() {
-	breakmodal(0);
-}
-
 int draw::open(const char* title, int width, int height, const widget* widgets, void* object, const bsreq* type) {
-	window dc(-1, -1, width, height, WFMinmax | WFResize);
-	setcaption(title);
-	while(ismodal()) {
-		rect rc = {0, 0, getwidth(), getheight()};
-		rectf(rc, colors::form);
-		fore = colors::text;
-		rc.y1 += render(rc.x1, rc.y1, rc.width(), widgets, object, type);
-		int id = input();
-		if(!dodialog(id)) {
-			switch(id) {
-			case 0:
-			case KeyEscape:
-				buttoncancel();
-				break;
-			default:
-				break;
+	struct context {
+		const widget*	widgets;
+		void*			object;
+		const bsreq*	type;
+		bool			(*validate)(void* object, const bsreq* type);
+		static int rendering(int x, int y, int width, void* param) {
+			auto y0 = y;
+			auto p = (context*)param;
+			y += draw::render(x, y, width, p->widgets, p->object, p->type);
+			if(p->validate) {
+				bool result = p->validate(p->object, p->type);
+				button(x - 100, y, width, (int)"OK", result ? 0 : Disabled, "OK", 0, buttonok);
+				x -= 100 - metrics::padding;
+				button(x - 100, y, width, (int)"Cancel", result ? 0 : Disabled, "Отмена", 0, buttoncancel);
 			}
+			return y - y0;
 		}
-	}
-	return break_result;
+	} current;
+	current.widgets = widgets;
+	current.object = object;
+	current.type = type;
+	return draw::open(title, width, height, context::rendering, &current);
 }
