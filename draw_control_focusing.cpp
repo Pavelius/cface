@@ -24,9 +24,6 @@ void control::viewf(rect rc, bool show_toolbar) {
 	focusing(rc);
 	prerender();
 	enablemouse(rc);
-	// Обновим цвет элемента, который может именился
-	// Процедура 'background' может изменить рамку элемента.
-	// Поэтому только начиная отсюда она имеет корректное значение.
 	nonclient(rc);
 	if(rt.height())
 		toolbar(rt.x1, rt.y1, rt.width(), commands);

@@ -356,15 +356,41 @@ static struct widget_settings : control {
 
 static struct widget_application : control {
 
-	command* hotkeys[32];
+	static command	commands[];
+	control*		hotcontrols[48];
 
 	char* getname(char* temp) const override {
 		zcpy(temp, "Главный");
 		return temp;
 	}
 
+	const command* getcommands() const override {
+		return commands;
+	}
+
 	static char* getcontrolname(char* temp, void* p) {
 		return ((control*)p)->getname(temp);
+	}
+
+	unsigned create(bool run) {
+		if(run) {
+
+		}
+		return Disabled;
+	}
+
+	unsigned load(bool run) {
+		if(run) {
+
+		}
+		return 0;
+	}
+
+	unsigned save(bool run) {
+		if(run) {
+
+		}
+		return 0;
 	}
 
 	static void workspace(rect rc, bool allow_multiply_window) {
@@ -420,31 +446,20 @@ static struct widget_application : control {
 		workspace(rc, true);
 	}
 
-	const command* gethotkeys() const override {
-		auto ps = (command*)hotkeys;
-		auto pe = ps + sizeof(hotkeys) / sizeof(hotkeys[0]) - 1;
-		for(auto p = plugin::first; p; p = p->next) {
-			auto pc = p->element.gethotkeys();
-			if(!pc)
-				continue;
-			if(ps < pe) {
-				memset(ps, 0, sizeof(command));
-				ps->id = "";
-				ps->label = "";
-				ps->child = const_cast<command*>(pc);
-				ps++;
-			}
-		}
-		ps->id = 0;
-		return (command*)hotkeys;
-	}
-
 	widget_application() {
 		show_background = false;
 		show_border = false;
+		memset(hotcontrols, 0, sizeof(hotcontrols));
 	}
 
 } widget_application_control;
+
+control::command widget_application::commands[] = {
+	CONTROL_ICN(create, "Создать файл", Ctrl + Alpha + 'N', 0),
+	CONTROL_ICN(load, "Открыть файл", Ctrl + Alpha + 'O', 1),
+	CONTROL_ICN(save, "Сохранить файл", Ctrl+Alpha+'S', 2),
+	{0}
+};
 
 static void setting_appearance_general_metrics() {
 	settings& e1 = settings::root.gr("Рабочий стол").gr("Общие").gr("Метрика");
@@ -529,9 +544,10 @@ int draw::application(const char* title) {
 		draw::rectf(rc, colors::form);
 		rc.y2 -= draw::statusbardraw();
 		rect rt = rc;
-		rt.y2 = rt.y1 + (metrics::toolbar ? metrics::toolbar->get(0).sy + 4 : 24);
+		rt.y2 = rt.y1 + (metrics::toolbar ? metrics::toolbar->get(0).sy + 4*2 : 24);
 		sheetline(rt, true);
 		rc.y1 += rt.height();
+		rt.x1 += 2; rt.y1 += 1; rt.y2 -= 3; rt.x2 -= 2;
 		if(metrics::show::padding)
 			rc.offset(metrics::padding);
 		pc->enablefocus();

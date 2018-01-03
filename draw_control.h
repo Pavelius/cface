@@ -17,7 +17,7 @@ enum command_view_s {
 struct bsreq;
 
 #define CONTROL_PAR(name) {"", "", 0, name::commands}
-#define CONTROL_ICN(cpr, text, key, icon) {#cpr, text, (command::proc)&cpr, 0, {key}, icon, ViewIcon}
+#define CONTROL_ICN(cpr, text, key, icon) {#cpr, text, (command::proc)&cpr, 0, key, icon, ViewIcon}
 
 namespace draw
 {
@@ -69,7 +69,6 @@ namespace draw
 		virtual char*			getdescription(char* result) const { return result; }
 		virtual int				geticon(const command& e) const { return e.icon; }
 		virtual const char*		getid() const { return 0; }
-		virtual const command*	gethotkeys() const { return 0; }
 		virtual const bsreq*	getmeta() const { return 0; }
 		virtual char*			getname(char* result) const { return result; }
 		virtual void*			getobject() { return this; }
