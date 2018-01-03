@@ -356,6 +356,8 @@ static struct widget_settings : control {
 
 static struct widget_application : control {
 
+	command* hotkeys[32];
+
 	char* getname(char* temp) const override {
 		zcpy(temp, "Главный");
 		return temp;
@@ -416,6 +418,25 @@ static struct widget_application : control {
 	void redraw(rect rc) {
 		draw::dockbar(rc);
 		workspace(rc, true);
+	}
+
+	const command* gethotkeys() const override {
+		auto ps = (command*)hotkeys;
+		auto pe = ps + sizeof(hotkeys) / sizeof(hotkeys[0]) - 1;
+		for(auto p = plugin::first; p; p = p->next) {
+			auto pc = p->element.gethotkeys();
+			if(!pc)
+				continue;
+			if(ps < pe) {
+				memset(ps, 0, sizeof(command));
+				ps->id = "";
+				ps->label = "";
+				ps->child = const_cast<command*>(pc);
+				ps++;
+			}
+		}
+		ps->id = 0;
+		return (command*)hotkeys;
 	}
 
 	widget_application() {
@@ -503,6 +524,7 @@ int draw::application(const char* title) {
 	while(true) {
 		auto pc = layouts[current_tab];
 		auto commands = pc->getcommands();
+		draw::fore = colors::text;
 		rect rc = {0, 0, draw::getwidth(), draw::getheight()};
 		draw::rectf(rc, colors::form);
 		rc.y2 -= draw::statusbardraw();
@@ -517,7 +539,7 @@ int draw::application(const char* title) {
 		pc->prerender();
 		pc->enablemouse(rc);
 		pc->nonclient(rc);
-		pc->render(rt.x1, rt.y1, rt.width(), commands);
+		pc->toolbar(rt.x1, rt.y1, rt.width(), commands);
 		auto hilite_tab = 0;
 		auto reaction = draw::tabs(rt, false, true, (void**)layouts, 0,
 			sizeof(layouts) / sizeof(layouts[0]), current_tab, &hilite_tab, get_control_name, get_control_status,

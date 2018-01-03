@@ -10,7 +10,7 @@ enum dock_s {
 	DockBottom, DockWorkspace,
 };
 enum command_view_s {
-	ViewIcon, ViewIconAndText, ViewText, HideToolbar,
+	ViewIcon, ViewIconAndText, ViewText,
 	HideCommand,
 };
 
@@ -38,7 +38,7 @@ namespace draw
 			const char*			label;
 			proc				type;
 			command*			child;
-			unsigned			key[2];
+			unsigned			key;
 			int					icon;
 			command_view_s		view;
 			//
@@ -66,12 +66,14 @@ namespace draw
 		color					getcolor(color normal) const;
 		virtual control*		getcontrol(const char* id) { return 0; }
 		virtual const command*	getcommands() const { return 0; }
+		virtual char*			getdescription(char* result) const { return result; }
 		virtual int				geticon(const command& e) const { return e.icon; }
 		virtual const char*		getid() const { return 0; }
-		virtual char*			getdescription(char* result) const;
+		virtual const command*	gethotkeys() const { return 0; }
 		virtual const bsreq*	getmeta() const { return 0; }
-		virtual char*			getname(char* result) const;
+		virtual char*			getname(char* result) const { return result; }
 		virtual void*			getobject() { return this; }
+		virtual void			icon(int x, int y, bool disabled, const command& e) const;
 		void					invoke(const char* name) const;
 		virtual void			inputidle() {}
 		virtual void			inputsymbol(int id, int symbol) {}
@@ -102,9 +104,8 @@ namespace draw
 		bool					open(const char* title);
 		bool					open(const char* title, unsigned state, int width, int height);
 		virtual void			prerender() {}
-		virtual int				render(int x, int y, int width, unsigned flags, const command& e) const;
-		virtual int				render(int x, int y, int width, const command* commands) const;
 		virtual void			redraw(rect rc) {}
+		int						toolbar(int x, int y, int width, const command* commands) const;
 		void					view(rect rc, bool show_toolbar = false);
 		void					viewf(rect rc, bool show_toolbar = false);
 	};

@@ -54,14 +54,6 @@ const control::plugin* control::plugin::find(const char* id) {
 	return 0;
 }
 
-char* control::getname(char* result) const {
-	return result;
-}
-
-char* control::getdescription(char* result) const {
-	return result;
-}
-
 color control::getcolor(color normal) const {
 	if(disabled)
 		return normal.mix(colors::window);
@@ -166,7 +158,7 @@ void control::view(rect rc, bool show_toolbar) {
 	// Поэтому только начиная отсюда она имеет корректное значение.
 	nonclient(rc);
 	if(rt.height())
-		render(rt.x1, rt.y1, rt.width(), commands);
+		toolbar(rt.x1, rt.y1, rt.width(), commands);
 }
 
 //int wdt_separator(int x, int y, int width, const char* id, unsigned flags, const char* label, int value, const char* link, control* source, int title, const widget* childs, const char* tips)
@@ -186,32 +178,11 @@ void control::invoke(const char* name) const {
 	current_name = name;
 }
 
-int control::render(int x, int y, int width, unsigned flags, const control::command& e) const {
-	rect rc = {x, y, x + width, y + width};
-	if(tool(rc, isdisabled(flags), false, true))
-		invoke(e.id);
-	switch(e.view) {
-	case ViewIcon:
-		image(rc.x1 + rc.width() / 2, rc.y1 + rc.height() / 2,
-			metrics::toolbar, e.icon, 0,
-			(isdisabled(flags)) ? 0x80 : 0xFF);
-		break;
-	}
-	if(areb(rc)) {
-		auto name = e.label;
-		if(name) {
-			if(e.key[0]) {
-				char temp[128];
-				tooltips("%1 (%2)", name, key2str(temp, e.key[0]));
-			} else
-				tooltips(name);
-		}
-		statusbar("Выполнить команду '%1'", name);
-	}
-	return width;
+void control::icon(int x, int y, bool disabled, const control::command& e) const {
+	image(x, y, metrics::toolbar, e.icon, 0, disabled ? 0x80 : 0xFF);
 }
 
-int	control::render(int x, int y, int width, const control::command* commands) const {
+int	control::toolbar(int x, int y, int width, const control::command* commands) const {
 	if(!commands)
 		return 0;
 	if(!metrics::toolbar)
@@ -223,13 +194,38 @@ int	control::render(int x, int y, int width, const control::command* commands) c
 			continue;
 		if(p->view == HideCommand)
 			continue;
-		auto width = height;
+		auto width = 0;
+		if(p->view == ViewIcon || p->view == ViewIconAndText)
+			width += height;
+		if(p->view == ViewIconAndText || p->view == ViewText) {
+			auto w = draw::textw(p->label);
+			width += metrics::padding * 2 + w;
+		}
 		if(x + width > x2) {
 			// wdt_dropdown(x, y, 6, "toolbar_dropdown", 0, 0, 0, 0, source, 0, p, 0);
 			break;
 		}
-		render(x, y, width, (((control*)this)->*p->type)(false), *p);
-		x += width;
+		bool disabled = isdisabled((((control*)this)->*p->type)(false));
+		rect rc = {x, y, x + width, y + height};
+		if(areb(rc)) {
+			auto name = p->label;
+			if(name) {
+				if(p->key) {
+					char temp[128];
+					tooltips("%1 (%2)", name, key2str(temp, p->key));
+				} else
+					tooltips(name);
+			}
+			statusbar("Выполнить команду '%1'", name);
+		}
+		if(draw::tool(rc, disabled, false, true))
+			invoke(p->id);
+		if(p->view == ViewIcon || p->view == ViewIconAndText) {
+			icon(x + height / 2, y + height / 2, disabled, *p);
+			x += height;
+		}
+		if(p->view == ViewText || p->view == ViewIconAndText)
+			draw::textc(x, y + (height-draw::texth())/2, rc.x2 - x, p->label);
 	}
 	return height + metrics::padding * 2;
 }
@@ -259,7 +255,7 @@ const control::command* control::command::find(int id) const {
 			auto v = p->child->find(id);
 			if(v)
 				return v;
-		} else if(p->key[0] == id || p->key[1] == id)
+		} else if(p->key == id)
 			return p;
 		p++;
 	}
