@@ -189,7 +189,6 @@
     <ClCompile Include="draw_dodialog.cpp" />
     <ClCompile Include="draw_form.cpp" />
     <ClCompile Include="draw_listview.cpp" />
-    <ClCompile Include="draw_window_open.cpp" />
     <ClCompile Include="hotproc.cpp" />
     <ClCompile Include="widget_logging.cpp" />
     <ClCompile Include="widget_settings.cpp" />

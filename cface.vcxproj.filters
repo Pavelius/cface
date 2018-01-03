@@ -274,9 +274,6 @@
     <ClCompile Include="bsparse.cpp">
       <Filter>Обработка данных</Filter>
     </ClCompile>
-    <ClCompile Include="draw_window_open.cpp">
-      <Filter>Графика\Базовые элементы</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="acol.h">

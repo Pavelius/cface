@@ -102,7 +102,7 @@ namespace draw
 		virtual void			nonclient(rect rc);
 		bool					open(rect rc);
 		bool					open(const char* title);
-		bool					open(const char* title, unsigned state, int width, int height);
+		bool					open(const char* title, unsigned state, int width, int height, bool padding = true);
 		virtual void			prerender() {}
 		virtual void			redraw(rect rc) {}
 		int						toolbar(int x, int y, int width, const command* commands) const;

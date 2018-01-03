@@ -245,7 +245,6 @@ namespace draw {
 	extern float			linw;
 	extern char				link[2048];
 	extern bool				mouseinput;
-	int						open(const char* title, int width, int height, int (rendering)(int x, int y, int width, void* param), void* param);
 	extern color*			palt;
 	void					pixel(int x, int y);
 	void					pixel(int x, int y, unsigned char alpha);

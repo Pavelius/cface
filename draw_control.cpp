@@ -75,7 +75,7 @@ bool control::open(const char* title) {
 	return open(title, WFMinmax | WFResize, 640, 480);
 }
 
-bool control::open(const char* title, unsigned state, int width, int height) {
+bool control::open(const char* title, unsigned state, int width, int height, bool padding) {
 	control_state push;
 	draw::window dc(-1, -1, width, height, state);
 	if(title)
@@ -85,7 +85,8 @@ bool control::open(const char* title, unsigned state, int width, int height) {
 	while(true) {
 		rect rc = {0, 0, draw::getwidth(), draw::getheight()};
 		draw::rectf(rc, colors::form);
-		rc.offset(metrics::padding * 2);
+		if(padding)
+			rc.offset(metrics::padding * 2);
 		view(rc, show_toolbar);
 		int id = draw::input();
 		if(id == KeyEscape || !id)

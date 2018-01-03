@@ -313,27 +313,27 @@ int	draw::render(int x, int y, int width, const widget* p, void* object, const b
 	return e.vertical(x, y, width, p);
 }
 
-int draw::open(const char* title, int width, int height, const widget* widgets, void* object, const bsreq* type) {
-	struct context {
-		const widget*	widgets;
+int draw::open(const char* title, int width, int height, const widget* widgets, void* object, const bsreq* type, bool (*validate)(void* object, const bsreq* type)) {
+	struct context : control {
 		void*			object;
 		const bsreq*	type;
+		const widget*	widgets;
 		bool			(*validate)(void* object, const bsreq* type);
-		static int rendering(int x, int y, int width, void* param) {
-			auto y0 = y;
-			auto p = (context*)param;
-			y += draw::render(x, y, width, p->widgets, p->object, p->type);
-			if(p->validate) {
-				bool result = p->validate(p->object, p->type);
-				button(x - 100, y, width, (int)"OK", result ? 0 : Disabled, "OK", 0, buttonok);
-				x -= 100 - metrics::padding;
-				button(x - 100, y, width, (int)"Cancel", result ? 0 : Disabled, "Отмена", 0, buttoncancel);
+		void nonclient(rect rc) override {
+			auto y0 = rc.y1;
+			rc.y1 += draw::render(rc.x1, rc.y1, rc.width(), widgets, object, type);
+			if(validate) {
+				bool result = validate(object, type);
+				button(rc.x1 - 100, rc.y1, 100, (int)"OK", result ? 0 : Disabled, "OK", 0, buttonok);
+				rc.x1 -= 100 - metrics::padding;
+				button(rc.x1 - 100, rc.y1, 100, (int)"Cancel", result ? 0 : Disabled, "Отмена", 0, buttoncancel);
 			}
-			return y - y0;
 		}
 	} current;
 	current.widgets = widgets;
 	current.object = object;
 	current.type = type;
-	return draw::open(title, width, height, context::rendering, &current);
+	current.validate = validate;
+	current.show_background = false;
+	return current.open(title, WFResize, width, height, false);
 }

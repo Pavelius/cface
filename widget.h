@@ -26,8 +26,7 @@ namespace draw {
 		widget&				setvalue(int v) { value = v; return *this; }
 	};
 	int						render(int x, int y, int width, const widget* e, void* object, const bsreq* type);
-	int						open(const char* title, int width, int height, const struct widget* widgets, void* object, const bsreq* type);
-	int						open(const char* title, int width, int height, const struct widget* widgets, void* object, const bsreq* type, bool (validate)(void* object, const bsreq* type));
+	int						open(const char* title, int width, int height, const struct widget* widgets, void* object, const bsreq* type, bool(*validate)(void* object, const bsreq* type)=0);
 	void					breakmodal(int result);
 }
 extern bsreq				widget_type[];
