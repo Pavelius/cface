@@ -7,10 +7,8 @@ enum drawable_flags {
 	DrawableModeMask = 0x1F
 };
 
-struct drawable
-{
-	struct plugin
-	{
+struct drawable {
+	struct plugin {
 		plugin*			next;
 		static plugin*	first;
 		plugin();
@@ -27,7 +25,7 @@ struct drawable
 	virtual bool		isvisibleactive() const { return false; } // Drawable visible only when active.
 	virtual void		painting(point position) const = 0; // How to paint drawable.
 	virtual int			priority() const { return 100; }// Priority for z-order sortering (lesser was be most visible). If there is two drawable in same position.
-	virtual void		update() { }// Update some states (animation, frame etc)
+	virtual void		update() {}// Update some states (animation, frame etc)
 };
 int						dwclipping(drawable** da, rect screen, point camera); // In place clipping drawable by draft mode.
 drawable*				dwfind(drawable** da, rect screen, point camera, point hitpoint); // Make hittest by previously Z-Ordered or clipped arrays of drawables.

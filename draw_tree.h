@@ -7,15 +7,11 @@ enum treeflags {
 	TIGroup = 1, TICheck = 2,
 };
 
-namespace draw
-{
-	namespace controls
-	{
-		struct tree : table, amem
-		{
+namespace draw {
+	namespace controls {
+		struct tree : table, amem {
 			// Basic child element of every tree line
-			struct element
-			{
+			struct element {
 				unsigned char	level;
 				unsigned char	flags;
 				unsigned char	type;

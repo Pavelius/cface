@@ -1,7 +1,6 @@
 #pragma once
 
-struct stringid
-{
+struct stringid {
 	const char*		id;
 	int				value;
 };

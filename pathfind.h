@@ -1,17 +1,14 @@
 ﻿#pragma once
 
-enum black_states
-{
+enum black_states {
 	Blocked = 0xFFFF
 };
-enum move_directions
-{
+enum move_directions {
 	Center,
 	Left, Up, Right, Down,
 	LeftUp, RightUp, RightDown, LeftDown
 };
-struct pathnode
-{
+struct pathnode {
 	short unsigned		index;
 	pathnode*			next;
 };
@@ -32,7 +29,7 @@ extern unsigned short	get_move_cost(unsigned short index);
 // Return count of currently used nodes. Used for memory leak analize.
 int						get_node_count();
 unsigned short			get_path_cost(unsigned short index);
-inline int				get_path_index(int x, int y) { return y*256 + x; }
+inline int				get_path_index(int x, int y) { return y * 256 + x; }
 extern bool				is_block_movement(unsigned short index);
 extern bool				is_block_movement(unsigned short index, int size);
 extern unsigned char	max_path_width; // current map width

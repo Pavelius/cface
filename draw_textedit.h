@@ -2,12 +2,9 @@
 
 #pragma once
 
-namespace draw
-{
-	namespace controls
-	{
-		struct textedit : public scrollable
-		{
+namespace draw {
+	namespace controls {
+		struct textedit : public scrollable {
 			char*			string;
 			unsigned		maxlenght;
 			int				p1, p2;

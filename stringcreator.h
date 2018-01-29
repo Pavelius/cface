@@ -1,10 +1,13 @@
 #pragma once
 
-struct stringcreator
-{
+// Macro for correct declaration string indentifier.
+#define PRINTPLG(name) static char* get_##name(char* result);\
+static stringcreator::plugin print_##name = {#name, get_##name};\
+static char* get_##name(char* result)
+
+struct stringcreator {
 	// Custom print tokens set
-	struct plugin
-	{
+	struct plugin {
 		const char*		name;
 		char*			(*proc)(char* result);
 		plugin*			next;
@@ -22,8 +25,3 @@ struct stringcreator
 	void				printn(char* result, const char* format, ...);
 	void				println(char* result, const char* format, ...);
 };
-
-// Macro for correct declaration string indentifier.
-#define PRINTPLG(name) static char* get_##name(char* result);\
-static stringcreator::plugin print_##name = {#name, get_##name};\
-static char* get_##name(char* result)

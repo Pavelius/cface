@@ -4,10 +4,8 @@
 
 #pragma once
 
-namespace draw
-{
-	namespace controls
-	{
+namespace draw {
+	namespace controls {
 		struct scrollable : public control // Abstract scrollable element. Scroll apear automatically if needed.
 		{
 			pointl			origin;
