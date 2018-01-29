@@ -215,19 +215,18 @@ void tree::expand(int index, int level) {
 		auto p = (element*)rows.get(index);
 		p->flags |= TIGroup;
 	}
-	if(this->index) {
-		unsigned i1 = this->index + 1;
-		unsigned i2 = i1;
-		while(i2<rows.getcount()) {
-			auto p2 = (element*)rows.get(i2);
-			if(p2->level >= (level+1))
-				i2++;
-			else
-				break;
-		}
-		if(i1 != i2)
-			rows.remove(i1, i2 - i1);
+	// Remove unused rows
+	unsigned i1 = this->index + 1;
+	unsigned i2 = i1;
+	while(i2<rows.getcount()) {
+		auto p2 = (element*)rows.get(i2);
+		if(p2->level >= (level+1))
+			i2++;
+		else
+			break;
 	}
+	if(i1 != i2)
+		rows.remove(i1, i2 - i1);
 	if(sort_rows_by_name) {
 		if(level == 0)
 			amem::sort(0, amem::count - 1, group_sort_up ? compare_by_name_group_up : compare_by_name, this);
