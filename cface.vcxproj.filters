@@ -456,6 +456,12 @@
     <ClInclude Include="bsparse.h">
       <Filter>Обработка данных</Filter>
     </ClInclude>
+    <ClInclude Include="initializer_list.h">
+      <Filter>Коллекции</Filter>
+    </ClInclude>
+    <ClInclude Include="cflags.h">
+      <Filter>Коллекции</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Коллекции">

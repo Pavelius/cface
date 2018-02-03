@@ -259,11 +259,13 @@
     <ClInclude Include="bsdata.h" />
     <ClInclude Include="bsparse.h" />
     <ClInclude Include="bsreq.h" />
+    <ClInclude Include="cflags.h" />
     <ClInclude Include="collections.h" />
     <ClInclude Include="draw_list.h" />
     <ClInclude Include="draw_scrollable.h" />
     <ClInclude Include="draw_control.h" />
     <ClInclude Include="hotproc.h" />
+    <ClInclude Include="initializer_list.h" />
     <ClInclude Include="io_plugin.h" />
     <ClInclude Include="io_text.h" />
     <ClInclude Include="widget.h" />
