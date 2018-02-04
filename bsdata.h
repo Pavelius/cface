@@ -3,6 +3,11 @@
 
 #pragma once
 
+#define BSMETA(c) \
+bsdata c##_manager(#c, c##_data, sizeof(c##_data[0]), sizeof(c##_data)/sizeof(c##_data[0]), c##_type);
+#define BSDATA(c, c_type) \
+bsdata c##_manager(#c, c##s.data, c##s.count, sizeof(c##s.data[0]), sizeof(c##s.data)/sizeof(c##s.data[0]), c_type);
+
 struct bsdata : collection
 {
 	const char*			id;
@@ -22,6 +27,7 @@ struct bsdata : collection
 	void*				get(int index) const override { return (char*)data + index*size; }
 	unsigned			getcount() const override { return count; }
 	unsigned			getmaxcount() const override { return maximum_count; }
+	unsigned			getsize() const override { return size; }
 	int					indexof(const void* element) const override;
 	static bsdata*		find(const char* id);
 	static bsdata*		find(const bsreq* id);
@@ -30,7 +36,6 @@ struct bsdata : collection
 	static void			read(const char* url);
 	void				remove(int index, int count = 1) override;
 	void				setcount(unsigned value) { count = value; }
-	void				swap(int i1, int i2) override;
 	static void			write(const char* url, const char** baseids, bool(*comparer)(void* object, const bsreq* type) = 0);
 	static void			write(const char* url, const char* baseid);
 private:
@@ -38,9 +43,3 @@ private:
 	unsigned			current_count;
 	unsigned&			count;
 };
-#define BSMETA(c) \
-bsdata c##_manager(#c, c##_data, sizeof(c##_data[0]), sizeof(c##_data)/sizeof(c##_data[0]), c##_type);
-#define BSGLOB(c) \
-bsdata c##_manager(#c, &c##_data, sizeof(c##_data), 1, c##_type);
-#define BSDATA(c, c_type) \
-bsdata c##_manager(#c, c##s.data, c##s.count, sizeof(c##s.data[0]), sizeof(c##s.data)/sizeof(c##s.data[0]), c_type);

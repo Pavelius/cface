@@ -58,14 +58,6 @@ void bsdata::remove(int index, int elements_count) {
 	count -= elements_count;
 }
 
-void bsdata::swap(int i1, int i2) {
-	auto p1 = (char*)data + i1*size;
-	auto p2 = (char*)data + i2*size;
-	auto pz = p1 + size;
-	while(p1 < pz)
-		iswap(*p1++, *p2++);
-}
-
 bsdata* bsdata::findbyptr(const void* object) {
 	if(!object)
 		return 0;

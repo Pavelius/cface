@@ -18,10 +18,10 @@ struct amem : collection
 	void*				get(int index) const override;
 	unsigned			getcount() const override;
 	unsigned			getmaxcount() const override;
+	unsigned			getsize() const override { return size; }
 	int					indexof(const void* element) const override;
 	void*				insert(int index, const void* object);
 	void				remove(int index, int count = 1) override;
 	bool				reserve(unsigned count);
 	void				setup(unsigned size);
-	void				swap(int i1, int i2) override; // Swap elements
 };

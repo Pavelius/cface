@@ -53,7 +53,7 @@ namespace draw
 		bool					show_border;
 		bool					show_toolbar;
 		//
-		control::control() : dock(DockWorkspace),
+		control() : dock(DockWorkspace),
 			show_border(true), show_background(true), show_toolbar(true),
 			disabled(false), focused(false) {}
 		//
