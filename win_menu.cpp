@@ -5,18 +5,15 @@
 
 using namespace draw;
 
-menu::menu() : count(0), separator(false)
-{
+menu::menu() : count(0), separator(false) {
 	handle = CreatePopupMenu();
 }
 
-menu::~menu()
-{
+menu::~menu() {
 	DestroyMenu(handle);
 }
 
-static int add_menu(void* parent, unsigned& count, const char* label, unsigned data, menu* child, bool disabled, bool checked, bool radio)
-{
+static int add_menu(void* parent, unsigned& count, const char* label, unsigned data, menu* child, bool disabled, bool checked, bool radio) {
 	MENUITEMINFO	mi = {0};
 	char			temp[260];
 	mi.cbSize = sizeof(mi);
@@ -26,7 +23,7 @@ static int add_menu(void* parent, unsigned& count, const char* label, unsigned d
 		mi.fType |= MFT_RADIOCHECK;
 	temp[0] = 0;
 	if(label)
-		zcpy(temp, label, sizeof(temp)-1);
+		zcpy(temp, label, sizeof(temp) - 1);
 	szupper(temp, 1);
 	mi.dwTypeData = temp;
 	mi.wID = ++count;
@@ -41,33 +38,27 @@ static int add_menu(void* parent, unsigned& count, const char* label, unsigned d
 	return InsertMenuItemA(parent, mi.wID, 0, &mi);
 }
 
-static void add_separator(menu& e)
-{
-	if(e.separator)
-	{
+static void add_separator(menu& e) {
+	if(e.separator) {
 		AppendMenuA(e.handle, MF_SEPARATOR, -1, 0);
 		e.count++;
 	}
 	e.separator = false;
 }
 
-void menu::add(const char* label, unsigned data, bool disabled, bool checked)
-{
+void menu::add(const char* label, unsigned data, bool disabled, bool checked) {
 	add_separator(*this);
 	add_menu(handle, count, label, data, 0, disabled, checked, false);
 }
 
-void menu::addseparator()
-{
+void menu::addseparator() {
 	if(!separator && count)
 		separator = true;
 }
 
-void menu::add(const char* id, draw::control* object)
-{
+void menu::add(const char* id, draw::control* object) {
 	auto pe = object->getcommands()->find(id);
-	if(pe)
-	{
+	if(pe) {
 		char temp[512];
 		zcpy(temp, pe->label, sizeof(temp) - 1);
 		auto ps = zend(temp);
@@ -79,18 +70,16 @@ void menu::add(const char* id, draw::control* object)
 	}
 }
 
-unsigned get_menu_data(void* handle, unsigned index)
-{
+unsigned get_menu_data(void* handle, unsigned index) {
 	MENUITEMINFO mi = {0};
 	mi.cbSize = sizeof(mi);
 	mi.fMask = MIIM_DATA;
-	if(!GetMenuItemInfoA(handle, index-1, 1, &mi))
+	if(!GetMenuItemInfoA(handle, index - 1, 1, &mi))
 		return 0;
 	return mi.dwItemData;
 }
 
-unsigned menu::choose(int x, int y)
-{
+unsigned menu::choose(int x, int y) {
 	if(!handle)
 		return 0;
 	HWND hwnd = GetActiveWindow();

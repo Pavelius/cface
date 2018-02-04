@@ -4,20 +4,17 @@
 
 #pragma pack(push)
 #pragma pack(1)
-static struct video_8t
-{
+static struct video_8t {
 	BITMAPINFO			bmp;
-	unsigned char		bmp_pallette[256*4];
+	unsigned char		bmp_pallette[256 * 4];
 } video_descriptor;
 #pragma pack(pop)
 
 static draw::window*	current_window;
 static bool				use_mouse = true;
 
-static int tokey(int vk)
-{
-	switch(vk)
-	{
+static int tokey(int vk) {
+	switch(vk) {
 	case VK_CONTROL: return Ctrl;
 	case VK_MENU: return Alt;
 	case VK_SHIFT: return Shift;
@@ -47,18 +44,17 @@ static int tokey(int vk)
 	case VK_F10: return F10;
 	case VK_F11: return F11;
 	case VK_F12: return F12;
-	case VK_MULTIPLY: return Alpha+(unsigned)'*';
-	case VK_DIVIDE: return Alpha+(unsigned)'/';
-	case VK_ADD: return Alpha+(unsigned)'+';
-	case VK_SUBTRACT: return Alpha+(unsigned)'-';
-	case VK_OEM_COMMA: return Alpha+(unsigned)',';
-	case VK_OEM_PERIOD: return Alpha+(unsigned)'.';
-	default: return Alpha+vk;
+	case VK_MULTIPLY: return Alpha + (unsigned)'*';
+	case VK_DIVIDE: return Alpha + (unsigned)'/';
+	case VK_ADD: return Alpha + (unsigned)'+';
+	case VK_SUBTRACT: return Alpha + (unsigned)'-';
+	case VK_OEM_COMMA: return Alpha + (unsigned)',';
+	case VK_OEM_PERIOD: return Alpha + (unsigned)'.';
+	default: return Alpha + vk;
 	}
 }
 
-static void set_cursor(cursors e)
-{
+static void set_cursor(cursors e) {
 	static void* data[] =
 	{
 		LoadCursorA(0, (char*)32512),//IDC_ARROW
@@ -76,43 +72,40 @@ static void set_cursor(cursors e)
 extern bool	sys_optimize_mouse_move;
 extern rect	sys_static_area;
 
-static int handle(HWND hwnd, MSG& msg)
-{
+static int handle(HWND hwnd, MSG& msg) {
 	POINT pt;
 	TRACKMOUSEEVENT tm;
-	switch(msg.message)
-	{
+	switch(msg.message) {
 	case WM_MOUSEMOVE:
-		if(msg.hwnd!=hwnd)
+		if(msg.hwnd != hwnd)
 			break;
 		if(!use_mouse)
 			break;
 		memset(&tm, 0, sizeof(tm));
 		tm.cbSize = sizeof(tm);
-		tm.dwFlags = TME_LEAVE|TME_HOVER;
+		tm.dwFlags = TME_LEAVE | TME_HOVER;
 		tm.hwndTrack = hwnd;
 		tm.dwHoverTime = HOVER_DEFAULT;
 		TrackMouseEvent(&tm);
 		hot::mouse.x = LOWORD(msg.lParam);
 		hot::mouse.y = HIWORD(msg.lParam);
-		if(!draw::drag::id && draw::mouseinput && sys_optimize_mouse_move)
-		{
+		if(!draw::drag::id && draw::mouseinput && sys_optimize_mouse_move) {
 			if(hot::mouse.in(sys_static_area))
 				return InputNoUpdate;
 		}
 		return MouseMove;
 	case WM_MOUSELEAVE:
-		if(msg.hwnd!=hwnd)
+		if(msg.hwnd != hwnd)
 			break;
 		if(!use_mouse)
 			break;
 		GetCursorPos(&pt);
 		ScreenToClient(msg.hwnd, &pt);
 		hot::mouse.x = (short)pt.x;
-		if(hot::mouse.x<0)
+		if(hot::mouse.x < 0)
 			hot::mouse.x = -10000;
 		hot::mouse.y = (short)pt.y;
-		if(hot::mouse.y<0)
+		if(hot::mouse.y < 0)
 			hot::mouse.y = -10000;
 		return MouseMove;
 	case WM_MOUSEHOVER:
@@ -120,21 +113,21 @@ static int handle(HWND hwnd, MSG& msg)
 			break;
 		return InputIdle;
 	case WM_LBUTTONDOWN:
-		if(msg.hwnd!=hwnd)
+		if(msg.hwnd != hwnd)
 			break;
 		if(!use_mouse)
 			break;
 		hot::pressed = true;
 		return MouseLeft;
 	case WM_LBUTTONDBLCLK:
-		if(msg.hwnd!=hwnd)
+		if(msg.hwnd != hwnd)
 			break;
 		if(!use_mouse)
 			break;
 		hot::pressed = true;
 		return MouseLeftDBL;
 	case WM_LBUTTONUP:
-		if(msg.hwnd!=hwnd)
+		if(msg.hwnd != hwnd)
 			break;
 		if(!use_mouse)
 			break;
@@ -155,15 +148,15 @@ static int handle(HWND hwnd, MSG& msg)
 	case WM_MOUSEWHEEL:
 		if(!use_mouse)
 			break;
-		if(msg.wParam&0x80000000)
+		if(msg.wParam & 0x80000000)
 			return MouseWheelDown;
 		else
 			return MouseWheelUp;
 		break;
 	case WM_TIMER:
-		if(msg.hwnd!=hwnd)
+		if(msg.hwnd != hwnd)
 			break;
-		if(msg.wParam==InputTimer)
+		if(msg.wParam == InputTimer)
 			return InputTimer;
 		break;
 	case WM_KEYDOWN:
@@ -178,14 +171,11 @@ static int handle(HWND hwnd, MSG& msg)
 	return 0;
 }
 
-static LRESULT CALLBACK WndProc(HWND hwnd, unsigned uMsg, WPARAM wParam, LPARAM lParam)
-{
+static LRESULT CALLBACK WndProc(HWND hwnd, unsigned uMsg, WPARAM wParam, LPARAM lParam) {
 	MSG msg;
-	switch(uMsg)
-	{
+	switch(uMsg) {
 	case WM_ERASEBKGND:
-		if(draw::canvas)
-		{
+		if(draw::canvas) {
 			RECT rc; GetClientRect(hwnd, &rc);
 			video_descriptor.bmp.bmiHeader.biSize = sizeof(video_descriptor.bmp.bmiHeader);
 			video_descriptor.bmp.bmiHeader.biWidth = draw::canvas->width;
@@ -193,8 +183,8 @@ static LRESULT CALLBACK WndProc(HWND hwnd, unsigned uMsg, WPARAM wParam, LPARAM 
 			video_descriptor.bmp.bmiHeader.biBitCount = draw::canvas->bpp;
 			video_descriptor.bmp.bmiHeader.biPlanes = 1;
 			if(draw::canvas->bpp == 8 && draw::palt)
-				memcpy(video_descriptor.bmp_pallette, draw::palt, 4*256);
-			if(rc.right!= draw::canvas->width || rc.bottom!= draw::canvas->height)
+				memcpy(video_descriptor.bmp_pallette, draw::palt, 4 * 256);
+			if(rc.right != draw::canvas->width || rc.bottom != draw::canvas->height)
 				StretchDIBits((void*)wParam,
 					0, 0, rc.right, rc.bottom,
 					0, 0, draw::canvas->width, draw::canvas->height,
@@ -215,15 +205,13 @@ static LRESULT CALLBACK WndProc(HWND hwnd, unsigned uMsg, WPARAM wParam, LPARAM 
 			PostMessageA(hwnd, WM_MY_SIZE, 0, 0);
 		return 0;
 	case WM_GETMINMAXINFO:
-		if(current_window)
-		{
+		if(current_window) {
 			((MINMAXINFO*)lParam)->ptMinTrackSize.x = current_window->minimum.x;
 			((MINMAXINFO*)lParam)->ptMinTrackSize.y = current_window->minimum.y;
 		}
 		return 0;
 	case WM_SETCURSOR:
-		if(LOWORD(lParam)==HTCLIENT)
-		{
+		if(LOWORD(lParam) == HTCLIENT) {
 			set_cursor(hot::cursor);
 			return 1;
 		}
@@ -232,11 +220,9 @@ static LRESULT CALLBACK WndProc(HWND hwnd, unsigned uMsg, WPARAM wParam, LPARAM 
 	return DefWindowProcA(hwnd, uMsg, wParam, lParam);
 }
 
-static const char* register_class(const char* class_name)
-{
+static const char* register_class(const char* class_name) {
 	WNDCLASS wc;
-	if(!GetClassInfoA(GetModuleHandleA(0), class_name, &wc))
-	{
+	if(!GetClassInfoA(GetModuleHandleA(0), class_name, &wc)) {
 		memset(&wc, 0, sizeof(wc));
 		wc.style = CS_OWNDC | CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW; // Own DC For Window.
 		wc.lpfnWndProc = WndProc;					// WndProc Handles Messages
@@ -248,8 +234,7 @@ static const char* register_class(const char* class_name)
 	return class_name;
 }
 
-void draw::updatewindow()
-{
+void draw::updatewindow() {
 	if(!current_window)
 		return;
 	HWND hwnd = current_window->hwnd;
@@ -261,32 +246,28 @@ void draw::updatewindow()
 	UpdateWindow(hwnd);
 }
 
-draw::window* draw::getwindow()
-{
+draw::window* draw::getwindow() {
 	return current_window;
 }
 
-void draw::syscursor(bool enable)
-{
+void draw::syscursor(bool enable) {
 	ShowCursor(enable ? 1 : 0);
 }
 
-void draw::sysmouse(bool enable)
-{
+void draw::sysmouse(bool enable) {
 	use_mouse = enable;
 }
 
-draw::window::window(int x, int y, int width, int height, unsigned flags, int bpp, const char* identifier):
+draw::window::window(int x, int y, int width, int height, unsigned flags, int bpp, const char* identifier) :
 	parent(current_window), flags(flags), identifier(identifier), focus(0),
-	hwnd(0), gc(0)
-{
+	hwnd(0), gc(0) {
 	if(!bpp)
 		bpp = draw::canvas->bpp;
 	if(!width)
-		width = (GetSystemMetrics(SM_CXFULLSCREEN)/3)*2;
+		width = (GetSystemMetrics(SM_CXFULLSCREEN) / 3) * 2;
 	if(!height)
-		height = (GetSystemMetrics(SM_CYFULLSCREEN)/3)*2;
-	unsigned dwStyle = WS_CAPTION|WS_VISIBLE; // Windows Style;
+		height = (GetSystemMetrics(SM_CYFULLSCREEN) / 3) * 2;
+	unsigned dwStyle = WS_CAPTION | WS_VISIBLE; // Windows Style;
 	HWND parent = GetActiveWindow();
 	if(parent)
 		dwStyle |= WS_POPUP;
@@ -297,8 +278,7 @@ draw::window::window(int x, int y, int width, int height, unsigned flags, int bp
 		dwStyle |= WS_THICKFRAME;
 	else
 		dwStyle |= WS_BORDER;
-	if(flags&WFMinmax)
-	{
+	if(flags&WFMinmax) {
 		dwStyle |= WS_MINIMIZEBOX;
 		if(flags&WFResize)
 			dwStyle |= WS_MAXIMIZEBOX;
@@ -307,12 +287,12 @@ draw::window::window(int x, int y, int width, int height, unsigned flags, int bp
 		dwStyle |= WS_MAXIMIZE;
 	RECT MinimumRect = {0, 0, width, height};
 	AdjustWindowRectEx(&MinimumRect, dwStyle, 0, 0);
-	minimum.x = (short)(MinimumRect.right-MinimumRect.left);
-	minimum.y = (short)(MinimumRect.bottom-MinimumRect.top);
-	if(x==-1)
-		x = (GetSystemMetrics(SM_CXFULLSCREEN) - minimum.x)/2;
-	if(y==-1)
-		y = (GetSystemMetrics(SM_CYFULLSCREEN) - minimum.y)/2;
+	minimum.x = (short)(MinimumRect.right - MinimumRect.left);
+	minimum.y = (short)(MinimumRect.bottom - MinimumRect.top);
+	if(x == -1)
+		x = (GetSystemMetrics(SM_CXFULLSCREEN) - minimum.x) / 2;
+	if(y == -1)
+		y = (GetSystemMetrics(SM_CYFULLSCREEN) - minimum.y) / 2;
 	position.x1 = x;
 	position.y1 = y;
 	position.x2 = position.x1 + minimum.x;
@@ -336,8 +316,7 @@ draw::window::window(int x, int y, int width, int height, unsigned flags, int bp
 	if(!hwnd)
 		return;
 	// Disable parent
-	if(parent)
-	{
+	if(parent) {
 		SetFocus(hwnd);
 		EnableWindow(parent, 0);
 	}
@@ -349,31 +328,25 @@ draw::window::window(int x, int y, int width, int height, unsigned flags, int bp
 	hot::mouse.y = (short)pt.y;
 }
 
-static void update_size(HWND hwnd)
-{
+static void update_size(HWND hwnd) {
 	RECT rc;
 	GetClientRect(hwnd, &rc);
 	if(current_window)
 		current_window->resizing((rect&)rc);
 }
 
-draw::window::~window()
-{
-	if(GetCapture()==hwnd)
+draw::window::~window() {
+	if(GetCapture() == hwnd)
 		ReleaseCapture();
-	else
-	{
+	else {
 		HWND parent = GetParent(hwnd);
-		if(parent)
-		{
+		if(parent) {
 			EnableWindow(parent, 1);
 			SetFocus(parent);
 		}
 	}
-	if(hwnd)
-	{
-		if(identifier)
-		{
+	if(hwnd) {
+		if(identifier) {
 			WINDOWPLACEMENT wp;
 			GetWindowPlacement(hwnd, &wp);
 			position.x1 = wp.rcNormalPosition.left;
@@ -390,8 +363,7 @@ draw::window::~window()
 		update_size(current_window->hwnd);
 }
 
-void draw::sysredraw()
-{
+void draw::sysredraw() {
 	MSG	msg;
 	if(!current_window)
 		return;
@@ -399,16 +371,14 @@ void draw::sysredraw()
 	void* hwnd = current_window->hwnd;
 	if(!hwnd)
 		return;
-	while(PeekMessageA(&msg, 0, 0, 0, PM_REMOVE))
-	{
+	while(PeekMessageA(&msg, 0, 0, 0, PM_REMOVE)) {
 		TranslateMessage(&msg);
 		DispatchMessageA(&msg);
 		handle(hwnd, msg);
 	}
 }
 
-int draw::rawinput()
-{
+int draw::rawinput() {
 	MSG	msg;
 	if(!current_window)
 		return 0;
@@ -416,22 +386,19 @@ int draw::rawinput()
 	void* hwnd = current_window->hwnd;
 	if(!hwnd)
 		return 0;
-	while(GetMessageA(&msg, 0, 0, 0))
-	{
+	while(GetMessageA(&msg, 0, 0, 0)) {
 		TranslateMessage(&msg);
 		DispatchMessageA(&msg);
 		unsigned m = handle(hwnd, msg);
 		if(m == InputNoUpdate)
 			continue;
-		if(m)
-		{
-			if(m != MouseMove && m >= (unsigned)MouseLeft)
-			{
-				if(GetKeyState(VK_SHIFT)<0)
+		if(m) {
+			if(m != MouseMove && m >= (unsigned)MouseLeft) {
+				if(GetKeyState(VK_SHIFT) < 0)
 					m |= Shift;
-				if(GetKeyState(VK_MENU)<0)
+				if(GetKeyState(VK_MENU) < 0)
 					m |= Alt;
-				if(GetKeyState(VK_CONTROL)<0)
+				if(GetKeyState(VK_CONTROL) < 0)
 					m |= Ctrl;
 			}
 			if(m == InputUpdate)
@@ -442,16 +409,14 @@ int draw::rawinput()
 	return 0;
 }
 
-void draw::setcaption(const char* string)
-{
+void draw::setcaption(const char* string) {
 	if(!draw::getwindow())
 		return;
 	HWND hwnd = draw::getwindow()->hwnd;
 	SetWindowTextA(hwnd, string);
 }
 
-void draw::settimer(unsigned milleseconds)
-{
+void draw::settimer(unsigned milleseconds) {
 	if(!draw::getwindow())
 		return;
 	HWND hwnd = draw::getwindow()->hwnd;
@@ -461,8 +426,7 @@ void draw::settimer(unsigned milleseconds)
 		KillTimer(hwnd, InputTimer);
 }
 
-void draw::clipboard::copy(const void* string, int lenght)
-{
+void draw::clipboard::copy(const void* string, int lenght) {
 	if(!lenght)
 		return;
 	if(!OpenClipboard(0))
@@ -470,8 +434,7 @@ void draw::clipboard::copy(const void* string, int lenght)
 	EmptyClipboard();
 	auto size = (lenght + 1) * sizeof(short);
 	void* hglbCopy = GlobalAlloc(GMEM_MOVEABLE, size);
-	if(!hglbCopy)
-	{
+	if(!hglbCopy) {
 		CloseClipboard();
 		return;
 	}
@@ -483,11 +446,9 @@ void draw::clipboard::copy(const void* string, int lenght)
 	CloseClipboard();
 }
 
-char* draw::clipboard::paste()
-{
+char* draw::clipboard::paste() {
 	auto format = CF_UNICODETEXT;
-	if(!IsClipboardFormatAvailable(format))
-	{
+	if(!IsClipboardFormatAvailable(format)) {
 		format = CF_TEXT;
 		if(!IsClipboardFormatAvailable(format))
 			return 0;
@@ -496,20 +457,16 @@ char* draw::clipboard::paste()
 		return 0;
 	void* hglb = GetClipboardData(format);
 	char* buffer = 0;
-	if(hglb)
-	{
+	if(hglb) {
 		auto result = GlobalSize(hglb);
-		if(result)
-		{
+		if(result) {
 			buffer = new char[result + 1];
 			char* p = (char*)GlobalLock(hglb);
-			if(p)
-			{
+			if(p) {
 				memcpy(buffer, p, result);
 				GlobalUnlock(hglb);
 			}
-			if(format == CF_UNICODETEXT)
-			{
+			if(format == CF_UNICODETEXT) {
 				szencode(buffer, result, CP1251, buffer, result, CPU16LE);
 				result = result / 2;
 				buffer[result] = 0;
@@ -520,24 +477,20 @@ char* draw::clipboard::paste()
 	return buffer;
 }
 
-char** szcmdargv(int& argc)
-{
+char** szcmdargv(int& argc) {
 	static char* argv[128];
 	memset(argv, 0, sizeof(argv));
 	argc = 0;
 	const char* p = GetCommandLineA();
-	while(*p)
-	{
+	while(*p) {
 		if(argc >= sizeof(argv) / sizeof(argv[0]))
 			break;
 		p = szskipcr(p);
 		const char* pe = 0;
-		if(*p == '\"' || *p == '\'')
-		{
+		if(*p == '\"' || *p == '\'') {
 			char t = *p++;
 			pe = zchr(p, t);
-		}
-		else
+		} else
 			pe = zchr(p, ' ');
 		if(!pe)
 			pe = zend(p);

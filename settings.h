@@ -2,12 +2,10 @@
 
 #pragma once
 
-namespace draw
-{
+namespace draw {
 	struct control;
 }
-struct settings
-{
+struct settings {
 	enum types {
 		Group,
 		Bool, Int, Radio,

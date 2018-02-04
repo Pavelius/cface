@@ -1,9 +1,7 @@
 ﻿#pragma once
 
-struct thread
-{
-	struct mutex
-	{
+struct thread {
+	struct mutex {
 		mutex();
 		~mutex();
 		void				lock();
@@ -12,8 +10,7 @@ struct thread
 	private:
 		char				data[40];
 	};
-	struct sync
-	{
+	struct sync {
 		sync(mutex& e);
 		~sync();
 	private:

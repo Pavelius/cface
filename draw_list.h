@@ -4,13 +4,10 @@
 
 struct bsdata;
 
-namespace draw
-{
-	namespace controls
-	{
+namespace draw {
+	namespace controls {
 		// Basic list class
-		struct list : control
-		{
+		struct list : control {
 			int				origin, maximum, current;
 			int				maximum_width, origin_width;
 			int				lines_per_page, pixels_per_line;
@@ -45,8 +42,7 @@ namespace draw
 			void			updaterowheight();
 		};
 		// Abstract element's collection presentation
-		struct listview : list
-		{
+		struct listview : list {
 			const void**	source; // References to objects
 			const bsreq*	fields; // Metadata of objects
 			const bsreq*	requisit; // Which field used to presentation
@@ -57,8 +53,7 @@ namespace draw
 			void			setpresetation(const char* name);
 		};
 		// Edit string collections
-		struct autocomplete : listview
-		{
+		struct autocomplete : listview {
 			const void*		source[50];
 			autocomplete(const bsreq* fields = 0, const char* name = "name") : listview(source, 0, fields, name), filter(0) {}
 			const char*		filter;

@@ -6,8 +6,7 @@ enum ctype_flags {
 	TypePrivate = 0x10,
 	TypeStatic = 0x20,
 };
-struct ctype
-{
+struct ctype {
 	const char*			name;
 	int					count;
 	int					size;
@@ -31,7 +30,7 @@ struct ctype
 	static ctype		voidx;
 	static ctype		voidp;
 	//
-	operator bool() const { return name!=0; }
+	operator bool() const { return name != 0; }
 	void*				operator new(unsigned size);
 	void				operator delete(void* p);
 	//
@@ -39,7 +38,7 @@ struct ctype
 	void				clear();
 	ctype*				dereference() const;
 	ctype*				find(const char* name);
-	ctype_flags			gtype() const { return ctype_flags(flags&TypeCompileMask);  }
+	ctype_flags			gtype() const { return ctype_flags(flags&TypeCompileMask); }
 	static void			initialize();
 	ctype*				reference() const;
 	char*				tostring(char* buffer) const;

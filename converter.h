@@ -1,7 +1,6 @@
 #pragma once
 
-struct converter
-{
+struct converter {
 	const char*						name;
 	converter*						next;
 	static converter*				first;

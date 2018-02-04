@@ -6,14 +6,12 @@
 //	return GetTickCount();
 //}
 
-unsigned getdate()
-{
+unsigned getdate() {
 	SYSTEMTIME st;
 	GetLocalTime(&st);
 	return mkdate(st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute);
 }
 
-extern "C" void sleep(unsigned seconds)
-{
+extern "C" void sleep(unsigned seconds) {
 	Sleep(seconds);
 }

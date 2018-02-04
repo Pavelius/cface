@@ -1,7 +1,6 @@
 #pragma once
 
-struct stringtree
-{
+struct stringtree {
 	const char*		id;
 	const char*		text;
 	stringtree*		elements;

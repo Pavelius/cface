@@ -24,16 +24,14 @@ table::renderproc table::renders[] = {
 };
 static_assert(sizeof(table::renders) / sizeof(table::renders[0]) == LineNumber + 1, "Invalid table render procs");
 
-static void setposition(rect& rc)
-{
+static void setposition(rect& rc) {
 	rc.offset(table_padding, table_padding);
 }
 
 //	szprint(text, "%1i, %2i", ((point*)&i)->x, ((point*)&i)->y);
 //	szprint(text, "%1i, %2i, %3i", ((color*)&i)->r, ((color*)&i)->g, ((color*)&i)->b);
 
-unsigned table::add(bool run)
-{
+unsigned table::add(bool run) {
 	auto maximum_count = rows.getmaxcount();
 	if(no_change_count)
 		return Disabled;
@@ -41,8 +39,7 @@ unsigned table::add(bool run)
 		return Disabled;
 	if(maximum_count && maximum_count <= rows.getcount())
 		return Disabled;
-	if(run)
-	{
+	if(run) {
 		auto p = rows.add();
 		select(rows.indexof(p));
 		invoke("change");
@@ -50,8 +47,7 @@ unsigned table::add(bool run)
 	return 0;
 }
 
-unsigned table::addcopy(bool run)
-{
+unsigned table::addcopy(bool run) {
 	auto maximum_count = rows.getmaxcount();
 	if(no_change_count)
 		return Disabled;
@@ -59,8 +55,7 @@ unsigned table::addcopy(bool run)
 		return Disabled;
 	if(maximum_count && maximum_count <= rows.getcount())
 		return Disabled;
-	if(run)
-	{
+	if(run) {
 		auto p = rows.add(rows.get(current)); // При копировании получим экземпляр рядка
 		select(rows.indexof(p));
 		invoke("change");
@@ -68,12 +63,10 @@ unsigned table::addcopy(bool run)
 	return 0;
 }
 
-unsigned table::copy(bool run)
-{
+unsigned table::copy(bool run) {
 	if(rows.getcount() == 0)
 		return Disabled;
-	if(run)
-	{
+	if(run) {
 		char temp[4096]; temp[0] = 0;
 		auto p = gettext(temp, getrow(current), columns[current_column].id);
 		if(p)
@@ -82,15 +75,13 @@ unsigned table::copy(bool run)
 	return 0;
 }
 
-unsigned table::remove(bool run)
-{
+unsigned table::remove(bool run) {
 	if(no_change_order)
 		return Disabled;
 	int i = rows.getcount();
 	if(i == 0)
 		return Disabled;
-	if(run)
-	{
+	if(run) {
 		rows.remove(current);
 		if(current >= i - 1)
 			current--;
@@ -100,8 +91,7 @@ unsigned table::remove(bool run)
 	return 0;
 }
 
-unsigned table::change(bool run)
-{
+unsigned table::change(bool run) {
 	if(no_change_content)
 		return Disabled;
 	if(columns.data[current_column].flags&ColumnReadOnly)
@@ -115,15 +105,13 @@ unsigned table::change(bool run)
 	return 0;
 }
 
-unsigned table::movedown(bool run)
-{
+unsigned table::movedown(bool run) {
 	if(no_change_order)
 		return Disabled;
 	int i = rows.getcount();
 	if(i < 2 || current >= i - 1)
 		return Disabled;
-	if(run)
-	{
+	if(run) {
 		rows.swap(current, current + 1);
 		current++;
 		correction();
@@ -132,15 +120,13 @@ unsigned table::movedown(bool run)
 	return 0;
 }
 
-unsigned table::moveup(bool run)
-{
+unsigned table::moveup(bool run) {
 	if(no_change_order)
 		return Disabled;
 	int i = rows.getcount();
 	if(i < 2 || current == 0)
 		return Disabled;
-	if(run)
-	{
+	if(run) {
 		rows.swap(current, current - 1);
 		current--;
 		correction();
@@ -149,14 +135,12 @@ unsigned table::moveup(bool run)
 	return 0;
 }
 
-unsigned table::sortas(bool run)
-{
+unsigned table::sortas(bool run) {
 	if(no_change_order)
 		return Disabled;
 	if(rows.getcount() < 2)
 		return Disabled;
-	if(run)
-	{
+	if(run) {
 		if(table_sort_by_mouse)
 			sort(table_sort_column_id, 1);
 		else
@@ -166,14 +150,12 @@ unsigned table::sortas(bool run)
 	return 0;
 }
 
-unsigned table::sortds(bool run)
-{
+unsigned table::sortds(bool run) {
 	if(no_change_order)
 		return Disabled;
 	if(rows.getcount() < 2)
 		return Disabled;
-	if(run)
-	{
+	if(run) {
 		if(table_sort_by_mouse)
 			sort(table_sort_column_id, -1);
 		else
@@ -183,24 +165,20 @@ unsigned table::sortds(bool run)
 	return 0;
 }
 
-unsigned table::exportdata(bool run)
-{
+unsigned table::exportdata(bool run) {
 	char temp[260] = {0};
 	char filter[2048]; io::plugin::getfilter(filter);
-	if(run)
-	{
+	if(run) {
 		if(dialog::save(0, temp, filter))
 			rows.write(temp, fields);
 	}
 	return 0;
 }
 
-unsigned table::importdata(bool run)
-{
+unsigned table::importdata(bool run) {
 	if(no_change_order || no_change_content || no_change_count)
 		return Disabled;
-	if(run)
-	{
+	if(run) {
 		char temp[260] = {0};
 		char filter[2048]; io::plugin::getfilter(filter);
 		if(dialog::open(0, temp, filter))
@@ -209,12 +187,10 @@ unsigned table::importdata(bool run)
 	return 0;
 }
 
-unsigned table::setting(bool run)
-{
+unsigned table::setting(bool run) {
 	if(!use_setting)
 		return Disabled;
-	if(run)
-	{
+	if(run) {
 		adatc<widget, 64> data_columns;
 		table table_columns(data_columns);
 		table_columns.fields = widget_type;
@@ -229,14 +205,12 @@ unsigned table::setting(bool run)
 		table_columns.show_grid_lines = true;
 		table_columns.focused = true;
 		data_columns.clear();
-		for(int i = 0; i < columns.count; i++)
-		{
+		for(int i = 0; i < columns.count; i++) {
 			data_columns.add(columns.data[i]);
 		}
 		tuning(controls);
 		setfocus(0, true);
-		while(true)
-		{
+		while(true) {
 			rect rc = {0, 0, getwidth(), getheight() - dy};
 			rectf({0, 0, getwidth(), getheight()}, colors::form);
 			rc.offset(metrics::padding * 2);
@@ -246,8 +220,7 @@ unsigned table::setting(bool run)
 			rc.x1 = rc.x2 - 100; button(rc.x1, rc.y1, 100, KeyEscape, 0, "Отменить");
 			rc.x1 = rc.x1 - 100; button(rc.x1, rc.y1, 100, KeyEnter, 0, "OK");
 			int id = input();
-			switch(id)
-			{
+			switch(id) {
 			case 0:
 			case KeyEscape:
 				return false;
@@ -269,16 +242,14 @@ maximum_column(0), current_column(0),
 no_change_count(false), no_change_order(false), no_change_content(false),
 group_sort_up(false),
 use_setting(true),
-show_header(true), show_event_rows(false)
-{
+show_header(true), show_event_rows(false) {
 	columns.data = 0;
 	columns.count = 0;
 }
 
 static int column_total_width;
 
-void table::background(rect& rc)
-{
+void table::background(rect& rc) {
 	// background
 	list::background(rc);
 	// drag&drop
@@ -287,25 +258,21 @@ void table::background(rect& rc)
 	// calculate size
 	reposition(rc.width());
 	// show header
-	if(show_header)
-	{
+	if(show_header) {
 		header({rc.x1, rc.y1, rc.x2, rc.y1 + pixels_per_line});
 		rc.y1 += pixels_per_line;
 	}
 }
 
-void table::prerender()
-{
+void table::prerender() {
 	if(!rows.getcount())
 		expand(0, 0);
 	maximum = rows.getcount();
 	validate(1, false);
 	//
 	maximum_width = 0;
-	if(columns.data)
-	{
-		for(auto& e : columns)
-		{
+	if(columns.data) {
+		for(auto& e : columns) {
 			if(e.flags&ColumnHide)
 				continue;
 			maximum_width += e.width;
@@ -313,8 +280,7 @@ void table::prerender()
 	}
 }
 
-void table::header(rect client)
-{
+void table::header(rect client) {
 	static int last_direction;
 	draw::state push;
 	setclip(client);
@@ -326,8 +292,7 @@ void table::header(rect client)
 	if(!columns.data)
 		return;
 	auto bc = getcolor(colors::border);
-	for(auto& e : columns)
-	{
+	for(auto& e : columns) {
 		if(e.flags&ColumnHide)
 			continue;
 		w += e.width;
@@ -339,20 +304,17 @@ void table::header(rect client)
 		areas a = area(rc);
 		if(mouse_hilite
 			&& ((e.flags&ColumnSizeMask) == ColumnSizeNormal)
-			&& hot::mouse.x >= rc.x2 - 3 && hot::mouse.x <= rc.x2 + 3)
-		{
+			&& hot::mouse.x >= rc.x2 - 3 && hot::mouse.x <= rc.x2 + 3) {
 			hot::cursor = CursorLeftRight;
 			a = AreaNormal;
-			if(hot::pressed && hot::key == MouseLeft)
-			{
+			if(hot::pressed && hot::key == MouseLeft) {
 				column_total_width = w - e.width;
 				drag::begin((int)this, DragColumn);
 				drag::mouse.x = hot::mouse.x - w;
 				drag::value = columns.indexof(&e);
 			}
 		}
-		switch(a)
-		{
+		switch(a) {
 		case AreaNormal:
 			break;
 		case AreaHilited:
@@ -368,10 +330,8 @@ void table::header(rect client)
 		default:
 			break;
 		}
-		if(areb(rc) && hot::key == MouseLeft && !hot::pressed)
-		{
-			if(e.gettype() != LineNumber)
-			{
+		if(areb(rc) && hot::key == MouseLeft && !hot::pressed) {
+			if(e.gettype() != LineNumber) {
 				table_sort_column_id = e.id;
 				table_sort_by_mouse = true;
 				last_direction = (last_direction == -1) ? 1 : -1;
@@ -381,8 +341,7 @@ void table::header(rect client)
 					invoke("sortds");
 			}
 		}
-		if(e.label)
-		{
+		if(e.label) {
 			auto type = e.gettype();
 			if(type == WidgetCheck || type == WidgetImage)
 				showlabel({rc.x1 + 4, rc.y1 + 4, rc.x2 - 8, rc.y2 - 4}, e.label, TextSingleLine | AlignCenterCenter);
@@ -395,8 +354,7 @@ void table::header(rect client)
 		rc.x1 = rc.x2;
 		w = 0;
 	}
-	if(show_border)
-	{
+	if(show_border) {
 		line(client.x1, client.y1, client.x1, client.y2, bc);
 		line(client.x1, client.y1, client.x2, client.y1, bc);
 		line(client.x2, client.y1, client.x2, client.y2, bc);
@@ -404,18 +362,15 @@ void table::header(rect client)
 	line(client.x1, client.y2 - 1, client.x2, client.y2 - 1, bc);
 }
 
-void table::showlabel(rect rc, const char* value, unsigned flags) const
-{
+void table::showlabel(rect rc, const char* value, unsigned flags) const {
 	flags = flags & 0xFFFFFFF0;
 	draw::state push;
 	draw::setclip(rc);
 	draw::text(rc, value, flags);
-	if(draw::areb(rc))
-	{
+	if(draw::areb(rc)) {
 		int w1 = draw::textw(value);
 		int w = rc.width();
-		if(w1 > w)
-		{
+		if(w1 > w) {
 			rect rc1;
 			rc1.x1 = rc.x1 - metrics::padding;
 			rc1.y1 = rc.y1 - metrics::padding;
@@ -426,10 +381,8 @@ void table::showlabel(rect rc, const char* value, unsigned flags) const
 	}
 }
 
-void table::showtext(rect rc, const char* value, unsigned flags) const
-{
-	if(ischecked(flags))
-	{
+void table::showtext(rect rc, const char* value, unsigned flags) const {
+	if(ischecked(flags)) {
 		if(value && flags&ColumnSmallHilite)
 			draw::hilight({rc.x1, rc.y1, imin(rc.x2, rc.x1 + draw::textw(value) + 12), rc.y2}, flags);
 		else
@@ -439,17 +392,14 @@ void table::showtext(rect rc, const char* value, unsigned flags) const
 	showlabel(rc, value, flags);
 }
 
-const char* table::gettext(char* result, void* data, const char* id) const
-{
+const char* table::gettext(char* result, void* data, const char* id) const {
 	return fields->getdata(result, id, data, false);
 }
 
-void table::renderno(rect rc, int index, unsigned flags, void* data, const widget& e) const
-{
+void table::renderno(rect rc, int index, unsigned flags, void* data, const widget& e) const {
 }
 
-void table::rendercheck(rect rc, int index, unsigned flags, void* data, const widget& e) const
-{
+void table::rendercheck(rect rc, int index, unsigned flags, void* data, const widget& e) const {
 	if(ischecked(flags))
 		draw::hilight(rc, flags);
 	auto ischecked = false;
@@ -462,15 +412,13 @@ void table::rendercheck(rect rc, int index, unsigned flags, void* data, const wi
 	}
 	setposition(rc);
 	auto executed = false;
-	if(areb(rc))
-	{
+	if(areb(rc)) {
 		if(hot::key == MouseLeft && hot::pressed)
 			executed = true;
 	}
 	if((flags&(Checked | Focused)) == (Checked | Focused) && hot::key == KeySpace)
 		executed = true;
-	if(executed)
-	{
+	if(executed) {
 		if(f) {
 			auto p = f->ptr(data);
 			if(ischecked) {
@@ -491,30 +439,26 @@ void table::rendercheck(rect rc, int index, unsigned flags, void* data, const wi
 	clipart(rc.x1, rc.y1, rc.width(), ischecked ? Checked : 0, ":check");
 }
 
-void table::linenumber(rect rc, int index, unsigned flags, void* data, const widget& e) const
-{
+void table::linenumber(rect rc, int index, unsigned flags, void* data, const widget& e) const {
 	char temp[32]; sznum(temp, index + 1);
 	showtext(rc, temp, flags);
 }
 
-void table::renderlabel(rect rc, int index, unsigned flags, void* data, const widget& e) const
-{
+void table::renderlabel(rect rc, int index, unsigned flags, void* data, const widget& e) const {
 	char temp[1024]; temp[0] = 0;
 	auto p = gettext(temp, data, e.id);
 	if(p)
 		showtext(rc, p, flags);
 }
 
-void table::renderfield(rect rc, int index, unsigned flags, void* data, const widget& e) const
-{
+void table::renderfield(rect rc, int index, unsigned flags, void* data, const widget& e) const {
 	char temp[1024]; temp[0] = 0;
 	auto p = gettext(temp, data, e.id);
 	if(p)
 		showtext(rc, p, flags);
 }
 
-void table::renderimage(rect rc, int index, unsigned flags, void* data, const widget& e) const
-{
+void table::renderimage(rect rc, int index, unsigned flags, void* data, const widget& e) const {
 	if(!rowsimages)
 		return;
 	auto requisit = fields->find(e.id);
@@ -528,16 +472,14 @@ void table::renderimage(rect rc, int index, unsigned flags, void* data, const wi
 
 }
 
-void table::row(rect rc, int index)
-{
+void table::row(rect rc, int index) {
 	rect r1;
 	if(show_event_rows && (index % 2) != 0)
 		rectf({rc.x1 + 1, rc.y1, rc.x2, rc.y2}, colors::active.mix(colors::window, 16));
 	r1 = rc;
 	// Tree checkmark
 	int level = getlevel(index);
-	if(level)
-	{
+	if(level) {
 		int dy = rc.height() - 2;
 		r1.x1 = rc.x1 + (level - 1) * dy;
 		r1.x2 = r1.x1 + dy;
@@ -551,14 +493,12 @@ void table::row(rect rc, int index)
 	if(!columns.data)
 		return;
 	void* data = getrow(index);
-	for(auto& e : columns)
-	{
+	for(auto& e : columns) {
 		if(e.flags&ColumnHide)
 			continue;
 		int t = e.flags&ColumnSizeMask;
 		r1.x2 = r1.x1 + e.width;
-		if(first_row && (t == ColumnSizeNormal || t == ColumnSizeAuto))
-		{
+		if(first_row && (t == ColumnSizeNormal || t == ColumnSizeAuto)) {
 			first_row = false;
 			r1.x2 -= w;
 		}
@@ -568,8 +508,7 @@ void table::row(rect rc, int index)
 		if(focused)
 			flags |= Focused;
 		rect r2 = {r1.x1 + 1, r1.y1, r1.x2, r1.y2};
-		if(index == current && i == current_column)
-		{
+		if(index == current && i == current_column) {
 			flags |= Checked;
 			hot::element = r2;
 		}
@@ -581,19 +520,16 @@ void table::row(rect rc, int index)
 	}
 }
 
-struct table_compare_data
-{
+struct table_compare_data {
 	table*				parent;
 	table::sortinfo*	orders;
 };
 
-static int compare(const void* p1, const void* p2, void* param)
-{
+static int compare(const void* p1, const void* p2, void* param) {
 	auto cd = (table_compare_data*)param;
 	auto pc = cd->parent;
 	int result = 0;
-	for(auto d = cd->orders; *d; d++)
-	{
+	for(auto d = cd->orders; *d; d++) {
 		auto fd = pc->fields->find(d->id);
 		if(!fd)
 			continue;
@@ -609,8 +545,7 @@ static int compare(const void* p1, const void* p2, void* param)
 	return 0;
 }
 
-static int compare_group_up(const void* p1, const void* p2, void* param)
-{
+static int compare_group_up(const void* p1, const void* p2, void* param) {
 	const table_compare_data* cd = (table_compare_data*)param;
 	int g1 = cd->parent->isgroup(cd->parent->rows.indexof(p1)) ? 1 : 0;
 	int g2 = cd->parent->isgroup(cd->parent->rows.indexof(p2)) ? 1 : 0;
@@ -619,10 +554,8 @@ static int compare_group_up(const void* p1, const void* p2, void* param)
 	return g2 - g1;
 }
 
-widget*	table::findcol(const char* id)
-{
-	for(auto& e : columns)
-	{
+widget*	table::findcol(const char* id) {
+	for(auto& e : columns) {
 		if(!e.id)
 			continue;
 		if(strcmp(e.id, id) == 0)
@@ -631,8 +564,7 @@ widget*	table::findcol(const char* id)
 	return 0;
 }
 
-void table::sort(table::sortinfo* psi, int i1, int i2)
-{
+void table::sort(table::sortinfo* psi, int i1, int i2) {
 	if(i2 == -1)
 		i2 = maximum - 1;
 	if(i2 <= 0)
@@ -643,18 +575,15 @@ void table::sort(table::sortinfo* psi, int i1, int i2)
 	rows.sort(i1, i2, group_sort_up ? compare_group_up : compare, &cd);
 }
 
-void table::sort(const char* id, int direction, int i1, int i2)
-{
+void table::sort(const char* id, int direction, int i1, int i2) {
 	sortinfo si[2] = {0};
 	si[0].id = id;
 	si[0].direction = direction;
 	sort(si, i1, i2);
 }
 
-bool table::canedit(int index, const widget& e) const
-{
-	switch(e.gettype())
-	{
+bool table::canedit(int index, const widget& e) const {
+	switch(e.gettype()) {
 	case LineNumber:
 	case WidgetImage:
 		return false;
@@ -663,20 +592,15 @@ bool table::canedit(int index, const widget& e) const
 	}
 }
 
-void table::validate(int direction, bool editable)
-{
+void table::validate(int direction, bool editable) {
 	maximum_column = columns.count;
 	if(!maximum_column)
 		return;
-	while(true)
-	{
-		if(current_column < 0)
-		{
+	while(true) {
+		if(current_column < 0) {
 			current_column = 0;
 			direction = 1;
-		}
-		else if(current_column > maximum_column - 1)
-		{
+		} else if(current_column > maximum_column - 1) {
 			current_column = maximum_column - 1;
 			direction = -1;
 		}
@@ -689,18 +613,15 @@ void table::validate(int direction, bool editable)
 	}
 }
 
-bool table::selecting(rect rc, int index, point mouse)
-{
+bool table::selecting(rect rc, int index, point mouse) {
 	rc.x1 -= origin_width;
 	rect r1 = rc;
 	int level = getlevel(index);
-	if(level)
-	{
+	if(level) {
 		int dy = rc.height() - 2;
 		r1.x1 = r1.x1 + (level - 1) * dy;
 		r1.x2 = r1.x1 + dy;
-		if(mouse.in(r1))
-		{
+		if(mouse.in(r1)) {
 			toggle(index);
 			return false;
 		}
@@ -712,21 +633,18 @@ bool table::selecting(rect rc, int index, point mouse)
 	bool first_row = true;
 	if(!columns.data)
 		return false;
-	for(auto& e : columns)
-	{
+	for(auto& e : columns) {
 		if(e.flags&ColumnHide)
 			continue;
 		int t = e.flags&ColumnSizeMask;
 		r1.x2 = r1.x1 + e.width;
-		if(first_row && (t == ColumnSizeNormal || t == ColumnSizeAuto))
-		{
+		if(first_row && (t == ColumnSizeNormal || t == ColumnSizeAuto)) {
 			first_row = false;
 			r1.x2 -= w;
 		}
 		if(r1.x1 >= rc.x2)
 			break;
-		if(mouse.in(r1))
-		{
+		if(mouse.in(r1)) {
 			if(!canedit(index, e))
 				return false;
 			if(e.gettype() == WidgetCheck)
@@ -738,8 +656,7 @@ bool table::selecting(rect rc, int index, point mouse)
 	}
 	return true;
 }
-void table::treemark(rect rc, int index, int level) const
-{
+void table::treemark(rect rc, int index, int level) const {
 	if(!isgroup(index))
 		return;
 	color c1 = colors::text;
@@ -756,16 +673,14 @@ void table::treemark(rect rc, int index, int level) const
 		line(x, y - 4, x, y + 4, c1);
 }
 
-int table::find(const char* id, const char* value, int index)
-{
+int table::find(const char* id, const char* value, int index) {
 	int i1 = index;
 	int i2 = maximum;
 	int sz = zlen(value);
 	auto type = fields->find(id);
 	if(!type)
 		return -1;
-	for(; i1 < i2; i1++)
-	{
+	for(; i1 < i2; i1++) {
 		char temp[4096];
 		auto pv = fields->getdata(temp, id, getrow(i1), false);
 		if(!pv)
@@ -776,14 +691,12 @@ int table::find(const char* id, const char* value, int index)
 	return -1;
 }
 
-bool table::changing(void* object, const char* id, unsigned flags)
-{
+bool table::changing(void* object, const char* id, unsigned flags) {
 	char temp[4196]; temp[0] = 0;
 	if(!fields->getdata(temp, id, object, true))
 		return false;
 	draw::rectf(hot::element, colors::window);
-	if(show_grid_lines)
-	{
+	if(show_grid_lines) {
 		line(hot::element.x1, hot::element.y1, hot::element.x1, hot::element.y2, colors::form);
 		line(hot::element.x1, hot::element.y2, hot::element.x2, hot::element.y2, colors::form);
 	}
@@ -792,27 +705,22 @@ bool table::changing(void* object, const char* id, unsigned flags)
 	auto value_type = fields->find(id);
 	bool result = false;
 	bool need_dropdown = (value_type->type != text_type && value_type->type != number_type)
-		&& (value_type->reference || (!value_type->reference && value_type->size<=sizeof(int)));
-	if(need_dropdown)
-	{
+		&& (value_type->reference || (!value_type->reference && value_type->size <= sizeof(int)));
+	if(need_dropdown) {
 		auto base = bsdata::find(value_type->type);
-		if(base)
-		{
+		if(base) {
 			autocompletebs aclist(base);
 			te.records = &aclist;
 			aclist.hilite_rows = true;
 			result = te.editing(hot::element);
-		}
-		else
+		} else
 			result = te.editing(hot::element);
-	}
-	else
+	} else
 		result = te.editing(hot::element);
 	if(result)
 		fields->setdata(temp, id, object);
 	// Some keys must be handled by this control
-	switch(hot::key)
-	{
+	switch(hot::key) {
 	case KeyDown:
 	case KeyUp:
 		draw::execute(hot::key, 0);
@@ -821,22 +729,18 @@ bool table::changing(void* object, const char* id, unsigned flags)
 	return result;
 }
 
-void table::clear()
-{
+void table::clear() {
 	rows.clear();
 	current = 0;
 }
 
-void table::keyleft(int id)
-{
+void table::keyleft(int id) {
 	auto i = current_column;
-	if(current_column)
-	{
+	if(current_column) {
 		current_column--;
 		validate(-1, false);
 	}
-	if(i == current_column)
-	{
+	if(i == current_column) {
 		if(isopen(current))
 			toggle(current);
 		else
@@ -846,19 +750,16 @@ void table::keyleft(int id)
 	}
 }
 
-void table::keyright(int id)
-{
+void table::keyright(int id) {
 	if(isgroup(current) && !isopen(current))
 		toggle(current);
-	else if(current_column < maximum_column - 1)
-	{
+	else if(current_column < maximum_column - 1) {
 		current_column++;
 		validate(1, false);
 	}
 }
 
-void table::inputsymbol(int id, int symbol)
-{
+void table::inputsymbol(int id, int symbol) {
 	if(!symbol || symbol < 0x20)
 		return;
 	auto time_clock = clock();
@@ -869,24 +770,21 @@ void table::inputsymbol(int id, int symbol)
 	szput(&p, hot::param);
 	p[0] = 0;
 	int i1 = find(columns.data[current_column].id, search_text, current);
-	if(i1 != -1)
-	{
+	if(i1 != -1) {
 		current = i1;
 		correction();
 		ensurevisible();
 	}
 }
 
-widget& table::addcol(unsigned flags, const char* id, const char* label, int width)
-{
+widget& table::addcol(unsigned flags, const char* id, const char* label, int width) {
 	auto p = columns.addu(id);
 	memset(p, 0, sizeof(p[0]));
 	p->id = id;
 	p->label = label;
 	p->flags = flags;
 	p->width = width;
-	switch(p->gettype())
-	{
+	switch(p->gettype()) {
 	case LineNumber:
 		if(p->getflags() == 0)
 			p->flags |= AlignRightCenter;
@@ -896,10 +794,8 @@ widget& table::addcol(unsigned flags, const char* id, const char* label, int wid
 		p->flags |= ColumnHideTitleText;
 		break;
 	}
-	if(p->width == -1)
-	{
-		switch(p->gettype())
-		{
+	if(p->width == -1) {
+		switch(p->gettype()) {
 		case LineNumber:
 			p->width = 50;
 			break;
@@ -909,11 +805,9 @@ widget& table::addcol(unsigned flags, const char* id, const char* label, int wid
 			p->flags |= ColumnSizeFixed;
 			break;
 		default:
-			if(fields && (p->flags&AlignMask) == 0)
-			{
+			if(fields && (p->flags&AlignMask) == 0) {
 				auto requisit = fields->find(p->id);
-				if(requisit)
-				{
+				if(requisit) {
 					if(requisit->type == number_type)
 						p->flags |= AlignRightCenter;
 				}
@@ -926,8 +820,7 @@ widget& table::addcol(unsigned flags, const char* id, const char* label, int wid
 	return *p;
 }
 
-int table::totalwidth() const
-{
+int table::totalwidth() const {
 	int result = 0;
 	if(!columns.data)
 		return 0;
@@ -936,25 +829,19 @@ int table::totalwidth() const
 	return result;
 }
 
-void table::reposition(int w1)
-{
+void table::reposition(int w1) {
 	int w2 = 0;
 	int c2 = 0;
 	const int min_width = 8;
 	if(!columns.data)
 		return;
-	for(auto& e : columns)
-	{
-		if((e.flags&ColumnSizeMask) == ColumnSizeAuto)
-		{
+	for(auto& e : columns) {
+		if((e.flags&ColumnSizeMask) == ColumnSizeAuto) {
 			w2 += min_width;
 			c2++;
-		}
-		else
-		{
+		} else {
 			// Check minimal width
-			switch(e.gettype())
-			{
+			switch(e.gettype()) {
 			case WidgetCheck:
 			case WidgetImage:
 				if(e.width < 18)
@@ -965,18 +852,14 @@ void table::reposition(int w1)
 		}
 	}
 	// calculate auto sized width
-	if(w2 < w1 && c2)
-	{
+	if(w2 < w1 && c2) {
 		int d1 = w1 - w2;
 		int d2 = d1 / c2;
-		for(auto& e : columns)
-		{
-			if((e.flags&ColumnSizeMask) == ColumnSizeAuto)
-			{
+		for(auto& e : columns) {
+			if((e.flags&ColumnSizeMask) == ColumnSizeAuto) {
 				if(d2 < d1)
 					e.width = min_width + d2;
-				else
-				{
+				else {
 					e.width = min_width + d1;
 					break;
 				}
@@ -985,15 +868,12 @@ void table::reposition(int w1)
 	}
 }
 
-void table::tuning(draw::control** data)
-{
+void table::tuning(draw::control** data) {
 }
 
-void table::contextmenu()
-{
+void table::contextmenu() {
 	menu e;
-	if(!no_change_content && !no_change_order)
-	{
+	if(!no_change_content && !no_change_order) {
 		e.add("add", this);
 		e.add("addcopy", this);
 	}
@@ -1007,8 +887,7 @@ void table::contextmenu()
 		e.add("paste", this);
 	e.add("delete", this);
 	e.addseparator();
-	if(!no_change_order)
-	{
+	if(!no_change_order) {
 		e.add("moveup", this);
 		e.add("movedown", this);
 		e.addseparator();

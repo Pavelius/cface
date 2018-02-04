@@ -1,7 +1,6 @@
 #pragma once
 
-struct hotkey
-{
+struct hotkey {
 	int					key; // Key to map
 	int					id; // Command
 };

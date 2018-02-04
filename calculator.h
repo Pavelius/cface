@@ -6,17 +6,14 @@ enum calc_errors {
 	CalculatorNotFoundFunction,
 };
 // Simple script executor
-struct calculator
-{
-	struct error
-	{
+struct calculator {
+	struct error {
 		calc_errors	type;
 		const char*	position;
 		const char*	expected;
-		operator bool() const { return type != CalculatorNoError ; }
+		operator bool() const { return type != CalculatorNoError; }
 	};
-	struct var
-	{
+	struct var {
 		const char*	name;
 		int			value;
 		operator bool() const { return name != 0; }

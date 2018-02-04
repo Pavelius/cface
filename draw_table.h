@@ -19,15 +19,11 @@ enum column_flags {
 	ColumnHideTitleText = 0x00400000,
 };
 
-namespace draw
-{
-	namespace controls
-	{
-		struct table : public list
-		{
+namespace draw {
+	namespace controls {
+		struct table : list {
 			typedef void		(table::*renderproc)(rect rc, int index, unsigned flags, void* data, const widget & e) const;
-			struct sortinfo
-			{
+			struct sortinfo {
 				const char*		id;
 				int				direction;
 				operator bool() const { return id != 0; }
@@ -96,8 +92,7 @@ namespace draw
 			virtual void		tuning(control** controls);
 			void				validate(int direction = 1, bool editable = true);
 		};
-		struct tableref : table
-		{
+		struct tableref : table {
 			arefc<void*>		source;
 			tableref() : table(source) { source.initialize(); }
 			~tableref() { source.clear(); }
