@@ -5,7 +5,7 @@
 using namespace draw::controls;
 
 tree::tree(unsigned size) : amem(size), table(static_cast<collection&>(*this)),
-sort_rows_by_name(false) {
+sort_rows_by_name(false), element_param_have_row(false) {
 }
 
 void tree::clear() {
@@ -65,6 +65,12 @@ bool tree::isgroup(int row) const {
 	return (t->flags&TIGroup) != 0;
 }
 
+void* tree::getrow(int index) {
+	if(element_param_have_row)
+		return (void*)((element*)rows.get(index))->param;
+	return table::getrow(index);
+}
+
 //int tree::execute(int id, bool run)
 //{
 //	int i;
@@ -109,20 +115,6 @@ bool tree::isgroup(int row) const {
 //		return table::execute(id, run);
 //	}
 //	return Executed;
-//}
-
-//bool tree::get(const void* object, const menu& e, char* text) const
-//{
-//	if(amem::indexof(object)!=-1)
-//		object = (void*)((element*)object)->param;
-//	return table::get(object, e, text);
-//}
-//
-//void tree::set(void* object, const menu& e, const char* value)
-//{
-//	if(amem::indexof(object)!=-1)
-//		object = (void*)((element*)object)->param;
-//	table::set(object, e, value);
 //}
 
 static int compare_by_name(const void* p1, const void* p2, void* param) {
@@ -227,6 +219,7 @@ void tree::expand(int index, int level) {
 	}
 	if(i1 != i2)
 		rows.remove(i1, i2 - i1);
+	// Finally sort all rows
 	if(sort_rows_by_name) {
 		if(level == 0)
 			amem::sort(0, amem::count - 1, group_sort_up ? compare_by_name_group_up : compare_by_name, this);

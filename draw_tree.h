@@ -21,6 +21,7 @@ namespace draw {
 			int				level;
 			int				index;
 			bool			sort_rows_by_name;
+			bool			element_param_have_row;
 			//
 			tree(unsigned size = sizeof(element));
 			//
@@ -35,6 +36,7 @@ namespace draw {
 			virtual int		getlevel(int row) const override;
 			int				getparam(int row = -1) const;
 			int				getparamindex(int value) const;
+			void*			getrow(int value) override;
 			int				gettype(int row = -1) const;
 			bool			haselement(int param) const;
 			virtual bool	isgroup(int row) const override;

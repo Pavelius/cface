@@ -13,8 +13,8 @@ using namespace database;
 static struct widget_database_header : tree {
 
 	void initialize() {
-		//addcol(WidgetImage, "image", "Изображение");
-		addcol(WidgetField, "name", "Наименование");
+		addcol(WidgetImage, "image", "Изображение");
+		addcol(WidgetField|ColumnSizeAuto|ColumnSmallHilite, "name", "Наименование");
 		fields = database::object_type;
 	}
 
@@ -27,23 +27,20 @@ static struct widget_database_header : tree {
 		return result;
 	}
 
-	const char*	gettext(char* result, void* data, const char* id) const override {
-		auto pe = (database::object*)((element*)data)->param;
-		if(strcmp(id, "name") == 0)
-			return pe->name;
-		return "";
-	}
-
-	void addrow(object& core) {
-		element e = {0};
-		e.param = (unsigned)&core;
-		tree::addrow(e);
+	bool hasrows(object& row) {
+		for(auto& e : database::objects) {
+			if(e.parent == &row)
+				return true;
+		}
+		return false;
 	}
 
 	void addrows(object& row) {
 		for(auto& e : database::objects) {
-			if(e.parent == &row)
-				addrow(e);
+			if(e.parent == &row) {
+				auto hr = hasrows(e);
+				tree::addrow((unsigned)&e, hr ? TIGroup :0, hr ? 1 : 0, 0);
+			}
 		}
 	}
 
@@ -60,6 +57,7 @@ static struct widget_database_header : tree {
 		show_header = false;
 		show_toolbar = false;
 		no_change_count = true;
+		element_param_have_row = true;
 	}
 
 } database_header_control;
