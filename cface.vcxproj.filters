@@ -274,6 +274,12 @@
     <ClCompile Include="bsparse.cpp">
       <Filter>Обработка данных</Filter>
     </ClCompile>
+    <ClCompile Include="database.cpp">
+      <Filter>Обработка данных</Filter>
+    </ClCompile>
+    <ClCompile Include="widget_database.cpp">
+      <Filter>Графика\Виджеты</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="acol.h">
@@ -461,6 +467,9 @@
     </ClInclude>
     <ClInclude Include="cflags.h">
       <Filter>Коллекции</Filter>
+    </ClInclude>
+    <ClInclude Include="database.h">
+      <Filter>Обработка данных</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

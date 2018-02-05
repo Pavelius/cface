@@ -4,7 +4,7 @@ void collection::swap(int i1, int i2) {
 	auto p1 = (char*)get(i1);
 	auto p2 = (char*)get(i2);
 	auto s = getsize();
-	for(auto i = 0; i < s; i++) {
+	for(unsigned i = 0; i < s; i++) {
 		char a = p1[i];
 		p1[i] = p2[i];
 		p2[i] = a;

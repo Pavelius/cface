@@ -178,6 +178,7 @@
     <ClCompile Include="crt_memory.cpp" />
     <ClCompile Include="crt_parse.cpp" />
     <ClCompile Include="ctype.cpp" />
+    <ClCompile Include="database.cpp" />
     <ClCompile Include="date.cpp" />
     <ClCompile Include="dice.cpp" />
     <ClCompile Include="draw.cpp" />
@@ -190,6 +191,7 @@
     <ClCompile Include="draw_form.cpp" />
     <ClCompile Include="draw_listview.cpp" />
     <ClCompile Include="hotproc.cpp" />
+    <ClCompile Include="widget_database.cpp" />
     <ClCompile Include="widget_logging.cpp" />
     <ClCompile Include="widget_settings.cpp" />
     <ClCompile Include="widget_type.cpp" />
@@ -257,6 +259,7 @@
     <ClInclude Include="amem.h" />
     <ClInclude Include="archive.h" />
     <ClInclude Include="bsdata.h" />
+    <ClInclude Include="database.h" />
     <ClInclude Include="bsparse.h" />
     <ClInclude Include="bsreq.h" />
     <ClInclude Include="cflags.h" />
