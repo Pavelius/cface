@@ -26,7 +26,10 @@ void object::clear() {
 }
 
 object& object::add(const char* name) {
-	auto p = objects.add();
+	name = szdup(name);
+	auto p = find(name);
+	if(!p)
+		p = objects.add();
 	if(!p)
 		p = objects.data;
 	p->parent = this;
