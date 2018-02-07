@@ -100,3 +100,9 @@ int draw::tabs(rect rc, bool show_close, bool right_side, void** data, int start
 	}
 	return result;
 }
+
+int draw::tabs(int x, int y, int width, bool show_close, bool right_side, void** data, int start, int count, int current, int* hilite,
+	proctext gtext, proctext gstate, rect position) {
+	return tabs({x, y, x + width, y + draw::texth() + metrics::padding * 4},
+		show_close, right_side, data, start, count, current, hilite, gtext, gstate, position);
+}

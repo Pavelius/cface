@@ -10,7 +10,7 @@ using namespace draw;
 static void*			hot_object;
 static const bsreq*		hot_type;
 
-static char* get_text(char* result, void* object) {
+static const char* get_text(char* result, void* object) {
 	if(((widget*)object)->label)
 		zcpy(result, ((widget*)object)->label, 259);
 	return result;

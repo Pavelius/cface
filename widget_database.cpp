@@ -5,22 +5,62 @@
 #include "draw.h"
 #include "draw_tree.h"
 #include "settings.h"
+#include "draw_textedit.h"
 #include "bsreq.h"
 
 using namespace	draw;
 using namespace	draw::controls;
 using namespace database;
 
+static struct tab_element {
+	const char*		name;
+	operator bool() const { return name != 0; }
+} tab_element_data[] = {
+	{"Реквизиты"},
+	{"Права"},
+};
+
+static void callback_edit_text() {
+	char temp[4196]; temp[0] = 0;
+	auto p = (const char**)hot::param;
+	if(*p)
+		zcpy(temp, *p, sizeof(temp) - 1);
+	textedit te(temp, sizeof(temp), true);
+	if(te.editing(hot::element)) {
+		if(temp[0])
+			*p = szdup(temp);
+		else
+			*p = 0;
+	}
+}
+
+static const char* gettabname(char* result, void* param) {
+	return ((tab_element*)param)->name;
+}
+
 static bool change_object(database::object& source) {
 	window dc(-1, -1, 400, 300, WFMinmax | WFResize, 0, "HeaderForm");
 	setcaption(source.name);
 	const int dy = texth() + 8 + metrics::padding * 2;
-	int current_control = 0;
+	tab_element* elements[16] = {0};
+	for(auto& e : tab_element_data)
+		zcat(elements, &e);
+	auto current_tab = 0;
 	setfocus(0, true);
+	adatc<tab_element, 16> table_elements;
+	table test_table(table_elements);
+	auto tab_height = draw::texth() + metrics::padding * 4;
 	while(true) {
 		rect rc = {0, 0, getwidth(), getheight() - dy};
 		rectf({0, 0, getwidth(), getheight()}, colors::form);
 		rc.offset(metrics::padding * 2);
+		// Вывод элементов
+		rc.y1 += draw::field(rc.x1, rc.y1, rc.width(), (int)&source.name, 0, source.name, 0, "Наименование", 100, callback_edit_text);
+		draw::tabs({rc.x1, rc.y1, rc.x1 + rc.width(), rc.y1 + tab_height},
+			false, false, (void**)elements, 0, zlen(elements), current_tab, 0, gettabname);
+		rc.y1 += tab_height + metrics::padding;
+		test_table.view(rc);
+		// Вывод подвала
 		rc.y1 = getheight() - dy - metrics::padding;
 		rc.x2 = getwidth() - metrics::padding;
 		rc.x1 = rc.x2 - 100; button(rc.x1, rc.y1, 100, KeyEscape, 0, "Отменить");

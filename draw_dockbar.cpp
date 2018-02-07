@@ -13,7 +13,7 @@ static struct dock_info
 	bool		visible;
 } dock_data[DockWorkspace + 1];
 
-static char* get_control_name(char* result, void* p)
+static const char* get_control_name(char* result, void* p)
 {
 	result[0] = 0;
 	return ((control*)p)->getname(result);

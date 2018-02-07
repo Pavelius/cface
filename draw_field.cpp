@@ -52,10 +52,10 @@ static bool editstart(const rect& rc, int id, unsigned flags, void(*callback_edi
 	return result;
 }
 
-static void header(int& x, int y, int& width, unsigned flags, const char* label, int title) {
-	if(!title)
-		title = 100;
+void draw::header(int& x, int y, int& width, unsigned flags, const char* label, int title) {
 	char temp[1024];
+	if(!title)
+		title = 128;
 	zcpy(temp, label, sizeof(temp) - 2);
 	zcat(temp, ":");
 	text(x, y + 4, temp);

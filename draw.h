@@ -79,7 +79,7 @@ enum drap_part_s : unsigned char {
 	DragElement, DragScrollH, DragScrollV, DragSplitH, DragSplitV, DragColumn,
 };
 
-typedef char* (*proctext)(char* result, void* object);
+typedef const char* (*proctext)(char* result, void* object);
 
 namespace hot {
 typedef void(*proc)(); // Hot callback reaction
@@ -278,6 +278,7 @@ void					syscursor(bool enable);
 void					sysmouse(bool enable);
 void					sysredraw();
 int						tabs(rect rc, bool show_close, bool right_side, void** data, int start, int count, int current, int* hilite, proctext gtext, proctext gstate = 0, rect position = {0, 0, 0, 0});
+int						tabs(int x, int y, int witdh, bool show_close, bool right_side, void** data, int start, int count, int current, int* hilite, proctext gtext, proctext gstate = 0, rect position = {0, 0, 0, 0});
 void					text(int x, int y, const char* string, int count = -1, unsigned flags = 0);
 int						text(rect rc, const char* string, unsigned state = 0, int* max_width = 0);
 int						textc(int x, int y, int width, const char* string, int count = -1, unsigned flags = 0);
@@ -305,6 +306,7 @@ bool					buttonh(rect rc, bool checked, bool focused, bool disabled, bool border
 bool					buttonv(rect rc, bool checked, bool focused, bool disabled, bool border, const char* string, int key = 0, bool press = false);
 int						checkbox(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips = 0, void(*callback)() = 0, void(*callback_setparam)(void*) = 0, void* param = 0);
 int						field(int x, int y, int width, int id, unsigned falgs, const char* label, const char* tips, const char* header_label, int header_title, void(*callback_edit)() = 0, void(*callback_list)() = 0, void(*callback_choose)() = 0, void(*callback_up)() = 0, void(*callback_down)() = 0, void(*callback_open)() = 0, void(*callback_setparam)(void*) = 0, void* param = 0);
+void					header(int& x, int y, int& width, unsigned flags, const char* label, int title = 128);
 int						radio(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips = 0, void(*callback)() = 0, void(*callback_setparam)(void*) = 0, void* param = 0);
 void					scrollh(int id, const struct rect& scroll, int& origin, int count, int maximum, bool focused = false);
 void					scrollv(int id, const struct rect& scroll, int& origin, int count, int maximum, bool focused = false);

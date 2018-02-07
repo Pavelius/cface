@@ -35,8 +35,8 @@ bsreq dock_type[] = {
 };
 BSMETA(dock)
 
-static char* gettabname(char* temp, void* p) {
-	return (char*)((settings*)p)->name;
+static const char* gettabname(char* temp, void* p) {
+	return ((settings*)p)->name;
 }
 
 static void callback_settab() {
@@ -163,7 +163,7 @@ static struct widget_settings_header : list {
 		return rows[current];
 	}
 
-} header;
+} setting_header;
 
 static struct widget_control_viewer : tableref {
 
@@ -300,10 +300,10 @@ static struct widget_settings : control {
 		settings* tabs[128];
 		fore = colors::text;
 		splitv(rc.x1, rc.y1, header_width, rc.height(), 1, 6, 64, 282);
-		header.show_border = metrics::show::padding;
-		header.viewf({rc.x1, rc.y1, rc.x1 + header_width, rc.y2}, false);
+		setting_header.show_border = metrics::show::padding;
+		setting_header.viewf({rc.x1, rc.y1, rc.x1 + header_width, rc.y2}, false);
 		rc.x1 += header_width + 6;
-		auto top = header.getcurrent();
+		auto top = setting_header.getcurrent();
 		// При изменении текущего заголовка
 		if(top != current_header) {
 			current_header = top;
@@ -368,7 +368,7 @@ static struct widget_application : control {
 		return commands;
 	}
 
-	static char* getcontrolname(char* temp, void* p) {
+	static const char* getcontrolname(char* temp, void* p) {
 		return ((control*)p)->getname(temp);
 	}
 
@@ -512,16 +512,16 @@ static void initialize_settings() {
 	// Initialize other plugin settings
 	command_settings_initialize->execute();
 	// Make header
-	header.initialize();
+	setting_header.initialize();
 }
 
 static control* layouts[] = {&widget_application_control, &widget_settings_control};
 
-static char* get_control_name(char* result, void* object) {
+static const char* get_control_name(char* result, void* object) {
 	return ((control*)object)->getname(result);
 }
 
-static char* get_control_status(char* result, void* object) {
+static const char* get_control_status(char* result, void* object) {
 	char temp[260];
 	szprint(result, "Переключить вид на '%1'", ((control*)object)->getname(temp));
 	return result;
