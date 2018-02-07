@@ -106,29 +106,50 @@ static void callback_down() {
 
 struct dlgform {
 
-	void*			object;
-	const bsreq*	type;
+	struct bsref {
+		void*			object;
+		const bsreq*	type;
+		operator bool() const { return object != 0; }
+		int	get() const { return type->get(type->ptr(object)); }
+	};
+
+	bsref				variables[4];
+	int					number_values[16];
+	adat<bsreq, 16>		number_variables;
 
 	unsigned getflags(const widget& e) const {
 		return e.flags;
 	}
 
-	int getdata(const widget& e) const {
-		auto f = type->find(e.id);
-		if(!f)
-			return 0;
-		return f->get(f->ptr(object));
+	bsref getinfo(const char* id, bool create_variable = false) {
+		for(auto& po : variables) {
+			if(!po)
+				break;
+			auto f = po.type->find(id);
+			if(!f)
+				continue;
+			return {po.object, f};
+		}
+		if(create_variable && number_variables.count<number_variables.getmaximum()) {
+			int i = (number_variables.count++);
+			number_variables[i].id = id;
+			number_variables[i].count = 1;
+			number_variables[i].size = sizeof(number_values[0]);
+			number_variables[i].offset = i*sizeof(number_values[0]);
+			return {number_values, number_variables.data + i};
+		}
+		return {0, 0};
 	}
 
-	void setdata(const widget& e, int value, bool instant = false) const {
-		auto f = type->find(e.id);
-		if(!f)
+	void setdata(const widget& e, int value, bool instant = false) {
+		auto po = getinfo(e.id);
+		if(!po)
 			return;
 		if(instant)
-			f->set(f->ptr(object), value);
+			po.type->set(po.type->ptr(po.object), value);
 		else {
-			hot_object = (void*)f->ptr(object);
-			hot_type = f;
+			hot_object = (void*)po.type->ptr(po.object);
+			hot_type = po.type;
 			hot::param = value;
 			execute(callback_setdata);
 		}
@@ -201,28 +222,30 @@ struct dlgform {
 	int field(int x, int y, int width, const widget& e) {
 		if(!e.id || !e.id[0])
 			return 0;
-		auto f = type->find(e.id);
-		if(!f)
+		auto po = getinfo(e.id);
+		if(!po)
 			return 0;
-		f = f->type;
 		char temp[260];
-		auto p = type->getdata(temp, e.id, object, false);
+		auto p = po.type->getdata(temp, e.id, po.object, false);
 		if(!p)
 			return 0;
 		auto flags = getflags(e);
-		if(f == number_type)
+		if(po.type->type == number_type)
 			return draw::field(x, y, width, (int)&e, getflags(e), p, e.tips, e.label, e.title,
-				callback_edit, 0, 0, callback_up, callback_down, 0, setparam, this);
-		else if(f != text_type)
+				callback_edit, 0, 0, callback_up, callback_down, 0, setparam, &po);
+		else if(po.type->type != text_type)
 			return draw::field(x, y, width, (int)&e, getflags(e), p, e.tips, e.label, e.title,
-				callback_edit, 0, 0, 0, 0, 0, setparam, this);
+				callback_edit, 0, 0, 0, 0, 0, setparam, &po);
 		else
 			return draw::field(x, y, width, (int)&e, getflags(e), p, e.tips, e.label, e.title,
-				callback_edit, 0, 0, 0, 0, 0, setparam, this);
+				callback_edit, 0, 0, 0, 0, 0, setparam, &po);
 	}
 
 	int tabs(int x, int y, int width, const widget& e) {
 		if(!e.childs)
+			return 0;
+		auto po = getinfo(e.id);
+		if(!po)
 			return 0;
 		auto y0 = y;
 		const int tab_height = 24 + 4;
@@ -236,7 +259,7 @@ struct dlgform {
 				*ps++ = p;
 		}
 		auto count = ps - data;
-		auto current = getdata(e);
+		auto current = po.get();
 		rect rc = {x, y, x + width, y + tab_height};
 		int tabs_hilite = -1;
 		if(draw::tabs(rc, false, false, (void**)data, 0, count, current, &tabs_hilite, get_text, 0, {0, 0, 0, 0})) {
@@ -258,27 +281,34 @@ struct dlgform {
 	int radio(int x, int y, int width, const widget& e) {
 		if(!e.label || !e.label[0] || !e.id || !e.id[0])
 			return 0;
+		auto po = getinfo(e.id);
+		if(!po)
+			return 0;
 		auto flags = getflags(e);
-		if(getdata(e) == e.value)
+		if(po.get() == e.value)
 			flags |= Checked;
-		return draw::radio(x, y, width, (int)&e, flags, e.label, e.tips, callback_radio, setparam, this);
+		return draw::radio(x, y, width, (int)&e, flags, e.label, e.tips, callback_radio, setparam, &po);
 	}
 
 	int check(int x, int y, int width, const widget& e) {
 		if(!e.label || !e.label[0] || !e.id || !e.id[0])
 			return 0;
+		auto po = getinfo(e.id);
+		if(!po)
+			return 0;
 		auto flags = getflags(e);
-		if(getdata(e))
+		if(po.get() == e.value)
 			flags |= Checked;
-		return draw::checkbox(x, y, width, (int)&e, flags, e.label, e.tips, callback_check, setparam, this);
+		return draw::checkbox(x, y, width, (int)&e, flags, e.label, e.tips, callback_check, setparam, &po);
 	}
 
 	int button(int x, int y, int width, const widget& e) {
+		auto po = getinfo(e.id);
 		// Hot keys must work, if we want this
 		if(e.value && hot::key == e.value)
-			doevent((int)&e, e.callback, setparam, this);
+			doevent((int)&e, e.callback, setparam, &po);
 		return draw::button(x, y, width, (int)&e, getflags(e), e.label, e.tips,
-			e.callback, setparam, this);
+			e.callback, setparam, &po);
 	}
 
 	int renderno(int x, int y, int width, const widget& e) {
@@ -296,14 +326,19 @@ struct dlgform {
 		return (this->*methods[e.gettype()])(x, y, width, e);
 	}
 
-	dlgform(void* object, const bsreq* type) : object(object), type(type) {
+	dlgform(void* object, const bsreq* type) {
+		memset(variables, 0, sizeof(variables));
+		memset(number_values, 0, sizeof(number_values));
+		memset(&number_variables, 0, sizeof(number_variables));
+		variables[0].object = object;
+		variables[0].type = type;
 	}
 
 };
 
 static void setparam(void* param) {
-	hot_object = ((dlgform*)param)->object;
-	hot_type = ((dlgform*)param)->type;
+	hot_object = ((dlgform::bsref*)param)->object;
+	hot_type = ((dlgform::bsref*)param)->type;
 }
 
 int	draw::render(int x, int y, int width, const widget* p, void* object, const bsreq* type) {

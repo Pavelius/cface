@@ -2,7 +2,7 @@
 
 // Use when we don't want use allocator and must have static data
 // Beware - it's not have constructors and destructor
-template<class T, int count_max = 128>
+template<class T, unsigned count_max = 128>
 struct adat {
 	T			data[count_max];
 	unsigned	count;
@@ -45,8 +45,11 @@ struct adat {
 		}
 		return 0;
 	}
-	inline int getcount() const {
+	int getcount() const {
 		return count;
+	}
+	unsigned getmaximum() const {
+		return count_max;
 	}
 	int indexof(const T* e) const {
 		if(e >= data && e <= data + count)
