@@ -341,9 +341,9 @@ int draw::open(const char* title, int width, int height, const widget* widgets, 
 			rc.y1 += draw::render(rc.x1, rc.y1, rc.width(), rc.height(), widgets, variables);
 			if(validate) {
 				bool result = validate(variables);
-				button(rc.x1 - 100, rc.y1, 100, (int)"OK", result ? 0 : Disabled, "OK", 0, buttonok);
-				rc.x1 -= 100 - metrics::padding;
-				button(rc.x1 - 100, rc.y1, 100, (int)"Cancel", result ? 0 : Disabled, "Отмена", 0, buttoncancel);
+				button(rc.x2 - 100, rc.y1, 100, (int)"OK", result ? 0 : Disabled, "OK", 0, buttonok);
+				rc.x2 -= 100 - metrics::padding;
+				button(rc.x2 - 100, rc.y1, 100, (int)"Cancel", result ? 0 : Disabled, "Отмена", 0, buttoncancel);
 			}
 		}
 	} current;
