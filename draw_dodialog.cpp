@@ -3,38 +3,31 @@
 static void(*current_execute)(); // Current executed command
 static int current_focus; // Current focus element
 
-static void callback_setfocus()
-{
+static void callback_setfocus() {
 	draw::setfocus(hot::param, true);
 }
 
-int draw::getfocus()
-{
+int draw::getfocus() {
 	return current_focus;
 }
 
-void draw::setfocus(int value, bool instant)
-{
+void draw::setfocus(int value, bool instant) {
 	if(instant)
 		current_focus = value;
-	else
-	{
+	else {
 		execute(callback_setfocus);
 		hot::param = value;
 	}
 }
 
-bool draw::dodialog(int id)
-{
+bool draw::dodialog(int id) {
 	auto temp_execute = current_execute;
 	current_execute = 0;
-	if(temp_execute)
-	{
+	if(temp_execute) {
 		temp_execute();
 		return true;
 	}
-	switch(id)
-	{
+	switch(id) {
 	case KeyTab:
 	case KeyTab | Shift:
 	case KeyTab | Ctrl:
@@ -47,8 +40,7 @@ bool draw::dodialog(int id)
 	return false;
 }
 
-void draw::execute(void(*proc)())
-{
+void draw::execute(void(*proc)()) {
 	draw::execute(InputExecute);
 	current_execute = proc;
 }

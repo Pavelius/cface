@@ -1,6 +1,6 @@
 #pragma once
 
-struct bsreq;
+struct bsval;
 namespace draw {
 	enum control_s : unsigned char {
 		NoWidget,
@@ -25,8 +25,8 @@ namespace draw {
 		widget&				settips(const char* v) { tips = v; return *this; }
 		widget&				setvalue(int v) { value = v; return *this; }
 	};
-	int						render(int x, int y, int width, const widget* e, void* object, const bsreq* type);
-	int						open(const char* title, int width, int height, const struct widget* widgets, void* object, const bsreq* type, bool(*validate)(void* object, const bsreq* type)=0);
+	int						render(int x, int y, int width, int height, const widget* e, bsval* variables);
+	int						open(const char* title, int width, int height, const widget* widgets, bsval* variables, bool(*validate)(bsval* variables)=0);
 	void					breakmodal(int result);
 }
 extern bsreq				widget_type[];

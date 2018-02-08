@@ -280,6 +280,9 @@
     <ClCompile Include="widget_database.cpp">
       <Filter>Графика\Виджеты</Filter>
     </ClCompile>
+    <ClCompile Include="draw_control_type.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="acol.h">

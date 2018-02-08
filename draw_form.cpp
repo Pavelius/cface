@@ -24,38 +24,28 @@ static void callback_setdata() {
 
 static void callback_radio() {
 	auto p = (widget*)hot::param;
-	auto f = hot_type->find(p->id);
-	if(f)
-		f->set(f->ptr(hot_object), p->value);
+	hot_type->set(hot_type->ptr(hot_object), p->value);
 }
 
 static void callback_check() {
 	auto p = (widget*)hot::param;
-	auto f = hot_type->find(p->id);
-	if(f) {
-		auto po = (void*)f->ptr(hot_object);
-		auto pv = f->get(po);
-		if(p->value) {
-			if((pv & p->value) == 0)
-				pv |= p->value;
-			else
-				pv &= ~p->value;
-		} else if(pv)
-			f->set(po, 0);
+	auto po = (void*)hot_type->ptr(hot_object);
+	auto pv = hot_type->get(po);
+	if(p->value) {
+		if((pv & p->value) == 0)
+			pv |= p->value;
 		else
-			f->set(po, 1);
-	}
+			pv &= ~p->value;
+	} else if(pv)
+		hot_type->set(po, 0);
+	else
+		hot_type->set(po, 1);
 }
 
 static void callback_edit() {
 	auto p = (widget*)hot::param;
-	auto f = hot_type->find(p->id);
 	auto current_object = hot_object;
 	auto current_type = hot_type;
-	if(!f) {
-		hot::key = 0;
-		return;
-	}
 	char temp[4196]; temp[0] = 0;
 	if(!current_type->getdata(temp, p->id, hot_object, true)) {
 		hot::key = 0;
@@ -63,10 +53,10 @@ static void callback_edit() {
 	}
 	controls::textedit te(temp, sizeof(temp), true);
 	te.align = p->flags;
-	auto b = bsdata::find(f->type);
+	auto b = bsdata::find(hot_type->type);
 	bool result = false;
-	bool need_dropdown = (f->type != text_type && f->type != number_type)
-		&& (f->reference || f->isenum)
+	bool need_dropdown = (hot_type->type != text_type && hot_type->type != number_type)
+		&& (hot_type->reference || hot_type->isenum)
 		&& b;
 	if(need_dropdown) {
 		controls::autocompletebs aclist(b);
@@ -88,55 +78,41 @@ static void callback_edit() {
 
 static void callback_up() {
 	auto p = (widget*)hot::param;
-	auto f = hot_type->find(p->id);
-	if(!f)
-		return;
-	auto po = (void*)f->ptr(hot_object);
-	f->set(po, f->get(po) - 1);
+	auto po = (void*)hot_type->ptr(hot_object);
+	hot_type->set(po, hot_type->get(po) - 1);
 }
 
 static void callback_down() {
 	auto p = (widget*)hot::param;
-	auto f = hot_type->find(p->id);
-	if(!f)
-		return;
-	auto po = (void*)f->ptr(hot_object);
-	f->set(po, f->get(po) + 1);
+	auto po = (void*)hot_type->ptr(hot_object);
+	hot_type->set(po, hot_type->get(po) + 1);
 }
 
 struct dlgform {
 
-	struct bsref {
-		void*			object;
-		const bsreq*	type;
-		operator bool() const { return object != 0; }
-		int	get() const { return type->get(type->ptr(object)); }
-	};
-
-	bsref				variables[4];
-	int					number_values[16];
-	adat<bsreq, 16>		number_variables;
+	bsval*			variables;
+	rect			client;
 
 	unsigned getflags(const widget& e) const {
 		return e.flags;
 	}
 
-	bsref getinfo(const char* id, bool create_variable = false) {
-		for(auto& po : variables) {
-			if(!po)
-				break;
-			auto f = po.type->find(id);
+	bsval getinfo(const char* id) const {
+		for(auto po = variables; *po; po++) {
+			auto f = po->type->find(id);
 			if(!f)
 				continue;
-			return {po.object, f};
+			return {f, po->data};
 		}
-		if(create_variable && number_variables.count<number_variables.getmaximum()) {
-			int i = (number_variables.count++);
-			number_variables[i].id = id;
-			number_variables[i].count = 1;
-			number_variables[i].size = sizeof(number_values[0]);
-			number_variables[i].offset = i*sizeof(number_values[0]);
-			return {number_values, number_variables.data + i};
+		return {0, 0};
+	}
+
+	bsval getinfo(const char* id, bsreq* type) const {
+		for(auto po = variables; *po; po++) {
+			auto f = po->type->find(id, type);
+			if(!f)
+				continue;
+			return {f, po->data};
 		}
 		return {0, 0};
 	}
@@ -146,12 +122,12 @@ struct dlgform {
 		if(!po)
 			return;
 		if(instant)
-			po.type->set(po.type->ptr(po.object), value);
+			po.set(value);
 		else {
-			hot_object = (void*)po.type->ptr(po.object);
+			hot_object = (void*)po.type->ptr(po.data);
 			hot_type = po.type;
-			hot::param = value;
 			execute(callback_setdata);
+			hot::param = value;
 		}
 	}
 
@@ -226,7 +202,7 @@ struct dlgform {
 		if(!po)
 			return 0;
 		char temp[260];
-		auto p = po.type->getdata(temp, e.id, po.object, false);
+		auto p = po.type->getdata(temp, e.id, po.data, false);
 		if(!p)
 			return 0;
 		auto flags = getflags(e);
@@ -268,6 +244,16 @@ struct dlgform {
 		}
 		y += tab_height + metrics::padding;
 		return element(x, y, width, e.childs[current]);
+	}
+
+	int custom(int x, int y, int width, const widget& e) {
+		auto po = getinfo(e.id, control_type);
+		if(!po)
+			return 0;
+		auto pc = (draw::control*)po.type->ptr(po.data);
+		auto height = client.height() - y - metrics::padding*2;
+		pc->viewf({x, y, x + width, y + height}, true);
+		return height + metrics::padding;
 	}
 
 	int decoration(int x, int y, int width, const widget& e) {
@@ -319,46 +305,42 @@ struct dlgform {
 		typedef int (dlgform::*callback)(int, int, int, const widget&);
 		static callback methods[] = {
 			&dlgform::renderno,
-			&dlgform::decoration, &dlgform::group, &dlgform::tabs,
-			&dlgform::renderno, &dlgform::button, &dlgform::field, &dlgform::check, &dlgform::radio,
+			&dlgform::decoration, &dlgform::group, &dlgform::tabs, &dlgform::custom,
+			&dlgform::button, &dlgform::field, &dlgform::check, &dlgform::radio,
 			&dlgform::renderno, &dlgform::renderno
 		};
 		return (this->*methods[e.gettype()])(x, y, width, e);
 	}
 
-	dlgform(void* object, const bsreq* type) {
-		memset(variables, 0, sizeof(variables));
-		memset(number_values, 0, sizeof(number_values));
-		memset(&number_variables, 0, sizeof(number_variables));
-		variables[0].object = object;
-		variables[0].type = type;
+	dlgform(bsval* variables) : variables(variables) {
 	}
 
 };
 
 static void setparam(void* param) {
-	hot_object = ((dlgform::bsref*)param)->object;
-	hot_type = ((dlgform::bsref*)param)->type;
+	hot_object = ((bsval*)param)->data;
+	hot_type = ((bsval*)param)->type;
 }
 
-int	draw::render(int x, int y, int width, const widget* p, void* object, const bsreq* type) {
-	dlgform e(object, type);
+int	draw::render(int x, int y, int width, int height, const widget* p, bsval* variables) {
+	dlgform e(variables);
+	e.client = {x, y, x + width, y + height};
 	if(p->width)
 		return e.horizontal(x, y, width, p);
 	return e.vertical(x, y, width, p);
 }
 
-int draw::open(const char* title, int width, int height, const widget* widgets, void* object, const bsreq* type, bool (*validate)(void* object, const bsreq* type)) {
+int draw::open(const char* title, int width, int height, const widget* widgets, bsval* variables, bool(*validate)(bsval* variables)) {
 	struct context : control {
 		void*			object;
-		const bsreq*	type;
+		bsval*			variables;
 		const widget*	widgets;
-		bool			(*validate)(void* object, const bsreq* type);
+		bool(*validate)(bsval* variables);
 		void nonclient(rect rc) override {
 			auto y0 = rc.y1;
-			rc.y1 += draw::render(rc.x1, rc.y1, rc.width(), widgets, object, type);
+			rc.y1 += draw::render(rc.x1, rc.y1, rc.width(), rc.height(), widgets, variables);
 			if(validate) {
-				bool result = validate(object, type);
+				bool result = validate(variables);
 				button(rc.x1 - 100, rc.y1, 100, (int)"OK", result ? 0 : Disabled, "OK", 0, buttonok);
 				rc.x1 -= 100 - metrics::padding;
 				button(rc.x1 - 100, rc.y1, 100, (int)"Cancel", result ? 0 : Disabled, "Отмена", 0, buttoncancel);
@@ -366,8 +348,7 @@ int draw::open(const char* title, int width, int height, const widget* widgets, 
 		}
 	} current;
 	current.widgets = widgets;
-	current.object = object;
-	current.type = type;
+	current.variables = variables;
 	current.validate = validate;
 	current.show_background = false;
 	return current.open(title, WFResize, width, height, false);

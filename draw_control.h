@@ -15,6 +15,7 @@ enum command_view_s {
 };
 
 struct bsreq;
+extern bsreq control_type[];
 
 #define CONTROL_PAR(name) {"", "", 0, name::commands}
 #define CONTROL_ICN(cpr, text, key, icon) {#cpr, text, (command::proc)&cpr, 0, key, icon, ViewIcon}
