@@ -1,40 +1,19 @@
 #include "crt.h"
 #include "amem.h"
 
-static int optimal(unsigned need_count) {
-	const unsigned mc = 256 * 256 * 256;
-	unsigned m = 64;
-	while(m < mc) {
-		if(need_count < m)
-			return m;
-		m = m << 1;
-	}
-	return m;
-}
+void* rmreserve(void* ptr, unsigned size);
+unsigned rmoptimal(unsigned size);
 
 amem::amem(unsigned size)
 	: data(0), count(0), size(size), count_maximum(0) {
 }
 
-amem::amem(void* data, unsigned size, unsigned count)
-	: data(data), count(count), size(size), count_maximum(count) {
-}
-
 amem::~amem() {
-	if(data)
-		delete data;
-	data = 0;
-	count = 0;
-	count_maximum = 0;
-}
-
-char* amem::begin() const {
-	return (char*)data;
+ 	amem::clear();
 }
 
 void* amem::add(const void* element) {
-	if(!reserve(count + 1))
-		return 0;
+	reserve(count + 1);
 	void* p = (char*)data + size*count;
 	if(element)
 		memcpy(p, element, size);
@@ -45,9 +24,7 @@ void* amem::add(const void* element) {
 }
 
 void amem::clear() {
-	if(data)
-		delete data;
-	data = 0;
+	data = rmreserve(data, 0);
 	count = 0;
 	count_maximum = 0;
 }
@@ -56,26 +33,15 @@ void* amem::get(int index) const {
 	return begin() + index*size;
 }
 
-unsigned amem::getcount() const {
-	return count;
-}
-
-unsigned amem::getmaxcount() const {
-	return count_maximum;
-}
-
-bool amem::reserve(unsigned count) {
+void amem::reserve(unsigned count) {
 	if(!size)
-		return false;
+		return;
 	if(data) {
 		if(count_maximum >= count)
-			return true;
-		if(!rmblock(data))
-			return false;
+			return;
 	}
-	count_maximum = optimal(count);
+	count_maximum = rmoptimal(count);
 	data = rmreserve(data, count_maximum*size);
-	return true;
 }
 
 void amem::setup(unsigned size) {
@@ -84,8 +50,7 @@ void amem::setup(unsigned size) {
 }
 
 void* amem::insert(int index, const void* object) {
-	if(!reserve(count + 1))
-		return 0;
+	reserve(count + 1);
 	memmove(begin() + (index + 1)*size, begin() + index*size, (count - index)*size);
 	void* p = (char*)data + index*size;
 	if(object)

@@ -1,22 +1,36 @@
-#include "aref.h"
+#include "collections.h"
 #include "crt.h"
 #include "io_plugin.h"
 #include "draw.h"
 
-struct window_persistent
-{
-	const char*		id;
-	rect			position;
+struct window_persistent {
+	const char* id;
+	rect position;
 };
-static aref<window_persistent>	windows;
+static arefc<window_persistent> windows;
 
-static struct windows_persistent_strategy : public io::strategy
-{
+static window_persistent* find_window(const char* id) {
+	for(auto& e : windows) {
+		if(e.id == id)
+			return &e;
+	}
+	return 0;
+}
 
-	void write(io::writer& file, void* param) override
-	{
-		for(auto& e : windows)
-		{
+static window_persistent* add_window(const char* id) {
+	auto p = find_window(id);
+	if(p)
+		return p;
+	p = windows.add();
+	memset(p, 0, sizeof(*p));
+	p->id = id;
+	return p;
+}
+
+static struct windows_persistent_strategy : public io::strategy {
+
+	void write(io::writer& file, void* param) override {
+		for(auto& e : windows) {
 			file.open(e.id);
 			file.set("x1", e.position.x1);
 			file.set("y1", e.position.y1);
@@ -26,18 +40,10 @@ static struct windows_persistent_strategy : public io::strategy
 		}
 	}
 
-	void set(io::reader::node& n, const char* value)
-	{
+	void set(io::reader::node& n, const char* value) {
 		if(!n.parent)
 			return;
-		auto e = windows.find(szdup(n.parent->name));
-		if(!e)
-		{
-			windows.reserve();
-			e = &windows.add();
-			memset(e, 0, sizeof(windows.data[0]));
-			e->id = szdup(n.parent->name);
-		}
+		auto e = add_window(szdup(n.parent->name));
 		if(strcmp(n.name, "x1") == 0)
 			e->position.x1 = sz2num(value);
 		else if(strcmp(n.name, "y1") == 0)
@@ -52,34 +58,27 @@ static struct windows_persistent_strategy : public io::strategy
 
 } windows_persistent_strategy_instance;
 
-void draw::window::resizing(const rect& rc)
-{
-	if(draw::canvas)
-	{
+void draw::window::resizing(const rect& rc) {
+	if(draw::canvas) {
 		draw::canvas->resize(rc.x2, rc.y2, draw::canvas->bpp, true);
 		draw::clipping.set(0, 0, rc.x2, rc.y2);
 	}
 }
 
-void draw::window::opening()
-{
+void draw::window::opening() {
 	focus = getfocus();
 	if(!identifier)
 		return;
-	auto e = windows.find(szdup(identifier));
+	auto e = find_window(szdup(identifier));
 	if(!e)
 		return;
 	position = e->position;
 }
 
-void draw::window::closing()
-{
+void draw::window::closing() {
 	setfocus(focus, true);
 	if(!identifier)
 		return;
-	auto e = windows.addu(szdup(identifier));
-	if(!e)
-		return;
-	e->id = szdup(identifier);
+	auto e = add_window(szdup(identifier));
 	e->position = position;
 }

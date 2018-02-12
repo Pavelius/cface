@@ -119,11 +119,11 @@ void* tree::getrow(int index) {
 
 static int compare_by_name(const void* p1, const void* p2, void* param) {
 	auto pc = static_cast<tree*>(param);
-	auto pe = pc->columns.find("name");
-	if(!pe)
-		pe = pc->columns.find("label");
-	if(!pe)
-		return 0;
+	//auto pe = pc->columns.find("name");
+	//if(!pe)
+	//	pe = pc->columns.find("label");
+	//if(!pe)
+	//	return 0;
 	//char v1[260]; v1[0] = 0; pc->get(p1, *pe, v1);
 	//char v2[260]; v2[0] = 0; pc->get(p2, *pe, v2);
 	//return strcmp(v1, v2);
@@ -141,9 +141,9 @@ static int compare_by_name_group_up(const void* p1, const void* p2, void* param)
 
 bool tree::haselement(int param) const {
 	auto level = this->level + 1;
-	auto first = (const element*)((char*)amem::data);
-	for(auto p = (const element*)((char*)amem::data + amem::size*index); p > first;
-		p = (const element*)((char*)p - amem::size)) {
+	auto first = (const element*)amem::begin();
+	for(auto p = (const element*)amem::end(); p > first;
+		p = (const element*)((char*)p - getsize())) {
 		if(p->level != level)
 			break;
 		if(p->param == param)
@@ -222,7 +222,7 @@ void tree::expand(int index, int level) {
 	// Finally sort all rows
 	if(sort_rows_by_name) {
 		if(level == 0)
-			amem::sort(0, amem::count - 1, group_sort_up ? compare_by_name_group_up : compare_by_name, this);
+			amem::sort(0, getcount() - 1, group_sort_up ? compare_by_name_group_up : compare_by_name, this);
 		else
 			amem::sort(index + 1, this->index, group_sort_up ? compare_by_name_group_up : compare_by_name, this);
 	}
@@ -233,7 +233,7 @@ void tree::addrow(tree::element& e) {
 	if((unsigned)(index + 1) < rows.getcount()) {
 		auto p = (element*)rows.get(index + 1);
 		if(p->level >= e.level) {
-			memcpy(p, &e, amem::size);
+			memcpy(p, &e, getsize());
 			index++;
 			return;
 		}
@@ -254,7 +254,7 @@ void tree::addrow(unsigned param, unsigned char flags, unsigned char type, unsig
 }
 
 void tree::addrow(void* object) {
-	if(size != sizeof(element))
+	if(getsize() != sizeof(element))
 		return;
 	element e = {0};
 	e.param = (int)object;

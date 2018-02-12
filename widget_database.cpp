@@ -41,7 +41,7 @@ static bool change_object(database::object& source) {
 		{WidgetField, "Родитель", "parent"},
 		{}
 	};
-	adatc<database::object*, 32> requisites;
+	arefc<database::object*> requisites;
 	context	ec(requisites); ec.copy = source;
 	static bsval variables[] = {{context_type, &ec}, {object_type, &ec.copy}, {}};
 	return draw::open(source.name, 400, 300, widgets, variables, validate_header);

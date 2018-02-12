@@ -1,5 +1,3 @@
-#include "aref.h"
-#include "collection.h"
 #include "collections.h"
 #include "draw_list.h"
 #include "widget.h"
@@ -29,7 +27,7 @@ namespace draw {
 				operator bool() const { return id != 0; }
 			};
 			bsreq*				fields;
-			aref<widget>		columns;
+			arefc<widget>		columns;
 			collection&			rows;
 			struct sprite*		rowsimages;
 			int					maximum_column, current_column;
@@ -94,8 +92,7 @@ namespace draw {
 		};
 		struct tableref : table {
 			arefc<void*>		source;
-			tableref() : table(source) { source.initialize(); }
-			~tableref() { source.clear(); }
+			tableref() : table(source) {}
 			void				addelement(void* element) { source.add(&element); }
 			void*				getrow(int index) override { return *((void**)rows.get(index)); }
 		};

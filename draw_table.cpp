@@ -94,14 +94,14 @@ unsigned table::remove(bool run) {
 unsigned table::change(bool run) {
 	if(no_change_content)
 		return Disabled;
-	if(columns.data[current_column].flags&ColumnReadOnly)
+	if(columns[current_column].flags&ColumnReadOnly)
 		return Disabled;
-	if(!canedit(current, columns.data[current_column]))
+	if(!canedit(current, columns[current_column]))
 		return Disabled;
 	if(run)
 		changing((void*)getrow(current),
-			columns.data[current_column].id,
-			columns.data[current_column].flags);
+			columns[current_column].id,
+			columns[current_column].flags);
 	return 0;
 }
 
@@ -144,7 +144,7 @@ unsigned table::sortas(bool run) {
 		if(table_sort_by_mouse)
 			sort(table_sort_column_id, 1);
 		else
-			sort(columns.data[current_column].id, 1);
+			sort(columns[current_column].id, 1);
 		table_sort_by_mouse = false;
 	}
 	return 0;
@@ -159,7 +159,7 @@ unsigned table::sortds(bool run) {
 		if(table_sort_by_mouse)
 			sort(table_sort_column_id, -1);
 		else
-			sort(columns.data[current_column].id, -1);
+			sort(columns[current_column].id, -1);
 		table_sort_by_mouse = false;
 	}
 	return 0;
@@ -191,7 +191,7 @@ unsigned table::setting(bool run) {
 	if(!use_setting)
 		return Disabled;
 	if(run) {
-		adatc<widget, 64> data_columns;
+		arefc<widget> data_columns;
 		table table_columns(data_columns);
 		table_columns.fields = widget_type;
 		window dc(-1, -1, 400, 300, WFMinmax | WFResize, 0, "TableSetting");
@@ -205,9 +205,8 @@ unsigned table::setting(bool run) {
 		table_columns.show_grid_lines = true;
 		table_columns.focused = true;
 		data_columns.clear();
-		for(int i = 0; i < columns.count; i++) {
-			data_columns.add(columns.data[i]);
-		}
+		for(unsigned i = 0; i < columns.getcount(); i++)
+			data_columns.add(columns[i]);
 		tuning(controls);
 		setfocus(0, true);
 		while(true) {
@@ -225,8 +224,8 @@ unsigned table::setting(bool run) {
 			case KeyEscape:
 				return false;
 			case KeyEnter:
-				for(unsigned i = 0; i < data_columns.count; i++)
-					columns.data[i] = data_columns.data[i];
+				for(unsigned i = 0; i < data_columns.getcount(); i++)
+					columns[i] = data_columns[i];
 				return true;
 			default:
 				dodialog(id);
@@ -243,8 +242,6 @@ no_change_count(false), no_change_order(false), no_change_content(false),
 group_sort_up(false),
 use_setting(true),
 show_header(true), show_event_rows(false) {
-	columns.data = 0;
-	columns.count = 0;
 }
 
 static int column_total_width;
@@ -254,7 +251,7 @@ void table::background(rect& rc) {
 	list::background(rc);
 	// drag&drop
 	if(drag::active((int)this, DragColumn))
-		columns.data[drag::value].width = imax(hot::mouse.x - drag::mouse.x - column_total_width, 8);
+		columns[drag::value].width = imax(hot::mouse.x - drag::mouse.x - column_total_width, 8);
 	// calculate size
 	reposition(rc.width());
 	// show header
@@ -271,7 +268,7 @@ void table::prerender() {
 	validate(1, false);
 	//
 	maximum_width = 0;
-	if(columns.data) {
+	if(columns) {
 		for(auto& e : columns) {
 			if(e.flags&ColumnHide)
 				continue;
@@ -289,7 +286,7 @@ void table::header(rect client) {
 	bool mouse_hilite = areb(client);
 	gradv(client, colors::form.lighten(), colors::form.darken());
 	int w = 0;
-	if(!columns.data)
+	if(!columns)
 		return;
 	auto bc = getcolor(colors::border);
 	for(auto& e : columns) {
@@ -318,12 +315,12 @@ void table::header(rect client) {
 		case AreaNormal:
 			break;
 		case AreaHilited:
-			gradv({rc.x1 + ((&e == columns.data) ? 0 : 1), rc.y1 + 1, rc.x2, rc.y2},
+			gradv({rc.x1 + ((&e == columns.get(0)) ? 0 : 1), rc.y1 + 1, rc.x2, rc.y2},
 				colors::button.lighten(),
 				colors::button.darken());
 			break;
 		case AreaHilitedPressed:
-			gradv({rc.x1 + ((&e == columns.data) ? 0 : 1), rc.y1 + 1, rc.x2, rc.y2},
+			gradv({rc.x1 + ((&e == columns.get(0)) ? 0 : 1), rc.y1 + 1, rc.x2, rc.y2},
 				colors::button.darken(),
 				colors::button.lighten());
 			break;
@@ -490,7 +487,7 @@ void table::row(rect rc, int index) {
 	int w = r1.x1 - rc.x1;
 	int i = 0;
 	bool first_row = true;
-	if(!columns.data)
+	if(!columns)
 		return;
 	void* data = getrow(index);
 	for(auto& e : columns) {
@@ -593,7 +590,7 @@ bool table::canedit(int index, const widget& e) const {
 }
 
 void table::validate(int direction, bool editable) {
-	maximum_column = columns.count;
+	maximum_column = columns.getcount();
 	if(!maximum_column)
 		return;
 	while(true) {
@@ -604,7 +601,7 @@ void table::validate(int direction, bool editable) {
 			current_column = maximum_column - 1;
 			direction = -1;
 		}
-		auto& e = columns.data[current_column];
+		auto& e = columns[current_column];
 		if((!editable || (editable && e.gettype() != WidgetCheck))
 			&& canedit(current, e)
 			&& (e.flags&ColumnHide) == 0)
@@ -631,7 +628,7 @@ bool table::selecting(rect rc, int index, point mouse) {
 	int w = r1.x1 - rc.x1;
 	int i = 0;
 	bool first_row = true;
-	if(!columns.data)
+	if(!columns)
 		return false;
 	for(auto& e : columns) {
 		if(e.flags&ColumnHide)
@@ -769,7 +766,7 @@ void table::inputsymbol(int id, int symbol) {
 	char* p = zend(search_text);
 	szput(&p, hot::param);
 	p[0] = 0;
-	int i1 = find(columns.data[current_column].id, search_text, current);
+	int i1 = find(columns[current_column].id, search_text, current);
 	if(i1 != -1) {
 		current = i1;
 		correction();
@@ -778,8 +775,8 @@ void table::inputsymbol(int id, int symbol) {
 }
 
 widget& table::addcol(unsigned flags, const char* id, const char* label, int width) {
-	auto p = columns.addu(id);
-	memset(p, 0, sizeof(p[0]));
+	auto p = columns.add();
+	memset(p, 0, sizeof(*p));
 	p->id = id;
 	p->label = label;
 	p->flags = flags;
@@ -822,7 +819,7 @@ widget& table::addcol(unsigned flags, const char* id, const char* label, int wid
 
 int table::totalwidth() const {
 	int result = 0;
-	if(!columns.data)
+	if(!columns)
 		return 0;
 	for(auto& e : columns)
 		result += e.width;
@@ -833,7 +830,7 @@ void table::reposition(int w1) {
 	int w2 = 0;
 	int c2 = 0;
 	const int min_width = 8;
-	if(!columns.data)
+	if(!columns)
 		return;
 	for(auto& e : columns) {
 		if((e.flags&ColumnSizeMask) == ColumnSizeAuto) {

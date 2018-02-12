@@ -70,9 +70,6 @@ const char*							psidn(const char* p, char* result, char* result_end); // safe 
 inline const char*					psidn(const char* p, char* result) { return psidn(p, result, result + 128); }
 const char*							psnum(const char* p, int& value); // Parse number from string
 const char*							psstr(const char* p, char* value, char end_symbol = '\"'); // Parse string from string (like c format "Some\nstring")
-bool								rmblock(void* ptr); // Is memory ptr was previously allocated?
-int									rmblockcount(); // Get allocated memory block count. Can be used for allocation error detection.
-void*								rmreserve(void* ptr, unsigned size, bool force_to_size = false); // Resize memory block. Return new value.
 void								setsignature(char name[4], const char* s); // Set signature to name
 float								sqrt(const float x); // Return aquare root of 'x'
 void								szadd(char* result, const char* value, const char* title = "(", const char* separator = ", ");

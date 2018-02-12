@@ -51,7 +51,6 @@ static struct widget_logging : table {
 	}
 
 	widget_logging() : table(messages) {
-		messages.initialize();
 		show_toolbar = false;
 		no_change_content = true;
 		no_change_count = true;

@@ -3,12 +3,12 @@
 #include "resources.h"
 #include "surface.h"
 
-static sprite* load_resource_folder(const char* url)
-{
+void* rmreserve(void* ptr, unsigned size);
+
+static sprite* load_resource_folder(const char* url) {
 	char temp[260];
 	int count = 0;
-	for(io::file::find fd(url); fd; fd.next())
-	{
+	for(io::file::find fd(url); fd; fd.next()) {
 		if(fd.name()[0] == '.')
 			continue;
 		count++;
@@ -17,8 +17,7 @@ static sprite* load_resource_folder(const char* url)
 		return 0;
 	auto ps = (sprite*)new char[1024 * 1024 * 16];
 	ps->setup(count);
-	for(io::file::find fd(url); fd; fd.next())
-	{
+	for(io::file::find fd(url); fd; fd.next()) {
 		if(fd.name()[0] == '.')
 			continue;
 		draw::surface e(fd.fullname(temp));
@@ -27,19 +26,17 @@ static sprite* load_resource_folder(const char* url)
 		ps->store(e.ptr(0, 0), e.scanline, e.width, e.height, e.width / 2, e.height / 2,
 			sprite::Auto);
 	}
-	ps = (sprite*)rmreserve(ps, ps->size, true);
+	ps = (sprite*)rmreserve(ps, ps->size);
 	return ps;
 }
 
-sprite* gres(int id)
-{
+sprite* gres(int id) {
 	if(!id) // First resource is empthy
 		return 0;
 	auto& e = res::elements[id];
 	if(e.notfound)
 		return 0;
-	if(!e.data)
-	{
+	if(!e.data) {
 		char temp[260];
 		if(e.isfolder)
 			e.data = load_resource_folder(e.folder);
@@ -51,12 +48,9 @@ sprite* gres(int id)
 	return e.data;
 }
 
-void res::cleanup()
-{
-	for(auto* p = res::elements; p->name; p++)
-	{
-		if(p->name)
-		{
+void res::cleanup() {
+	for(auto* p = res::elements; p->name; p++) {
+		if(p->name) {
 			delete p->data;
 			p->data = 0;
 			p->notfound = false;
@@ -64,7 +58,6 @@ void res::cleanup()
 	}
 }
 
-const char* res::getname(int rid)
-{
+const char* res::getname(int rid) {
 	return elements[rid].name;
 }
