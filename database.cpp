@@ -5,7 +5,7 @@
 namespace database {
 
 adat<object, 256 * 256 * 4> objects;
-object						root;
+object root;
 
 bsreq object_type[] = {
 	BSREQ(object, name, text_type),

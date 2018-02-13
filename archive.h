@@ -8,8 +8,8 @@
 struct archive {
 	
 	char temp[128 * 128];
-	io::stream& source;
 	bool writemode;
+	io::stream& source;
 
 	archive(io::stream& source, bool writemode) : source(source), writemode(writemode) {}
 

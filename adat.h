@@ -4,10 +4,13 @@
 // Beware - it's not have constructors and destructor
 template<class T, unsigned count_max = 128>
 struct adat {
-	T			data[count_max];
-	unsigned	count;
-	//
-	inline T&	operator[](int index) { return data[index]; }
+	T data[count_max];
+	unsigned count;
+
+	const T& operator[](unsigned index) const { return data[index]; }
+	T& operator[](unsigned index) { return data[index]; }
+	operator bool() const { return count != 0; }
+
 	// Add new element to collection
 	T* add() {
 		if(count < count_max)
@@ -36,14 +39,6 @@ struct adat {
 	}
 	void initialize() {
 		count = 0;
-	}
-	template<class Z> T* find(Z id) {
-		auto e1 = data + count;
-		for(T* e = data; e < e1; e++) {
-			if(e->id == id)
-				return e;
-		}
-		return 0;
 	}
 	int getcount() const {
 		return count;
@@ -75,11 +70,5 @@ struct adat {
 		if(index<int(count - 1))
 			memcpy(data + index, data + index + 1, sizeof(data[0])*(count - index - 1));
 		count--;
-	}
-	// Swap element 'i1' and 'i2'
-	void swap(int i1, int i2) {
-		T e1 = data[i1];
-		data[i1] = data[i2];
-		data[i2] = e1;
 	}
 };

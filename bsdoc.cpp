@@ -10,18 +10,15 @@ static const char* index_header = "<h1>File format description</h1>"
 static const char* text_description = "Entity description text. Start with new line after entiry.";
 static const char* index_header_global = "<h2>Global namespaces</h1>";
 
-static void opentag(io::stream& e, const char* name)
-{
+static void opentag(io::stream& e, const char* name) {
 	e << "<" << name << ">";
 }
 
-static void closetag(io::stream& e, const char* name)
-{
+static void closetag(io::stream& e, const char* name) {
 	e << "</" << name << ">";
 }
 
-static void header(io::stream& e)
-{
+static void header(io::stream& e) {
 	opentag(e, "html");
 	opentag(e, "body");
 	e << "<style type = \"text/css\">";
@@ -36,69 +33,56 @@ static void header(io::stream& e)
 	e << "</style>";
 }
 
-static void footer(io::stream& e)
-{
+static void footer(io::stream& e) {
 	closetag(e, "body");
 	closetag(e, "html");
 }
 
-static int compare_metadata(const void* p1, const void* p2)
-{
+static int compare_metadata(const void* p1, const void* p2) {
 	return strcmp((*((bsdata**)p1))->id, (*((bsreq**)p2))->id);
 }
 
-static void write_ref(io::stream& e, bsdata& m, const char* path = 0)
-{
+static void write_ref(io::stream& e, bsdata& m, const char* path = 0) {
 	e << "<a href=\"";
 	if(path)
 		e << path << "/";
 	e << m.id << ".html\">" << m.id << "</a>";
 }
 
-static void write_type(io::stream& e, const bsreq* f)
-{
+static void write_type(io::stream& e, const bsreq* f) {
 	if(f == number_type)
 		e << "number";
 	else if(f == text_type)
 		e << "string";
-	else
-	{
+	else {
 		auto m = bsdata::find(f);
 		if(m)
 			write_ref(e, *m);
 	}
 }
 
-static void attribute(io::stream& e, const char* name, int value)
-{
+static void attribute(io::stream& e, const char* name, int value) {
 	e << " " << name << "=\"" << value << "\"";
 }
 
-static void attribute(io::stream& e, const char* name, const char* value)
-{
+static void attribute(io::stream& e, const char* name, const char* value) {
 	e << " " << name << "=\"" << value << "\"";
 }
 
-static void opentable(io::stream& e, int columns)
-{
+static void opentable(io::stream& e, int columns) {
 	e << "<table";
 	if(columns)
 		attribute(e, "cols", columns);
 	e << ">";
 }
 
-static void write_req(io::stream& e, void* object, const bsreq* f)
-{
-	for(unsigned i = 0; i < f->count; i++)
-	{
-		if(f->type == number_type)
-		{
+static void write_req(io::stream& e, void* object, const bsreq* f) {
+	for(unsigned i = 0; i < f->count; i++) {
+		if(f->type == number_type) {
 			if(i > 0)
 				e << ", ";
 			e << f->get(f->ptr(object, i));
-		}
-		else if(f->type == text_type)
-		{
+		} else if(f->type == text_type) {
 			if(i > 0)
 				e << ", ";
 			auto value = (const char*)f->get(f->ptr(object, i));
@@ -106,34 +90,29 @@ static void write_req(io::stream& e, void* object, const bsreq* f)
 				e << "\"" << value << "\"";
 			else
 				e << "\"\"";
-		}
-		else if(f->reference)
-		{
-//			auto pid = (const char*)xr.getr(f->id, i).get("id");
-//			if(pid)
-//			{
-//				if(i > 0)
-//					e << ", ";
-//				e << pid;
-//			}
-//			else
-//				break;
-		}
-		else
-		{
-//			auto xp = xr.getr(f->id, i);
-//			for(auto pf = xp.fields; *pf; pf++)
-//			{
-//				if(pf != xp.fields)
-//					e << ", ";
-//				write_xsref(e, xp, pf);
-//			}
+		} else if(f->reference) {
+			//			auto pid = (const char*)xr.getr(f->id, i).get("id");
+			//			if(pid)
+			//			{
+			//				if(i > 0)
+			//					e << ", ";
+			//				e << pid;
+			//			}
+			//			else
+			//				break;
+		} else {
+			//			auto xp = xr.getr(f->id, i);
+			//			for(auto pf = xp.fields; *pf; pf++)
+			//			{
+			//				if(pf != xp.fields)
+			//					e << ", ";
+			//				write_xsref(e, xp, pf);
+			//			}
 		}
 	}
 }
 
-static void write_ref(io::stream& e, void* object, const bsreq* type)
-{
+static void write_ref(io::stream& e, void* object, const bsreq* type) {
 	auto m = bsdata::find(type);
 	if(!m)
 		return;
@@ -143,8 +122,7 @@ static void write_ref(io::stream& e, void* object, const bsreq* type)
 		e << " " << (const char*)f->get(f->ptr(object));
 	else
 		e << " " << m->indexof(object);
-	for(auto f = type; *f; f++)
-	{
+	for(auto f = type; *f; f++) {
 		if(strcmp(f->id, "id") == 0)
 			continue;
 		if(strcmp(f->id, "text") == 0)
@@ -159,8 +137,7 @@ static void write_ref(io::stream& e, void* object, const bsreq* type)
 	e << "\n\r";
 }
 
-static void write_examples(io::stream& e, bsdata& m)
-{
+static void write_examples(io::stream& e, bsdata& m) {
 	if(m.getcount() < 2)
 		return;
 	opentag(e, "section");
@@ -170,8 +147,7 @@ static void write_examples(io::stream& e, bsdata& m)
 	int start = 0;
 	if(m.fields->find("id") == 0)
 		start++;
-	for(int i = start; i < 4; i++)
-	{
+	for(int i = start; i < 4; i++) {
 		auto object = m.get(i);
 		if(!object)
 			break;
@@ -183,8 +159,7 @@ static void write_examples(io::stream& e, bsdata& m)
 	closetag(e, "section");
 }
 
-static void write_header(io::stream& e, bsdata& m, bsdoc& doc)
-{
+static void write_header(io::stream& e, bsdata& m, bsdoc& doc) {
 	char temp[256];
 	opentag(e, "section");
 	opentag(e, "h1");
@@ -199,8 +174,7 @@ static void write_header(io::stream& e, bsdata& m, bsdoc& doc)
 	closetag(e, "section");
 }
 
-static void write_field(io::stream& e, const bsreq* f)
-{
+static void write_field(io::stream& e, const bsreq* f) {
 	if(strcmp(f->id, "id") == 0)
 		return;
 	if(strcmp(f->id, "text") == 0)
@@ -213,8 +187,7 @@ static void write_field(io::stream& e, const bsreq* f)
 	e << "</i>)";
 }
 
-static void write_syntaxis(io::stream& e, bsdata& m)
-{
+static void write_syntaxis(io::stream& e, bsdata& m) {
 	if(!m.data)
 		return;
 	opentag(e, "section");
@@ -235,8 +208,7 @@ static void write_syntaxis(io::stream& e, bsdata& m)
 	closetag(e, "section");
 }
 
-static void write_metaobject(bsdata& m, bsdoc& doc)
-{
+static void write_metaobject(bsdata& m, bsdoc& doc) {
 	char temp[260];
 	io::file e(szurl(temp, "help/metadata", m.id, "html"), StreamWrite | StreamText);
 	if(!e)
@@ -262,8 +234,7 @@ static void write_metaobject(bsdata& m, bsdoc& doc)
 	e << "Description";
 	closetag(e, "th");
 	closetag(e, "tr");
-	for(auto f = m.fields; *f; f++)
-	{
+	for(auto f = m.fields; *f; f++) {
 		opentag(e, "tr");
 		opentag(e, "td");
 		e << f->id;
@@ -278,8 +249,7 @@ static void write_metaobject(bsdata& m, bsdoc& doc)
 			e << "Name used to display element.";
 		else if(strcmp(f->id, "text") == 0)
 			e << text_description;
-		else
-		{
+		else {
 			stringtree* p = 0;
 			if(pp)
 				p = pp->elements->find(f->id);
@@ -299,19 +269,16 @@ static void write_metaobject(bsdata& m, bsdoc& doc)
 	footer(e);
 }
 
-static void write_metadata(io::stream& e, bsdoc& doc)
-{
+static void write_metadata(io::stream& e, bsdoc& doc) {
 	bsdata* meta[512];
 	int count = 0;
 	for(auto m = bsdata::first; m; m = m->next)
 		meta[count++] = m;
 	qsort(meta, count, sizeof(meta[0]), compare_metadata);
 	opentag(e, "table");
-	for(auto i = 0; i < count; i++)
-	{
+	for(auto i = 0; i < count; i++) {
 		write_metaobject(*meta[i], doc);
-		if(meta[i]->data)
-		{
+		if(meta[i]->data) {
 			opentag(e, "tr");
 			opentag(e, "td");
 			write_ref(e, *meta[i], "metadata");
@@ -322,8 +289,7 @@ static void write_metadata(io::stream& e, bsdoc& doc)
 	closetag(e, "table");
 }
 
-void bsdoc::generate()
-{
+void bsdoc::generate() {
 	char temp[260];
 	io::file e(szurl(temp, "help", "index", "html"), StreamWrite | StreamText);
 	if(!e)
@@ -335,8 +301,7 @@ void bsdoc::generate()
 	footer(e);
 }
 
-bsdoc::bsdoc() : comments(0)
-{
+bsdoc::bsdoc() : comments(0) {
 	p = porigin = 0;
 	buffer[0] = 0;
 	memset(operation, 0, sizeof(operation));
