@@ -12,13 +12,9 @@ amem::~amem() {
  	amem::clear();
 }
 
-void* amem::add(const void* element) {
+void* amem::add() {
 	reserve(count + 1);
-	void* p = (char*)data + size*count;
-	if(element)
-		memcpy(p, element, size);
-	else
-		memset(p, 0, size);
+	auto p = (char*)data + size*count;
 	count++;
 	return p;
 }

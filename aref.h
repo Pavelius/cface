@@ -6,7 +6,9 @@ struct aref {
 	T* data;
 	unsigned count;
 
-	T& operator[](int index) { return data[index]; }
+	const T& operator[](unsigned index) const { return data[index]; }
+	T& operator[](unsigned index) { return data[index]; }
+	operator bool() const { return count!=0; }
 
 	T* add() {
 		return data + (count++);
@@ -55,10 +57,10 @@ struct aref {
 
 	// Remove elements_count from array starting from index
 	void remove(int index, int elements_count = 1) {
-		if(index < 0 || index >= count)
+		if(((unsigned)index) >= count)
 			return;
 		count -= elements_count;
-		if(index >= count)
+		if(((unsigned)index) >= count)
 			return;
 		memmove(data + index, data + index + elements_count, sizeof(data[0])*(count - index));
 	}

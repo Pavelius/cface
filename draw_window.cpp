@@ -21,7 +21,7 @@ static window_persistent* add_window(const char* id) {
 	auto p = find_window(id);
 	if(p)
 		return p;
-	p = windows.add();
+	p = (window_persistent*)windows.add();
 	memset(p, 0, sizeof(*p));
 	p->id = id;
 	return p;

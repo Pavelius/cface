@@ -1,4 +1,10 @@
 #include "collection.h"
+#include "crt.h"
+
+void collection::add(const void* element) {
+	auto p = add();
+	memcpy(p, element, getsize());
+}
 
 void collection::swap(int i1, int i2) {
 	auto p1 = (char*)get(i1);

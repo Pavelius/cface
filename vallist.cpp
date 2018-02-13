@@ -2,7 +2,7 @@
 #include "vallist.h"
 
 valelement& vallist::add(int value, const char* name, unsigned flags) {
-	auto e = (valelement*)amem::add(0);
+	auto e = (valelement*)amem::add();
 	e->value = value;
 	e->flags = flags;
 	if(!name)

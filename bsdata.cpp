@@ -13,13 +13,10 @@ bsdata::bsdata(const char* id, void* data, unsigned& count, unsigned size, unsig
 	seqlink(this);
 }
 
-void* bsdata::add(const void* object) {
+void* bsdata::add() {
 	if(getcount() >= getmaxcount())
 		return 0;
-	auto p = (void*)get(count++);
-	if(object)
-		memcpy(p, object, size);
-	return p;
+	return get(count++);
 }
 
 bsdata* bsdata::find(const char* id) {

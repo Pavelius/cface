@@ -33,7 +33,7 @@ struct collection_reader : public io::reader {
 
 	void open(io::reader::node& e) override {
 		if(e.parent && e.parent->parent == 0)
-			object = tb.add(0);
+			object = tb.add();
 	}
 
 	void set(io::reader::node& e, const char* value) override {

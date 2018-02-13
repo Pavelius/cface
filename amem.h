@@ -10,7 +10,7 @@ class amem : public collection {
 public:
 	amem(unsigned size = 0);
 	~amem();
-	void* add(const void* element = 0) override;
+	void* add() override;
 	char* begin() const { return (char*)data; }
 	void clear() override;
 	char* end() const { return (char*)data + count*size; }

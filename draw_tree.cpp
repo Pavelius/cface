@@ -239,7 +239,7 @@ void tree::addrow(tree::element& e) {
 		}
 	}
 	if(level == 0)
-		amem::add(&e);
+		collection::add(&e);
 	else
 		amem::insert(++index, &e);
 }

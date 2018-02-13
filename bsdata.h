@@ -20,7 +20,7 @@ struct bsdata : collection
 	bsdata(const char* id, void* data, unsigned size, unsigned maximum_count, const bsreq* fields);
 	bsdata(const char* id, void* data, unsigned& count, unsigned size, unsigned maximum_count, const bsreq* fields);
 	//
-	void*				add(const void* element = 0) override;
+	void*				add() override;
 	char*				begin() const { return (char*)data; }
 	void				clear() override { count = 0; }
 	char*				end() const { return (char*)data + size*count; }

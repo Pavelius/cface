@@ -31,6 +31,13 @@ static void setposition(rect& rc) {
 //	szprint(text, "%1i, %2i", ((point*)&i)->x, ((point*)&i)->y);
 //	szprint(text, "%1i, %2i, %3i", ((color*)&i)->r, ((color*)&i)->g, ((color*)&i)->b);
 
+void* table::addrow(const void* copy) {
+	auto p = rows.add();
+	if(copy)
+		memcpy(p, copy, rows.getsize());
+	return p;
+}
+
 unsigned table::add(bool run) {
 	auto maximum_count = rows.getmaxcount();
 	if(no_change_count)
@@ -56,7 +63,7 @@ unsigned table::addcopy(bool run) {
 	if(maximum_count && maximum_count <= rows.getcount())
 		return Disabled;
 	if(run) {
-		auto p = rows.add(rows.get(current)); // При копировании получим экземпляр рядка
+		auto p = addrow(rows.get(current)); // При копировании получим экземпляр рядка
 		select(rows.indexof(p));
 		invoke("change");
 	}
@@ -775,7 +782,7 @@ void table::inputsymbol(int id, int symbol) {
 }
 
 widget& table::addcol(unsigned flags, const char* id, const char* label, int width) {
-	auto p = columns.add();
+	auto p = (widget*)columns.add();
 	memset(p, 0, sizeof(*p));
 	p->id = id;
 	p->label = label;

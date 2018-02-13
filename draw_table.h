@@ -46,7 +46,7 @@ namespace draw {
 			virtual unsigned	add(bool run);
 			virtual unsigned	addcopy(bool run);
 			widget&				addcol(unsigned flags, const char* id, const char* label = 0, int width = -1);
-			virtual void*		addrow(const void* copy) { return rows.add(copy); }
+			virtual void*		addrow(const void* copy);
 			virtual void		background(rect& rc) override;
 			virtual bool		canedit(int index, const widget& e) const;
 			virtual unsigned	change(bool run);

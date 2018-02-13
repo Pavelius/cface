@@ -3,11 +3,10 @@
 // Auto grow array for custom allocators.
 template<typename T, int max_count = 4096>
 struct agrw {
-	int		count;
-	T		data[max_count];
-	agrw*	next;
+	unsigned count;
+	T data[max_count];
+	agrw* next;
 	agrw() : next(0), count(0) {}
-
 	T* add() {
 		auto t = this;
 		while(t->count >= max_count) {
@@ -16,15 +15,8 @@ struct agrw {
 		}
 		return t->data + t->count++;
 	}
-
-	T* begin() {
-		return data;
-	}
-
-	T* end() {
-		return data + count;
-	}
-
+	T* begin() { return data; }
+	T* end() { return data + count; }
 	void clear() {
 		auto z = next;
 		while(z) {
@@ -35,14 +27,12 @@ struct agrw {
 		}
 		next = 0;
 	}
-
 	unsigned getcount() const {
 		unsigned result = 0;
 		for(auto p = this; p; p = p->next)
 			result += p->count;
 		return result;
 	}
-
 	int indexof(const T* value) const {
 		auto result = 0;
 		for(auto p = this; *p; p = p->next) {
@@ -51,5 +41,4 @@ struct agrw {
 		}
 		return -1;
 	}
-
 };
