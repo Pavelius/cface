@@ -6,6 +6,18 @@ void collection::add(const void* element) {
 	memcpy(p, element, getsize());
 }
 
+int collection::find(const char* value, unsigned offset) {
+	auto m = getcount();
+	for(unsigned i = 0; i < m; i++) {
+		auto p = (const char**)((char*)get(i) + offset);
+		if(!(*p))
+			continue;
+		if(strcmp(*p, value) == 0)
+			return i;
+	}
+	return -1;
+}
+
 void collection::swap(int i1, int i2) {
 	auto p1 = (char*)get(i1);
 	auto p2 = (char*)get(i2);

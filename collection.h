@@ -4,6 +4,7 @@ struct collection {
 	virtual void* add() = 0; // Add new empthy element to collection
 	void add(const void* element); // Add new element to collection
 	virtual void clear() = 0; // Clear all elements in collection
+	int find(const char* value, unsigned offset = 0); // Find value by name
 	virtual void* get(int index) const = 0; // Get content of element with index
 	virtual unsigned getmaxcount() const = 0; // Get maximum possible elements
 	virtual unsigned getcount() const = 0; // Get count of elements in collection

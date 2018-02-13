@@ -1,6 +1,6 @@
-extern "C" void*	malloc(unsigned size);
-extern "C" void*	realloc(void *ptr, unsigned size);
-extern "C" void		free(void* pointer);
+extern "C" void* malloc(unsigned size);
+extern "C" void* realloc(void *ptr, unsigned size);
+extern "C" void	free(void* pointer);
 
 void* rmreserve(void* ptr, unsigned size) {
 	if(!size) {

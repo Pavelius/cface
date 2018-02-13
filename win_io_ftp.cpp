@@ -46,3 +46,11 @@ bool io::ftp::getdir(char* result, unsigned size) {
 bool io::ftp::createdir(const char* name) {
 	return FtpCreateDirectoryA(connection, name) != 0;
 }
+
+bool io::ftp::getfile(const char* ftp_file_name, const char* local_file_name) {
+	return FtpGetFileA(connection, ftp_file_name, local_file_name, 0, 0, 0, 0) != 0;
+}
+
+bool io::ftp::isexist(const char* ftr_file_name) {
+	return false;
+}

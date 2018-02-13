@@ -876,6 +876,7 @@ DLL int WINAPI				FindNextFileA(void* hFindFile, WIN32_FIND_DATA* lpFindFileData
 DLL unsigned WINAPI			FlsAlloc(void(_stdcall *lpCallback)(void* pfd));
 DLL int WINAPI				FlsFree(unsigned dwFlsIndex);
 DLL void* WINAPI			FlsGetValue(unsigned dwFlsIndex);
+DLL int WINAPI				FtpGetFileA(void* hConnect, const char* lpszRemoteFile, const char* lpszNewFile, int fFailIfExists, unsigned dwFlagsAndAttributes, unsigned dwFlags, unsigned* dwContext);
 DLL int WINAPI				FlsSetValue(unsigned dwFlsIndex, void* lpFlsData);
 DLL int WINAPI				FtpCreateDirectoryA(void* hConnect, const char* lpszDirectory);
 DLL int WINAPI				FtpGetCurrentDirectoryA(void* hConnect, const char* lpszCurrentDirectory, unsigned* lpdwCurrentDirectory);
