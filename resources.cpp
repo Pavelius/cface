@@ -20,7 +20,10 @@ static sprite* load_resource_folder(const char* url) {
 	for(io::file::find fd(url); fd; fd.next()) {
 		if(fd.name()[0] == '.')
 			continue;
-		draw::surface e(fd.fullname(temp));
+		zcpy(temp, url);
+		zcat(temp, "/");
+		zcat(temp, fd.name());
+		draw::surface e(temp);
 		if(!e)
 			continue;
 		ps->store(e.ptr(0, 0), e.scanline, e.width, e.height, e.width / 2, e.height / 2,

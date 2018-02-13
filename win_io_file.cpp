@@ -25,22 +25,12 @@ io::file::~file() {
 }
 
 io::file::find::find(const char* url) {
-	path[0] = 0;
-	zcpy(path, url);
 	char temp[261];
-	zcpy(temp, path);
+	zcpy(temp, url);
 	zcat(temp, "/*.*");
 	handle = FindFirstFileA(temp, (WIN32_FIND_DATA*)&reserved);
 	if(handle == ((void*)-1))
 		handle = 0;
-}
-
-const char* io::file::find::fullname(char* result) {
-	zcpy(result, path);
-	if(result[0])
-		zcat(result, "/");
-	zcat(result, name());
-	return result;
 }
 
 void io::file::find::next() {

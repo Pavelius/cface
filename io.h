@@ -26,17 +26,25 @@ namespace io {
 		template<class T> void write(const T& value);
 	};
 	struct file : public stream {
-		struct find {
-			find(const char* url);
-			~find();
-			const char*		name();
-			const char*		fullname(char* result);
-			void			next();
-			operator bool() const { return handle != 0; }
-		private:
-			char			path[261];
+		class find {
+			class iter {
+				find&		parent;
+			public:
+				constexpr iter(find& parent) : parent(parent) {}
+				const char* operator*() const { return parent.name(); }
+				bool operator!=(const iter& e) { return parent; }
+				void operator++() { parent.next(); }
+			};
 			char			reserved[512];
 			void*			handle;
+		public:
+			find(const char* url);
+			~find();
+			operator bool() const { return handle != 0; }
+			iter			begin() { return iter(*this); }
+			iter			end() { return iter(*this); }
+			const char*		name();
+			void			next();
 		};
 		file();
 		file(const char* url, unsigned flags = StreamRead);
