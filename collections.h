@@ -1,3 +1,4 @@
+#include "adat.h"
 #include "aref.h"
 #include "collection.h"
 
@@ -27,4 +28,17 @@ public:
 		count_maximum = rmoptimal(count);
 		data = (T*)rmreserve(data, count_maximum*sizeof(T));
 	}
+};
+
+template<class T, unsigned count_maximum = 64>
+struct adatc : adat<T, count_maximum>, collection {
+	adatc() : { count = 0; }
+	void* add() override { return adat<T, count_maximum>::add(); }
+	void clear() override { adat<T, count_maximum>::clear(); }
+	void* get(int index) const override { return data + index; }
+	unsigned getcount() const override { return count; }
+	unsigned getmaxcount() const override { return count_maximum; }
+	unsigned getsize() const override { return sizeof(T); }
+	int indexof(const void* element) const override { return adat<T, count_maximum>::indexof((T*)element); }
+	void remove(int index, int elements_count = 1) override { adat<T, count_maximum>::remove(index, elements_count); }
 };

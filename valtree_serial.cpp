@@ -15,10 +15,8 @@ limitations under the License. */
 #include "io_plugin.h"
 #include "valtree.h"
 
-static void write_object(io::writer& file, valtree* object)
-{
-	switch(object->type)
-	{
+static void write_object(io::writer& file, valtree* object) {
+	switch(object->type) {
 	case valtree::Structure:
 		file.open(object->name);
 		for(auto p = object->value; p; p = p->next)
@@ -34,8 +32,7 @@ static void write_object(io::writer& file, valtree* object)
 	}
 }
 
-void valtree::write(const char* url)
-{
+void valtree::write(const char* url) {
 	auto pp = io::plugin::find(szext(url));
 	if(!pp)
 		return;
@@ -47,35 +44,27 @@ void valtree::write(const char* url)
 		write_object(*pw, this);
 }
 
-bool valtree::read(const char* url)
-{
-	struct valtree_reader : public io::reader
-	{
+bool valtree::read(const char* url) {
+	struct valtree_reader : public io::reader {
 		valtree* root;
 
-		void open(io::reader::node& e)
-		{
-			if(e.parent)
-			{
+		void open(io::reader::node& e) {
+			if(e.parent) {
 				auto pp = (valtree*)e.parent->params[0];
 				e.params[0] = (int)&pp->set(e.name);
-			}
-			else
-			{
+			} else {
 				root->name = szdup(e.name);
 				root->set(valtree::Structure);
 				e.params[0] = (int)root;
 			}
 		}
 
-		void set(io::reader::node& e, int value)
-		{
+		void set(io::reader::node& e, int value) {
 			auto pp = (valtree*)e.parent->params[0];
 			pp->set(e.name, value);
 		}
 
-		void set(io::reader::node& e, const char* value)
-		{
+		void set(io::reader::node& e, const char* value) {
 			auto pp = (valtree*)e.parent->params[0];
 			pp->set(e.name, value);
 		}
