@@ -81,8 +81,7 @@ bool control::open(const char* title, unsigned state, int width, int height, boo
 	if(title)
 		draw::setcaption(title);
 	focused = true;
-	auto result = false;
-	while(true) {
+	while(ismodal()) {
 		rect rc = {0, 0, draw::getwidth(), draw::getheight()};
 		draw::rectf(rc, colors::form);
 		if(padding)
@@ -93,7 +92,7 @@ bool control::open(const char* title, unsigned state, int width, int height, boo
 			break;
 		dodialog(id);
 	}
-	return result;
+	return getresult()!=0;
 }
 
 bool control::open(rect rc) {

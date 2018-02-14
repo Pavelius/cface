@@ -26,8 +26,8 @@ static bool validate_header(bsval* variables) {
 
 static bool change_object(database::object& source) {
 	struct context {
-		database::object	copy;
-		controls::table		table;
+		database::object copy;
+		controls::table	table;
 		context(collection& ts1) : table(ts1) {
 		}
 	};
