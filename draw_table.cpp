@@ -254,14 +254,10 @@ show_header(true), show_event_rows(false) {
 static int column_total_width;
 
 void table::background(rect& rc) {
-	// background
 	list::background(rc);
-	// drag&drop
 	if(drag::active((int)this, DragColumn))
 		columns[drag::value].width = imax(hot::mouse.x - drag::mouse.x - column_total_width, 8);
-	// calculate size
 	reposition(rc.width());
-	// show header
 	if(show_header) {
 		header({rc.x1, rc.y1, rc.x2, rc.y1 + pixels_per_line});
 		rc.y1 += pixels_per_line;

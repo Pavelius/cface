@@ -30,7 +30,7 @@ public:
 	}
 };
 
-template<class T, unsigned count_maximum = 64>
+template<class T, unsigned count_maximum = 128>
 struct adatc : adat<T, count_maximum>, collection {
 	adatc() : { count = 0; }
 	void* add() override { return adat<T, count_maximum>::add(); }

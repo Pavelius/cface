@@ -138,6 +138,7 @@ static struct widget_database_header : controls::tree {
 	widget_database_header() {
 		show_header = false;
 		show_toolbar = false;
+		show_border = true;
 		no_change_count = true;
 		element_param_have_row = true;
 	}

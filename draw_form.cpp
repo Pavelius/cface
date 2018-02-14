@@ -332,9 +332,9 @@ int	draw::render(int x, int y, int width, int height, const widget* p, bsval* va
 
 int draw::open(const char* title, int width, int height, const widget* widgets, bsval* variables, bool(*validate)(bsval* variables)) {
 	struct context : control {
-		void*			object;
-		bsval*			variables;
-		const widget*	widgets;
+		void* object;
+		bsval* variables;
+		const widget* widgets;
 		bool(*validate)(bsval* variables);
 		void nonclient(rect rc) override {
 			auto y0 = rc.y1;
@@ -351,5 +351,6 @@ int draw::open(const char* title, int width, int height, const widget* widgets, 
 	current.variables = variables;
 	current.validate = validate;
 	current.show_background = false;
+	current.show_border = false;
 	return current.open(title, WFResize, width, height, false);
 }

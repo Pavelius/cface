@@ -25,7 +25,9 @@ namespace io {
 		virtual void		write(bool value);
 		template<class T> void write(const T& value);
 	};
-	struct file : public stream {
+	class file : public stream {
+		int					handle;
+	public:
 		class find {
 			class iter {
 				find&		parent;
@@ -61,8 +63,6 @@ namespace io {
 		int					seek(int count, int rel) override;
 		static bool			setdir(const char* url);
 		int					write(const void* result, int count) override;
-	private:
-		int					handle;
 	};
 	struct memory : public stream {
 		memory(void* data, int size);

@@ -93,7 +93,7 @@ namespace draw {
 		struct tableref : table {
 			arefc<void*>		source;
 			tableref() : table(source) {}
-			void				addelement(void* element) { source.add(&element); }
+			void				addelement(void* element) { source.add(element); }
 			void*				getrow(int index) override { return *((void**)rows.get(index)); }
 		};
 	}
