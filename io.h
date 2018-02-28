@@ -24,6 +24,7 @@ namespace io {
 		virtual void		write(int value);
 		virtual void		write(bool value);
 		template<class T> void write(const T& value);
+		template<> void write<unsigned>(const unsigned& value) { write((int)value); }
 	};
 	class file : public stream {
 		int					handle;
