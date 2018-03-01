@@ -4,8 +4,7 @@
 
 using namespace draw;
 
-struct focusable_element
-{
+struct focusable_element {
 	int				id;
 	rect			rc;
 	operator bool() const { return id != 0; }
@@ -13,17 +12,14 @@ struct focusable_element
 static focusable_element	elements[96];
 static focusable_element*	render_control = elements;
 
-COMMAND(clear_render)
-{
+COMMAND(clear_render) {
 	render_control = elements;
 }
 
-static focusable_element* getby(int id)
-{
+static focusable_element* getby(int id) {
 	if(!id)
 		return 0;
-	for(auto& e : elements)
-	{
+	for(auto& e : elements) {
 		if(!e)
 			return 0;
 		if(e.id == id)
@@ -32,10 +28,8 @@ static focusable_element* getby(int id)
 	return 0;
 }
 
-static focusable_element* getfirst()
-{
-	for(auto& e : elements)
-	{
+static focusable_element* getfirst() {
+	for(auto& e : elements) {
 		if(!e)
 			return 0;
 		return &e;
@@ -43,11 +37,9 @@ static focusable_element* getfirst()
 	return 0;
 }
 
-static focusable_element* getlast()
-{
+static focusable_element* getlast() {
 	auto p = elements;
-	for(auto& e : elements)
-	{
+	for(auto& e : elements) {
 		if(!e)
 			break;
 		p = &e;
@@ -55,8 +47,7 @@ static focusable_element* getlast()
 	return p;
 }
 
-void draw::addelement(int id, const rect& rc)
-{
+void draw::addelement(int id, const rect& rc) {
 	if(!render_control
 		|| render_control >= elements + sizeof(elements) / sizeof(elements[0]) - 1)
 		render_control = elements;
@@ -66,8 +57,7 @@ void draw::addelement(int id, const rect& rc)
 	render_control++;
 }
 
-int draw::getnext(int id, int key)
-{
+int draw::getnext(int id, int key) {
 	if(!key)
 		return id;
 	auto pc = getby(id);
@@ -80,8 +70,7 @@ int draw::getnext(int id, int key)
 	int inc = 1;
 	if(key == KeyLeft || key == KeyUp || key == (KeyTab | Shift))
 		inc = -1;
-	while(true)
-	{
+	while(true) {
 		pc += inc;
 		if(pc > pl)
 			pc = elements;
@@ -89,8 +78,7 @@ int draw::getnext(int id, int key)
 			pc = pl;
 		if(pe == pc)
 			return pe->id;
-		switch(key)
-		{
+		switch(key) {
 		case KeyRight:
 			if(pe->rc.y1 >= pc->rc.y1
 				&& pe->rc.y1 <= pc->rc.y2

@@ -1,15 +1,12 @@
 ﻿#include "draw.h"
 #include "screenshoot.h"
 
-draw::screenshoot::screenshoot(rect rc, bool fade) : surface(rc.width(), rc.height(), getbpp())
-{
+draw::screenshoot::screenshoot(rect rc, bool fade) : surface(rc.width(), rc.height(), getbpp()) {
 	x = rc.x1;
 	y = rc.y1;
-	if(draw::canvas)
-	{
+	if(draw::canvas) {
 		blit(*this, 0, 0, width, height, 0, *draw::canvas, x, y);
-		if(fade)
-		{
+		if(fade) {
 			draw::state push;
 			draw::canvas = this;
 			draw::setclip();
@@ -18,16 +15,13 @@ draw::screenshoot::screenshoot(rect rc, bool fade) : surface(rc.width(), rc.heig
 	}
 }
 
-draw::screenshoot::screenshoot(bool fade) : screenshoot({0, 0, getwidth(), getheight()}, fade)
-{
+draw::screenshoot::screenshoot(bool fade) : screenshoot({0, 0, getwidth(), getheight()}, fade) {
 }
 
-draw::screenshoot::~screenshoot()
-{
+draw::screenshoot::~screenshoot() {
 }
 
-void draw::screenshoot::restore()
-{
+void draw::screenshoot::restore() {
 	setclip();
 	if(draw::canvas)
 		blit(*draw::canvas, x, y, width, height, 0, *this, 0, 0);
