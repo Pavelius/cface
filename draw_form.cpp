@@ -261,7 +261,11 @@ struct dlgform {
 		auto flags = getflags(e);
 		setposition(x, y, width);
 		decortext(flags);
-		return draw::textf(x, y, width, e.label) + metrics::padding * 2;
+		draw::link[0] = 0;
+		auto height = draw::textf(x, y, width, e.label) + metrics::padding * 2;
+		if(draw::link[0])
+			tooltips(link);
+		return height;
 	}
 
 	int radio(int x, int y, int width, const widget& e) {
