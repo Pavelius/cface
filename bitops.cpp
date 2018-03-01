@@ -1066,20 +1066,23 @@ void draw::bop::cpy32t(unsigned char* d, int d_scan, unsigned char* s, int s_sca
 {
 	if(height <= 0 || width <= 0)
 		return;
-	do
-	{
+	do {
 		color* d2 = (color*)d;
 		color* sb = (color*)s;
 		color* se = sb + width;
-		while(sb < se)
-		{
-			if(sb->a == 0xFF)
-			{
+		while(sb < se) {
+			if(!sb->a) {
 				d2++;
 				sb++;
-			}
-			else
+			} else if(sb->a == 0xFF)
 				*d2++ = *sb++;
+			else {
+				auto ap = sb->a;
+				d2->r = (((int)d2->r * (255 - ap)) + ((sb->r)*(ap))) >> 8;
+				d2->g = (((int)d2->g * (255 - ap)) + ((sb->g)*(ap))) >> 8;
+				d2->b = (((int)d2->b * (255 - ap)) + ((sb->b)*(ap))) >> 8;
+				d2++; sb++;
+			}
 		}
 		s += s_scan;
 		d += d_scan;
