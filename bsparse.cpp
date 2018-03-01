@@ -1,294 +1,395 @@
-#include "bsparse.h"
+#include "bsdata.h"
 #include "crt.h"
 #include "io.h"
 
-bsparse::bsparse(const char* source) : p(source) {
-	clearvalue();
-	buffer[0] = 0;
-}
+static void(*error_callback)(bsparse_error_s id, const char* url, int line, int column, const char** format_param);
+static bsparse_error_s(*validate_text)(const char* id, const char* value);
 
-void bsparse::clearvalue() {
-	value = 0;
-	value_type = 0;
-	value_object = 0;
-}
-
-bool bsparse::islinefeed() const {
-	return *p == 13 || *p == 10;
-}
-
-void bsparse::skip() {
-	p++;
-}
-
-bool bsparse::skip(char sym) {
-	if(*p != sym)
-		return false;
-	p++;
-	skipws();
-	return true;
-}
-
-bool bsparse::skip(const char* sym) {
-	auto i = 0;
-	while(sym[i]) {
-		if(p[i] != sym[i])
-			return false;
-		i++;
+class bsfile {
+	const bsfile* parent;
+	const char* url;
+	const char* start;
+public:
+	bsfile(const char* url, const bsfile* parent = 0) : parent(0), url(url), start(loadt(url)) {
 	}
-	p += i;
-	return true;
-}
+	~bsfile() {
+		delete start;
+	}
+	operator bool() const { return start != 0; }
+	const char* getstart() const { return start; }
+	const char* geturl() const { return url; }
+};
 
-void bsparse::skipws() {
-	while(*p) {
-		if(p[0] == 9 || p[0] == 0x20) {
+struct bsparse : bsfile {
+	char buffer[128 * 256];
+	int	value;
+	const bsreq* value_type;
+	void* value_object;
+	void* parent_object;
+	const bsreq* parent_type;
+	const char* p;
+
+	bsparse(const char* url, const bsfile* parent = 0) : bsfile(url, parent), p(getstart()) {
+		clearvalue();
+		buffer[0] = 0;
+	}
+
+	static const char* skipline(const char* p) {
+		while(p[0] && p[0] != 10 && p[0] != 13)
 			p++;
-			continue;
-		} else if(p[0] == '\\') {
-			p++;
-			if(p[0] == 10 || p[0] == 13)
-				p = szskipcr(p);
-			else
+		return skipws(szskipcr(p));
+	}
+
+	static const char* skipws(const char* p) {
+		while(*p) {
+			if(p[0] == 9 || p[0] == 0x20) {
 				p++;
-			continue;
-		} else if(p[0] == '/' && p[1] == '/') {
-			// Comments
-			p += 2;
-			skipline();
-			continue;
-		}
-		break;
-	}
-}
-
-void bsparse::skipline() {
-	while(p[0] && p[0] != 10 && p[0] != 13)
-		p++;
-	p = szskipcr(p);
-	skipws();
-}
-
-void bsparse::error() {
-	skipline();
-}
-
-void bsparse::readstring(const char end) {
-	auto ps = buffer;
-	auto pe = ps + sizeof(buffer) / sizeof(buffer[0]) - 1;
-	for(; p[0] && p[0] != end; p++) {
-		if(p[0] == '\\')
-			continue;
-		if(ps < pe)
-			*ps++ = p[0];
-	}
-	if(p[0] == end)
-		p++;
-	ps[0] = 0;
-}
-
-bool bsparse::readidentifier() {
-	if((p[0] >= 'a' && p[0] <= 'z') || (p[0] >= 'A' && p[0] <= 'Z')) {
-		auto ps = buffer;
-		auto pe = ps + sizeof(buffer) / sizeof(buffer[0]) - 1;
-		while(*p && ((*p >= '0' && *p <= '9') || *p == '_' || ischa(*p))) {
-			if(ps < pe)
-				*ps++ = *p;
-			p++;
-		}
-		ps[0] = 0;
-	} else
-		return false;
-	return true;
-}
-
-bool bsparse::readvalue(const bsreq* hint_type, bool create) {
-	bool need_identifier = false;
-	buffer[0] = 0;
-	value = 0;
-	value_type = 0;
-	value_object = 0;
-	if(p[0] == '-' || (p[0] >= '0' && p[0] <= '9')) {
-		value = sz2num(p, &p);
-		value_type = number_type;
-	} else if(p[0] == '\'') {
-		p++;
-		readstring('\'');
-		value_type = text_type;
-		need_identifier = true;
-	} else if(p[0] == '\"') {
-		p++;
-		readstring('\"');
-		value_type = text_type;
-	} else if(readidentifier()) {
-		value_type = text_type;
-		need_identifier = true;
-	} else
-		return false; // Not found value tag
-	if(need_identifier) {
-		auto value_data = bsdata::find(hint_type);
-		if(!value_data) {
-			for(value_data = bsdata::first; value_data; value_data = value_data->next) {
-				auto f = value_data->fields->getkey();
-				if(!f)
-					continue;
-				value_object = value_data->find(f, buffer);
-				if(value_object)
-					break;
+				continue;
+			} else if(p[0] == '\\') {
+				p++;
+				if(p[0] == 10 || p[0] == 13)
+					p = szskipcr(p);
+				else
+					p++;
+				continue;
+			} else if(p[0] == '/' && p[1] == '/') {
+				// Comments
+				p = skipline(p + 2);
+				continue;
 			}
-		} else
-			value_object = value_data->find(value_data->fields->getkey(), buffer);
-		// If not find create this
-		if(!value_object && value_data && create) {
-			auto f = value_data->fields->getkey();
-			if(f) {
-				value_object = value_data->add();
-				f->set(f->ptr(value_object), (int)szdup(buffer));
-			}
-		}
-		if(value_data)
-			value_type = value_data->fields;
-		else
-			value_type = number_type;
-		if(value_object && value_data)
-			value = value_data->indexof(value_object);
-	} else if(create && hint_type && value_type == number_type) {
-		auto value_data = bsdata::find(hint_type);
-		value_type = hint_type;
-		if(value_data) {
-			if(value < (int)value_data->getmaxcount()) {
-				if(value >= (int)value_data->getcount())
-					value_data->setcount(value + 1);
-				value_object = value_data->get(value);
-			}
-		}
-	}
-	skipws();
-	return true;
-}
-
-void bsparse::storevalue(void* object, const bsreq* req, unsigned index) {
-	if(!object || !req)
-		return;
-	if(index)
-		object = (char*)object + req->size*index;
-	if(req->type == text_type) {
-		if(!buffer[0])
-			req->set(req->ptr(object), 0);
-		else
-			req->set(req->ptr(object), (int)szdup(buffer));
-	} else if(req->type == number_type)
-		req->set(req->ptr(object), value);
-	else if(req->type->reference)
-		req->set(req->ptr(object), (int)value_object);
-}
-
-bool bsparse::readreq(void* object, const bsreq* req, unsigned index) {
-	if(!skip('('))
-		return false;
-	while(*p) {
-		if(skip(')'))
 			break;
-		readvalue(0, false);
-		storevalue(object, req, index);
-		if(skip(','))
-			index++;
+		}
+		return p;
 	}
-	skipws();
-	return true;
-}
 
-bool bsparse::readfields(void* object, const bsreq* fields) {
-	while(*p && !islinefeed()) {
-		const bsreq* req = 0;
-		if(readidentifier())
-			req = fields->find(buffer);
-		readreq(object, req, 0);
+	void getpos(const char* p, int& line, int& column) {
+		line = 0;
+		column = 0;
+		auto ps = getstart();
+		while(*ps) {
+			line++;
+			auto pe = skipline(ps);
+			if(p >= ps && p < pe) {
+				column = p - ps + 1;
+				return;
+			}
+			ps = pe;
+		}
 	}
-	return true;
-}
 
-bool bsparse::readrecord() {
-	if(!skip('#'))
-		return false;
-	// Read data base name
-	if(!readidentifier()) {
+	void error(bsparse_error_s id, ...) {
+		if(!error_callback)
+			return;
+		int line, column;
+		getpos(p, line, column);
+		error_callback(id, geturl(), line, column, (const char**)xva_start(id));
 		skipline();
+	}
+
+	void warning(bsparse_error_s id, ...) {
+		if(!error_callback)
+			return;
+		int line, column;
+		getpos(p, line, column);
+		error_callback(id, geturl(), line, column, (const char**)xva_start(id));
+	}
+
+	void clearvalue() {
+		value = 0;
+		value_type = 0;
+		value_object = 0;
+	}
+
+	bool islinefeed() const {
+		return *p == 13 || *p == 10;
+	}
+
+	void skip() {
+		p++;
+	}
+
+	bool skip(char sym) {
+		if(*p != sym)
+			return false;
+		p++;
+		skipws();
 		return true;
 	}
-	skipws();
-	const bsreq* fields = 0;
-	auto pd = bsdata::find(buffer);
-	if(pd)
-		fields = pd->fields;
-	// Read key value
-	parent_object = value_object;
-	readvalue(fields, true);
-	readfields(value_object, fields);
-	parent_type = fields;
-	return true;
-}
 
-bool bsparse::readsubrecord() {
-	auto index = 0;
-	auto last_field = 0;
-	while(skip("##")) {
+	bool skip(const char* sym) {
+		auto i = 0;
+		while(sym[i]) {
+			if(p[i] != sym[i])
+				return false;
+			i++;
+		}
+		p += i;
+		return true;
+	}
+
+	void skipws() {
+		p = skipws(p);
+	}
+
+	void skipline() {
+		p = skipline(p);
+	}
+
+	void readstring(const char end) {
+		auto ps = buffer;
+		auto pe = ps + sizeof(buffer) / sizeof(buffer[0]) - 1;
+		for(; p[0] && p[0] != end; p++) {
+			if(p[0] == '\\')
+				continue;
+			if(ps < pe)
+				*ps++ = p[0];
+		}
+		if(p[0] == end)
+			p++;
+		ps[0] = 0;
+	}
+
+	bool iskey(const char* p) {
+		if((p[0] >= 'a' && p[0] <= 'z') || (p[0] >= 'A' && p[0] <= 'Z')) {
+			while(*p && ((*p >= '0' && *p <= '9') || *p == '_' || ischa(*p)))
+				p++;
+			p = skipws(p);
+			return p[0] != '(';
+		}
+		return true;
+	}
+
+	bool readidentifier() {
+		if((p[0] >= 'a' && p[0] <= 'z') || (p[0] >= 'A' && p[0] <= 'Z')) {
+			auto ps = buffer;
+			auto pe = ps + sizeof(buffer) / sizeof(buffer[0]) - 1;
+			while(*p && ((*p >= '0' && *p <= '9') || *p == '_' || ischa(*p))) {
+				if(ps < pe)
+					*ps++ = *p;
+				p++;
+			}
+			ps[0] = 0;
+		} else
+			return false;
+		return true;
+	}
+
+	bool readvalue(const bsreq* hint_type, bool create) {
+		bool need_identifier = false;
+		buffer[0] = 0;
+		value = 0;
+		value_type = 0;
+		value_object = 0;
+		if(p[0] == '-' || (p[0] >= '0' && p[0] <= '9')) {
+			value = sz2num(p, &p);
+			value_type = number_type;
+		} else if(p[0] == '\'') {
+			p++;
+			readstring('\'');
+			value_type = text_type;
+			need_identifier = true;
+		} else if(p[0] == '\"') {
+			p++;
+			readstring('\"');
+			value_type = text_type;
+		} else if(readidentifier()) {
+			value_type = text_type;
+			need_identifier = true;
+		} else
+			return false; // Not found value tag
+		if(need_identifier) {
+			auto value_data = bsdata::find(hint_type);
+			if(!value_data) {
+				for(value_data = bsdata::first; value_data; value_data = value_data->next) {
+					auto f = value_data->fields->getkey();
+					if(!f)
+						continue;
+					value_object = value_data->find(f, buffer);
+					if(value_object)
+						break;
+				}
+			} else
+				value_object = value_data->find(value_data->fields->getkey(), buffer);
+			// If not find create this
+			if(!value_object && value_data && create) {
+				auto f = value_data->fields->getkey();
+				if(f) {
+					value_object = value_data->add();
+					f->set(f->ptr(value_object), (int)szdup(buffer));
+				}
+			}
+			if(value_data)
+				value_type = value_data->fields;
+			else
+				value_type = number_type;
+			if(value_object && value_data)
+				value = value_data->indexof(value_object);
+			if(!value_object)
+				warning(ErrorNotFoundIdentifier1p, buffer);
+		} else if(create && hint_type && value_type == number_type) {
+			auto value_data = bsdata::find(hint_type);
+			value_type = hint_type;
+			if(value_data) {
+				if(value < (int)value_data->getmaxcount()) {
+					if(value >= (int)value_data->getcount())
+						value_data->setcount(value + 1);
+					value_object = value_data->get(value);
+				}
+			}
+		}
+		skipws();
+		return true;
+	}
+
+	void storevalue(void* object, const bsreq* req, unsigned index) {
+		if(!object || !req)
+			return;
+		auto p = req->ptr(object, index);
+		if(req->type == text_type) {
+			if(!buffer[0])
+				req->set(p, 0);
+			else {
+				auto pv = szdup(buffer);
+				req->set(p, (int)pv);
+				if(validate_text) {
+					auto error_code = validate_text(req->id, pv);
+					if(error_code != NoParserError)
+						warning(error_code, req->id, pv);
+				}
+			}
+		} else if(req->type == number_type)
+			req->set(p, value);
+		else if(req->type->reference)
+			req->set(p, (int)value_object);
+		else
+			storevalue((void*)req->ptr(object), req->type + index, 0);
+	}
+
+	const char* getbasename(const bsreq* type) const {
+		auto p = bsdata::find(type);
+		if(!p)
+			return "";
+		return p->id;
+	}
+
+	bool readreq(void* object, const bsreq* req, unsigned index) {
+		if(!skip('('))
+			return false;
+		while(*p) {
+			if(skip(')'))
+				break;
+			readvalue(req ? req->type : 0, false);
+			storevalue(object, req, index);
+			if(skip(','))
+				index++;
+		}
+		skipws();
+		return true;
+	}
+
+	bool readfields(void* object, const bsreq* fields) {
+		while(*p && !islinefeed()) {
+			const bsreq* req = 0;
+			if(readidentifier())
+				req = fields->find(buffer);
+			if(!req)
+				warning(ErrorNotFoundMember1pInBase2p, buffer, getbasename(fields));
+			readreq(object, req, 0);
+		}
+		return true;
+	}
+
+	bool readrecord() {
+		if(!skip('#'))
+			return false;
 		// Read data base name
 		if(!readidentifier()) {
-			error();
+			error(ErrorExpectedIdentifier);
 			return true;
 		}
 		skipws();
-		auto parent_field = parent_type->find(buffer);
-		if(!parent_field) {
-			error();
-			return true;
-		}
-		if(parent_field->count <= 1 // Only array may be defined as ##
-			|| parent_field->reference // No reference allowed
-			|| parent_field->isenum // Enumeratior must be initialized in row
-			|| parent_field->type->issimple()) { // No Simple type
-			error();
-		}
-		readfields((void*)parent_field->ptr(parent_object, index),
-			parent_field->type);
-		index++;
+		const bsreq* fields = 0;
+		auto pd = bsdata::find(buffer);
+		if(pd)
+			fields = pd->fields;
+		else
+			warning(ErrorNotFoundBase1p, buffer);
+		// Read key value
+		parent_object = value_object;
+		if(iskey(p))
+			readvalue(fields, true);
+		else if(pd)
+			value_object = pd->add();
+		else
+			value_object = 0;
+		readfields(value_object, fields);
+		parent_type = fields;
+		return true;
 	}
-	// If aref or adat save count
-	return false;
-}
 
-void bsparse::readtrail() {
-	auto pb = buffer;
-	auto pe = pb + sizeof(buffer) - 1;
-	while(true) {
-		auto sym = *p;
-		if(!sym)
-			break;
-		if(sym == '\n' || sym == '\r') {
-			while(*p == '\n' || *p == '\r') {
-				p = szskipcr(p);
-				skipws();
+	bool readsubrecord() {
+		auto index = 0;
+		auto last_field = 0;
+		while(skip("##")) {
+			// Read data base name
+			if(!readidentifier()) {
+				error(ErrorExpectedIdentifier);
+				return true;
 			}
-			if(*p == '#')
-				break;
-			if(pb != buffer && pb < pe)
-				*pb++ = '\n';
-			continue;
+			skipws();
+			auto parent_field = parent_type->find(buffer);
+			if(!parent_field) {
+				error(ErrorNotFoundMember1pInBase2p, buffer, "");
+				return true;
+			}
+			if(parent_field->count <= 1 // Only array may be defined as ##
+				|| parent_field->reference // No reference allowed
+				|| parent_field->isenum // Enumeratior must be initialized in row
+				|| parent_field->type->issimple()) { // No Simple type
+				error(ErrorExpectedArrayField);
+			}
+			readfields((void*)parent_field->ptr(parent_object, index),
+				parent_field->type);
+			index++;
 		}
-		if(pb < pe)
-			*pb++ = sym;
-		p++;
+		// If aref or adat save count
+		return false;
 	}
-	*pb = 0;
-}
 
-void bsparse::parse() {
-	while(*p) {
-		if(!readrecord())
-			return;
+	void readtrail() {
+		auto pb = buffer;
+		auto pe = pb + sizeof(buffer) - 1;
+		while(true) {
+			auto sym = *p;
+			if(!sym)
+				break;
+			if(sym == '\n' || sym == '\r') {
+				while(*p == '\n' || *p == '\r') {
+					p = szskipcr(p);
+					skipws();
+				}
+				if(*p == '#')
+					break;
+				if(pb != buffer && pb < pe)
+					*pb++ = '\n';
+				continue;
+			}
+			if(pb < pe)
+				*pb++ = sym;
+			p++;
+		}
+		*pb = 0;
 	}
-}
+
+	void parse() {
+		while(*p) {
+			if(!readrecord())
+				return;
+			readtrail();
+		}
+	}
+
+};
 
 static bool isidentifier(const char* p) {
 	if((p[0] >= 'a' && p[0] <= 'z') || (p[0] >= 'A' && p[0] <= 'Z')) {
@@ -447,10 +548,15 @@ void bsdata::write(const char* url, const char* baseid) {
 }
 
 void bsdata::read(const char* url) {
-	auto p = loadt(url);
-	if(p) {
-		bsparse parser(p);
+	bsparse parser(url);
+	if(parser)
 		parser.parse();
-		delete p;
-	}
+}
+
+void bsdata::setparser(void(*callback)(bsparse_error_s id, const char* url, int line, int column, const char** format_param)) {
+	error_callback = callback;
+}
+
+void bsdata::setparser(bsparse_error_s(*callback)(const char* id, const char* value)) {
+	validate_text = callback;
 }

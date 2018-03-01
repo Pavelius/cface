@@ -459,12 +459,6 @@
     <ClInclude Include="io_text.h">
       <Filter>Системные</Filter>
     </ClInclude>
-    <ClInclude Include="bsdoc.h">
-      <Filter>Обработка данных</Filter>
-    </ClInclude>
-    <ClInclude Include="bsparse.h">
-      <Filter>Обработка данных</Filter>
-    </ClInclude>
     <ClInclude Include="initializer_list.h">
       <Filter>Коллекции</Filter>
     </ClInclude>

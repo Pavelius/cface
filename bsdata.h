@@ -8,6 +8,13 @@ bsdata c##_manager(#c, c##_data, sizeof(c##_data[0]), sizeof(c##_data)/sizeof(c#
 #define BSDATA(c, c_type) \
 bsdata c##_manager(#c, c##s.data, c##s.count, sizeof(c##s.data[0]), sizeof(c##s.data)/sizeof(c##s.data[0]), c_type);
 
+enum bsparse_error_s {
+	NoParserError,
+	ErrorExpectedIdentifier, ErrorExpectedArrayField,
+	ErrorNotFoundBase1p, ErrorNotFoundIdentifier1p, ErrorNotFoundMember1pInBase2p,
+	ErrorFile2pNotFound,
+};
+
 struct bsdata : collection
 {
 	const char*			id;
@@ -36,6 +43,8 @@ struct bsdata : collection
 	static void			read(const char* url);
 	void				remove(int index, int count = 1) override;
 	void				setcount(unsigned value) { count = value; }
+	void				setparser(bsparse_error_s(*callback)(const char* id, const char* value));
+	void				setparser(void(*callback)(bsparse_error_s id, const char* url, int line, int column, const char** format_param));
 	static void			write(const char* url, const char** baseids, bool(*comparer)(void* object, const bsreq* type) = 0);
 	static void			write(const char* url, const char* baseid);
 private:

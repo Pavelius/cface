@@ -261,7 +261,6 @@
     <ClInclude Include="archive.h" />
     <ClInclude Include="bsdata.h" />
     <ClInclude Include="database.h" />
-    <ClInclude Include="bsparse.h" />
     <ClInclude Include="bsreq.h" />
     <ClInclude Include="cflags.h" />
     <ClInclude Include="collections.h" />
@@ -318,7 +317,6 @@
     <ClInclude Include="valtree.h" />
     <ClInclude Include="acol.h" />
     <ClInclude Include="win.h" />
-    <ClInclude Include="bsdoc.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

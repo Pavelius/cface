@@ -1,6 +1,23 @@
+#include "bsdata.h"
 #include "crt.h"
 #include "io.h"
-#include "bsdoc.h"
+#include "stringtree.h"
+
+struct bsdoc {
+	const char* p;
+	const char* porigin;
+	const char* url;
+	char operation[2];
+	char buffer[128 * 256];
+	stringtree* comments;
+
+	bsdoc() : comments(0) {
+		p = porigin = 0;
+		buffer[0] = 0;
+		memset(operation, 0, sizeof(operation));
+	}
+
+};
 
 static const char* index_header = "<h1>File format description</h1>"
 "<p>Each line of description file consist of one entity decriptor.</p>"
@@ -8,7 +25,6 @@ static const char* index_header = "<h1>File format description</h1>"
 "<p>Several entities has big text description which used to display tooltips and other text multiline controls. This special text lines can be after entity block and before next entitity.</p>"
 "<h2>Entity list</h2>";
 static const char* text_description = "Entity description text. Start with new line after entiry.";
-static const char* index_header_global = "<h2>Global namespaces</h1>";
 
 static void opentag(io::stream& e, const char* name) {
 	e << "<" << name << ">";
@@ -265,7 +281,7 @@ static void write_metaobject(bsdata& m, bsdoc& doc) {
 	}
 	closetag(e, "table");
 	closetag(e, "section");
-	write_examples(e, m);
+	//write_examples(e, m);
 	footer(e);
 }
 
@@ -289,20 +305,15 @@ static void write_metadata(io::stream& e, bsdoc& doc) {
 	closetag(e, "table");
 }
 
-void bsdoc::generate() {
+void generate_help() {
 	char temp[260];
+	bsdoc doc;
+	doc.url = "help";
 	io::file e(szurl(temp, "help", "index", "html"), StreamWrite | StreamText);
 	if(!e)
 		return;
 	header(e);
 	e << index_header;
-	write_metadata(e, *this);
-	e << index_header_global;
+	write_metadata(e, doc);
 	footer(e);
-}
-
-bsdoc::bsdoc() : comments(0) {
-	p = porigin = 0;
-	buffer[0] = 0;
-	memset(operation, 0, sizeof(operation));
 }
