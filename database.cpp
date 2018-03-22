@@ -11,7 +11,7 @@ bsreq object_type[] = {
 	BSREQ(object, name, text_type),
 	BSREQ(object, parent, object_type),
 };
-bsdata object_manager("object", objects.data, objects.count, sizeof(objects.data[0]), sizeof(objects.data) / sizeof(objects.data[0]), object_type);
+bsdata object_manager("object", objects, object_type);
 
 object* object::find(const char* name) {
 	for(auto& e : objects) {

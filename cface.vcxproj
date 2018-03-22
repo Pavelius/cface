@@ -164,7 +164,7 @@
     <ClCompile Include="base.cpp" />
     <ClCompile Include="bitops.cpp" />
     <ClCompile Include="bsdata.cpp" />
-    <ClCompile Include="bsparse.cpp" />
+    <ClCompile Include="bsdata_serial.cpp" />
     <ClCompile Include="bsreq.cpp" />
     <ClCompile Include="bstream.cpp" />
     <ClCompile Include="calculator.cpp" />

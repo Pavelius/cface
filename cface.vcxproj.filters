@@ -271,9 +271,6 @@
     <ClCompile Include="draw_autocompletebs.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
-    <ClCompile Include="bsparse.cpp">
-      <Filter>Обработка данных</Filter>
-    </ClCompile>
     <ClCompile Include="database.cpp">
       <Filter>Обработка данных</Filter>
     </ClCompile>
@@ -282,6 +279,9 @@
     </ClCompile>
     <ClCompile Include="draw_control_type.cpp">
       <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
+    <ClCompile Include="bsdata_serial.cpp">
+      <Filter>Обработка данных</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
