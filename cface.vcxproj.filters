@@ -283,6 +283,9 @@
     <ClCompile Include="bsdata_serial.cpp">
       <Filter>Обработка данных</Filter>
     </ClCompile>
+    <ClCompile Include="bseval.cpp">
+      <Filter>Обработка данных</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="acol.h">
@@ -466,6 +469,9 @@
       <Filter>Коллекции</Filter>
     </ClInclude>
     <ClInclude Include="database.h">
+      <Filter>Обработка данных</Filter>
+    </ClInclude>
+    <ClInclude Include="bseval.h">
       <Filter>Обработка данных</Filter>
     </ClInclude>
   </ItemGroup>

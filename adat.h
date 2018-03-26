@@ -7,8 +7,9 @@ struct adat {
 	T data[count_max];
 	unsigned count;
 
-	const T& operator[](unsigned index) const { return data[index]; }
-	T& operator[](unsigned index) { return data[index]; }
+	constexpr adat() : data(), count() {}
+	constexpr const T& operator[](unsigned index) const { return data[index]; }
+	constexpr T& operator[](unsigned index) { return data[index]; }
 	operator bool() const { return count != 0; }
 
 	// Add new element to collection
@@ -22,28 +23,27 @@ struct adat {
 		if(count < count_max)
 			data[count++] = e;
 	}
-	T* begin() {
+	constexpr T* begin() {
 		return data;
 	}
-	const T* begin() const {
+	constexpr const T* begin() const {
 		return data;
 	}
 	void clear() {
 		count = 0;
 	}
-	T* end() {
+	constexpr T* end() {
 		return data + count;
 	}
-	const T* end() const {
+	constexpr const T* end() const {
 		return data + count;
 	}
-	void initialize() {
-		count = 0;
-	}
-	int getcount() const {
+	// Get count of elements
+	constexpr int getcount() const {
 		return count;
 	}
-	unsigned getmaximum() const {
+	// Get maximum count of elements
+	constexpr unsigned getmaximum() const {
 		return count_max;
 	}
 	int indexof(const T* e) const {
@@ -63,7 +63,7 @@ struct adat {
 				return true;
 		return false;
 	}
-	// Remove 'remove_sount' elements starting from 'index'
+	// Remove 'remove_count' elements starting from 'index'
 	void remove(int index, int remove_count = 1) {
 		if(index < 0)
 			return;

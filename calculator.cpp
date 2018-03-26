@@ -1,13 +1,11 @@
 #include "calculator.h"
 #include "crt.h"
 
-static const char* next(const char* p)
-{
+static const char* next(const char* p) {
 	return zskipspcr(p);
 }
 
-static const char* skip(const char* p, char sym)
-{
+static const char* skip(const char* p, char sym) {
 	if(p[0] == sym)
 		p = next(p + 1);
 	return p;
@@ -15,12 +13,10 @@ static const char* skip(const char* p, char sym)
 
 static const char* expression(const char* p, int& e1, calculator& e);
 
-static const char* unary(const char* p, int& e1, calculator& e)
-{
+static const char* unary(const char* p, int& e1, calculator& e) {
 	if(!p)
 		return 0;
-	switch(*p)
-	{
+	switch(*p) {
 	case '-':
 		p = next(p + 1);
 		p = unary(p, e1, e);
@@ -44,33 +40,27 @@ static const char* unary(const char* p, int& e1, calculator& e)
 		p = expression(p, e1, e);
 		if(!p)
 			return 0;
-		if(p[0]==')')
+		if(p[0] == ')')
 			p = next(p + 1);
 		return p;
 	default:
-		if(isnum(*p))
-		{
-			if(e.stop)
-			{
+		if(isnum(*p)) {
+			if(e.stop) {
 				int e2;
 				return next(psnum(p, e2));
 			}
 			return next(psnum(p, e1));
-		}
-		else
-		{
+		} else {
 			char temp[260];
 			p = psidn(p, temp);
 			p = next(p);
-			if(p[0] == '(')
-			{
+			if(p[0] == '(') {
 				p = next(p + 1);
 				int e2;
 				calculator ec;
 				ec.parent = &e;
 				int index = 0;
-				while(p && p[0] && p[0] != ')')
-				{
+				while(p && p[0] && p[0] != ')') {
 					p = expression(p, e2, e);
 					if(index < sizeof(ec.variables) / sizeof(ec.variables[0]))
 						ec.variables[index++].value = e2;
@@ -82,14 +72,10 @@ static const char* unary(const char* p, int& e1, calculator& e)
 					p = next(p + 1);
 				if(!e.stop)
 					e1 = e.getfunction(temp, e, ec, index);
-			}
-			else
-			{
-				if(!e.stop)
-				{
+			} else {
+				if(!e.stop) {
 					e1 = 0;
-					if(temp[0])
-					{
+					if(temp[0]) {
 						auto pv = e.find(temp);
 						if(pv)
 							e1 = pv->value;
@@ -103,11 +89,9 @@ static const char* unary(const char* p, int& e1, calculator& e)
 	}
 }
 
-static const char* indirect(const char* p, int& e1, calculator& e)
-{
+static const char* indirect(const char* p, int& e1, calculator& e) {
 	p = unary(p, e1, e);
-	while(p && p[0] == '.')
-	{
+	while(p && p[0] == '.') {
 		char temp[260];
 		p = psidn(p + 1, temp);
 		p = next(p);
@@ -117,19 +101,15 @@ static const char* indirect(const char* p, int& e1, calculator& e)
 	return p;
 }
 
-static const char* multiplication(const char* p, int& e1, calculator& e)
-{
+static const char* multiplication(const char* p, int& e1, calculator& e) {
 	p = indirect(p, e1, e);
-	while(p && (p[0] == '*' || p[0] == '/' || p[0] == '%') && p[1] != '=')
-	{
+	while(p && (p[0] == '*' || p[0] == '/' || p[0] == '%') && p[1] != '=') {
 		int e2;
 		char t1 = p[0];
 		p = next(p + 1);
 		p = indirect(p, e2, e);
-		if(!e.stop)
-		{
-			switch(t1)
-			{
+		if(!e.stop) {
+			switch(t1) {
 			case '*': e1 *= e2; break;
 			case '/': e1 /= e2; break;
 			case '%': e1 %= e2; break;
@@ -139,19 +119,15 @@ static const char* multiplication(const char* p, int& e1, calculator& e)
 	return p;
 }
 
-static const char* addiction(const char* p, int& e1, calculator& e)
-{
+static const char* addiction(const char* p, int& e1, calculator& e) {
 	p = multiplication(p, e1, e);
-	while(p && (p[0] == '+' || p[0] == '-') && p[1] != '=')
-	{
+	while(p && (p[0] == '+' || p[0] == '-') && p[1] != '=') {
 		int e2;
 		char t1 = p[0];
 		p = next(p + 1);
 		p = multiplication(p, e2, e);
-		if(!e.stop)
-		{
-			switch(t1)
-			{
+		if(!e.stop) {
+			switch(t1) {
 			case '+': e1 += e2; break;
 			case '-': e1 -= e2; break;
 			}
@@ -160,11 +136,9 @@ static const char* addiction(const char* p, int& e1, calculator& e)
 	return p;
 }
 
-static const char* binary_cond(const char* p, int& e1, calculator& e)
-{
+static const char* binary_cond(const char* p, int& e1, calculator& e) {
 	p = addiction(p, e1, e);
-	while(p && ((p[0] == '>' && p[1] != '>') || (p[0] == '<' && p[1] != '<') || (p[0] == '=' && p[1] == '=') || (p[0] == '!' && p[1] == '=')))
-	{
+	while(p && ((p[0] == '>' && p[1] != '>') || (p[0] == '<' && p[1] != '<') || (p[0] == '=' && p[1] == '=') || (p[0] == '!' && p[1] == '='))) {
 		int e2;
 		char t1 = *p++;
 		char t2 = 0;
@@ -172,10 +146,8 @@ static const char* binary_cond(const char* p, int& e1, calculator& e)
 			t2 = *p++;
 		p = next(p);
 		p = addiction(p, e2, e);
-		if(!e.stop)
-		{
-			switch(t1)
-			{
+		if(!e.stop) {
+			switch(t1) {
 			case '<':
 				if(t2 == '=')
 					e1 = e1 <= e2;
@@ -196,11 +168,9 @@ static const char* binary_cond(const char* p, int& e1, calculator& e)
 	return p;
 }
 
-static const char* binary_and(const char* p, int& e1, calculator& e)
-{
+static const char* binary_and(const char* p, int& e1, calculator& e) {
 	p = binary_cond(p, e1, e);
-	while(p && p[0] == '&' && p[1] != '&')
-	{
+	while(p && p[0] == '&' && p[1] != '&') {
 		int e2;
 		p = next(p + 2);
 		p = binary_cond(p, e2, e);
@@ -210,11 +180,9 @@ static const char* binary_and(const char* p, int& e1, calculator& e)
 	return p;
 }
 
-static const char* binary_xor(const char* p, int& e1, calculator& e)
-{
+static const char* binary_xor(const char* p, int& e1, calculator& e) {
 	p = binary_and(p, e1, e);
-	while(p && p[0] == '^')
-	{
+	while(p && p[0] == '^') {
 		int e2;
 		p = next(p + 1);
 		p = binary_and(p, e2, e);
@@ -224,11 +192,9 @@ static const char* binary_xor(const char* p, int& e1, calculator& e)
 	return p;
 }
 
-static const char* binary_or(const char* p, int& e1, calculator& e)
-{
+static const char* binary_or(const char* p, int& e1, calculator& e) {
 	p = binary_xor(p, e1, e);
-	while(p && p[0] == '|' && p[1] != '|')
-	{
+	while(p && p[0] == '|' && p[1] != '|') {
 		int e2;
 		p = next(p + 1);
 		p = binary_xor(p, e2, e);
@@ -238,19 +204,15 @@ static const char* binary_or(const char* p, int& e1, calculator& e)
 	return p;
 }
 
-static const char* binary_shift(const char* p, int& e1, calculator& e)
-{
+static const char* binary_shift(const char* p, int& e1, calculator& e) {
 	p = binary_or(p, e1, e);
-	while(p && ((p[0] == '>' && p[1] == '>') || (p[0] == '<' && p[1] == '<')))
-	{
+	while(p && ((p[0] == '>' && p[1] == '>') || (p[0] == '<' && p[1] == '<'))) {
 		int e2;
 		char t1 = p[0];
 		p = next(p + 2);
 		p = binary_or(p, e2, e);
-		if(!e.stop)
-		{
-			switch(t1)
-			{
+		if(!e.stop) {
+			switch(t1) {
 			case '<': e1 <<= e2; break;
 			case '>': e1 >>= e2; break;
 			}
@@ -259,11 +221,9 @@ static const char* binary_shift(const char* p, int& e1, calculator& e)
 	return p;
 }
 
-static const char* logical_and(const char* p, int& e1, calculator& e)
-{
+static const char* logical_and(const char* p, int& e1, calculator& e) {
 	p = binary_shift(p, e1, e);
-	while(p && p[0] == '&' && p[1] == '&')
-	{
+	while(p && p[0] == '&' && p[1] == '&') {
 		int e2;
 		p = next(p + 2);
 		p = binary_shift(p, e2, e);
@@ -273,11 +233,9 @@ static const char* logical_and(const char* p, int& e1, calculator& e)
 	return p;
 }
 
-static const char* logical_or(const char* p, int& e1, calculator& e)
-{
+static const char* logical_or(const char* p, int& e1, calculator& e) {
 	p = logical_and(p, e1, e);
-	while(p && p[0] == '|' && p[1] == '|')
-	{
+	while(p && p[0] == '|' && p[1] == '|') {
 		int e2;
 		p = next(p + 2);
 		p = logical_and(p, e2, e);
@@ -287,11 +245,9 @@ static const char* logical_or(const char* p, int& e1, calculator& e)
 	return p;
 }
 
-static const char* expression(const char* p, int& e1, calculator& e)
-{
+static const char* expression(const char* p, int& e1, calculator& e) {
 	p = logical_or(p, e1, e);
-	while(p && p[0] == '?')
-	{
+	while(p && p[0] == '?') {
 		bool stop = e.stop;
 		bool correct = (e1 != 0);
 		p = next(p + 1);
@@ -305,20 +261,16 @@ static const char* expression(const char* p, int& e1, calculator& e)
 	return p;
 }
 
-calculator::calculator()
-{
+calculator::calculator() {
 	clear();
 }
 
-void calculator::clear()
-{
+void calculator::clear() {
 	memset(this, 0, sizeof(calculator));
 }
 
-calculator::var* calculator::find(const char* name)
-{
-	for(auto& e : variables)
-	{
+calculator::var* calculator::find(const char* name) {
+	for(auto& e : variables) {
 		if(!e.name)
 			return 0;
 		if(strcmp(e.name, name) == 0)
@@ -327,36 +279,30 @@ calculator::var* calculator::find(const char* name)
 	return 0;
 }
 
-void calculator::set(const char* name, int value)
-{
+void calculator::set(const char* name, int value) {
 	auto p = find(name);
-	if(!p)
-	{
-		for(auto& e : variables)
-		{
+	if(!p) {
+		for(auto& e : variables) {
 			if(e.name)
 				continue;
 			p = &e;
 			break;
 		}
 	}
-	if(p)
-	{
+	if(p) {
 		p->name = name;
 		p->value = value;
 	}
 }
 
-int	calculator::get(const char* name) const
-{
+int	calculator::get(const char* name) const {
 	auto p = ((calculator*)this)->find(name);
 	if(p)
 		return p->value;
 	return 0;
 }
 
-int calculator::evalute(const char* string)
-{
+int calculator::evalute(const char* string) {
 	int e1 = -1;
 	auto p = expression(string, e1, *this);
 	return e1;
