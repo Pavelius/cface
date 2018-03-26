@@ -7,12 +7,12 @@ struct bstop {
 
 	const char*	name;
 	const bsreq* type;
-	int	value;
+	int	value, size, count;
+	bool islvalue;
 
-	constexpr bstop() : name(""), value(0), type(number_type) {}
+	constexpr bstop() : name(""), value(0), type(number_type), size(sizeof(int)), count(1), islvalue(false) {}
 	operator bool() const { return type != 0; }
-	bool isvalue() const { return type->reference==0; }
-	bool ispointer() const { return type->reference; }
+	bool isvalue() const { return !islvalue; }
 	
 	void set(int value) {
 		this->value = value;
@@ -33,6 +33,7 @@ class bseval {
 	bool stop;
 	bsval base;
 	adat<bstop, 128> locals;
+	int local_base;
 	char buffer[4096];
 
 	void error(bsparse_error_s id, ...) {
@@ -41,18 +42,21 @@ class bseval {
 	}
 
 	void next(const char* p) {
-		p = zskipspcr(p);
+		this->p = zskipspcr(p);
 	}
 
 	void skip(char sym) {
-		if(p[0] == sym)
-			next(p + 1);
+		if(p[0] != sym) {
+			char temp[2] = {sym, 0};
+			error(ErrorExpectedSymbol1p, temp);
+		}
+		next(p + 1);
 	}
 
 	void dereference(bstop& e1) {
-		while(e1.ispointer()) {
-			e1.value = (int)e1.type->ptr((void*)e1.value);
-			e1.type = e1.type->type;
+		if(e1.islvalue) {
+			e1.value = (int)e1.type->get((void*)e1.value);
+			e1.islvalue = false;
 		}
 	}
 
@@ -307,6 +311,8 @@ class bseval {
 		}
 	}
 
+public:
+
 	void expression(bstop& e1) {
 		logical_or(e1);
 		while(p && p[0] == '?') {
@@ -322,9 +328,14 @@ class bseval {
 		}
 	}
 
-public:
-
-	bseval() : stop(false), p_error(0) {
+	bseval(const char* p) : p(p), stop(false), p_error(0), local_base(0) {
 	}
 
 };
+
+int bsdata::evalute(const char* code) {
+	bstop result;
+	bseval interpreter(code);
+	interpreter.expression(result);
+	return result.value;
+}

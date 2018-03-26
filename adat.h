@@ -14,14 +14,11 @@ struct adat {
 
 	// Add new element to collection
 	T* add() {
-		if(count < count_max)
-			return data + (count++);
-		return 0;
+		return (count < getmaximum()) ? data + (count++) : data;
 	}
 	// Add new element to collection by copy of existing
 	void add(const T& e) {
-		if(count < count_max)
-			data[count++] = e;
+		*add() = e;
 	}
 	constexpr T* begin() {
 		return data;

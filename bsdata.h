@@ -11,7 +11,7 @@ bsdata c##_manager(#c, c##_data, c##_type, true);
 
 enum bsparse_error_s {
 	NoParserError,
-	ErrorExpectedIdentifier, ErrorExpectedArrayField,
+	ErrorExpectedIdentifier, ErrorExpectedArrayField, ErrorExpectedSymbol1p,
 	ErrorNotFoundBase1p, ErrorNotFoundType, ErrorNotFoundIdentifier1p, ErrorNotFoundMember1pInBase2p,
 	ErrorFile2pNotFound,
 };
@@ -34,6 +34,7 @@ struct bsdata : collection {
 	char*				begin() const { return (char*)data; }
 	void				clear() override { count = 0; }
 	char*				end() const { return (char*)data + size * count; }
+	static int			evalute(const char* code);
 	void*				get(int index) const override { return (char*)data + index * size; }
 	unsigned			getcount() const override { return count; }
 	unsigned			getmaxcount() const override { return maximum_count; }

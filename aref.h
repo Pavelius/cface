@@ -6,7 +6,7 @@ struct aref {
 	T* data;
 	unsigned count;
 
-	constexpr aref() = default;
+	constexpr aref() : data(0), count(0) {}
 	template<unsigned N> constexpr aref(T(&data)[N]) : data(data), count(N) {}
 	constexpr const T& operator[](unsigned index) const { return data[index]; }
 	constexpr T& operator[](unsigned index) { return data[index]; }
@@ -23,9 +23,6 @@ struct aref {
 	}
 	const T* begin() const {
 		return data;
-	}
-	void initialize() {
-		data = 0; count = 0;
 	}
 	void clear() {
 		count = 0;

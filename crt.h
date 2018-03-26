@@ -115,6 +115,7 @@ template<class T> inline T			imax(T a, T b) { return a > b ? a : b; }
 template<class T> inline T			imin(T a, T b) { return a < b ? a : b; }
 template<class T> inline T			iabs(T a) { return a > 0 ? a : -a; }
 template<class T> inline void		iswap(T& a, T& b) { T i = a; a = b; b = i; }
+template<typename T, T V> struct static_eval { static constexpr T value = V; };
 // Inline sequence functions
 template<class T> inline void		seqclear(T* p) { T* z = p->next; while(z) { T* n = z->next; z->next = 0; delete z; z = n; } p->next = 0; } // Use to clean up sequenced resources if destructor. Use it like 'clear(this)'.
 template<class T, class Z> inline const T* seqchr(const T* p, const Z id) { while(p->id) { if(p->id == id) return p; p++; } return 0; }
