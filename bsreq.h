@@ -62,6 +62,12 @@ struct bsval {
 	int					get() const { return type->get(type->ptr(data)); }
 	void				set(int value) { type->set(type->ptr(data), value); }
 };
+struct bsfunc {
+	const char*			id;
+	const char*			parameters[8];
+	int					(*handle)();
+	operator bool() const { return id != 0; }
+};
 extern bsreq			number_type[]; // standart integer value
 extern bsreq			text_type[]; // stantart zero ending string
 extern bsreq			bsreq_type[]; // requisit metadata

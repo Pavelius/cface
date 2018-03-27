@@ -29,4 +29,4 @@ namespace draw {
 	int						open(const char* title, int width, int height, const widget* widgets, bsval* variables, bool(*validate)(bsval* variables)=0);
 	void					breakmodal(int result);
 }
-extern bsreq				widget_type[];
+extern struct bsreq			widget_type[];

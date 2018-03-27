@@ -262,7 +262,6 @@
     <ClInclude Include="amem.h" />
     <ClInclude Include="archive.h" />
     <ClInclude Include="bsdata.h" />
-    <ClInclude Include="bseval.h" />
     <ClInclude Include="database.h" />
     <ClInclude Include="bsreq.h" />
     <ClInclude Include="cflags.h" />

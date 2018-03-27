@@ -474,9 +474,6 @@
     <ClInclude Include="database.h">
       <Filter>Обработка данных</Filter>
     </ClInclude>
-    <ClInclude Include="bseval.h">
-      <Filter>Обработка данных</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Коллекции">

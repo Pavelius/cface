@@ -35,7 +35,7 @@ struct bsdata : collection {
 	void				clear() override { count = 0; }
 	char*				end() const { return (char*)data + size * count; }
 	static int			evalute(const char* code);
-	static int			evalute(const char* code, bsval context);
+	static int			evalute(const char* code, bsval context, bsfunc* functions = 0);
 	void*				get(int index) const override { return (char*)data + index * size; }
 	unsigned			getcount() const override { return count; }
 	unsigned			getmaxcount() const override { return maximum_count; }

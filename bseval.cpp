@@ -1,23 +1,20 @@
-#include "adat.h"
-#include "bseval.h"
-#include "bsdata.h"
 #include "crt.h"
+#include "adat.h"
+#include "aref.h"
+#include "bsdata.h"
 
 struct bseval {
-
-	static const int identifier_size = 64;
-
+	
 	struct reg {
-		const char*	name;
 		const bsreq* type;
 		int			count, size;
 		int			value;
 		bool		islvalue;
 
-		constexpr reg() : name(""), value(0), type(number_type), size(sizeof(int)), count(1), islvalue(false) {}
-		constexpr reg(const char* name, const bsreq* type = number_type, int count = 1) : name(name), type(type), value(0), size(sizeof(int)), count(count), islvalue(false) {}
+		constexpr reg() : value(0), type(number_type), size(sizeof(int)), count(1), islvalue(false) {}
+		constexpr reg(const char* id, const bsreq* type = number_type, int count = 1) : value(0), type(type), size(sizeof(int)), count(1), islvalue(type != number_type && type != text_type) {}
 		operator bool() const { return type != 0; }
-
+		
 		void set(int value) {
 			this->value = value;
 			type = number_type;
@@ -42,11 +39,14 @@ struct bseval {
 
 	};
 
+	static const int identifier_size = 64;
 	const char*		p;
 	bool			stop;
 	bsval			base;
 	int				local_base;
 	adat<reg, 256>	locals;
+	aref<bsfunc>	functions;
+	const char**	parameters;
 
 	void error(bsparse_error_s id, ...) {
 		p = 0;
@@ -81,42 +81,44 @@ struct bseval {
 		}
 	}
 
-	void indirect(reg& e1, void* data, const bsreq* type, const char* id) {
+	void setindirect(reg& result, const char* id, void* data, const bsreq* type) {
 		auto pf = type->find(id);
 		if(pf) {
-			e1.value = (int)pf->ptr(data);
-			e1.type = pf->type;
-			e1.size = pf->size;
-			e1.count = pf->count;
-			e1.islvalue = true;
+			result.value = (int)pf->ptr(data);
+			result.type = pf->type;
+			result.size = pf->size;
+			result.count = pf->count;
+			result.islvalue = true;
 		} else
 			error(ErrorNotFoundMember1pInBase2p, id, "");
 	}
 
-	reg* findlocal(const char* id) {
-		for(int i = locals.count - 1; i >= local_base; i--) {
-			if(strcmp(locals[i].name, id) == 0)
-				return &locals[i];
+	bool setparameter(reg& result, const char* id) {
+		if(parameters) {
+			auto param_count = locals.count - local_base;
+			auto pe = parameters + param_count;
+			for(auto p = parameters; p < pe && *p; p++) {
+				if(strcmp(*p, id) == 0) {
+					result = *(locals.data + local_base + (p - parameters));
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	bsfunc* getfunction(const char* id) {
+		for(auto& e : functions) {
+			if(strcmp(e.id, id) == 0)
+				return &e;
 		}
 		return 0;
 	}
 
-	void addlocal(reg& result, const char* id) {
-		if(locals.count >= locals.getmaximum())
+	void calling(reg& result, const char* id, reg* parameters, unsigned count) {
+		auto pf = getfunction(id);
+		if(!pf)
 			return;
-		auto p = locals.add();
-		p->name = szdup(id);
-		p->count = 1;
-		p->islvalue = false;
-		p->type = number_type;
-		p->size = sizeof(int);
-		p->value = 0;
-		result = *p;
-		result.islvalue = true;
-		result.value = (int)p;
-	}
-
-	void function(reg& result, const char* id, reg* parameters, unsigned count) {
 	}
 
 	void unary(reg& e1) {
@@ -170,8 +172,7 @@ struct bseval {
 					auto base_push = local_base;
 					local_base = locals.count;
 					while(p && p[0] && p[0] != ')') {
-						reg e2;
-						expression(e2);
+						reg e2; expression(e2);
 						locals.add(e2);
 						if(p[0] == ')')
 							break;
@@ -180,16 +181,14 @@ struct bseval {
 					if(p[0] == ')')
 						next(p + 1);
 					if(!stop)
-						function(e1, identifier, locals.data + local_base, locals.count - local_base);
+						calling(e1, identifier, locals.data + local_base, locals.count - local_base);
 					locals.count = local_base;
 					local_base = base_push;
 				} else {
 					if(!stop) {
-						auto pf = findlocal(identifier);
-						if(pf)
-							e1 = *pf;
-						else
-							indirect(e1, base.data, base.type, identifier);
+						if(setparameter(e1, identifier))
+							break;
+						setindirect(e1, identifier, base.data, base.type);
 					}
 				}
 			}
@@ -205,7 +204,7 @@ struct bseval {
 			next(p);
 			if(!stop) {
 				dereference(e1);
-				indirect(e1, (void*)e1.value, e1.type, identifier);
+				setindirect(e1, identifier, (void*)e1.value, e1.type);
 			}
 		}
 	}
@@ -385,7 +384,7 @@ struct bseval {
 		}
 	}
 
-	bseval(const char* p) : p(p), stop(false), local_base(0) {
+	bseval(const char* p) : p(p), stop(false), local_base(0), parameters(0) {
 	}
 
 	void set(bsval value) {
@@ -401,7 +400,7 @@ int bsdata::evalute(const char* code) {
 	return result.value;
 }
 
-int bsdata::evalute(const char* code, bsval context) {
+int bsdata::evalute(const char* code, bsval context, bsfunc* functions) {
 	bseval::reg result;
 	bseval interpreter(code);
 	interpreter.set(context);
