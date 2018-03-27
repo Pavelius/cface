@@ -1,28 +1,20 @@
 #include "crt.h"
 
-const char* psnum16(const char* p, int& value)
-{
+const char* psnum16(const char* p, int& value) {
 	int result = 0;
 	const int radix = 16;
-	while(*p)
-	{
+	while(*p) {
 		char a = *p;
-		if(a >= '0' && a <= '9')
-		{
-			result = result*radix;
+		if(a >= '0' && a <= '9') {
+			result = result * radix;
 			result += a - '0';
-		}
-		else if(a >= 'a' && a <= 'f')
-		{
-			result = result*radix;
+		} else if(a >= 'a' && a <= 'f') {
+			result = result * radix;
 			result += a - 'a' + 10;
-		}
-		else if(a >= 'A' && a <= 'F')
-		{
-			result = result*radix;
+		} else if(a >= 'A' && a <= 'F') {
+			result = result * radix;
 			result += a - 'A' + 10;
-		}
-		else
+		} else
 			break;
 		p++;
 	}
@@ -30,19 +22,15 @@ const char* psnum16(const char* p, int& value)
 	return p;
 }
 
-const char* psnum10(const char* p, int& value)
-{
+const char* psnum10(const char* p, int& value) {
 	int result = 0;
 	const int radix = 10;
-	while(*p)
-	{
+	while(*p) {
 		char a = *p;
-		if(a >= '0' && a <= '9')
-		{
-			result = result*radix;
+		if(a >= '0' && a <= '9') {
+			result = result * radix;
 			result += a - '0';
-		}
-		else
+		} else
 			break;
 		p++;
 	}
@@ -51,25 +39,21 @@ const char* psnum10(const char* p, int& value)
 }
 
 // Parse string to number
-const char* psnum(const char* p, int& value)
-{
+const char* psnum(const char* p, int& value) {
 	value = 0;
 	if(!p)
 		return 0;
 	bool sign = false;
 	// Установка знака
-	if(*p == '-')
-	{
+	if(*p == '-') {
 		sign = true;
 		p++;
 	}
 	// Перегрузка числовой системы
-	if(p[0] == '0' && p[1] == 'x')
-	{
+	if(p[0] == '0' && p[1] == 'x') {
 		p += 2;
 		p = psnum16(p, value);
-	}
-	else
+	} else
 		p = psnum10(p, value);
 	if(sign)
 		value = -value;
@@ -77,27 +61,21 @@ const char* psnum(const char* p, int& value)
 }
 
 // Parse string to string (from c/json format)
-const char* psstr(const char* p, char* r, char end_symbol)
-{
+const char* psstr(const char* p, char* r, char end_symbol) {
 	r[0] = 0;
 	if(!p)
 		return 0;
-	while(*p)
-	{
-		if(*p == end_symbol)
-		{
+	while(*p) {
+		if(*p == end_symbol) {
 			*r++ = 0;
 			return p + 1;
-		}
-		else if(*p != '\\')
-		{
+		} else if(*p != '\\') {
 			*r++ = *p++;
 			continue;
 		}
 		p++;
 		int value;
-		switch(*p)
-		{
+		switch(*p) {
 		case 'n':
 			*r++ = '\n';
 			p++;
@@ -157,18 +135,14 @@ const char* psstr(const char* p, char* r, char end_symbol)
 	return p;
 }
 
-const char* psidn(const char* p, char* r, char* re)
-{
+const char* psidn(const char* p, char* r, char* re) {
 	*r = 0;
-	while(*p)
-	{
-		if((*p >= '0' && *p <= '9') || *p == '_' || ischa(*p))
-		{
-			if(r<re)
+	while(*p) {
+		if((*p >= '0' && *p <= '9') || *p == '_' || ischa(*p)) {
+			if(r < re)
 				*r++ = *p;
 			p++;
-		}
-		else
+		} else
 			break;
 	}
 	*r = 0;

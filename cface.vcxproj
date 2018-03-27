@@ -193,6 +193,7 @@
     <ClCompile Include="draw_form.cpp" />
     <ClCompile Include="draw_listview.cpp" />
     <ClCompile Include="hotproc.cpp" />
+    <ClCompile Include="rect_type.cpp" />
     <ClCompile Include="widget_database.cpp" />
     <ClCompile Include="widget_logging.cpp" />
     <ClCompile Include="widget_settings.cpp" />

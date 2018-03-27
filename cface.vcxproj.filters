@@ -286,6 +286,9 @@
     <ClCompile Include="bseval.cpp">
       <Filter>Обработка данных</Filter>
     </ClCompile>
+    <ClCompile Include="rect_type.cpp">
+      <Filter>Графика\Геометрия</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="acol.h">

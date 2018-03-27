@@ -16,3 +16,4 @@ struct point {
 	static point		create(int n) { return {(short)((unsigned)n & 0xFFFF), (short)(((unsigned)n) >> 16)}; }
 	void				set(int px, int py) { x = (short)px; y = (short)py; }
 };
+extern struct bsreq		point_type[];
