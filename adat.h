@@ -7,7 +7,7 @@ struct adat {
 	T data[count_max];
 	unsigned count;
 
-	constexpr adat() : data(), count() {}
+	constexpr adat() : data(), count(0) {}
 	constexpr const T& operator[](unsigned index) const { return data[index]; }
 	constexpr T& operator[](unsigned index) { return data[index]; }
 	operator bool() const { return count != 0; }

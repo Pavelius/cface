@@ -1,12 +1,12 @@
-#include "crt.h"
 #include "adat.h"
 #include "aref.h"
 #include "bsdata.h"
+#include "crt.h"
 
 struct bseval {
-	
+
 	struct reg {
-		
+
 		const bsreq* type;
 		int		count, size;
 		int		value;
@@ -31,13 +31,13 @@ struct bseval {
 	};
 
 	static const int identifier_size = 64;
+
 	const char*		p;
 	bool			stop;
 	const char**	parameters;
-	int				locals_base;
-	adat<reg, 256>	locals;
-	aref<bsfunc>	functions;
 	bsval			base;
+	aref<reg>		locals;
+	aref<bsfunc>	functions;
 
 	void error(bsparse_error_s id, ...) {
 		p = 0;
@@ -86,11 +86,11 @@ struct bseval {
 
 	bool setparameter(reg& result, const char* id) {
 		if(parameters) {
-			auto param_count = locals.count - locals_base;
+			auto param_count = locals.count;
 			auto pe = parameters + param_count;
 			for(auto p = parameters; p < pe && *p; p++) {
 				if(strcmp(*p, id) == 0) {
-					result = *(locals.data + locals_base + (p - parameters));
+					result = *(locals.data + (p - parameters));
 					return true;
 				}
 			}
@@ -153,32 +153,30 @@ struct bseval {
 				p = psidn(p, identifier, identifier + sizeof(identifier) - 1);
 				next(p);
 				if(p[0] == '(') {
+					reg locals_data[8];
+					auto locals_index = 0;
 					next(p + 1);
-					auto push_locals_base = locals_base;
-					locals_base = locals.count;
 					while(p && p[0] && p[0] != ')') {
-						reg e2; expression(e2);
-						locals.add(e2);
+						expression(locals_data[(locals_index<lenghtof(locals_data)) ? locals_index++ : 0]);
 						if(p[0] == ')')
 							break;
 						skip(',');
 					}
-					if(p[0] == ')')
-						next(p + 1);
+					skip(')');
 					if(!stop) {
 						auto pf = getfunction(identifier);
 						if(!pf)
 							error(ErrorNotFoundFunction1p, identifier);
 						else {
+							auto locals_push = locals; locals.data = locals_data; locals.count = locals_index;
 							auto push_parameters = parameters; parameters = pf->parameters;
 							auto push_p = p; p = pf->code;
 							expression(e1);
 							parameters = push_parameters;
 							p = push_p;
+							locals = locals_push;
 						}
 					}
-					locals.count = locals_base;
-					locals_base = push_locals_base;
 				} else {
 					if(!stop) {
 						if(setparameter(e1, identifier))
@@ -205,7 +203,7 @@ struct bseval {
 				}
 				continue;
 			case '[':
-				next(p+1);
+				next(p + 1);
 				{
 					reg e2; expression(e2);
 					if(!stop) {
@@ -213,10 +211,10 @@ struct bseval {
 							error(ErrorExpected1p, "number");
 						if(!e1.islvalue && !e1.isscalar())
 							error(ErrorExpected1p, "array or pointer");
-						if(e2.value > e1.count)
-							e2.value = e1.count;
+						if(e2.value >= e1.count)
+							e2.value = e1.count - 1;
 						if(e2.value >= 0)
-							e1.value += e2.value*e1.size;
+							e1.value += e2.value * e1.size;
 					}
 				}
 				skip(']');
@@ -402,11 +400,7 @@ struct bseval {
 		}
 	}
 
-	bseval(const char* p) : p(p), stop(false), locals_base(0), parameters(0) {
-	}
-
-	void set(bsval value) {
-		base = value;
+	bseval(const char* p) : p(p), stop(false), parameters(0) {
 	}
 
 };
@@ -418,10 +412,12 @@ int bsdata::evalute(const char* code) {
 	return result.value;
 }
 
-int bsdata::evalute(const char* code, bsval context, bsfunc* functions) {
+int bsdata::evalute(const char* code, bsval context, bsfunc* functions, unsigned functions_count) {
 	bseval::reg result;
 	bseval interpreter(code);
-	interpreter.set(context);
+	interpreter.base = context;
+	interpreter.functions.data = functions;
+	interpreter.functions.count = functions_count;
 	interpreter.expression(result);
 	return result.value;
 }

@@ -474,7 +474,7 @@
     <ClInclude Include="database.h">
       <Filter>Обработка данных</Filter>
     </ClInclude>
-    <ClInclude Include="pushstack.h">
+    <ClInclude Include="pushset.h">
       <Filter>Коллекции</Filter>
     </ClInclude>
   </ItemGroup>

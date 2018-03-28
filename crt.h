@@ -7,6 +7,7 @@
 #define assert(e)
 #endif
 #define getstr_enum(e) template<> const char* getstr<e##_s>(e##_s value) { return e##_data[value].name; }
+#define lenghtof(e) (sizeof(e)/sizeof(e[0]))
 
 extern "C" void						abort();
 extern "C" int						atexit(void(*func)(void));

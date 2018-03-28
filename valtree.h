@@ -1,8 +1,7 @@
 #pragma once
 
-struct valtree
-{
-	enum types {Number, Text, Structure};
+struct valtree {
+	enum types { Number, Text, Structure };
 	types			type;
 	const char*		name;
 	valtree*		value;
@@ -22,5 +21,5 @@ struct valtree
 	void			set(types type);
 	void			write(const char* url);
 private:
-	valtree&		add(const char* name, valtree::types type, valtree* value);
+	valtree & add(const char* name, valtree::types type, valtree* value);
 };
