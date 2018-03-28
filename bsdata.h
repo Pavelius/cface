@@ -11,8 +11,8 @@ bsdata c##_manager(#c, c##_data, c##_type, true);
 
 enum bsparse_error_s {
 	NoParserError,
-	ErrorExpectedIdentifier, ErrorExpectedArrayField, ErrorExpectedSymbol1p,
-	ErrorNotFoundBase1p, ErrorNotFoundType, ErrorNotFoundIdentifier1p, ErrorNotFoundMember1pInBase2p,
+	ErrorExpectedIdentifier, ErrorExpectedArrayField, ErrorExpectedSymbol1p, ErrorExpected1p,
+	ErrorNotFoundBase1p, ErrorNotFoundType, ErrorNotFoundIdentifier1p, ErrorNotFoundMember1pInBase2p, ErrorNotFoundFunction1p,
 	ErrorFile2pNotFound,
 };
 struct bsdata : collection {

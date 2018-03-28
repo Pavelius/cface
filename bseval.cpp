@@ -6,15 +6,18 @@
 struct bseval {
 	
 	struct reg {
+		
 		const bsreq* type;
-		int			count, size;
-		int			value;
-		bool		islvalue;
+		int		count, size;
+		int		value;
+		bool	islvalue;
 
 		constexpr reg() : value(0), type(number_type), size(sizeof(int)), count(1), islvalue(false) {}
-		constexpr reg(const char* id, const bsreq* type = number_type, int count = 1) : value(0), type(type), size(sizeof(int)), count(1), islvalue(type != number_type && type != text_type) {}
 		operator bool() const { return type != 0; }
-		
+		constexpr bool isnumber() const { return type == number_type; }
+		constexpr bool istext() const { return type == text_type; }
+		constexpr bool isscalar() const { return isnumber() || istext(); }
+
 		void set(int value) {
 			this->value = value;
 			type = number_type;
@@ -25,28 +28,16 @@ struct bseval {
 			type = text_type;
 		}
 
-		bool isnumber() const {
-			return type == number_type;
-		}
-
-		bool istext() const {
-			return type == text_type;
-		}
-
-		bool isscalar() const {
-			return isnumber() || istext();
-		}
-
 	};
 
 	static const int identifier_size = 64;
 	const char*		p;
 	bool			stop;
-	bsval			base;
-	int				local_base;
+	const char**	parameters;
+	int				locals_base;
 	adat<reg, 256>	locals;
 	aref<bsfunc>	functions;
-	const char**	parameters;
+	bsval			base;
 
 	void error(bsparse_error_s id, ...) {
 		p = 0;
@@ -95,11 +86,11 @@ struct bseval {
 
 	bool setparameter(reg& result, const char* id) {
 		if(parameters) {
-			auto param_count = locals.count - local_base;
+			auto param_count = locals.count - locals_base;
 			auto pe = parameters + param_count;
 			for(auto p = parameters; p < pe && *p; p++) {
 				if(strcmp(*p, id) == 0) {
-					result = *(locals.data + local_base + (p - parameters));
+					result = *(locals.data + locals_base + (p - parameters));
 					return true;
 				}
 			}
@@ -113,12 +104,6 @@ struct bseval {
 				return &e;
 		}
 		return 0;
-	}
-
-	void calling(reg& result, const char* id, reg* parameters, unsigned count) {
-		auto pf = getfunction(id);
-		if(!pf)
-			return;
 	}
 
 	void unary(reg& e1) {
@@ -169,8 +154,8 @@ struct bseval {
 				next(p);
 				if(p[0] == '(') {
 					next(p + 1);
-					auto base_push = local_base;
-					local_base = locals.count;
+					auto push_locals_base = locals_base;
+					locals_base = locals.count;
 					while(p && p[0] && p[0] != ')') {
 						reg e2; expression(e2);
 						locals.add(e2);
@@ -180,10 +165,20 @@ struct bseval {
 					}
 					if(p[0] == ')')
 						next(p + 1);
-					if(!stop)
-						calling(e1, identifier, locals.data + local_base, locals.count - local_base);
-					locals.count = local_base;
-					local_base = base_push;
+					if(!stop) {
+						auto pf = getfunction(identifier);
+						if(!pf)
+							error(ErrorNotFoundFunction1p, identifier);
+						else {
+							auto push_parameters = parameters; parameters = pf->parameters;
+							auto push_p = p; p = pf->code;
+							expression(e1);
+							parameters = push_parameters;
+							p = push_p;
+						}
+					}
+					locals.count = locals_base;
+					locals_base = push_locals_base;
 				} else {
 					if(!stop) {
 						if(setparameter(e1, identifier))
@@ -196,26 +191,49 @@ struct bseval {
 		}
 	}
 
-	void indirect(reg& e1) {
+	void postfix(reg& e1) {
 		unary(e1);
-		while(p && p[0] == '.') {
-			char identifier[identifier_size];
-			p = psidn(p + 1, identifier, identifier + sizeof(identifier) - 1);
-			next(p);
-			if(!stop) {
-				dereference(e1);
-				setindirect(e1, identifier, (void*)e1.value, e1.type);
+		char identifier[identifier_size];
+		while(p) {
+			switch(p[0]) {
+			case '.':
+				p = psidn(p + 1, identifier, identifier + sizeof(identifier) - 1);
+				next(p);
+				if(!stop) {
+					dereference(e1);
+					setindirect(e1, identifier, (void*)e1.value, e1.type);
+				}
+				continue;
+			case '[':
+				next(p+1);
+				{
+					reg e2; expression(e2);
+					if(!stop) {
+						if(e2.type != number_type)
+							error(ErrorExpected1p, "number");
+						if(!e1.islvalue && !e1.isscalar())
+							error(ErrorExpected1p, "array or pointer");
+						if(e2.value > e1.count)
+							e2.value = e1.count;
+						if(e2.value >= 0)
+							e1.value += e2.value*e1.size;
+					}
+				}
+				skip(']');
+				continue;
+			default:
+				return;
 			}
 		}
 	}
 
 	void multiplication(reg& e1) {
-		indirect(e1);
+		postfix(e1);
 		while(p && (p[0] == '*' || p[0] == '/' || p[0] == '%') && p[1] != '=') {
 			reg e2;
 			char t1 = p[0];
 			next(p + 1);
-			indirect(e2);
+			postfix(e2);
 			if(!stop) {
 				dereference(e1);
 				dereference(e2);
@@ -384,7 +402,7 @@ struct bseval {
 		}
 	}
 
-	bseval(const char* p) : p(p), stop(false), local_base(0), parameters(0) {
+	bseval(const char* p) : p(p), stop(false), locals_base(0), parameters(0) {
 	}
 
 	void set(bsval value) {

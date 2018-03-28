@@ -65,7 +65,7 @@ struct bsval {
 struct bsfunc {
 	const char*			id;
 	const char*			parameters[8];
-	int					(*handle)();
+	const char*			code;
 	operator bool() const { return id != 0; }
 };
 extern bsreq			number_type[]; // standart integer value
