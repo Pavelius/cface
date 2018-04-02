@@ -22,10 +22,10 @@ int tagdata::add(const char* name) {
 	auto i = find(name);
 	if(i)
 		return i;
-	auto n = zlen(name) + 1;
 	auto m = strings.getcount();
-	for(int i = 0; i < n; i++)
-		strings.add(name[i]);
+	for(auto p = name; *p; p++)
+		strings.add(*p);
+	strings.add(0);
 	indecies.add(m);
 	return indecies.getcount();
 }

@@ -43,8 +43,6 @@ inline int							gethour(unsigned d) { return (d / 60) % 24; } // Get hour
 inline int							getminute(unsigned d) { return (d % 60); } // Get minute
 int									getmonth(unsigned d); // Get month (1..12)
 int									getmonthdaymax(int month, int year); // Return maximum day of month (28..31)
-int									getsid(const char* text); // Get string identifier
-const char*							getstr(int e); // Template to return string of small class
 template<class T> const char*		getstr(T e); // Template to return string of small class
 const char*							getstrfdat(char* result, unsigned d, bool show_time = true);
 int									getyear(unsigned d); // Get year from date

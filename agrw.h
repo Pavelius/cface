@@ -45,4 +45,15 @@ struct agrw {
 		}
 		return -1;
 	}
+	int indexof(const T value) const {
+		auto result = 0;
+		for(auto p = this; *p; p = p->next) {
+			for(auto& e : *p) {
+				if(e == value)
+					return result + (p->data - &e);
+			}
+			result += p->count;
+		}
+		return -1;
+	}
 };

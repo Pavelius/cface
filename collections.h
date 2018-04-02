@@ -15,7 +15,7 @@ public:
 	~arefc() { if(data) delete data; }
 	void add(const T& e) { reserve(count + 1); aref<T>::add(e); }
 	void* add() override { reserve(count + 1); return aref<T>::add(); }
-	void clear() override { aref<T>::clear(); }
+	void clear() override { data = (T*)rmreserve(data, 0); count = count_maximum = 0; }
 	void* get(int index) const override { return data + index; }
 	unsigned getcount() const override { return count; }
 	unsigned getmaxcount() const override { return count_maximum; }

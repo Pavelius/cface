@@ -18,10 +18,13 @@ namespace draw {
 		int					value; // Integer parameter value
 		int					title; // Title width (if 0 then title taken from parent)
 		const char*			tips; // Tooltips value
-		void				(*callback)(); // Default callback for this widget
+		void(*callback)(); // Default callback for this widget
+		const char*			visibility; // Visiblity condition for this widget by default script language
+		const char*			disabled; // Disabled condition for this widget by default script language
+		const char*			script; // Default script action for this widget
 		operator bool() const { return flags != 0; }
-		unsigned			getflags() const { return flags & 0xFFFFFFF0; }
-		control_s			gettype() const { return (control_s)(flags & 0xF); }
+		constexpr unsigned	getflags() const { return flags & 0xFFFFFFF0; }
+		constexpr control_s	gettype() const { return (control_s)(flags & 0xF); }
 		widget&				settips(const char* v) { tips = v; return *this; }
 		widget&				setvalue(int v) { value = v; return *this; }
 	};

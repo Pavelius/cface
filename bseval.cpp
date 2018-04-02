@@ -8,8 +8,7 @@ struct bseval {
 	struct reg {
 
 		const bsreq* type;
-		int		count, size;
-		int		value;
+		int		count, size, value;
 		bool	islvalue;
 
 		constexpr reg() : value(0), type(number_type), size(sizeof(int)), count(1), islvalue(false) {}
