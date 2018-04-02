@@ -15,10 +15,10 @@ class acol {
 	T* pend;
 	unsigned size;
 public:
-	constexpr acol(T* start, unsigned count, unsigned size) : pbegin(start), pend((T*)((char*)start + size*count)), size(size) {}
+	constexpr acol(T* start, unsigned count, unsigned size) : pbegin(start), pend((T*)((char*)start + size * count)), size(size) {}
 	operator bool() const { pbegin != pend; }
 	iter begin() const { return iter(pbegin, size); }
 	iter end() const { return iter(pend, size); }
-	T* get(unsigned index) { return (T*)((char*)pbegin + index*size); }
+	T* get(unsigned index) { return (T*)((char*)pbegin + index * size); }
 	unsigned getcount() const { return ((char*)pend - (char*)pbegin) / size; }
 };

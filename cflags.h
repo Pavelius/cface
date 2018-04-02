@@ -6,8 +6,8 @@
 template<typename T, typename DT = unsigned> class cflags {
 	static constexpr T maximum = (T)(sizeof(DT) * 8);
 	struct iter {
-		T	current;
-		DT	data;
+		T current;
+		DT data;
 		iter(T current, DT data) : current(current), data(data) {}
 		T operator*() const { return (T)current; }
 		bool operator!=(const iter& e) const { return e.current != current; }
