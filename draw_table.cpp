@@ -469,7 +469,6 @@ void table::renderimage(rect rc, int index, unsigned flags, void* data, const wi
 		return;
 	setposition(rc);
 	draw::image(rc.x1 + rc.width() / 2, rc.y1 + rc.height() / 2, rowsimages, value, 0);
-
 }
 
 void table::row(rect rc, int index) {

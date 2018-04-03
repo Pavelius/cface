@@ -21,5 +21,5 @@ struct valtree {
 	void			set(types type);
 	void			write(const char* url);
 private:
-	valtree & add(const char* name, valtree::types type, valtree* value);
+	valtree&		add(const char* name, valtree::types type, valtree* value);
 };

@@ -12,7 +12,7 @@ bsreq bsreq_type[] = {
 	BSREQ(bsreq, count, number_type),
 	BSREQ(bsreq, reference, number_type),
 	BSREQ(bsreq, type, bsreq_type),
-	{0}
+{0}
 };
 
 const bsreq* bsreq::getkey() const {
@@ -24,12 +24,10 @@ const bsreq* bsreq::getkey() const {
 	return f;
 }
 
-const bsreq* bsreq::find(const char* name) const
-{
+const bsreq* bsreq::find(const char* name) const {
 	if(!this)
 		return 0;
-	for(auto p = this; p->id; p++)
-	{
+	for(auto p = this; p->id; p++) {
 		if(strcmp(p->id, name) == 0)
 			return p;
 	}
@@ -48,33 +46,27 @@ const bsreq* bsreq::find(const char* name, const bsreq* type) const {
 	return 0;
 }
 
-int bsreq::get(const void* p) const
-{
-	switch(size)
-	{
+int bsreq::get(const void* p) const {
+	switch(size) {
 	case sizeof(char) : return *((char*)p);
 	case sizeof(short) : return *((short*)p);
 	default: return *((int*)p);
 	}
 }
 
-void bsreq::set(const void* p, int value) const
-{
-	switch(size)
-	{
+void bsreq::set(const void* p, int value) const {
+	switch(size) {
 	case sizeof(char) : *((char*)p) = value; break;
 	case sizeof(short) : *((short*)p) = value; break;
 	default: *((int*)p) = value; break;
 	}
 }
 
-bool bsreq::match(const void* p, const char* name) const
-{
+bool bsreq::match(const void* p, const char* name) const {
 	auto value = (const char*)get(p);
-	if(!value || type!=text_type)
+	if(!value || type != text_type)
 		return false;
-	for(int i = 0; name[i]; i++)
-	{
+	for(int i = 0; name[i]; i++) {
 		if(value[i] != name[i])
 			return false;
 	}
