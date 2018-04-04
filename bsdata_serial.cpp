@@ -22,14 +22,14 @@ public:
 
 struct bsdata_serial : bsfile {
 
-	char buffer[128 * 256];
-	int	value;
-	const bsreq* value_type;
-	void* value_object;
-	void* parent_object;
-	const bsreq* parent_type;
-	const char* p;
-	bsdata** custom_database;
+	char			buffer[128 * 256];
+	int				value;
+	const bsreq*	value_type;
+	void*			value_object;
+	void*			parent_object;
+	const bsreq*	parent_type;
+	const char*		p;
+	bsdata**		custom_database;
 
 	bsdata_serial(const char* url, const bsfile* parent = 0) : bsfile(url, parent), p(getstart()), custom_database(0) {
 		clearvalue();

@@ -197,3 +197,9 @@ char* szprint(char* result, const char* src, ...) {
 	e.printv(result, result + maximum_string_lenght, src, xva_start(src));
 	return result;
 }
+
+char* szprints(char* result, const char* result_max, const char* src, ...) {
+	stringcreator e;
+	e.printv(result, result_max, src, xva_start(src));
+	return result;
+}

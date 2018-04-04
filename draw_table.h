@@ -83,8 +83,8 @@ namespace draw {
 			void				showtext(rect rc, const char * value, unsigned flags) const;
 			void				sort(const char* id, int direction = 0, int i1 = 0, int i2 = -1);
 			void				sort(sortinfo* pi, int i1 = 0, int i2 = -1);
-			unsigned			sortas(bool run);
-			unsigned			sortds(bool run);
+			virtual unsigned	sortas(bool run);
+			virtual unsigned	sortds(bool run);
 			int					totalwidth() const;
 			virtual void		treemark(rect rc, int index, int level) const;
 			virtual void		tuning(control** controls);

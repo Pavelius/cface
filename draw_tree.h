@@ -41,6 +41,8 @@ namespace draw {
 			bool			haselement(int param) const;
 			virtual bool	isgroup(int row) const override;
 			void			open(int max_level);
+			unsigned		sortas(bool run) override;
+			unsigned		sortds(bool run) override;
 		};
 	}
 }

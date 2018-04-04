@@ -260,3 +260,31 @@ void tree::addrow(void* object) {
 	e.param = (int)object;
 	rows.add(&e);
 }
+
+unsigned tree::sortas(bool run) {
+	if(no_change_order)
+		return Disabled;
+	if(rows.getcount() < 2)
+		return Disabled;
+	if(run) {
+		auto parent = getparent(current);
+		auto i1 = parent + 1;
+		auto i2 = getlastchild(parent);
+		table::sort(columns[current_column].id, 1, i1, i2);
+	}
+	return 0;
+}
+
+unsigned tree::sortds(bool run) {
+	if(no_change_order)
+		return Disabled;
+	if(rows.getcount() < 2)
+		return Disabled;
+	if(run) {
+		auto parent = getparent(current);
+		auto i1 = parent + 1;
+		auto i2 = getlastchild(parent);
+		table::sort(columns[current_column].id, -1, i1, i2);
+	}
+	return 0;
+}

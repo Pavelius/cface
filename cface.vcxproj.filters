@@ -154,9 +154,6 @@
     <ClCompile Include="tagdata.cpp">
       <Filter>Коллекции</Filter>
     </ClCompile>
-    <ClCompile Include="base.cpp">
-      <Filter>Обработка данных</Filter>
-    </ClCompile>
     <ClCompile Include="calculator.cpp">
       <Filter>Поддержка</Filter>
     </ClCompile>
@@ -380,9 +377,6 @@
     </ClInclude>
     <ClInclude Include="tagdata.h">
       <Filter>Коллекции</Filter>
-    </ClInclude>
-    <ClInclude Include="base.h">
-      <Filter>Обработка данных</Filter>
     </ClInclude>
     <ClInclude Include="calculator.h">
       <Filter>Поддержка</Filter>

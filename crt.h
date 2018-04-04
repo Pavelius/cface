@@ -92,6 +92,7 @@ char*								sznum(char* result, int num, int precision = 0, const char* empthy 
 char*								sznum(char* result, float f, int precision = 0, const char* empthy = "0.00", const char* result_maximum = 0);
 bool								szpmatch(const char* text, const char* pattern);
 char*					            szprint(char* result, const char* format, ...);
+char*					            szprints(char* result, const char* result_max, const char* format, ...);
 char*								szprintv(char* result, const char* format, const char* vl);
 void								szput(char** output, unsigned u, codepages page = metrics::code);
 char*								szput(char* output, unsigned u, codepages page = metrics::code); // Fast symbol put function. Return 'output'.

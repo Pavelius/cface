@@ -161,7 +161,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="amem.cpp" />
-    <ClCompile Include="base.cpp" />
     <ClCompile Include="bitops.cpp" />
     <ClCompile Include="bsdata.cpp" />
     <ClCompile Include="bsdata_serial.cpp" />
@@ -281,7 +280,6 @@
     <ClInclude Include="draw_tree.h" />
     <ClInclude Include="aref.h" />
     <ClInclude Include="agrw.h" />
-    <ClInclude Include="base.h" />
     <ClInclude Include="bitops.h" />
     <ClInclude Include="bstream.h" />
     <ClInclude Include="calculator.h" />
