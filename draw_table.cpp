@@ -462,9 +462,11 @@ void table::renderimage(rect rc, int index, unsigned flags, void* data, const wi
 	if(!rowsimages)
 		return;
 	auto requisit = fields->find(e.id);
+	auto value = -1;
 	if(!requisit)
-		return;
-	auto value = requisit->get(requisit->ptr(data));
+		value = getimageindex(index);
+	else
+		value = requisit->get(requisit->ptr(data));
 	if(value == -1)
 		return;
 	setposition(rc);

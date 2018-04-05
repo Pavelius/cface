@@ -58,6 +58,7 @@ namespace draw {
 			int					find(const char* id, const char* text, int start);
 			widget*				findcol(const char* id);
 			command*			getcommands() const override { return commands; }
+			virtual int			getimageindex(int index) const { return -1; }
 			virtual void*		getrow(int index) { return rows.get(index); }
 			virtual const char*	gettext(char* result, void* data, const char* id) const;
 			void				header(rect rc);

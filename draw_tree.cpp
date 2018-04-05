@@ -288,3 +288,7 @@ unsigned tree::sortds(bool run) {
 	}
 	return 0;
 }
+
+int	tree::getimageindex(int index) const {
+	return ((element*)rows.get(index))->image;
+}

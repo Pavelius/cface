@@ -265,9 +265,6 @@
     <ClCompile Include="draw_autocompletebs.cpp">
       <Filter>Графика\Элементы Управления</Filter>
     </ClCompile>
-    <ClCompile Include="database.cpp">
-      <Filter>Обработка данных</Filter>
-    </ClCompile>
     <ClCompile Include="widget_database.cpp">
       <Filter>Графика\Виджеты</Filter>
     </ClCompile>
@@ -282,6 +279,12 @@
     </ClCompile>
     <ClCompile Include="rect_type.cpp">
       <Filter>Графика\Геометрия</Filter>
+    </ClCompile>
+    <ClCompile Include="widget_csdata.cpp">
+      <Filter>Графика\Виджеты</Filter>
+    </ClCompile>
+    <ClCompile Include="csdata.cpp">
+      <Filter>Обработка данных</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -459,11 +462,11 @@
     <ClInclude Include="cflags.h">
       <Filter>Коллекции</Filter>
     </ClInclude>
-    <ClInclude Include="database.h">
-      <Filter>Обработка данных</Filter>
-    </ClInclude>
     <ClInclude Include="pushset.h">
       <Filter>Коллекции</Filter>
+    </ClInclude>
+    <ClInclude Include="csdata.h">
+      <Filter>Обработка данных</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -33,6 +33,7 @@ namespace draw {
 			virtual void	expand(int row, int level) final;
 			virtual void	expanding() {} // Expanding 'row' with 'level' or 0 for root
 			int				findbyparam(int param) const;
+			virtual int		getimageindex(int index) const override;
 			virtual int		getlevel(int row) const override;
 			int				getparam(int row = -1) const;
 			int				getparamindex(int value) const;

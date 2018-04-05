@@ -177,7 +177,7 @@
     <ClCompile Include="crt.cpp" />
     <ClCompile Include="crt_memory.cpp" />
     <ClCompile Include="crt_parse.cpp" />
-    <ClCompile Include="database.cpp" />
+    <ClCompile Include="csdata.cpp" />
     <ClCompile Include="date.cpp" />
     <ClCompile Include="dice.cpp" />
     <ClCompile Include="draw.cpp" />
@@ -192,7 +192,10 @@
     <ClCompile Include="draw_listview.cpp" />
     <ClCompile Include="hotproc.cpp" />
     <ClCompile Include="rect_type.cpp" />
-    <ClCompile Include="widget_database.cpp" />
+    <ClCompile Include="widget_csdata.cpp" />
+    <ClCompile Include="widget_database.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="widget_logging.cpp" />
     <ClCompile Include="widget_settings.cpp" />
     <ClCompile Include="widget_type.cpp" />
@@ -260,7 +263,7 @@
     <ClInclude Include="amem.h" />
     <ClInclude Include="archive.h" />
     <ClInclude Include="bsdata.h" />
-    <ClInclude Include="database.h" />
+    <ClInclude Include="csdata.h" />
     <ClInclude Include="bsreq.h" />
     <ClInclude Include="cflags.h" />
     <ClInclude Include="collections.h" />
