@@ -3,8 +3,7 @@
 enum condition_s : unsigned char {
 	Equal, NotEqual, Lesser, LesserEqual, Greater, GreaterEqual, Between, InList, NotInList, InHierarhy, Like
 };
-struct selector
-{
+struct selector {
 	const char*		id;
 	condition_s		operation;
 	int				value;

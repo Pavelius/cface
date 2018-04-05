@@ -2,9 +2,6 @@
 #include "crt.h"
 #include "io.h"
 
-static void(*error_callback)(bsparse_error_s id, const char* url, int line, int column, const char** format_param);
-static bsparse_error_s(*validate_text)(const char* id, const char* value);
-
 class bsfile {
 	const bsfile* parent;
 	const char* url;
@@ -26,10 +23,9 @@ struct bsdata_serial : bsfile {
 	int				value;
 	const bsreq*	value_type;
 	void*			value_object;
-	void*			parent_object;
-	const bsreq*	parent_type;
 	const char*		p;
 	bsdata**		custom_database;
+	bsdata::parser*	callback;
 
 	bsdata_serial(const char* url, const bsfile* parent = 0) : bsfile(url, parent), p(getstart()), custom_database(0) {
 		clearvalue();
@@ -107,20 +103,20 @@ struct bsdata_serial : bsfile {
 	}
 
 	void error(bsparse_error_s id, ...) {
-		if(!error_callback)
+		if(!callback)
 			return;
 		int line, column;
 		getpos(p, line, column);
-		error_callback(id, geturl(), line, column, (const char**)xva_start(id));
+		callback->error(id, geturl(), line, column, (const char**)xva_start(id));
 		skipline();
 	}
 
 	void warning(bsparse_error_s id, ...) {
-		if(!error_callback)
+		if(!callback)
 			return;
 		int line, column;
 		getpos(p, line, column);
-		error_callback(id, geturl(), line, column, (const char**)xva_start(id));
+		callback->error(id, geturl(), line, column, (const char**)xva_start(id));
 	}
 
 	void clearvalue() {
@@ -273,8 +269,8 @@ struct bsdata_serial : bsfile {
 			else {
 				auto pv = szdup(buffer);
 				req->set(p, (int)pv);
-				if(validate_text) {
-					auto error_code = validate_text(req->id, pv);
+				if(callback) {
+					auto error_code = callback->validate(req->id, pv);
 					if(error_code != NoParserError)
 						warning(error_code, req->id, pv);
 				}
@@ -330,32 +326,32 @@ struct bsdata_serial : bsfile {
 		else
 			warning(ErrorNotFoundBase1p, buffer);
 		// Read key value
-		parent_object = value_object;
 		if(iskey(p))
 			readvalue(fields, true);
 		else if(pd)
 			value_object = pd->add();
 		else
 			value_object = 0;
+		auto parent_object = value_object;
 		readfields(value_object, fields);
-		parent_type = fields;
+		readsubrecord(parent_object, fields);
 		return true;
 	}
 
-	bool readsubrecord() {
+	void readsubrecord(void* parent_object, const bsreq* parent_type) {
 		auto index = 0;
 		auto last_field = 0;
 		while(skip("##")) {
 			// Read data base name
 			if(!readidentifier()) {
 				error(ErrorExpectedIdentifier);
-				return true;
+				return;
 			}
 			skipws();
 			auto parent_field = parent_type->find(buffer);
 			if(!parent_field) {
 				error(ErrorNotFoundMember1pInBase2p, buffer, "");
-				return true;
+				return;
 			}
 			if(parent_field->count <= 1 // Only array may be defined as ##
 				|| parent_field->reference // No reference allowed
@@ -367,8 +363,6 @@ struct bsdata_serial : bsfile {
 				parent_field->type);
 			index++;
 		}
-		// If aref or adat save count
-		return false;
 	}
 
 	void readtrail() {
@@ -562,17 +556,10 @@ void bsdata::write(const char* url, const char* baseid) {
 	write(url, source);
 }
 
-void bsdata::read(const char* url, bsdata** custom) {
+void bsdata::read(const char* url, bsdata** custom, bsdata::parser* callback) {
 	bsdata_serial parser(url);
 	parser.custom_database = custom;
+	parser.callback = callback;
 	if(parser)
 		parser.parse();
-}
-
-void bsdata::setparser(void(*callback)(bsparse_error_s id, const char* url, int line, int column, const char** format_param)) {
-	error_callback = callback;
-}
-
-void bsdata::setparser(bsparse_error_s(*callback)(const char* id, const char* value)) {
-	validate_text = callback;
 }

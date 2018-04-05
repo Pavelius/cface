@@ -16,6 +16,10 @@ enum bsparse_error_s {
 	ErrorFile2pNotFound,
 };
 struct bsdata : collection {
+	struct parser {
+		virtual void	error(bsparse_error_s id, const char* url, int line, int column, const char** format_param) {}
+		virtual bsparse_error_s validate(const char* id, const char* value) { return NoParserError; }
+	};
 	const char*			id;
 	const bsreq*		fields;
 	void*				data;
@@ -46,11 +50,9 @@ struct bsdata : collection {
 	static bsdata*		find(const bsreq* id);
 	void*				find(const bsreq* id, const char* value);
 	static bsdata*		findbyptr(const void* object);
-	static void			read(const char* url, bsdata** custom = 0);
+	static void			read(const char* url, bsdata** custom = 0, parser* callback = 0);
 	void				remove(int index, int count = 1) override;
 	void				setcount(unsigned value) { count = value; }
-	static void			setparser(void(*error_callback)(bsparse_error_s id, const char* url, int line, int column, const char** format_param));
-	static void			setparser(bsparse_error_s(*validate_callback)(const char* id, const char* value));
 	static void			write(const char* url, const char** baseids, bool(*comparer)(void* object, const bsreq* type) = 0);
 	static void			write(const char* url, const char* baseid);
 private:

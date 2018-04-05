@@ -10,13 +10,13 @@ struct adat {
 	unsigned count;
 
 	constexpr adat() : data(), count(0) {}
-	constexpr adat(std::initializer_list<T> list) : count(0) { for(auto e : list) add(e); }
+	constexpr adat(std::initializer_list<T> list) : count(0) { for(auto& e : list) *add() = e; }
 	constexpr const T& operator[](unsigned index) const { return data[index]; }
 	constexpr T& operator[](unsigned index) { return data[index]; }
 	operator bool() const { return count != 0; }
 
 	// Add new element to collection
-	T* add() {
+	constexpr T* add() {
 		return (count < getmaximum()) ? data + (count++) : data;
 	}
 	// Add new element to collection by copy of existing
