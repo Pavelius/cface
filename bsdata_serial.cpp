@@ -7,15 +7,23 @@ class bsfile {
 	const char* url;
 	const char* start;
 public:
-	bsfile(const char* url, const bsfile* parent = 0) : parent(0), url(url), start(loadt(url)) {
-	}
-	~bsfile() {
-		delete start;
-	}
+	bsfile(const char* url, const bsfile* parent = 0) : parent(0), url(url), start(loadt(url)) {}
+	~bsfile() { delete start; }
 	operator bool() const { return start != 0; }
 	const char* getstart() const { return start; }
 	const char* geturl() const { return url; }
 };
+
+//struct bscustom : bsdata {
+//	bsreq		bsreqs[32];
+//	bscustom() : bsdata(bsreqs) {}
+//};
+//static bsreq bscustom_fields[] = {
+//	BSREQ(bscustom, id, text_type),
+//	BSREQ(bscustom, maximum_count, number_type),
+//	BSREQ(bscustom, bsreqs, bsreq_type),
+//{}
+//};
 
 struct bsdata_serial : bsfile {
 

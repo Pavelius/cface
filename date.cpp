@@ -1,14 +1,12 @@
 #include "crt.h"
 
-static const char* skipdsp(const char* source)
-{
-	while (*source == '.' || *source == ' ' || *source == '/' || *source == '\'')
+static const char* skipdsp(const char* source) {
+	while(*source == '.' || *source == ' ' || *source == '/' || *source == '\'')
 		source++;
 	return source;
 }
 
-unsigned mkdate(int year, int month, int day, int hour, int minute)
-{
+unsigned mkdate(int year, int month, int day, int hour, int minute) {
 	return (((1461 * (year - 1600 + (month - 14) / 12)) / 4
 		+ (367 * (month - 2 - 12 * ((month - 14) / 12))) / 12
 		- (3 * ((year - 1600 + 100 + (month - 14) / 12) / 100)) / 4
@@ -16,40 +14,33 @@ unsigned mkdate(int year, int month, int day, int hour, int minute)
 		+ hour * 60 + minute);
 }
 
-unsigned monthb(unsigned d)
-{
+unsigned monthb(unsigned d) {
 	return mkdate(getyear(d), getmonth(d), 1, 0, 0);
 }
 
-unsigned monthe(unsigned d)
-{
+unsigned monthe(unsigned d) {
 	int y = getyear(d);
 	int m = getmonth(d);
-	return mkdate(y, m, getmonthdaymax(m,y), 23, 59);
+	return mkdate(y, m, getmonthdaymax(m, y), 23, 59);
 }
 
-unsigned dayb(unsigned d)
-{
+unsigned dayb(unsigned d) {
 	return mkdate(getyear(d), getmonth(d), getday(d), 0, 0);
 }
 
-unsigned daye(unsigned d)
-{
+unsigned daye(unsigned d) {
 	return mkdate(getyear(d), getmonth(d), getday(d), 23, 59);
 }
 
-unsigned weekb(unsigned d)
-{
+unsigned weekb(unsigned d) {
 	return d;
 }
 
-bool isleap(int year)
-{
+bool isleap(int year) {
 	return (year % 400) == 0 || (((year % 100) != 0) && (year % 4) == 0);
 }
 
-int	getyear(unsigned d)
-{
+int	getyear(unsigned d) {
 	unsigned ell, n, i, j;
 	ell = (d / 1440) + 68569;
 	n = (4 * ell) / 146097;
@@ -61,8 +52,7 @@ int	getyear(unsigned d)
 	return (int)(100 * (n - 49) + i + ell + 6400);
 }
 
-int	getmonth(unsigned d)
-{
+int	getmonth(unsigned d) {
 	unsigned ell, n, i, j;
 	ell = (d / 1440) + 68569;
 	n = (4 * ell) / 146097;
@@ -74,17 +64,14 @@ int	getmonth(unsigned d)
 	return (int)(j + 2 - (12 * ell));
 }
 
-int getmonthdaymax(int month, int year)
-{
-	if (month == 0 || month == 2 || month == 4 || month == 6 || month == 7 || month == 9 || month == 11)
+int getmonthdaymax(int month, int year) {
+	if(month == 0 || month == 2 || month == 4 || month == 6 || month == 7 || month == 9 || month == 11)
 		return 31;
-	else if (month == 3 || month == 5 || month == 8 || month == 10)
+	else if(month == 3 || month == 5 || month == 8 || month == 10)
 		return 30;
-	if (year % 4 == 0)
-	{
-		if (year % 100 == 0)
-		{
-			if (year % 400 == 0)
+	if(year % 4 == 0) {
+		if(year % 100 == 0) {
+			if(year % 400 == 0)
 				return 29;
 			return 28;
 		}
@@ -93,8 +80,7 @@ int getmonthdaymax(int month, int year)
 	return 28;
 }
 
-int	getday(unsigned d)
-{
+int	getday(unsigned d) {
 	unsigned ell, n, i, j;
 	ell = (d / 1440) + 68569;
 	n = (4 * ell) / 146097;
@@ -105,8 +91,7 @@ int	getday(unsigned d)
 	return (int)(ell - (2447 * j) / 80);
 }
 
-const char* getstrfdat(char* result, unsigned d, bool show_time)
-{
+const char* getstrfdat(char* result, unsigned d, bool show_time) {
 	result[0] = 0;
 	if(!d)
 		return result;
@@ -115,8 +100,7 @@ const char* getstrfdat(char* result, unsigned d, bool show_time)
 	sznum(zend(result), getmonth(d), 2);
 	zcpy(zend(result), ".");
 	sznum(zend(result), getyear(d), 4);
-	if(show_time)
-	{
+	if(show_time) {
 		zcpy(zend(result), " ");
 		sznum(zend(result), gethour(d), 2);
 		zcpy(zend(result), ":");
@@ -125,8 +109,7 @@ const char* getstrfdat(char* result, unsigned d, bool show_time)
 	return result;
 }
 
-unsigned getdatfstr(const char* source)
-{
+unsigned getdatfstr(const char* source) {
 	unsigned d = getdate();
 	int day = sz2num(source, &source);
 	source = skipdsp(source);

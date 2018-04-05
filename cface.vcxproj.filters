@@ -166,9 +166,6 @@
     <ClCompile Include="converter.cpp">
       <Filter>Поддержка</Filter>
     </ClCompile>
-    <ClCompile Include="ctype.cpp">
-      <Filter>Поддержка</Filter>
-    </ClCompile>
     <ClCompile Include="date.cpp">
       <Filter>Поддержка</Filter>
     </ClCompile>
@@ -385,9 +382,6 @@
       <Filter>Поддержка</Filter>
     </ClInclude>
     <ClInclude Include="converter.h">
-      <Filter>Поддержка</Filter>
-    </ClInclude>
-    <ClInclude Include="ctype.h">
       <Filter>Поддержка</Filter>
     </ClInclude>
     <ClInclude Include="dice.h">

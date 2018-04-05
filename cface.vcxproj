@@ -177,7 +177,6 @@
     <ClCompile Include="crt.cpp" />
     <ClCompile Include="crt_memory.cpp" />
     <ClCompile Include="crt_parse.cpp" />
-    <ClCompile Include="ctype.cpp" />
     <ClCompile Include="database.cpp" />
     <ClCompile Include="date.cpp" />
     <ClCompile Include="dice.cpp" />
@@ -288,7 +287,6 @@
     <ClInclude Include="command.h" />
     <ClInclude Include="converter.h" />
     <ClInclude Include="crt.h" />
-    <ClInclude Include="ctype.h" />
     <ClInclude Include="dice.h" />
     <ClInclude Include="draw.h" />
     <ClInclude Include="drawable.h" />

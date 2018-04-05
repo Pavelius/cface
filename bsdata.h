@@ -24,9 +24,12 @@ struct bsdata : collection {
 	const bsreq*		fields;
 	void*				data;
 	unsigned			size;
+	unsigned			current_count;
+	unsigned			maximum_count;
 	bsdata*				next;
 	static bsdata*		first;
 	//
+	bsdata(const bsreq* fields) : id(""), fields(fields), data(0), size(0), count(current_count), current_count(0), next(0), maximum_count(0) { globalize(); }
 	template<class T, unsigned N> bsdata(const char* id, T(&data)[N], const bsreq* fields, bool make_global) : id(id), fields(fields), data(&data), size(sizeof(T)), count(current_count), current_count(N), next(0), maximum_count(N) { globalize(); }
 	template<class T, unsigned N> constexpr bsdata(const char* id, T(&data)[N], const bsreq* fields) : id(id), fields(fields), data(&data), size(sizeof(T)), count(current_count), current_count(N), next(0), maximum_count(N) {}
 	template<class T> bsdata(const char* id, T& data, const bsreq* fields, bool make_global) : id(id), fields(fields), data(&data), size(sizeof(T)), count(current_count), current_count(0), next(0), maximum_count(1) { globalize(); }
@@ -56,7 +59,5 @@ struct bsdata : collection {
 	static void			write(const char* url, const char** baseids, bool(*comparer)(void* object, const bsreq* type) = 0);
 	static void			write(const char* url, const char* baseid);
 private:
-	unsigned			maximum_count;
-	unsigned			current_count;
 	unsigned&			count;
 };

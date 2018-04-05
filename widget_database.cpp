@@ -26,13 +26,13 @@ static bool validate_header(bsval* variables) {
 
 static bool change_object(database::object& source) {
 	struct context {
-		database::object copy;
-		controls::table	table;
+		database::object	object;
+		controls::table		table;
 		context(collection& ts1) : table(ts1) {
 		}
 	};
 	static bsreq context_type[] = {
-		BSREQ(context, copy, object_type),
+		BSREQ(context, object, object_type),
 		BSREQ(context, table, control_type),
 		{}
 	};
@@ -42,8 +42,8 @@ static bool change_object(database::object& source) {
 		{}
 	};
 	arefc<database::object*> requisites;
-	context	ec(requisites); ec.copy = source;
-	static bsval variables[] = {{context_type, &ec}, {object_type, &ec.copy}, {}};
+	context	ec(requisites); ec.object = source;
+	static bsval variables[] = {{context_type, &ec}, {object_type, &ec.object}, {}};
 	return draw::open(source.name, 400, 300, widgets, variables, validate_header);
 }
 
