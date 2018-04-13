@@ -123,3 +123,34 @@ int draw::field(int x, int y, int width, int id, unsigned flags, const char* lab
 	}
 	return rc.height() + metrics::padding * 2;
 }
+
+int draw::fieldl(int x, int y, int width, int id, unsigned flags, const char* label, const char* tips, const char* header_label, int header_width,
+	void(*callback_list)(),
+	void(*callback_open)(),
+	void(*callback_setparam)(void*), void* param) {
+	draw::state push;
+	setposition(x, y, width);
+	decortext(flags);
+	if(header_label && header_label[0])
+		header(x, y, width, flags, header_label, header_width);
+	rect rc = {x, y, x + width, y + draw::texth() + 8};
+	focusing(id, flags, rc);
+	bool focused = isfocused(flags);
+	auto second_color = focused ? colors::active : colors::border;
+	draw::gradv(rc, colors::form, colors::border.lighten());
+	draw::rectb(rc, second_color);
+	if(callback_list) {
+		if(addbutton(rc, focused, ":dropdown", F4, "Показать список"))
+			doevent(id, callback_list, callback_setparam, param);
+	}
+	if(callback_open) {
+		if(addbutton(rc, focused, "...", F4, "Выбрать"))
+			doevent(id, callback_open, callback_setparam, param);
+	}
+	auto a = area(rc);
+	if(label)
+		draw::text(rc + metrics::edit, label, TextSingleLine|AlignLeft);
+	if(tips && a == AreaHilited)
+		tooltips(tips);
+	return rc.height() + metrics::padding * 2;
+}

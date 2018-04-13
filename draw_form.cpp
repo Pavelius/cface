@@ -210,8 +210,8 @@ struct dlgform {
 			return draw::field(x, y, width, (int)&e, getflags(e), p, e.tips, e.label, e.title,
 				callback_edit, 0, 0, callback_up, callback_down, 0, setparam, &po);
 		else if(po.type->type != text_type)
-			return draw::field(x, y, width, (int)&e, getflags(e), p, e.tips, e.label, e.title,
-				callback_edit, 0, 0, 0, 0, 0, setparam, &po);
+			return draw::fieldl(x, y, width, (int)&e, getflags(e), p, e.tips, e.label, e.title,
+				0, 0, setparam, &po);
 		else
 			return draw::field(x, y, width, (int)&e, getflags(e), p, e.tips, e.label, e.title,
 				callback_edit, 0, 0, 0, 0, 0, setparam, &po);

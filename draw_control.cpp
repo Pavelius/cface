@@ -13,7 +13,7 @@ sprite*				metrics::tree = (sprite*)loadb("tree.pma");
 control::plugin*	control::plugin::first;
 static const char*	current_name;
 
-struct control_state {
+static struct control_state {
 	control*		activity;
 	control*		focus;
 	control*		mouse;
