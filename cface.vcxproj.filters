@@ -286,6 +286,9 @@
     <ClCompile Include="csdata.cpp">
       <Filter>Обработка данных</Filter>
     </ClCompile>
+    <ClCompile Include="draw_autocomplete.cpp">
+      <Filter>Графика\Элементы Управления</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="acol.h">

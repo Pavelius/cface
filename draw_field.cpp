@@ -137,7 +137,7 @@ int draw::fieldl(int x, int y, int width, int id, unsigned flags, const char* la
 	focusing(id, flags, rc);
 	bool focused = isfocused(flags);
 	auto second_color = focused ? colors::active : colors::border;
-	draw::gradv(rc, colors::form, colors::border.lighten());
+	draw::gradv(rc, colors::form.lighten(), colors::border.darken());
 	draw::rectb(rc, second_color);
 	if(callback_list) {
 		if(addbutton(rc, focused, ":dropdown", F4, "Показать список"))

@@ -6,14 +6,12 @@
 using namespace draw::controls;
 
 listview::listview(const void** source, unsigned count, const bsreq* fields, const char* name) :
-	source(source), fields(fields)
-{
+	source(source), fields(fields) {
 	maximum = count;
 	setpresetation(name);
 }
 
-const char* listview::getname(int index) const
-{
+const char* listview::getname(int index) const {
 	return (const char*)requisit->get(requisit->ptr(source[index]));
 }
 
@@ -26,18 +24,15 @@ int	listview::find(const char* name) const {
 	return -1;
 }
 
-void listview::setpresetation(const char* name)
-{
+void listview::setpresetation(const char* name) {
 	requisit = fields->find(name);
 }
 
-void listview::row(rect rc, int index)
-{
-	list::row({rc.x1+1, rc.y1+1, rc.x2-1, rc.y2}, index);
+void listview::row(rect rc, int index) {
+	list::row({rc.x1 + 1, rc.y1 + 1, rc.x2 - 1, rc.y2}, index);
 	draw::area(rc);
 	auto p = (const char*)requisit->get(requisit->ptr(source[index]));
-	if(p)
-	{
+	if(p) {
 		rc.offset(4, 4);
 		text(rc.x1, rc.y1, p);
 	}

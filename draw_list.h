@@ -57,7 +57,11 @@ namespace draw {
 			const void*		source[50];
 			autocomplete(const bsreq* fields = 0, const char* name = "name") : listview(source, 0, fields, name), filter(0) {}
 			const char*		filter;
+			int				getrecordsheight() const;
+			int				openlist(int x, int y, int width, char* buffer, const char* buffer_max);
+			void			setrecordlist(const char* string);
 			virtual void	update() = 0;
+			void			updaterecords(const char* filter);
 		};
 		struct autocompletebs : autocomplete {
 			const bsdata*	base;

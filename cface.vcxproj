@@ -182,6 +182,7 @@
     <ClCompile Include="dice.cpp" />
     <ClCompile Include="draw.cpp" />
     <ClCompile Include="drawable.cpp" />
+    <ClCompile Include="draw_autocomplete.cpp" />
     <ClCompile Include="draw_autocompletebs.cpp" />
     <ClCompile Include="draw_control_focusing.cpp" />
     <ClCompile Include="draw_control_type.cpp" />
