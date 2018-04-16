@@ -58,6 +58,7 @@ namespace draw {
 			autocomplete(const bsreq* fields = 0, const char* name = "name") : listview(source, 0, fields, name), filter(0) {}
 			const char*		filter;
 			int				getrecordsheight() const;
+			bool			isshowrecords() const;
 			int				openlist(int x, int y, int width, char* buffer, const char* buffer_max);
 			void			setrecordlist(const char* string);
 			virtual void	update() = 0;
